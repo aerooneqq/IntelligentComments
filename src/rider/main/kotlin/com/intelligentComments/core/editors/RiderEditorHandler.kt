@@ -1,6 +1,7 @@
 package com.intelligentComments.core.editors
 
 import com.intelligentComments.core.domain.rd.IntelligentCommentFromRd
+import com.intelligentComments.ui.colors.Colors
 import com.intelligentComments.ui.listeners.CommentMouseListener
 import com.intelligentComments.ui.listeners.CommentMouseMoveListener
 import com.intellij.openapi.editor.Editor
@@ -9,6 +10,7 @@ import com.intellij.openapi.rd.createNestedDisposable
 import com.jetbrains.rd.ide.model.*
 import com.jetbrains.rd.util.Date
 import com.jetbrains.rd.util.lifetime.Lifetime
+import java.awt.font.TextAttribute
 
 class RiderEditorHandler : EditorHandler {
     override fun startMonitoringEditor(editor: Editor, monitoringLifetime: Lifetime) {
@@ -27,17 +29,16 @@ class RiderEditorHandler : EditorHandler {
 Компиляторы и интерпретаторы игнорируют комментарии и с одинаковой лёгкостью воспринимают все синтаксически корректные программы.
 У людей всё иначе. Одни программы нам воспринимать легче, чем другие, и мы ищем комментарии, которые помогут нам разобраться."""
 
-        val textSegment = RdTextSegment()
-        content.segments.add(RdTextSegment().apply {
-            this.text.set(text)
-        })
 
-        content.segments.add(RdTextSegment().apply {
-            this.text.set(text)
-        })
-        content.segments.add(RdTextSegment().apply {
-            this.text.set(text)
-        })
+        val highlighter = RdTextHighlighter("text.test.first.color", 0, 200, RdTextAttributes(), backgroundStyle = RdBackgroundStyle(RdColor("#FFFF00"), true), animation = RdUnderlineTextAnimation())
+        val highlighter1 = RdTextHighlighter("text.test.second.color", 200, 213, RdTextAttributes(fontWeight = 1000f, fontStyle = RdFontStyle.Bold, underline = true), animation = RdUnderlineTextAnimation())
+        val highlighter2 = RdTextHighlighter("text.test.first.color", 213, 234, RdTextAttributes())
+        val highlighter3 = RdTextHighlighter("text.test.second.color", 235, 260, RdTextAttributes())
+        content.segments.add(RdTextSegment(RdHighlightedText(text, mutableListOf(highlighter, highlighter1, highlighter2, highlighter3))))
+        content.segments.add(RdTextSegment(RdHighlightedText(text)))
+        content.segments.add(RdTextSegment(RdHighlightedText(text)))
+
+
         comment.content.set(content)
         comment.invariants.add(RdTextInvariant("Synchronous"))
         comment.invariants.add(RdTextInvariant("ReadLock"))
@@ -63,7 +64,7 @@ This method depends on the synchronous nature of Method1,""".trimMargin(),
                 """This method depends on that ID must be zero if the user is admin""",
                 "C:\\Aero\\Software\\Domain\\Models\\UniqueEntity.cs"))
 
-        val intelligentComment = IntelligentCommentFromRd(comment)
+        val intelligentComment = IntelligentCommentFromRd(comment, editor.project!!)
         val inlayRenderer = intelligentComment.getRenderer(editor.project!!)
         val inlay = editor.inlayModel.addBlockElement(0, properties, inlayRenderer)
         

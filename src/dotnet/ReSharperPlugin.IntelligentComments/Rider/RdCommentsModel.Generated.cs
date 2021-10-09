@@ -74,7 +74,7 @@ namespace JetBrains.Rider.Model
     
     
     
-    protected override long SerializationHash => -5014537549275728327L;
+    protected override long SerializationHash => 2051931797146116882L;
     
     protected override Action<ISerializers> Register => RegisterDeclaredTypesSerializers;
     public static void RegisterDeclaredTypesSerializers(ISerializers serializers)
@@ -83,11 +83,13 @@ namespace JetBrains.Rider.Model
       serializers.Register(RdTextSegment.Read, RdTextSegment.Write);
       serializers.Register(RdTextInvariant.Read, RdTextInvariant.Write);
       serializers.Register(RdDependencyReference.Read, RdDependencyReference.Write);
+      serializers.Register(RdUnderlineTextAnimation.Read, RdUnderlineTextAnimation.Write);
       serializers.Register(RdComment_Unknown.Read, RdComment_Unknown.Write);
       serializers.Register(RdContentSegment_Unknown.Read, RdContentSegment_Unknown.Write);
       serializers.Register(RdInvariant_Unknown.Read, RdInvariant_Unknown.Write);
       serializers.Register(RdReference_Unknown.Read, RdReference_Unknown.Write);
       serializers.Register(RdFileBasedReference_Unknown.Read, RdFileBasedReference_Unknown.Write);
+      serializers.Register(RdTextAnimation_Unknown.Read, RdTextAnimation_Unknown.Write);
       
       serializers.RegisterToplevelOnce(typeof(IdeRoot), IdeRoot.RegisterDeclaredTypesSerializers);
     }
@@ -122,6 +124,184 @@ namespace JetBrains.Rider.Model
     public static RdCommentsModel GetRdCommentsModel(this Solution solution)
     {
       return solution.GetOrCreateExtension("rdCommentsModel", () => new RdCommentsModel());
+    }
+  }
+  
+  
+  /// <summary>
+  /// <p>Generated from: RdComment.kt:84</p>
+  /// </summary>
+  public sealed class RdBackgroundStyle : IPrintable, IEquatable<RdBackgroundStyle>
+  {
+    //fields
+    //public fields
+    [NotNull] public RdColor BackgroundColor {get; private set;}
+    public bool RoundedRect {get; private set;}
+    
+    //private fields
+    //primary constructor
+    public RdBackgroundStyle(
+      [NotNull] RdColor backgroundColor,
+      bool roundedRect
+    )
+    {
+      if (backgroundColor == null) throw new ArgumentNullException("backgroundColor");
+      
+      BackgroundColor = backgroundColor;
+      RoundedRect = roundedRect;
+    }
+    //secondary constructor
+    //deconstruct trait
+    public void Deconstruct([NotNull] out RdColor backgroundColor, out bool roundedRect)
+    {
+      backgroundColor = BackgroundColor;
+      roundedRect = RoundedRect;
+    }
+    //statics
+    
+    public static CtxReadDelegate<RdBackgroundStyle> Read = (ctx, reader) => 
+    {
+      var backgroundColor = RdColor.Read(ctx, reader);
+      var roundedRect = reader.ReadBool();
+      var _result = new RdBackgroundStyle(backgroundColor, roundedRect);
+      return _result;
+    };
+    
+    public static CtxWriteDelegate<RdBackgroundStyle> Write = (ctx, writer, value) => 
+    {
+      RdColor.Write(ctx, writer, value.BackgroundColor);
+      writer.Write(value.RoundedRect);
+    };
+    
+    //constants
+    
+    //custom body
+    //methods
+    //equals trait
+    public override bool Equals(object obj)
+    {
+      if (ReferenceEquals(null, obj)) return false;
+      if (ReferenceEquals(this, obj)) return true;
+      if (obj.GetType() != GetType()) return false;
+      return Equals((RdBackgroundStyle) obj);
+    }
+    public bool Equals(RdBackgroundStyle other)
+    {
+      if (ReferenceEquals(null, other)) return false;
+      if (ReferenceEquals(this, other)) return true;
+      return Equals(BackgroundColor, other.BackgroundColor) && RoundedRect == other.RoundedRect;
+    }
+    //hash code trait
+    public override int GetHashCode()
+    {
+      unchecked {
+        var hash = 0;
+        hash = hash * 31 + BackgroundColor.GetHashCode();
+        hash = hash * 31 + RoundedRect.GetHashCode();
+        return hash;
+      }
+    }
+    //pretty print
+    public void Print(PrettyPrinter printer)
+    {
+      printer.Println("RdBackgroundStyle (");
+      using (printer.IndentCookie()) {
+        printer.Print("backgroundColor = "); BackgroundColor.PrintEx(printer); printer.Println();
+        printer.Print("roundedRect = "); RoundedRect.PrintEx(printer); printer.Println();
+      }
+      printer.Print(")");
+    }
+    //toString
+    public override string ToString()
+    {
+      var printer = new SingleLinePrettyPrinter();
+      Print(printer);
+      return printer.ToString();
+    }
+  }
+  
+  
+  /// <summary>
+  /// <p>Generated from: RdComment.kt:89</p>
+  /// </summary>
+  public sealed class RdColor : IPrintable, IEquatable<RdColor>
+  {
+    //fields
+    //public fields
+    [NotNull] public string Hex {get; private set;}
+    
+    //private fields
+    //primary constructor
+    public RdColor(
+      [NotNull] string hex
+    )
+    {
+      if (hex == null) throw new ArgumentNullException("hex");
+      
+      Hex = hex;
+    }
+    //secondary constructor
+    //deconstruct trait
+    public void Deconstruct([NotNull] out string hex)
+    {
+      hex = Hex;
+    }
+    //statics
+    
+    public static CtxReadDelegate<RdColor> Read = (ctx, reader) => 
+    {
+      var hex = reader.ReadString();
+      var _result = new RdColor(hex);
+      return _result;
+    };
+    
+    public static CtxWriteDelegate<RdColor> Write = (ctx, writer, value) => 
+    {
+      writer.Write(value.Hex);
+    };
+    
+    //constants
+    
+    //custom body
+    //methods
+    //equals trait
+    public override bool Equals(object obj)
+    {
+      if (ReferenceEquals(null, obj)) return false;
+      if (ReferenceEquals(this, obj)) return true;
+      if (obj.GetType() != GetType()) return false;
+      return Equals((RdColor) obj);
+    }
+    public bool Equals(RdColor other)
+    {
+      if (ReferenceEquals(null, other)) return false;
+      if (ReferenceEquals(this, other)) return true;
+      return Hex == other.Hex;
+    }
+    //hash code trait
+    public override int GetHashCode()
+    {
+      unchecked {
+        var hash = 0;
+        hash = hash * 31 + Hex.GetHashCode();
+        return hash;
+      }
+    }
+    //pretty print
+    public void Print(PrettyPrinter printer)
+    {
+      printer.Println("RdColor (");
+      using (printer.IndentCookie()) {
+        printer.Print("hex = "); Hex.PrintEx(printer); printer.Println();
+      }
+      printer.Print(")");
+    }
+    //toString
+    public override string ToString()
+    {
+      var printer = new SingleLinePrettyPrinter();
+      Print(printer);
+      return printer.ToString();
     }
   }
   
@@ -232,8 +412,7 @@ namespace JetBrains.Rider.Model
   /// <summary>
   /// <p>Generated from: RdComment.kt:35</p>
   /// </summary>
-  public abstract class RdContentSegment : RdBindableBase
-  {
+  public abstract class RdContentSegment{
     //fields
     //public fields
     
@@ -271,14 +450,12 @@ namespace JetBrains.Rider.Model
     
     public static new CtxReadDelegate<RdContentSegment_Unknown> Read = (ctx, reader) => 
     {
-      var _id = RdId.Read(reader);
-      var _result = new RdContentSegment_Unknown().WithId(_id);
+      var _result = new RdContentSegment_Unknown();
       return _result;
     };
     
     public static new CtxWriteDelegate<RdContentSegment_Unknown> Write = (ctx, writer, value) => 
     {
-      value.RdId.Write(writer);
     };
     
     //constants
@@ -286,9 +463,29 @@ namespace JetBrains.Rider.Model
     //custom body
     //methods
     //equals trait
+    public override bool Equals(object obj)
+    {
+      if (ReferenceEquals(null, obj)) return false;
+      if (ReferenceEquals(this, obj)) return true;
+      if (obj.GetType() != GetType()) return false;
+      return Equals((RdContentSegment_Unknown) obj);
+    }
+    public bool Equals(RdContentSegment_Unknown other)
+    {
+      if (ReferenceEquals(null, other)) return false;
+      if (ReferenceEquals(this, other)) return true;
+      return true;
+    }
     //hash code trait
+    public override int GetHashCode()
+    {
+      unchecked {
+        var hash = 0;
+        return hash;
+      }
+    }
     //pretty print
-    public override void Print(PrettyPrinter printer)
+    public void Print(PrettyPrinter printer)
     {
       printer.Println("RdContentSegment_Unknown (");
       printer.Print(")");
@@ -583,6 +780,110 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
+  /// <p>Generated from: RdComment.kt:101</p>
+  /// </summary>
+  public enum RdFontStyle {
+    Regular,
+    Bold
+  }
+  
+  
+  /// <summary>
+  /// <p>Generated from: RdComment.kt:64</p>
+  /// </summary>
+  public sealed class RdHighlightedText : IPrintable, IEquatable<RdHighlightedText>
+  {
+    //fields
+    //public fields
+    [NotNull] public string Text {get; private set;}
+    [CanBeNull] public List<RdTextHighlighter> Highlighters {get; private set;}
+    
+    //private fields
+    //primary constructor
+    public RdHighlightedText(
+      [NotNull] string text,
+      [CanBeNull] List<RdTextHighlighter> highlighters = null
+    )
+    {
+      if (text == null) throw new ArgumentNullException("text");
+      
+      Text = text;
+      Highlighters = highlighters;
+    }
+    //secondary constructor
+    //deconstruct trait
+    public void Deconstruct([NotNull] out string text, [CanBeNull] out List<RdTextHighlighter> highlighters)
+    {
+      text = Text;
+      highlighters = Highlighters;
+    }
+    //statics
+    
+    public static CtxReadDelegate<RdHighlightedText> Read = (ctx, reader) => 
+    {
+      var text = reader.ReadString();
+      var highlighters = ReadRdTextHighlighterListNullable(ctx, reader);
+      var _result = new RdHighlightedText(text, highlighters);
+      return _result;
+    };
+    public static CtxReadDelegate<List<RdTextHighlighter>> ReadRdTextHighlighterListNullable = RdTextHighlighter.Read.List().NullableClass();
+    
+    public static CtxWriteDelegate<RdHighlightedText> Write = (ctx, writer, value) => 
+    {
+      writer.Write(value.Text);
+      WriteRdTextHighlighterListNullable(ctx, writer, value.Highlighters);
+    };
+    public static  CtxWriteDelegate<List<RdTextHighlighter>> WriteRdTextHighlighterListNullable = RdTextHighlighter.Write.List().NullableClass();
+    
+    //constants
+    
+    //custom body
+    //methods
+    //equals trait
+    public override bool Equals(object obj)
+    {
+      if (ReferenceEquals(null, obj)) return false;
+      if (ReferenceEquals(this, obj)) return true;
+      if (obj.GetType() != GetType()) return false;
+      return Equals((RdHighlightedText) obj);
+    }
+    public bool Equals(RdHighlightedText other)
+    {
+      if (ReferenceEquals(null, other)) return false;
+      if (ReferenceEquals(this, other)) return true;
+      return Text == other.Text && Equals(Highlighters, other.Highlighters);
+    }
+    //hash code trait
+    public override int GetHashCode()
+    {
+      unchecked {
+        var hash = 0;
+        hash = hash * 31 + Text.GetHashCode();
+        hash = hash * 31 + (Highlighters != null ? Highlighters.ContentHashCode() : 0);
+        return hash;
+      }
+    }
+    //pretty print
+    public void Print(PrettyPrinter printer)
+    {
+      printer.Println("RdHighlightedText (");
+      using (printer.IndentCookie()) {
+        printer.Print("text = "); Text.PrintEx(printer); printer.Println();
+        printer.Print("highlighters = "); Highlighters.PrintEx(printer); printer.Println();
+      }
+      printer.Print(")");
+    }
+    //toString
+    public override string ToString()
+    {
+      var printer = new SingleLinePrettyPrinter();
+      Print(printer);
+      return printer.ToString();
+    }
+  }
+  
+  
+  /// <summary>
   /// <p>Generated from: RdComment.kt:17</p>
   /// </summary>
   public sealed class RdIntelligentComment : RdComment
@@ -823,6 +1124,7 @@ namespace JetBrains.Rider.Model
       if (segments == null) throw new ArgumentNullException("segments");
       
       _Segments = segments;
+      _Segments.OptimizeNested = true;
       BindableChildren.Add(new KeyValuePair<string, object>("segments", _Segments));
     }
     //secondary constructor
@@ -1055,6 +1357,332 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
+  /// <p>Generated from: RdComment.kt:93</p>
+  /// </summary>
+  public abstract class RdTextAnimation{
+    //fields
+    //public fields
+    
+    //private fields
+    //primary constructor
+    //secondary constructor
+    //deconstruct trait
+    //statics
+    
+    public static CtxReadDelegate<RdTextAnimation> Read = Polymorphic<RdTextAnimation>.ReadAbstract(RdTextAnimation_Unknown.Read);
+    
+    public static CtxWriteDelegate<RdTextAnimation> Write = Polymorphic<RdTextAnimation>.Write;
+    
+    //constants
+    
+    //custom body
+    //methods
+    //equals trait
+    //hash code trait
+    //pretty print
+    //toString
+  }
+  
+  
+  public sealed class RdTextAnimation_Unknown : RdTextAnimation
+  {
+    //fields
+    //public fields
+    
+    //private fields
+    //primary constructor
+    //secondary constructor
+    //deconstruct trait
+    //statics
+    
+    public static new CtxReadDelegate<RdTextAnimation_Unknown> Read = (ctx, reader) => 
+    {
+      var _result = new RdTextAnimation_Unknown();
+      return _result;
+    };
+    
+    public static new CtxWriteDelegate<RdTextAnimation_Unknown> Write = (ctx, writer, value) => 
+    {
+    };
+    
+    //constants
+    
+    //custom body
+    //methods
+    //equals trait
+    public override bool Equals(object obj)
+    {
+      if (ReferenceEquals(null, obj)) return false;
+      if (ReferenceEquals(this, obj)) return true;
+      if (obj.GetType() != GetType()) return false;
+      return Equals((RdTextAnimation_Unknown) obj);
+    }
+    public bool Equals(RdTextAnimation_Unknown other)
+    {
+      if (ReferenceEquals(null, other)) return false;
+      if (ReferenceEquals(this, other)) return true;
+      return true;
+    }
+    //hash code trait
+    public override int GetHashCode()
+    {
+      unchecked {
+        var hash = 0;
+        return hash;
+      }
+    }
+    //pretty print
+    public void Print(PrettyPrinter printer)
+    {
+      printer.Println("RdTextAnimation_Unknown (");
+      printer.Print(")");
+    }
+    //toString
+    public override string ToString()
+    {
+      var printer = new SingleLinePrettyPrinter();
+      Print(printer);
+      return printer.ToString();
+    }
+  }
+  
+  
+  /// <summary>
+  /// <p>Generated from: RdComment.kt:78</p>
+  /// </summary>
+  public sealed class RdTextAttributes : IPrintable, IEquatable<RdTextAttributes>
+  {
+    //fields
+    //public fields
+    [CanBeNull] public RdFontStyle? FontStyle {get; private set;}
+    [CanBeNull] public bool? Underline {get; private set;}
+    [CanBeNull] public float? FontWeight {get; private set;}
+    
+    //private fields
+    //primary constructor
+    public RdTextAttributes(
+      [CanBeNull] RdFontStyle? fontStyle = null,
+      [CanBeNull] bool? underline = null,
+      [CanBeNull] float? fontWeight = null
+    )
+    {
+      FontStyle = fontStyle;
+      Underline = underline;
+      FontWeight = fontWeight;
+    }
+    //secondary constructor
+    //deconstruct trait
+    public void Deconstruct([CanBeNull] out RdFontStyle? fontStyle, [CanBeNull] out bool? underline, [CanBeNull] out float? fontWeight)
+    {
+      fontStyle = FontStyle;
+      underline = Underline;
+      fontWeight = FontWeight;
+    }
+    //statics
+    
+    public static CtxReadDelegate<RdTextAttributes> Read = (ctx, reader) => 
+    {
+      var fontStyle = ReadRdFontStyleNullable(ctx, reader);
+      var underline = ReadBoolNullable(ctx, reader);
+      var fontWeight = ReadFloatNullable(ctx, reader);
+      var _result = new RdTextAttributes(fontStyle, underline, fontWeight);
+      return _result;
+    };
+    public static CtxReadDelegate<RdFontStyle?> ReadRdFontStyleNullable = new CtxReadDelegate<RdFontStyle>(JetBrains.Rd.Impl.Serializers.ReadEnum<RdFontStyle>).NullableStruct();
+    public static CtxReadDelegate<bool?> ReadBoolNullable = JetBrains.Rd.Impl.Serializers.ReadBool.NullableStruct();
+    public static CtxReadDelegate<float?> ReadFloatNullable = JetBrains.Rd.Impl.Serializers.ReadFloat.NullableStruct();
+    
+    public static CtxWriteDelegate<RdTextAttributes> Write = (ctx, writer, value) => 
+    {
+      WriteRdFontStyleNullable(ctx, writer, value.FontStyle);
+      WriteBoolNullable(ctx, writer, value.Underline);
+      WriteFloatNullable(ctx, writer, value.FontWeight);
+    };
+    public static  CtxWriteDelegate<RdFontStyle?> WriteRdFontStyleNullable = new CtxWriteDelegate<RdFontStyle>(JetBrains.Rd.Impl.Serializers.WriteEnum<RdFontStyle>).NullableStruct();
+    public static  CtxWriteDelegate<bool?> WriteBoolNullable = JetBrains.Rd.Impl.Serializers.WriteBool.NullableStruct();
+    public static  CtxWriteDelegate<float?> WriteFloatNullable = JetBrains.Rd.Impl.Serializers.WriteFloat.NullableStruct();
+    
+    //constants
+    
+    //custom body
+    //methods
+    //equals trait
+    public override bool Equals(object obj)
+    {
+      if (ReferenceEquals(null, obj)) return false;
+      if (ReferenceEquals(this, obj)) return true;
+      if (obj.GetType() != GetType()) return false;
+      return Equals((RdTextAttributes) obj);
+    }
+    public bool Equals(RdTextAttributes other)
+    {
+      if (ReferenceEquals(null, other)) return false;
+      if (ReferenceEquals(this, other)) return true;
+      return Equals(FontStyle, other.FontStyle) && Equals(Underline, other.Underline) && Equals(FontWeight, other.FontWeight);
+    }
+    //hash code trait
+    public override int GetHashCode()
+    {
+      unchecked {
+        var hash = 0;
+        hash = hash * 31 + (FontStyle != null ? (int) FontStyle : 0);
+        hash = hash * 31 + (Underline != null ? Underline.GetHashCode() : 0);
+        hash = hash * 31 + (FontWeight != null ? FontWeight.GetHashCode() : 0);
+        return hash;
+      }
+    }
+    //pretty print
+    public void Print(PrettyPrinter printer)
+    {
+      printer.Println("RdTextAttributes (");
+      using (printer.IndentCookie()) {
+        printer.Print("fontStyle = "); FontStyle.PrintEx(printer); printer.Println();
+        printer.Print("underline = "); Underline.PrintEx(printer); printer.Println();
+        printer.Print("fontWeight = "); FontWeight.PrintEx(printer); printer.Println();
+      }
+      printer.Print(")");
+    }
+    //toString
+    public override string ToString()
+    {
+      var printer = new SingleLinePrettyPrinter();
+      Print(printer);
+      return printer.ToString();
+    }
+  }
+  
+  
+  /// <summary>
+  /// <p>Generated from: RdComment.kt:69</p>
+  /// </summary>
+  public sealed class RdTextHighlighter : IPrintable, IEquatable<RdTextHighlighter>
+  {
+    //fields
+    //public fields
+    [NotNull] public string Key {get; private set;}
+    public int StartOffset {get; private set;}
+    public int EndOffset {get; private set;}
+    [NotNull] public RdTextAttributes Attributes {get; private set;}
+    [CanBeNull] public RdBackgroundStyle BackgroundStyle {get; private set;}
+    [CanBeNull] public RdTextAnimation Animation {get; private set;}
+    
+    //private fields
+    //primary constructor
+    public RdTextHighlighter(
+      [NotNull] string key,
+      int startOffset,
+      int endOffset,
+      [NotNull] RdTextAttributes attributes,
+      [CanBeNull] RdBackgroundStyle backgroundStyle = null,
+      [CanBeNull] RdTextAnimation animation = null
+    )
+    {
+      if (key == null) throw new ArgumentNullException("key");
+      if (attributes == null) throw new ArgumentNullException("attributes");
+      
+      Key = key;
+      StartOffset = startOffset;
+      EndOffset = endOffset;
+      Attributes = attributes;
+      BackgroundStyle = backgroundStyle;
+      Animation = animation;
+    }
+    //secondary constructor
+    //deconstruct trait
+    public void Deconstruct([NotNull] out string key, out int startOffset, out int endOffset, [NotNull] out RdTextAttributes attributes, [CanBeNull] out RdBackgroundStyle backgroundStyle, [CanBeNull] out RdTextAnimation animation)
+    {
+      key = Key;
+      startOffset = StartOffset;
+      endOffset = EndOffset;
+      attributes = Attributes;
+      backgroundStyle = BackgroundStyle;
+      animation = Animation;
+    }
+    //statics
+    
+    public static CtxReadDelegate<RdTextHighlighter> Read = (ctx, reader) => 
+    {
+      var key = reader.ReadString();
+      var startOffset = reader.ReadInt();
+      var endOffset = reader.ReadInt();
+      var attributes = RdTextAttributes.Read(ctx, reader);
+      var backgroundStyle = ReadRdBackgroundStyleNullable(ctx, reader);
+      var animation = ReadRdTextAnimationNullable(ctx, reader);
+      var _result = new RdTextHighlighter(key, startOffset, endOffset, attributes, backgroundStyle, animation);
+      return _result;
+    };
+    public static CtxReadDelegate<RdBackgroundStyle> ReadRdBackgroundStyleNullable = RdBackgroundStyle.Read.NullableClass();
+    public static CtxReadDelegate<RdTextAnimation> ReadRdTextAnimationNullable = RdTextAnimation.Read.NullableClass();
+    
+    public static CtxWriteDelegate<RdTextHighlighter> Write = (ctx, writer, value) => 
+    {
+      writer.Write(value.Key);
+      writer.Write(value.StartOffset);
+      writer.Write(value.EndOffset);
+      RdTextAttributes.Write(ctx, writer, value.Attributes);
+      WriteRdBackgroundStyleNullable(ctx, writer, value.BackgroundStyle);
+      WriteRdTextAnimationNullable(ctx, writer, value.Animation);
+    };
+    public static  CtxWriteDelegate<RdBackgroundStyle> WriteRdBackgroundStyleNullable = RdBackgroundStyle.Write.NullableClass();
+    public static  CtxWriteDelegate<RdTextAnimation> WriteRdTextAnimationNullable = RdTextAnimation.Write.NullableClass();
+    
+    //constants
+    
+    //custom body
+    //methods
+    //equals trait
+    public override bool Equals(object obj)
+    {
+      if (ReferenceEquals(null, obj)) return false;
+      if (ReferenceEquals(this, obj)) return true;
+      if (obj.GetType() != GetType()) return false;
+      return Equals((RdTextHighlighter) obj);
+    }
+    public bool Equals(RdTextHighlighter other)
+    {
+      if (ReferenceEquals(null, other)) return false;
+      if (ReferenceEquals(this, other)) return true;
+      return Key == other.Key && StartOffset == other.StartOffset && EndOffset == other.EndOffset && Equals(Attributes, other.Attributes) && Equals(BackgroundStyle, other.BackgroundStyle) && Equals(Animation, other.Animation);
+    }
+    //hash code trait
+    public override int GetHashCode()
+    {
+      unchecked {
+        var hash = 0;
+        hash = hash * 31 + Key.GetHashCode();
+        hash = hash * 31 + StartOffset.GetHashCode();
+        hash = hash * 31 + EndOffset.GetHashCode();
+        hash = hash * 31 + Attributes.GetHashCode();
+        hash = hash * 31 + (BackgroundStyle != null ? BackgroundStyle.GetHashCode() : 0);
+        hash = hash * 31 + (Animation != null ? Animation.GetHashCode() : 0);
+        return hash;
+      }
+    }
+    //pretty print
+    public void Print(PrettyPrinter printer)
+    {
+      printer.Println("RdTextHighlighter (");
+      using (printer.IndentCookie()) {
+        printer.Print("key = "); Key.PrintEx(printer); printer.Println();
+        printer.Print("startOffset = "); StartOffset.PrintEx(printer); printer.Println();
+        printer.Print("endOffset = "); EndOffset.PrintEx(printer); printer.Println();
+        printer.Print("attributes = "); Attributes.PrintEx(printer); printer.Println();
+        printer.Print("backgroundStyle = "); BackgroundStyle.PrintEx(printer); printer.Println();
+        printer.Print("animation = "); Animation.PrintEx(printer); printer.Println();
+      }
+      printer.Print(")");
+    }
+    //toString
+    public override string ToString()
+    {
+      var printer = new SingleLinePrettyPrinter();
+      Print(printer);
+      return printer.ToString();
+    }
+  }
+  
+  
+  /// <summary>
   /// <p>Generated from: RdComment.kt:46</p>
   /// </summary>
   public sealed class RdTextInvariant : RdInvariant
@@ -1142,42 +1770,32 @@ namespace JetBrains.Rider.Model
   {
     //fields
     //public fields
-    [NotNull] public IViewableProperty<string> Text => _Text;
+    [NotNull] public RdHighlightedText Text {get; private set;}
     
     //private fields
-    [NotNull] private readonly RdProperty<string> _Text;
-    
     //primary constructor
-    private RdTextSegment(
-      [NotNull] RdProperty<string> text
+    public RdTextSegment(
+      [NotNull] RdHighlightedText text
     )
     {
       if (text == null) throw new ArgumentNullException("text");
       
-      _Text = text;
-      _Text.OptimizeNested = true;
-      BindableChildren.Add(new KeyValuePair<string, object>("text", _Text));
+      Text = text;
     }
     //secondary constructor
-    public RdTextSegment (
-    ) : this (
-      new RdProperty<string>(JetBrains.Rd.Impl.Serializers.ReadString, JetBrains.Rd.Impl.Serializers.WriteString)
-    ) {}
     //deconstruct trait
     //statics
     
     public static new CtxReadDelegate<RdTextSegment> Read = (ctx, reader) => 
     {
-      var _id = RdId.Read(reader);
-      var text = RdProperty<string>.Read(ctx, reader, JetBrains.Rd.Impl.Serializers.ReadString, JetBrains.Rd.Impl.Serializers.WriteString);
-      var _result = new RdTextSegment(text).WithId(_id);
+      var text = RdHighlightedText.Read(ctx, reader);
+      var _result = new RdTextSegment(text);
       return _result;
     };
     
     public static new CtxWriteDelegate<RdTextSegment> Write = (ctx, writer, value) => 
     {
-      value.RdId.Write(writer);
-      RdProperty<string>.Write(ctx, writer, value._Text);
+      RdHighlightedText.Write(ctx, writer, value.Text);
     };
     
     //constants
@@ -1185,14 +1803,101 @@ namespace JetBrains.Rider.Model
     //custom body
     //methods
     //equals trait
+    public override bool Equals(object obj)
+    {
+      if (ReferenceEquals(null, obj)) return false;
+      if (ReferenceEquals(this, obj)) return true;
+      if (obj.GetType() != GetType()) return false;
+      return Equals((RdTextSegment) obj);
+    }
+    public bool Equals(RdTextSegment other)
+    {
+      if (ReferenceEquals(null, other)) return false;
+      if (ReferenceEquals(this, other)) return true;
+      return Equals(Text, other.Text);
+    }
     //hash code trait
+    public override int GetHashCode()
+    {
+      unchecked {
+        var hash = 0;
+        hash = hash * 31 + Text.GetHashCode();
+        return hash;
+      }
+    }
     //pretty print
-    public override void Print(PrettyPrinter printer)
+    public void Print(PrettyPrinter printer)
     {
       printer.Println("RdTextSegment (");
       using (printer.IndentCookie()) {
-        printer.Print("text = "); _Text.PrintEx(printer); printer.Println();
+        printer.Print("text = "); Text.PrintEx(printer); printer.Println();
       }
+      printer.Print(")");
+    }
+    //toString
+    public override string ToString()
+    {
+      var printer = new SingleLinePrettyPrinter();
+      Print(printer);
+      return printer.ToString();
+    }
+  }
+  
+  
+  /// <summary>
+  /// <p>Generated from: RdComment.kt:97</p>
+  /// </summary>
+  public sealed class RdUnderlineTextAnimation : RdTextAnimation
+  {
+    //fields
+    //public fields
+    
+    //private fields
+    //primary constructor
+    //secondary constructor
+    //deconstruct trait
+    //statics
+    
+    public static new CtxReadDelegate<RdUnderlineTextAnimation> Read = (ctx, reader) => 
+    {
+      var _result = new RdUnderlineTextAnimation();
+      return _result;
+    };
+    
+    public static new CtxWriteDelegate<RdUnderlineTextAnimation> Write = (ctx, writer, value) => 
+    {
+    };
+    
+    //constants
+    
+    //custom body
+    //methods
+    //equals trait
+    public override bool Equals(object obj)
+    {
+      if (ReferenceEquals(null, obj)) return false;
+      if (ReferenceEquals(this, obj)) return true;
+      if (obj.GetType() != GetType()) return false;
+      return Equals((RdUnderlineTextAnimation) obj);
+    }
+    public bool Equals(RdUnderlineTextAnimation other)
+    {
+      if (ReferenceEquals(null, other)) return false;
+      if (ReferenceEquals(this, other)) return true;
+      return true;
+    }
+    //hash code trait
+    public override int GetHashCode()
+    {
+      unchecked {
+        var hash = 0;
+        return hash;
+      }
+    }
+    //pretty print
+    public void Print(PrettyPrinter printer)
+    {
+      printer.Println("RdUnderlineTextAnimation (");
       printer.Print(")");
     }
     //toString

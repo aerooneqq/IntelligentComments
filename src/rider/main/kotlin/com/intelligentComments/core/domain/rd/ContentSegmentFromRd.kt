@@ -1,22 +1,28 @@
 package com.intelligentComments.core.domain.rd
 
-import com.intelligentComments.core.domain.core.ContentSegment
-import com.intelligentComments.core.domain.core.TextContentSegment
-import com.intelligentComments.core.domain.core.UniqueEntityImpl
+import com.intelligentComments.core.domain.core.*
+import com.intellij.openapi.project.Project
 import com.jetbrains.rd.ide.model.RdContentSegment
+import com.jetbrains.rd.ide.model.RdTextHighlighter
 import com.jetbrains.rd.ide.model.RdTextSegment
 
 open class ContentSegmentFromRd(private val contentSegment: RdContentSegment) : UniqueEntityImpl(), ContentSegment {
     companion object {
-        fun getFrom(contentSegment: RdContentSegment): ContentSegmentFromRd {
+        fun getFrom(contentSegment: RdContentSegment, project: Project): ContentSegmentFromRd {
             return when(contentSegment) {
-                is RdTextSegment -> TextContentSegmentFromRd(contentSegment)
+                is RdTextSegment -> TextContentSegmentFromRd(contentSegment, project)
                 else -> throw IllegalArgumentException(contentSegment.toString())
             }
         }
     }
 }
 
-class TextContentSegmentFromRd(private val segment: RdTextSegment) : ContentSegmentFromRd(segment), TextContentSegment {
-    override val text: String? = segment.text.valueOrNull
+class TextContentSegmentFromRd(segment: RdTextSegment,
+                               private val project: Project) : ContentSegmentFromRd(segment), TextContentSegment {
+    override val text: String = segment.text.text
+    override val highlighters: Collection<TextHighlighter>
+
+    init {
+        highlighters = segment.text.highlighters?.map { TextHighlighterFromRd(project, it) } ?: listOf()
+    }
 }

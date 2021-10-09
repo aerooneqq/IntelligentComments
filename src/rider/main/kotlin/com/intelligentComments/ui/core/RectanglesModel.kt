@@ -5,6 +5,7 @@ import com.intelligentComments.ui.comments.model.IntelligentCommentUiModel
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intellij.openapi.editor.impl.EditorImpl
 import com.jetbrains.rd.platform.util.application
+import com.jetbrains.rd.util.getOrCreate
 import java.awt.Point
 import java.awt.Rectangle
 
@@ -17,6 +18,7 @@ class RectanglesModelHolder(private val uiModel: IntelligentCommentUiModel) {
 
 
     fun revalidate(editor: EditorImpl, xDelta: Int, yDelta: Int): RectanglesModel {
+        application.assertIsDispatchThread()
         val newModel = CommentsUtil.buildRectanglesModel(editor, uiModel, xDelta, yDelta)
         model = newModel
         return newModel
@@ -25,7 +27,7 @@ class RectanglesModelHolder(private val uiModel: IntelligentCommentUiModel) {
 
 class RectanglesModel {
     private val rectanglesToElements = HashMap<Rectangle, UiInteractionModelBase>()
-    private val elementsToRectangles = HashMap<UiInteractionModelBase, Rectangle>()
+    private val elementsToRectangles = HashMap<UiInteractionModelBase, MutableList<Rectangle>>()
     private var sealed = false
 
     private var myWidth: Int = -1
@@ -44,7 +46,8 @@ class RectanglesModel {
         checkCanChange()
 
         rectanglesToElements[rect] = model
-        elementsToRectangles[model] = rect
+        val rectangles = elementsToRectangles.getOrCreate(model) { mutableListOf() }
+        rectangles.add(rect)
     }
 
     fun setSize(width: Int, height: Int) {
@@ -69,14 +72,16 @@ class RectanglesModel {
         application.assertIsDispatchThread()
         var anyUiChange = false
         for ((rect, model) in rectanglesToElements) {
-            if (rect.contains(point) && !model.mouseIn) {
-                if (model.handleMouseIn()) {
+            if (!rect.contains(point) && model.mouseIn) {
+                if (model.handleMouseOut()) {
                     anyUiChange = true
                 }
             }
+        }
 
-            if (!rect.contains(point) && model.mouseIn) {
-                if (model.handleMouseOut()) {
+        for ((rect, model) in rectanglesToElements) {
+            if (rect.contains(point) && !model.mouseIn) {
+                if (model.handleMouseIn()) {
                     anyUiChange = true
                 }
             }

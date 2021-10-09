@@ -54,7 +54,7 @@ class CommentAuthorsRendererImpl(private val authors: Collection<AuthorUiModel>)
     }
 
     override fun calculateExpectedHeightInPixels(editorImpl: EditorImpl): Int {
-        return CommentsUtil.getTextHeight(editorImpl)
+        return CommentsUtil.getTextHeight(editorImpl, null)
     }
 
     override fun calculateExpectedWidthInPixels(editorImpl: EditorImpl): Int {

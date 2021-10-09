@@ -58,7 +58,7 @@ class DependencyReferenceRenderer(private val reference: DependencyReferenceUiMo
     }
 
     private fun calculateHeaderWidth(editorImpl: EditorImpl): Int {
-        val textWidth = CommentsUtil.getTextWidth(CommentsUtil.getFontMetrics(editorImpl), reference.referenceName)
+        val textWidth = CommentsUtil.getTextWidth(editorImpl, reference.referenceName)
         return textWidth + 2 * margin
     }
 
@@ -71,7 +71,7 @@ class DependencyReferenceRenderer(private val reference: DependencyReferenceUiMo
         return Rectangle(rect.x, rect.y + height, rect.width, rect.height - height)
     }
 
-    private fun calculateHeightShiftForReferenceName(editorImpl: EditorImpl) = CommentsUtil.getTextHeight(editorImpl) / 4
+    private fun calculateHeightShiftForReferenceName(editorImpl: EditorImpl) = CommentsUtil.getTextHeight(editorImpl, null) / 4
 
     private fun drawReferenceComments(g: Graphics, rect: Rectangle, editorImpl: EditorImpl): Rectangle {
         val shift = calculateHeightShiftForReferenceName(editorImpl)
@@ -92,12 +92,14 @@ class DependencyReferenceRenderer(private val reference: DependencyReferenceUiMo
         }
     }
 
-    private fun calculateDescriptionHeight(editorImpl: EditorImpl) =
-        if (reference.dependencyDescription.isEmpty()) {
-            CommentsUtil.getTextHeight(editorImpl)
+    private fun calculateDescriptionHeight(editorImpl: EditorImpl): Int {
+        val textHeight = CommentsUtil.getTextHeight(editorImpl, null)
+        return if (reference.dependencyDescription.isEmpty()) {
+            textHeight
         } else {
-            getLines().size * CommentsUtil.getTextHeight(editorImpl)
+            getLines().size * textHeight
         }
+    }
 
     override fun calculateExpectedHeightInPixels(editorImpl: EditorImpl): Int {
         val referenceNameHeight = calculateReferenceNameHeight(editorImpl)
@@ -114,11 +116,11 @@ class DependencyReferenceRenderer(private val reference: DependencyReferenceUiMo
     private fun getLines() = reference.dependencyDescription.split('\n')
 
     private fun calculateReferenceNameHeight(editorImpl: EditorImpl): Int {
-        return CommentsUtil.getTextHeight(editorImpl)
+        return CommentsUtil.getTextHeight(editorImpl, null)
     }
 
     override fun calculateExpectedWidthInPixels(editorImpl: EditorImpl): Int {
-        val metrics = CommentsUtil.getFontMetrics(editorImpl)
+        val metrics = CommentsUtil.getFontMetrics(editorImpl, null)
         var maxWidth = CommentsUtil.getTextWidth(metrics, reference.referenceName)
         maxWidth = max(maxWidth, calculateMaxWidthInDescription(editorImpl))
 

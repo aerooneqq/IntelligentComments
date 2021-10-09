@@ -8,9 +8,10 @@ import com.intellij.openapi.project.Project
 import com.jetbrains.rd.ide.model.RdIntelligentComment
 import java.util.*
 
-class IntelligentCommentFromRd(private val rdComment: RdIntelligentComment) : UniqueEntityImpl(), IntelligentComment {
+class IntelligentCommentFromRd(private val rdComment: RdIntelligentComment,
+                               private val project: Project) : UniqueEntityImpl(), IntelligentComment {
     override val allAuthors: Collection<CommentAuthor> = createAuthors()
-    override val content: IntelligentCommentContent = createContent()
+    override val content: IntelligentCommentContent = createContent(project)
     override val references: Collection<Reference> = createReferences()
     override val invariants: Collection<Invariant> = createInvariants()
 
@@ -19,13 +20,13 @@ class IntelligentCommentFromRd(private val rdComment: RdIntelligentComment) : Un
         return rdComment.authors.map { AuthorFromRd(it) }
     }
 
-    private fun createContent(): IntelligentCommentContent {
+    private fun createContent(project: Project): IntelligentCommentContent {
         return object : IntelligentCommentContent {
             private val myCachedSegments: Collection<ContentSegment>
 
             init {
                 val segments = rdComment.content.valueOrNull?.segments
-                myCachedSegments = segments?.map { ContentSegmentFromRd.getFrom(it) } ?: emptyList()
+                myCachedSegments = segments?.map { ContentSegmentFromRd.getFrom(it, project) } ?: emptyList()
             }
 
             override val segments: Collection<ContentSegment> = myCachedSegments

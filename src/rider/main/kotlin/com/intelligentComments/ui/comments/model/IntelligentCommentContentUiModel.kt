@@ -31,4 +31,5 @@ open class ContentSegmentUiModel(project: Project,
 class TextContentSegmentUiModel(project: Project,
                                 textSegment: TextContentSegment) : ContentSegmentUiModel(project, textSegment) {
     val text = textSegment.text
+    val highlighters = textSegment.highlighters.map { HighlighterUiModel.getFrom(project, it) }
 }

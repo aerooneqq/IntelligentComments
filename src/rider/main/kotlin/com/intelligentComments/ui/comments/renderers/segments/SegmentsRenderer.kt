@@ -68,6 +68,7 @@ class SegmentsRendererImpl(private val segmentsSection: SectionWithHeaderUiModel
 
         for (segment in segmentsSection.content) {
             val renderer = SegmentRenderer.getRendererFor(segment)
+            renderer.accept(context)
             CommentsUtil.updateHeightAndAddModel(renderer, context, segment)
             CommentsUtil.addHeightDeltaTo(context, deltaBetweenSegments)
         }

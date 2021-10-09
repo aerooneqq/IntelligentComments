@@ -7,8 +7,7 @@ import com.intelligentComments.ui.colors.ColorName
 import com.intelligentComments.ui.colors.Colors
 import com.intellij.openapi.project.Project
 
-open class ReferenceUiModel(project: Project,
-                            reference: Reference) : UiInteractionModelBase(project), ExpandableUiModel {
+open class ReferenceUiModel(project: Project) : UiInteractionModelBase(project), ExpandableUiModel {
     companion object {
         fun getFrom(project: Project, reference: Reference): ReferenceUiModel {
             return when(reference) {
@@ -34,8 +33,13 @@ class ReferenceHeaderUiModel(project: Project,
     }
 }
 
+open class FileBasedReferenceUiModel(project: Project,
+                                     reference: FileBasedReference): ReferenceUiModel(project) {
+    val filePath = reference.filePath
+}
+
 class DependencyReferenceUiModel(project: Project,
-                                 dependencyReference: DependencyReference) : ReferenceUiModel(project, dependencyReference) {
+                                 dependencyReference: DependencyReference) : FileBasedReferenceUiModel(project, dependencyReference) {
     val referenceName = dependencyReference.referenceName
     val dependencyDescription = dependencyReference.dependencyDescription
 
@@ -43,8 +47,3 @@ class DependencyReferenceUiModel(project: Project,
 }
 
 class ReferenceDescriptionUiModel(project: Project) : UiInteractionModelBase(project)
-
-open class FileBasedReferenceUiModel(project: Project,
-                                     reference: FileBasedReference): ReferenceUiModel(project, reference) {
-    val filePath = reference.filePath
-}
