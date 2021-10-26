@@ -57,8 +57,7 @@ class ReferencesRendererImpl(private val section: SectionWithHeaderUiModel<Refer
     }
 
     override fun calculateContentWidth(editorImpl: EditorImpl): Int {
-        val metrics = CommentsUtil.getFontMetrics(editorImpl, null)
-        var width = CommentsUtil.getTextWidth(metrics, section.headerUiModel.headerText)
+        var width = CommentsUtil.getTextWidthWithHighlighters(editorImpl, section.headerUiModel.headerText)
 
         for (reference in section.content) {
             val renderer = ReferenceRenderer.getRendererFor(reference)

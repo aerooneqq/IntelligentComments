@@ -1,6 +1,13 @@
 package com.intelligentComments.ui.comments.model
 
+import com.intelligentComments.core.domain.core.*
+import com.intelligentComments.ui.colors.Colors
+import com.intellij.openapi.editor.event.EditorMouseEvent
 import com.intellij.openapi.project.Project
+import java.awt.Color
+import java.awt.Font
+import java.awt.font.TextAttribute
+import java.util.*
 import javax.swing.Icon
 
 open class SectionUiModel<T : UiInteractionModelBase>(project: Project,
@@ -16,14 +23,39 @@ class SectionWithHeaderUiModel<T : UiInteractionModelBase>(project: Project,
 }
 
 data class HeaderTextInfo(val expandedName: String, val closedName: String)
+
 class SectionHeaderUiModel(project: Project,
                            val icon: Icon,
-                           private val headerTextInfo: HeaderTextInfo,
+                           headerTextInfo: HeaderTextInfo,
                            private val parent: ExpandableUiModel) : UiInteractionModelBase(project) {
-    val headerText: String
-        get() = if (parent.isExpanded) headerTextInfo.expandedName else headerTextInfo.closedName
+    private val expandedName = headerTextInfo.expandedName
+    private val collapsedName = headerTextInfo.closedName
 
-    override fun handleClick(): Boolean {
+    private val highlightedTextExpanded = HighlightedTextImpl(expandedName, listOf(getHeaderHighlighter(expandedName)))
+    private val highlightedTextCollapsed = HighlightedTextImpl(collapsedName, listOf(getHeaderHighlighter(collapsedName)))
+
+    private val expandedHeaderText = HighlightedTextUiWrapper(project, highlightedTextExpanded)
+    private val collapsedHeaderText = HighlightedTextUiWrapper(project, highlightedTextCollapsed)
+
+    val headerText: HighlightedTextUiWrapper
+        get() = if (parent.isExpanded) expandedHeaderText else collapsedHeaderText
+
+    private fun getHeaderHighlighter(text: String): TextHighlighter {
+        val defaultColor = colorsProvider.getColorFor(Colors.TextDefaultColor)
+        val hoveredColor = colorsProvider.getColorFor(Colors.TextDefaultHoveredColor)
+
+        return object : TextHighlighter {
+            override val startOffset: Int = 0
+            override val endOffset: Int = text.length
+            override val attributes: TextAttributes = TextAttributesImpl(false, TextAttribute.WEIGHT_REGULAR, Font.PLAIN)
+            override val textColor: Color = defaultColor
+            override val backgroundStyle: BackgroundStyle? = null
+            override val mouseInOutAnimation: MouseInOutAnimation = ForegroundTextAnimation(hoveredColor, defaultColor)
+            override val id: UUID = UUID.randomUUID()
+        }
+    }
+
+    override fun handleClick(e: EditorMouseEvent): Boolean {
         parent.isExpanded = !parent.isExpanded
         return true
     }

@@ -36,7 +36,7 @@ class TextHighlighterFromRd(val project: Project,
         null
     }
 
-    override val mouseInOutAnimation: MouseInOutAnimation? = highlighter.animation?.toTextAnimation()
+    override val mouseInOutAnimation: MouseInOutAnimation? = highlighter.animation?.toTextAnimation(this, project)
 }
 
 class BackgroundStyleFromRd(rdBackgroundStyle: RdBackgroundStyle) : BackgroundStyle {
@@ -44,9 +44,12 @@ class BackgroundStyleFromRd(rdBackgroundStyle: RdBackgroundStyle) : BackgroundSt
     override val roundedRect: Boolean = rdBackgroundStyle.roundedRect
 }
 
-fun RdTextAnimation.toTextAnimation(): MouseInOutAnimation {
+fun RdTextAnimation.toTextAnimation(highlighter: TextHighlighter, project: Project): MouseInOutAnimation {
+    val colorsProvider = project.service<ColorsProvider>()
     return when(this) {
         is RdUnderlineTextAnimation -> UnderlineTextAnimation()
+        is RdForegroundColorAnimation -> ForegroundTextAnimation(Color.decode(this.hoveredColor.hex), highlighter.textColor)
+        is RdPredefinedForegroundColorAnimation -> ForegroundTextAnimation(colorsProvider.getColorFor(ColorName(this.key)), highlighter.textColor)
         else -> throw IllegalArgumentException()
     }
 }

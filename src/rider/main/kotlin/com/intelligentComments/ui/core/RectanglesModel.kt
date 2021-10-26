@@ -3,6 +3,7 @@ package com.intelligentComments.ui.core
 import com.intelligentComments.ui.CommentsUtil
 import com.intelligentComments.ui.comments.model.IntelligentCommentUiModel
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
+import com.intellij.openapi.editor.event.EditorMouseEvent
 import com.intellij.openapi.editor.impl.EditorImpl
 import com.jetbrains.rd.platform.util.application
 import com.jetbrains.rd.util.getOrCreate
@@ -26,7 +27,7 @@ class RectanglesModelHolder(private val uiModel: IntelligentCommentUiModel) {
 }
 
 class RectanglesModel {
-    private val rectanglesToElements = HashMap<Rectangle, UiInteractionModelBase>()
+    private val rectanglesToElements = HashMap<Rectangle, MutableList<UiInteractionModelBase>>()
     private val elementsToRectangles = HashMap<UiInteractionModelBase, MutableList<Rectangle>>()
     private var sealed = false
 
@@ -45,7 +46,9 @@ class RectanglesModel {
         application.assertIsDispatchThread()
         checkCanChange()
 
-        rectanglesToElements[rect] = model
+        val models = rectanglesToElements.getOrCreate(rect) { mutableListOf() }
+        models.add(model)
+
         val rectangles = elementsToRectangles.getOrCreate(model) { mutableListOf() }
         rectangles.add(rect)
     }
@@ -68,20 +71,22 @@ class RectanglesModel {
         sealed = true
     }
 
-    fun dispatchMouseMove(point: Point): Boolean {
+    fun dispatchMouseMove(e: EditorMouseEvent): Boolean {
         application.assertIsDispatchThread()
+        val point = e.mouseEvent.point
         var anyUiChange = false
-        for ((rect, model) in rectanglesToElements) {
+
+        executeWithRectangleAndModels { rect, model ->
             if (!rect.contains(point) && model.mouseIn) {
-                if (model.handleMouseOut()) {
+                if (model.handleMouseOut(e)) {
                     anyUiChange = true
                 }
             }
         }
 
-        for ((rect, model) in rectanglesToElements) {
+        executeWithRectangleAndModels { rect, model ->
             if (rect.contains(point) && !model.mouseIn) {
-                if (model.handleMouseIn()) {
+                if (model.handleMouseIn(e)) {
                     anyUiChange = true
                 }
             }
@@ -90,12 +95,21 @@ class RectanglesModel {
         return anyUiChange
     }
 
-    fun dispatchMouseClick(point: Point): Boolean {
+    private fun executeWithRectangleAndModels(action: (Rectangle, UiInteractionModelBase) -> Unit) {
+        for ((rect, models) in rectanglesToElements) {
+            for (model in models) {
+                action(rect, model)
+            }
+        }
+    }
+
+    fun dispatchMouseClick(event: EditorMouseEvent): Boolean {
         application.assertIsDispatchThread()
         var anyUiChange = false
-        for ((rect, model) in rectanglesToElements) {
-            if (rect.contains(point)) {
-                if (model.handleClick()) {
+
+        executeWithRectangleAndModels { rect, model ->
+            if (rect.contains(event.mouseEvent.point)) {
+                if (model.handleClick(event)) {
                     anyUiChange = true
                 }
             }

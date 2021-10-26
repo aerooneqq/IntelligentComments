@@ -29,28 +29,53 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
     }
 
     val RdIntelligentCommentContent = classdef {
-        list("Segments", RdContentSegment)
+        field("Content", RdContentSegments)
     }
 
-    val RdContentSegment = basestruct {
+    val RdContentSegment = basestruct { }
+
+    val RdContentSegments = structdef {
+        field("Content", immutableList(RdContentSegment))
     }
 
     val RdTextSegment = structdef extends RdContentSegment {
         field("Text", RdHighlightedText)
     }
 
-    val RdInvariant = basestruct {
-
+    val RdImageSegment = basestruct extends RdContentSegment {
+        field("Description", RdHighlightedText)
     }
+
+    val RdFileBasedImageSegment = structdef extends RdImageSegment {
+        field("Path", PredefinedType.string)
+    }
+
+    val RdListSegment = structdef extends RdContentSegment {
+        field("ListContent", immutableList(RdContentSegments))
+        field("Header", RdHighlightedText)
+    }
+
+    val RdTableSegment = structdef extends RdContentSegment {
+        field("header", RdHighlightedText)
+        field("rows", immutableList(RdTableRow))
+    }
+
+    val RdTableRow = structdef {
+        field("cells", immutableList(RdTableCell))
+    }
+
+    val RdTableCell = structdef {
+        field("Content", RdContentSegments)
+    }
+
+    val RdInvariant = basestruct { }
 
     val RdTextInvariant = structdef extends RdInvariant {
         field("Text", PredefinedType.string)
         call("Evaluate", PredefinedType.int, PredefinedType.bool)
     }
 
-    val RdReference = basestruct {
-
-    }
+    val RdReference = basestruct { }
 
     val RdFileBasedReference = basestruct extends RdReference {
         field("FilePath", PredefinedType.string)
@@ -92,6 +117,13 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
 
     val RdTextAnimation = basestruct { }
     val RdUnderlineTextAnimation = structdef extends RdTextAnimation { }
+    val RdForegroundColorAnimation = structdef extends RdTextAnimation {
+        field("HoveredColor", RdColor)
+    }
+
+    val RdPredefinedForegroundColorAnimation = structdef extends RdTextAnimation {
+        field("Key", PredefinedType.string)
+    }
 
     val RdFontStyle = enum {
         + "Regular"

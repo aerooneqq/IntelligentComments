@@ -25,7 +25,7 @@ class IntelligentCommentFromRd(private val rdComment: RdIntelligentComment,
             private val myCachedSegments: Collection<ContentSegment>
 
             init {
-                val segments = rdComment.content.valueOrNull?.segments
+                val segments = rdComment.content.valueOrNull?.content?.content
                 myCachedSegments = segments?.map { ContentSegmentFromRd.getFrom(it, project) } ?: emptyList()
             }
 

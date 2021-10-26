@@ -12,7 +12,7 @@ class CommentMouseListener(private val inlay: Inlay<*>) : EditorMouseListener {
     override fun mouseClicked(event: EditorMouseEvent) {
         val rectanglesModel = renderer.rectanglesModel ?: return
 
-        if (rectanglesModel.dispatchMouseClick(event.mouseEvent.point)) {
+        if (rectanglesModel.dispatchMouseClick(event)) {
             inlay.update()
             inlay.repaint()
             event.editor.component.revalidate()

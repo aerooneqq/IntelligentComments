@@ -5,6 +5,7 @@ import com.intelligentComments.core.domain.core.FileBasedReference
 import com.intelligentComments.core.domain.core.Reference
 import com.intelligentComments.ui.colors.ColorName
 import com.intelligentComments.ui.colors.Colors
+import com.intellij.openapi.editor.event.EditorMouseEvent
 import com.intellij.openapi.project.Project
 
 open class ReferenceUiModel(project: Project) : UiInteractionModelBase(project), ExpandableUiModel {
@@ -27,9 +28,9 @@ class ReferenceHeaderUiModel(project: Project,
     override val backgroundColorKey: ColorName = Colors.ReferenceHeaderBackgroundColor
     override val hoveredBackgroundColorKey: ColorName = Colors.ReferenceHeaderHoveredBackgroundColor
 
-    override fun handleClick(): Boolean {
+    override fun handleClick(e: EditorMouseEvent): Boolean {
         parent.isExpanded = !parent.isExpanded
-        return super.handleClick()
+        return super.handleClick(e)
     }
 }
 

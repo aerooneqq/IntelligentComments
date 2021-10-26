@@ -1,5 +1,7 @@
 package com.intelligentComments.ui
 
+import com.intelligentComments.core.domain.core.HighlightedText
+import com.intelligentComments.ui.comments.model.HighlightedTextUiWrapper
 import com.intelligentComments.ui.comments.model.HighlighterUiModel
 import com.intelligentComments.ui.comments.model.IntelligentCommentUiModel
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
@@ -44,6 +46,8 @@ class UpdatedRectCookie(private val rect: Rectangle,
                         private val yDelta: Int = 0,
                         private val widthDelta: Int = 0,
                         private val heightDelta: Int = 0) : Disposable {
+    private val initialRect = Rectangle(rect)
+
     init {
         rect.apply {
             x += xDelta
@@ -55,10 +59,10 @@ class UpdatedRectCookie(private val rect: Rectangle,
 
     override fun dispose() {
         rect.apply {
-            x -= xDelta
-            y -= yDelta
-            width -= widthDelta
-            height -= heightDelta
+            x = initialRect.x
+            y = initialRect.y
+            width = initialRect.width
+            height = initialRect.height
         }
     }
 }
@@ -106,7 +110,25 @@ class CommentsUtil {
             return getFontMetrics(editorImpl, highlighter).stringWidth(text)
         }
 
+        fun getTextWidthWithHighlighters(editorImpl: EditorImpl,
+                                         text: HighlightedTextUiWrapper): Int {
+            val line = text.text
+            val highlighters = text.highlighters
+            val charArray = line.toCharArray()
+
+            val lineHighlighters = getLinesHighlighters(listOf(line), highlighters)[0]
+            assertNotNull(lineHighlighters, "lineHighlighters != null")
+
+            var width = 0
+            executeActionOverRanges(charArray, lineHighlighters) { range, model ->
+                width += getTextWidth(editorImpl, charArray, range.from, range.to - 1, model)
+            }
+
+            return width
+        }
+
         private fun getTextHeight(fontMetrics: FontMetrics) = fontMetrics.ascent + textHeightAdditionFactor
+
         fun getTextHeight(editorImpl: EditorImpl, highlighter: HighlighterUiModel?): Int {
             return getTextHeight(getFontMetrics(editorImpl, highlighter))
         }
@@ -126,7 +148,7 @@ class CommentsUtil {
         fun renderTextWithIcon(g: Graphics,
                                rect: Rectangle,
                                editorImpl: EditorImpl,
-                               text: String,
+                               text: HighlightedTextUiWrapper,
                                icon: Icon,
                                gapBetweenTextAndIcon: Int,
                                delta: Int): Rectangle {
@@ -138,7 +160,7 @@ class CommentsUtil {
                 x += icon.iconWidth + gapBetweenTextAndIcon
             }
 
-            renderText(g, adjustedRect, editorImpl, text, delta)
+            renderLine(g, adjustedRect, editorImpl, text.text, text.highlighters, delta)
             val finalDelta = rectHeight + delta
             return Rectangle(rect).apply {
                 y += finalDelta
@@ -148,15 +170,17 @@ class CommentsUtil {
 
         fun calculateTextHeightWithIcon(editorImpl: EditorImpl,
                                         icon: Icon,
-                                        text: String): Int {
-            return max(icon.iconHeight, getTextHeight(editorImpl, null))
+                                        text: HighlightedTextUiWrapper): Int {
+            val textHeight = getLineHeightWithHighlighters(editorImpl, text.highlighters)
+            return max(icon.iconHeight, textHeight)
         }
 
         fun calculateWidthOfTextWithIcon(editorImpl: EditorImpl,
                                          icon: Icon,
                                          gapBetweenTextAndIcon: Int,
-                                         text: String): Int {
-            return icon.iconWidth + gapBetweenTextAndIcon + getTextWidth(getFontMetrics(editorImpl, null), text)
+                                         text: HighlightedTextUiWrapper): Int {
+            val textWidth = getTextWidthWithHighlighters(editorImpl, text)
+            return icon.iconWidth + gapBetweenTextAndIcon + textWidth
         }
 
         fun renderLines(g: Graphics,
@@ -201,6 +225,23 @@ class CommentsUtil {
             }
 
             val finalDelta = textDelta + delta
+            return Rectangle(rect.x, rect.y + finalDelta, rect.width, rect.height - finalDelta)
+        }
+
+        fun renderLine(g: Graphics,
+                       rect: Rectangle,
+                       editorImpl: EditorImpl,
+                       line: String,
+                       highlighters: Collection<HighlighterUiModel>,
+                       delta: Int): Rectangle {
+            val rangesWithHighlighters = getLinesHighlighters(listOf(line), highlighters)[0]
+            assertNotNull(rangesWithHighlighters, "rangesWithHighlighters != null")
+            val lineHeight = getLineHeightWithHighlighters(editorImpl, rangesWithHighlighters)
+            UpdatedRectCookie(rect, yDelta = lineHeight, heightDelta = lineHeight).use {
+                renderLineWithHighlighters(g, rect, editorImpl, line, rangesWithHighlighters)
+            }
+
+            val finalDelta = lineHeight + delta
             return Rectangle(rect.x, rect.y + finalDelta, rect.width, rect.height - finalDelta)
         }
 
@@ -344,6 +385,14 @@ class CommentsUtil {
             }
         }
 
+        fun createRectanglesForHighlighters(line: String,
+                                            highlighters: Collection<HighlighterUiModel>,
+                                            context: RectangleModelBuildContext) {
+            val lines = mutableListOf(line)
+            val linesHighlighters = getLinesHighlighters(lines, highlighters)
+            createRectanglesForHighlighters(lines, linesHighlighters, context)
+        }
+
         fun createRectanglesForHighlighters(lines: List<String>,
                                             linesHighlighters: HashMap<Int, List<RangeWithHighlighter>>,
                                             context: RectangleModelBuildContext) {
@@ -411,6 +460,8 @@ class CommentsUtil {
 
             InvariantsRenderer.getRendererFor(intelligentComment.invariantsSection).accept(buildContext)
             updateRectYAndHeight(heightDeltaBetweenSections)
+
+            model.addElement(intelligentComment, Rectangle(xDelta, yDelta, widthAndHeight.width, widthAndHeight.height))
 
             return model.apply {
                 setSize(widthAndHeight.width, widthAndHeight.height)

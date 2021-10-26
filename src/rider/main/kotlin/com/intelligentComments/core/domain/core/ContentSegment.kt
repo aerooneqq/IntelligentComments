@@ -6,15 +6,35 @@ interface IntelligentCommentContent : UniqueEntity {
     val segments: Collection<ContentSegment>
 }
 
-interface ContentSegment : UniqueEntity {
+interface ContentSegment : UniqueEntity
+
+interface ContentSegments {
+    val segments: Collection<ContentSegment>
 }
 
 interface TextContentSegment : ContentSegment {
-    val text: String
-    val highlighters: Collection<TextHighlighter>
+    val highlightedText: HighlightedText
 }
 
 interface ImageContentSegment : ContentSegment {
     val image: Image
-    val description: String?
+    val description: HighlightedText?
+}
+
+interface ListContentSegment : ContentSegment {
+    val content: Collection<ContentSegments>
+    val header: HighlightedText
+}
+
+interface TableContentSegment : ContentSegment {
+    val header: HighlightedText
+    val rows: Collection<TableRow>
+}
+
+interface TableRow {
+    val cells: Collection<TableCell>
+}
+
+interface TableCell {
+    val contentSegments: ContentSegments
 }

@@ -12,12 +12,15 @@ data class ColorName(val name: String)
 object Colors {
     val EmptyColor = ColorName("")
 
+    val LeftLineBackgroundColor = ColorName("left.default.comment.line.background")
     val TextInvariantBackgroundColor = ColorName("text.invariant.background")
     val TextInvariantHoveredBackgroundColor = ColorName("text.invariant.background.hovered")
     val ReferenceHeaderBackgroundColor = ColorName("reference.header.background")
     val ReferenceHeaderHoveredBackgroundColor = ColorName("reference.header.background.hovered")
     val TextDefaultColor = ColorName("text.default.color")
     val TextDefaultHoveredColor = ColorName("text.default.color.hovered")
+    val ListItemBulletBackground = ColorName("list.item.bullet.background.color")
+    val TableBorderBackground = ColorName("table.border.background.color")
 }
 
 interface ColorsProvider {

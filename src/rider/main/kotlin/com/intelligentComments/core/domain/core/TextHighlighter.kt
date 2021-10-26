@@ -39,3 +39,11 @@ class UnderlineTextAnimation : MouseInOutAnimation {
     }
 }
 
+class ForegroundTextAnimation(private val hoveredColor: Color,
+                              private val originalColor: Color) : MouseInOutAnimation {
+    override fun applyTo(uiModel: HighlighterUiModel, mouseIn: Boolean): Boolean {
+        uiModel.textColor = if (mouseIn) hoveredColor else originalColor
+        return true
+    }
+}
+

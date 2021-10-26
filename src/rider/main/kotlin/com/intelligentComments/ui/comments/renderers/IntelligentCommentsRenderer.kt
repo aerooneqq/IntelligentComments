@@ -5,7 +5,6 @@ import com.intelligentComments.ui.UpdatedGraphicsCookie
 import com.intelligentComments.ui.colors.Colors
 import com.intelligentComments.ui.colors.ColorsProvider
 import com.intelligentComments.ui.comments.model.IntelligentCommentUiModel
-import com.intelligentComments.ui.comments.renderers.*
 import com.intelligentComments.ui.comments.renderers.invariants.InvariantsRenderer
 import com.intelligentComments.ui.comments.renderers.references.ReferencesRenderer
 import com.intelligentComments.ui.comments.renderers.segments.SegmentsRenderer
@@ -18,7 +17,6 @@ import com.intellij.openapi.editor.impl.EditorImpl
 import com.intellij.openapi.editor.markup.TextAttributes
 import com.intellij.openapi.util.use
 import com.jetbrains.rd.platform.util.application
-import java.awt.Color
 import java.awt.Dimension
 import java.awt.Graphics
 import java.awt.Rectangle
@@ -38,13 +36,17 @@ class IntelligentCommentsRenderer(private val intelligentComment: IntelligentCom
 
     override fun calcWidthInPixels(inlay: Inlay<*>): Int {
         application.assertIsDispatchThread()
-        return getOrCreateRectanglesModel(inlay.editor as EditorImpl).width
+        return calculateExpectedWith(inlay.editor as EditorImpl)
     }
+
+    private fun calculateExpectedWith(editorImpl: EditorImpl) = getOrCreateRectanglesModel(editorImpl).width
 
     override fun calcHeightInPixels(inlay: Inlay<*>): Int {
         application.assertIsDispatchThread()
-        return getOrCreateRectanglesModel(inlay.editor as EditorImpl).height
+        return calculateExpectedHeight(inlay.editor as EditorImpl)
     }
+
+    private fun calculateExpectedHeight(editorImpl: EditorImpl) = getOrCreateRectanglesModel(editorImpl).height
 
     private fun getOrCreateRectanglesModel(editorImpl: EditorImpl): RectanglesModel {
         val xDelta = deltaBetweenLeftLineAndContent + borderDeltas.width
@@ -62,7 +64,8 @@ class IntelligentCommentsRenderer(private val intelligentComment: IntelligentCom
             val editorImpl = inlay.editor as? EditorImpl ?: return
 
             var adjustedRect = adjustContentRect(rect)
-            UpdatedGraphicsCookie(g, Color.ORANGE).use {
+            val leftLineBackgroundColor = colorsProvider.getColorFor(Colors.LeftLineBackgroundColor)
+            UpdatedGraphicsCookie(g, color = leftLineBackgroundColor).use {
                 adjustedRect = drawLeftLine(g, adjustedRect)
             }
 
@@ -71,8 +74,8 @@ class IntelligentCommentsRenderer(private val intelligentComment: IntelligentCom
             adjustedRect = drawReferences(g, adjustedRect, editorImpl)
             adjustedRect = drawInvariants(g, adjustedRect, editorImpl)
 
-            for (rect in rectanglesModel!!.allRectangles) {
-                //g.drawRect(rect.x, rect.y, rect.width, rect.height)
+            for (rectangle in rectanglesModel!!.allRectangles) {
+                //g.drawRect(rectangle.x + rect.x, rectangle.y + rect.y, rectangle.width, rectangle.height)
             }
         }
     }

@@ -2,7 +2,10 @@ package com.intelligentComments.ui.comments.model
 
 import com.intelligentComments.core.domain.core.IntelligentComment
 import com.intellij.icons.AllIcons
+import com.intellij.openapi.editor.event.EditorMouseEvent
 import com.intellij.openapi.project.Project
+import com.intellij.util.ui.UIUtil
+import java.awt.Cursor
 
 class IntelligentCommentUiModel(project: Project,
                                 val comment: IntelligentComment) : UiInteractionModelBase(project) {
@@ -32,5 +35,20 @@ class IntelligentCommentUiModel(project: Project,
 
         val invariantHeaderText = HeaderTextInfo("Invariants: ", "Invariants (click to expand) ")
         invariantsSection = SectionWithHeaderUiModel(project, myInvariants, AllIcons.Nodes.Interface, invariantHeaderText)
+    }
+
+    override fun handleMouseIn(e: EditorMouseEvent): Boolean {
+        UIUtil.setCursor(e.editor.contentComponent, Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR))
+        return false
+    }
+
+    override fun handleMouseOut(e: EditorMouseEvent): Boolean {
+        UIUtil.setCursor(e.editor.contentComponent, Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR))
+        return false
+    }
+
+    override fun handleClick(e: EditorMouseEvent): Boolean {
+        UIUtil.setCursor(e.editor.contentComponent, Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR))
+        return false
     }
 }

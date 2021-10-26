@@ -15,7 +15,11 @@ interface Renderer {
 data class RectangleModelBuildContext(val rectanglesModel: RectanglesModel,
                                       val widthAndHeight: WidthAndHeight,
                                       val rect: Rectangle,
-                                      val editorImpl: EditorImpl)
+                                      val editorImpl: EditorImpl) {
+    fun withRectangle(newRectangle: Rectangle): RectangleModelBuildContext {
+        return RectangleModelBuildContext(rectanglesModel, widthAndHeight, newRectangle, editorImpl)
+    }
+}
 
 interface RectangleModelBuildContributor {
     fun accept(context: RectangleModelBuildContext)
