@@ -21,6 +21,7 @@ object Colors {
     val TextDefaultHoveredColor = ColorName("text.default.color.hovered")
     val ListItemBulletBackground = ColorName("list.item.bullet.background.color")
     val TableBorderBackground = ColorName("table.border.background.color")
+    val TableHeaderCellBackground = ColorName("table.header.cell.background.color")
 }
 
 interface ColorsProvider {

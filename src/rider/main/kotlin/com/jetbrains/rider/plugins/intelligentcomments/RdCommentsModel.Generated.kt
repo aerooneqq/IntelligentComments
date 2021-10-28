@@ -36,6 +36,9 @@ class RdCommentsModel private constructor(
             serializers.register(RdTableSegment)
             serializers.register(RdTableRow)
             serializers.register(RdTableCell)
+            serializers.register(RdTableCellProperties)
+            serializers.register(RdHorizontalAlignment.marshaller)
+            serializers.register(RdVerticalAlignment.marshaller)
             serializers.register(RdTextInvariant)
             serializers.register(RdDependencyReference)
             serializers.register(RdHighlightedText)
@@ -59,7 +62,7 @@ class RdCommentsModel private constructor(
         
         
         
-        const val serializationHash = 533686987678780575L
+        const val serializationHash = 8026242145994931999L
         
     }
     override val serializersOwner: ISerializersOwner get() = RdCommentsModel
@@ -107,7 +110,7 @@ val Solution.rdCommentsModel get() = getOrCreateExtension("rdCommentsModel", ::R
 
 
 /**
- * #### Generated from [RdComment.kt:109]
+ * #### Generated from [RdComment.kt:128]
  */
 data class RdBackgroundStyle (
     val backgroundColor: RdColor,
@@ -170,7 +173,7 @@ data class RdBackgroundStyle (
 
 
 /**
- * #### Generated from [RdComment.kt:114]
+ * #### Generated from [RdComment.kt:133]
  */
 data class RdColor (
     val hex: String
@@ -455,7 +458,7 @@ data class RdContentSegments (
 
 
 /**
- * #### Generated from [RdComment.kt:84]
+ * #### Generated from [RdComment.kt:103]
  */
 class RdDependencyReference (
     val referenceName: String,
@@ -654,7 +657,7 @@ class RdFileBasedImageSegment (
 
 
 /**
- * #### Generated from [RdComment.kt:80]
+ * #### Generated from [RdComment.kt:99]
  */
 abstract class RdFileBasedReference (
     val filePath: String
@@ -746,7 +749,7 @@ class RdFileBasedReference_Unknown (
 
 
 /**
- * #### Generated from [RdComment.kt:128]
+ * #### Generated from [RdComment.kt:147]
  */
 enum class RdFontStyle {
     Regular, 
@@ -760,7 +763,7 @@ enum class RdFontStyle {
 
 
 /**
- * #### Generated from [RdComment.kt:120]
+ * #### Generated from [RdComment.kt:139]
  */
 class RdForegroundColorAnimation (
     val hoveredColor: RdColor
@@ -820,7 +823,7 @@ class RdForegroundColorAnimation (
 
 
 /**
- * #### Generated from [RdComment.kt:89]
+ * #### Generated from [RdComment.kt:108]
  */
 data class RdHighlightedText (
     val text: String,
@@ -879,6 +882,21 @@ data class RdHighlightedText (
     }
     //deepClone
     //contexts
+}
+
+
+/**
+ * #### Generated from [RdComment.kt:78]
+ */
+enum class RdHorizontalAlignment {
+    Center, 
+    Left, 
+    Right;
+    
+    companion object {
+        val marshaller = FrameworkMarshallers.enum<RdHorizontalAlignment>()
+        
+    }
 }
 
 
@@ -1202,7 +1220,7 @@ class RdIntelligentCommentContent (
 
 
 /**
- * #### Generated from [RdComment.kt:71]
+ * #### Generated from [RdComment.kt:90]
  */
 abstract class RdInvariant (
 ) : IPrintable {
@@ -1349,7 +1367,7 @@ class RdListSegment (
 
 
 /**
- * #### Generated from [RdComment.kt:124]
+ * #### Generated from [RdComment.kt:143]
  */
 class RdPredefinedForegroundColorAnimation (
     val key: String
@@ -1409,7 +1427,7 @@ class RdPredefinedForegroundColorAnimation (
 
 
 /**
- * #### Generated from [RdComment.kt:78]
+ * #### Generated from [RdComment.kt:97]
  */
 abstract class RdReference (
 ) : IPrintable {
@@ -1493,7 +1511,8 @@ class RdReference_Unknown (
  * #### Generated from [RdComment.kt:67]
  */
 data class RdTableCell (
-    val content: RdContentSegments
+    val content: RdContentSegments,
+    val properties: RdTableCellProperties? = null
 ) : IPrintable {
     //companion
     
@@ -1503,11 +1522,13 @@ data class RdTableCell (
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdTableCell  {
             val content = RdContentSegments.read(ctx, buffer)
-            return RdTableCell(content)
+            val properties = buffer.readNullable { RdTableCellProperties.read(ctx, buffer) }
+            return RdTableCell(content, properties)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: RdTableCell)  {
             RdContentSegments.write(ctx, buffer, value.content)
+            buffer.writeNullable(value.properties) { RdTableCellProperties.write(ctx, buffer, it) }
         }
         
         
@@ -1524,6 +1545,7 @@ data class RdTableCell (
         other as RdTableCell
         
         if (content != other.content) return false
+        if (properties != other.properties) return false
         
         return true
     }
@@ -1531,6 +1553,7 @@ data class RdTableCell (
     override fun hashCode(): Int  {
         var __r = 0
         __r = __r*31 + content.hashCode()
+        __r = __r*31 + if (properties != null) properties.hashCode() else 0
         return __r
     }
     //pretty print
@@ -1538,6 +1561,76 @@ data class RdTableCell (
         printer.println("RdTableCell (")
         printer.indent {
             print("content = "); content.print(printer); println()
+            print("properties = "); properties.print(printer); println()
+        }
+        printer.print(")")
+    }
+    //deepClone
+    //contexts
+}
+
+
+/**
+ * #### Generated from [RdComment.kt:72]
+ */
+data class RdTableCellProperties (
+    val horizontalAlignment: RdHorizontalAlignment,
+    val verticalAlignment: RdVerticalAlignment,
+    val isHeader: Boolean
+) : IPrintable {
+    //companion
+    
+    companion object : IMarshaller<RdTableCellProperties> {
+        override val _type: KClass<RdTableCellProperties> = RdTableCellProperties::class
+        
+        @Suppress("UNCHECKED_CAST")
+        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdTableCellProperties  {
+            val horizontalAlignment = buffer.readEnum<RdHorizontalAlignment>()
+            val verticalAlignment = buffer.readEnum<RdVerticalAlignment>()
+            val isHeader = buffer.readBool()
+            return RdTableCellProperties(horizontalAlignment, verticalAlignment, isHeader)
+        }
+        
+        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: RdTableCellProperties)  {
+            buffer.writeEnum(value.horizontalAlignment)
+            buffer.writeEnum(value.verticalAlignment)
+            buffer.writeBool(value.isHeader)
+        }
+        
+        
+    }
+    //fields
+    //methods
+    //initializer
+    //secondary constructor
+    //equals trait
+    override fun equals(other: Any?): Boolean  {
+        if (this === other) return true
+        if (other == null || other::class != this::class) return false
+        
+        other as RdTableCellProperties
+        
+        if (horizontalAlignment != other.horizontalAlignment) return false
+        if (verticalAlignment != other.verticalAlignment) return false
+        if (isHeader != other.isHeader) return false
+        
+        return true
+    }
+    //hash code trait
+    override fun hashCode(): Int  {
+        var __r = 0
+        __r = __r*31 + horizontalAlignment.hashCode()
+        __r = __r*31 + verticalAlignment.hashCode()
+        __r = __r*31 + isHeader.hashCode()
+        return __r
+    }
+    //pretty print
+    override fun print(printer: PrettyPrinter)  {
+        printer.println("RdTableCellProperties (")
+        printer.indent {
+            print("horizontalAlignment = "); horizontalAlignment.print(printer); println()
+            print("verticalAlignment = "); verticalAlignment.print(printer); println()
+            print("isHeader = "); isHeader.print(printer); println()
         }
         printer.print(")")
     }
@@ -1670,7 +1763,7 @@ class RdTableSegment (
 
 
 /**
- * #### Generated from [RdComment.kt:118]
+ * #### Generated from [RdComment.kt:137]
  */
 abstract class RdTextAnimation (
 ) : IPrintable {
@@ -1751,7 +1844,7 @@ class RdTextAnimation_Unknown (
 
 
 /**
- * #### Generated from [RdComment.kt:103]
+ * #### Generated from [RdComment.kt:122]
  */
 data class RdTextAttributes (
     val fontStyle: RdFontStyle? = null,
@@ -1820,7 +1913,7 @@ data class RdTextAttributes (
 
 
 /**
- * #### Generated from [RdComment.kt:94]
+ * #### Generated from [RdComment.kt:113]
  */
 data class RdTextHighlighter (
     val key: String,
@@ -1907,7 +2000,7 @@ data class RdTextHighlighter (
 
 
 /**
- * #### Generated from [RdComment.kt:73]
+ * #### Generated from [RdComment.kt:92]
  */
 class RdTextInvariant (
     val text: String
@@ -2027,7 +2120,7 @@ class RdTextSegment (
 
 
 /**
- * #### Generated from [RdComment.kt:119]
+ * #### Generated from [RdComment.kt:138]
  */
 class RdUnderlineTextAnimation (
 ) : RdTextAnimation (
@@ -2075,4 +2168,19 @@ class RdUnderlineTextAnimation (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+}
+
+
+/**
+ * #### Generated from [RdComment.kt:84]
+ */
+enum class RdVerticalAlignment {
+    Center, 
+    Top, 
+    Bottom;
+    
+    companion object {
+        val marshaller = FrameworkMarshallers.enum<RdVerticalAlignment>()
+        
+    }
 }

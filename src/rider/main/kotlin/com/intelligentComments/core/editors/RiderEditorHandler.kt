@@ -52,21 +52,34 @@ class RiderEditorHandler : EditorHandler {
         contents.add(RdListSegment(listContents, getListHeader("List:")))
 
         val imageSegment = RdFileBasedImageSegment("/Users/aero/Desktop/maxresdefault.jpg", RdHighlightedText("This cat is awesome"))
-        val imageSegment1 = RdFileBasedImageSegment("/Users/aero/Desktop/maxresdefault.jpg", RdHighlightedText("This cat is awesome This cat is awesome This cat is awesome This cat is awesome This cat is awesome This cat is awesome This cat is awesome This cat is awesome This cat is awesome This cat is awesome This cat is awesome"))
+        val imageSegment1 = RdFileBasedImageSegment("/Users/aero/Desktop/maxresdefault.jpg", RdHighlightedText("This cat is awesome This cat is awesome This cat is awesome This cat is awesome This cat is awesome This cat is awesome"))
         contents.add(imageSegment)
         contents.add(imageSegment1)
 
-        val tableHeader = RdHighlightedText("asdsadad", mutableListOf())
+        val tableHeader = RdHighlightedText("My super table!", mutableListOf())
+        var idx = 0
+
         fun getTableCellContent(): RdContentSegments {
             val text = RdTextSegment(RdHighlightedText("asdsadasdaasdasdsdasdad"))
             val listText = RdTextSegment(RdHighlightedText("Super puper puper list"))
             val list = RdListSegment(mutableListOf(RdContentSegments(mutableListOf(listText))), getListHeader("List inside table:"))
-            return RdContentSegments(listOf(text, list))
+            val imageSegment = RdFileBasedImageSegment("/Users/aero/Desktop/maxresdefault.jpg", RdHighlightedText("This cat is awesome"))
+            val contentList = mutableListOf(text, list)
+            if (idx == 0 || idx == 3) contentList.add(imageSegment)
+            ++idx
+
+            return RdContentSegments(contentList)
         }
 
-        val rows = RdTableRow(listOf(RdTableCell(getTableCellContent()), RdTableCell(getTableCellContent())))
+        fun getHeaderCellContent(): RdContentSegments {
+            val text = RdTextSegment(RdHighlightedText("Header header!"))
+            return RdContentSegments(listOf(text))
+        }
+
+        val headerRows = RdTableRow(listOf(RdTableCell(getHeaderCellContent(), properties = RdTableCellProperties(RdHorizontalAlignment.Center, RdVerticalAlignment.Center, true)), RdTableCell(getHeaderCellContent(), properties = RdTableCellProperties(RdHorizontalAlignment.Center, RdVerticalAlignment.Center, true))))
+        val rows = RdTableRow(listOf(RdTableCell(getTableCellContent()), RdTableCell(getTableCellContent(), properties = RdTableCellProperties(RdHorizontalAlignment.Right, RdVerticalAlignment.Top, false))))
         val rows1 = RdTableRow(listOf(RdTableCell(getTableCellContent()), RdTableCell(getTableCellContent())))
-        val rdTable = RdTableSegment(tableHeader, listOf(rows, rows1))
+        val rdTable = RdTableSegment(tableHeader, listOf(headerRows, rows, rows1))
         contents.add(rdTable)
 
         val contentSegments = RdContentSegments(contents)

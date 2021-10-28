@@ -37,4 +37,23 @@ interface TableRow {
 
 interface TableCell {
     val contentSegments: ContentSegments
+    val properties: TableCellProperties
+}
+
+enum class HorizontalAlignment {
+    CENTER,
+    LEFT,
+    RIGHT
+}
+
+enum class VerticalAlignment {
+    CENTER,
+    TOP,
+    BOTTOM
+}
+
+interface TableCellProperties {
+    val verticalAlignment: VerticalAlignment
+    val horizontalAlignment: HorizontalAlignment
+    val isHeader: Boolean
 }

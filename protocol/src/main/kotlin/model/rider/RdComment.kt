@@ -56,16 +56,35 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
     }
 
     val RdTableSegment = structdef extends RdContentSegment {
-        field("header", RdHighlightedText)
-        field("rows", immutableList(RdTableRow))
+        field("Header", RdHighlightedText)
+        field("Rows", immutableList(RdTableRow))
     }
 
     val RdTableRow = structdef {
-        field("cells", immutableList(RdTableCell))
+        field("Cells", immutableList(RdTableCell))
     }
 
     val RdTableCell = structdef {
         field("Content", RdContentSegments)
+        field("Properties", RdTableCellProperties.nullable).optional
+    }
+
+    val RdTableCellProperties = structdef {
+        field("HorizontalAlignment", RdHorizontalAlignment)
+        field("VerticalAlignment", RdVerticalAlignment)
+        field("IsHeader", PredefinedType.bool)
+    }
+
+    val RdHorizontalAlignment = enum {
+        + "Center"
+        + "Left"
+        + "Right"
+    }
+
+    val RdVerticalAlignment = enum {
+        + "Center"
+        + "Top"
+        + "Bottom"
     }
 
     val RdInvariant = basestruct { }

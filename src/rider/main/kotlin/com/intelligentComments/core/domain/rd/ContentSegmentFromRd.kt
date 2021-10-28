@@ -77,4 +77,35 @@ class TableRowFromRd(private val row: RdTableRow, project: Project): TableRow {
 
 class TableCellFromRd(cell: RdTableCell, project: Project) : UiInteractionModelBase(project), TableCell {
     override val contentSegments: ContentSegments = ContentSegmentsFromRd(cell.content, project)
+    override val properties: TableCellProperties
+
+    init {
+        properties = if (cell.properties != null) {
+            TableCellPropertiesFromRd(cell.properties)
+        } else {
+            TableCellPropertiesFromRd.defaultProperties
+        }
+    }
+}
+
+class TableCellPropertiesFromRd(properties: RdTableCellProperties) : TableCellProperties {
+    companion object {
+        val defaultProperties = TableCellPropertiesFromRd(RdTableCellProperties(RdHorizontalAlignment.Center, RdVerticalAlignment.Center, false))
+    }
+
+    override val verticalAlignment: VerticalAlignment = properties.verticalAlignment.toAlignment()
+    override val horizontalAlignment: HorizontalAlignment = properties.horizontalAlignment.toAlignment()
+    override val isHeader: Boolean = properties.isHeader
+}
+
+fun RdVerticalAlignment.toAlignment(): VerticalAlignment = when(this) {
+    RdVerticalAlignment.Top -> VerticalAlignment.TOP
+    RdVerticalAlignment.Bottom -> VerticalAlignment.BOTTOM
+    RdVerticalAlignment.Center -> VerticalAlignment.CENTER
+}
+
+fun RdHorizontalAlignment.toAlignment(): HorizontalAlignment = when(this) {
+    RdHorizontalAlignment.Center -> HorizontalAlignment.CENTER
+    RdHorizontalAlignment.Right -> HorizontalAlignment.RIGHT
+    RdHorizontalAlignment.Left -> HorizontalAlignment.LEFT
 }

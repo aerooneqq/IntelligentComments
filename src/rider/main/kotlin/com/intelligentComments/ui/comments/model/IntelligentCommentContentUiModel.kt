@@ -1,6 +1,8 @@
 package com.intelligentComments.ui.comments.model
 
 import com.intelligentComments.core.domain.core.*
+import com.intelligentComments.ui.colors.ColorName
+import com.intelligentComments.ui.colors.Colors
 import com.intellij.openapi.editor.event.EditorMouseEvent
 import com.intellij.openapi.project.Project
 import java.awt.Image
@@ -94,7 +96,7 @@ class DummyImageObserver : ImageObserver {
 
 class ImageHolder(private val imageContentSegment: ImageContentSegment) {
     companion object {
-        val maxDimension = 500
+        const val maxDimension = 500
     }
 
     var width = -1
@@ -145,6 +147,12 @@ class ImageHolder(private val imageContentSegment: ImageContentSegment) {
 class TableContentSegmentUiModel(project: Project,
                                  segment: TableContentSegment) : ContentSegmentUiModel(project, segment) {
     val rows = segment.rows.map { TableRowSegmentUiModel(it, project) }
+    val header = TableNameUiModel(segment.header, project)
+}
+
+
+class TableNameUiModel(header: HighlightedText, project: Project) : UiInteractionModelBase(project) {
+    val highlightedTextUiWrapper = HighlightedTextUiWrapper(project, header)
 }
 
 class TableRowSegmentUiModel(row: TableRow, project: Project) : UiInteractionModelBase(project) {
@@ -153,4 +161,8 @@ class TableRowSegmentUiModel(row: TableRow, project: Project) : UiInteractionMod
 
 class TableCellUiModel(cell: TableCell, project: Project) : UiInteractionModelBase(project) {
     val contentSegments = ContentSegmentsUiModel(project, cell.contentSegments)
+    val properties = cell.properties
+
+    override val backgroundColorKey: ColorName
+        get() = if (properties.isHeader) Colors.TableHeaderCellBackground else Colors.EmptyColor
 }

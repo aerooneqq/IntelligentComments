@@ -74,7 +74,7 @@ namespace JetBrains.Rider.Model
     
     
     
-    protected override long SerializationHash => 533686987678780575L;
+    protected override long SerializationHash => 8026242145994931999L;
     
     protected override Action<ISerializers> Register => RegisterDeclaredTypesSerializers;
     public static void RegisterDeclaredTypesSerializers(ISerializers serializers)
@@ -135,7 +135,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:109</p>
+  /// <p>Generated from: RdComment.kt:128</p>
   /// </summary>
   public sealed class RdBackgroundStyle : IPrintable, IEquatable<RdBackgroundStyle>
   {
@@ -228,7 +228,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:114</p>
+  /// <p>Generated from: RdComment.kt:133</p>
   /// </summary>
   public sealed class RdColor : IPrintable, IEquatable<RdColor>
   {
@@ -594,7 +594,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:84</p>
+  /// <p>Generated from: RdComment.kt:103</p>
   /// </summary>
   public sealed class RdDependencyReference : RdFileBasedReference
   {
@@ -847,7 +847,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:80</p>
+  /// <p>Generated from: RdComment.kt:99</p>
   /// </summary>
   public abstract class RdFileBasedReference : RdReference
   {
@@ -961,7 +961,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:128</p>
+  /// <p>Generated from: RdComment.kt:147</p>
   /// </summary>
   public enum RdFontStyle {
     Regular,
@@ -970,7 +970,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:120</p>
+  /// <p>Generated from: RdComment.kt:139</p>
   /// </summary>
   public sealed class RdForegroundColorAnimation : RdTextAnimation
   {
@@ -1051,7 +1051,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:89</p>
+  /// <p>Generated from: RdComment.kt:108</p>
   /// </summary>
   public sealed class RdHighlightedText : IPrintable, IEquatable<RdHighlightedText>
   {
@@ -1142,6 +1142,16 @@ namespace JetBrains.Rider.Model
       Print(printer);
       return printer.ToString();
     }
+  }
+  
+  
+  /// <summary>
+  /// <p>Generated from: RdComment.kt:78</p>
+  /// </summary>
+  public enum RdHorizontalAlignment {
+    Center,
+    Left,
+    Right
   }
   
   
@@ -1543,7 +1553,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:71</p>
+  /// <p>Generated from: RdComment.kt:90</p>
   /// </summary>
   public abstract class RdInvariant{
     //fields
@@ -1725,7 +1735,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:124</p>
+  /// <p>Generated from: RdComment.kt:143</p>
   /// </summary>
   public sealed class RdPredefinedForegroundColorAnimation : RdTextAnimation
   {
@@ -1806,7 +1816,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:78</p>
+  /// <p>Generated from: RdComment.kt:97</p>
   /// </summary>
   public abstract class RdReference{
     //fields
@@ -1904,36 +1914,44 @@ namespace JetBrains.Rider.Model
     //fields
     //public fields
     [NotNull] public RdContentSegments Content {get; private set;}
+    [CanBeNull] public RdTableCellProperties Properties {get; private set;}
     
     //private fields
     //primary constructor
     public RdTableCell(
-      [NotNull] RdContentSegments content
+      [NotNull] RdContentSegments content,
+      [CanBeNull] RdTableCellProperties properties = null
     )
     {
       if (content == null) throw new ArgumentNullException("content");
       
       Content = content;
+      Properties = properties;
     }
     //secondary constructor
     //deconstruct trait
-    public void Deconstruct([NotNull] out RdContentSegments content)
+    public void Deconstruct([NotNull] out RdContentSegments content, [CanBeNull] out RdTableCellProperties properties)
     {
       content = Content;
+      properties = Properties;
     }
     //statics
     
     public static CtxReadDelegate<RdTableCell> Read = (ctx, reader) => 
     {
       var content = RdContentSegments.Read(ctx, reader);
-      var _result = new RdTableCell(content);
+      var properties = ReadRdTableCellPropertiesNullable(ctx, reader);
+      var _result = new RdTableCell(content, properties);
       return _result;
     };
+    public static CtxReadDelegate<RdTableCellProperties> ReadRdTableCellPropertiesNullable = RdTableCellProperties.Read.NullableClass();
     
     public static CtxWriteDelegate<RdTableCell> Write = (ctx, writer, value) => 
     {
       RdContentSegments.Write(ctx, writer, value.Content);
+      WriteRdTableCellPropertiesNullable(ctx, writer, value.Properties);
     };
+    public static  CtxWriteDelegate<RdTableCellProperties> WriteRdTableCellPropertiesNullable = RdTableCellProperties.Write.NullableClass();
     
     //constants
     
@@ -1951,7 +1969,7 @@ namespace JetBrains.Rider.Model
     {
       if (ReferenceEquals(null, other)) return false;
       if (ReferenceEquals(this, other)) return true;
-      return Equals(Content, other.Content);
+      return Equals(Content, other.Content) && Equals(Properties, other.Properties);
     }
     //hash code trait
     public override int GetHashCode()
@@ -1959,6 +1977,7 @@ namespace JetBrains.Rider.Model
       unchecked {
         var hash = 0;
         hash = hash * 31 + Content.GetHashCode();
+        hash = hash * 31 + (Properties != null ? Properties.GetHashCode() : 0);
         return hash;
       }
     }
@@ -1968,6 +1987,106 @@ namespace JetBrains.Rider.Model
       printer.Println("RdTableCell (");
       using (printer.IndentCookie()) {
         printer.Print("content = "); Content.PrintEx(printer); printer.Println();
+        printer.Print("properties = "); Properties.PrintEx(printer); printer.Println();
+      }
+      printer.Print(")");
+    }
+    //toString
+    public override string ToString()
+    {
+      var printer = new SingleLinePrettyPrinter();
+      Print(printer);
+      return printer.ToString();
+    }
+  }
+  
+  
+  /// <summary>
+  /// <p>Generated from: RdComment.kt:72</p>
+  /// </summary>
+  public sealed class RdTableCellProperties : IPrintable, IEquatable<RdTableCellProperties>
+  {
+    //fields
+    //public fields
+    public RdHorizontalAlignment HorizontalAlignment {get; private set;}
+    public RdVerticalAlignment VerticalAlignment {get; private set;}
+    public bool IsHeader {get; private set;}
+    
+    //private fields
+    //primary constructor
+    public RdTableCellProperties(
+      RdHorizontalAlignment horizontalAlignment,
+      RdVerticalAlignment verticalAlignment,
+      bool isHeader
+    )
+    {
+      HorizontalAlignment = horizontalAlignment;
+      VerticalAlignment = verticalAlignment;
+      IsHeader = isHeader;
+    }
+    //secondary constructor
+    //deconstruct trait
+    public void Deconstruct(out RdHorizontalAlignment horizontalAlignment, out RdVerticalAlignment verticalAlignment, out bool isHeader)
+    {
+      horizontalAlignment = HorizontalAlignment;
+      verticalAlignment = VerticalAlignment;
+      isHeader = IsHeader;
+    }
+    //statics
+    
+    public static CtxReadDelegate<RdTableCellProperties> Read = (ctx, reader) => 
+    {
+      var horizontalAlignment = (RdHorizontalAlignment)reader.ReadInt();
+      var verticalAlignment = (RdVerticalAlignment)reader.ReadInt();
+      var isHeader = reader.ReadBool();
+      var _result = new RdTableCellProperties(horizontalAlignment, verticalAlignment, isHeader);
+      return _result;
+    };
+    
+    public static CtxWriteDelegate<RdTableCellProperties> Write = (ctx, writer, value) => 
+    {
+      writer.Write((int)value.HorizontalAlignment);
+      writer.Write((int)value.VerticalAlignment);
+      writer.Write(value.IsHeader);
+    };
+    
+    //constants
+    
+    //custom body
+    //methods
+    //equals trait
+    public override bool Equals(object obj)
+    {
+      if (ReferenceEquals(null, obj)) return false;
+      if (ReferenceEquals(this, obj)) return true;
+      if (obj.GetType() != GetType()) return false;
+      return Equals((RdTableCellProperties) obj);
+    }
+    public bool Equals(RdTableCellProperties other)
+    {
+      if (ReferenceEquals(null, other)) return false;
+      if (ReferenceEquals(this, other)) return true;
+      return HorizontalAlignment == other.HorizontalAlignment && VerticalAlignment == other.VerticalAlignment && IsHeader == other.IsHeader;
+    }
+    //hash code trait
+    public override int GetHashCode()
+    {
+      unchecked {
+        var hash = 0;
+        hash = hash * 31 + (int) HorizontalAlignment;
+        hash = hash * 31 + (int) VerticalAlignment;
+        hash = hash * 31 + IsHeader.GetHashCode();
+        return hash;
+      }
+    }
+    //pretty print
+    public void Print(PrettyPrinter printer)
+    {
+      printer.Println("RdTableCellProperties (");
+      using (printer.IndentCookie()) {
+        printer.Print("horizontalAlignment = "); HorizontalAlignment.PrintEx(printer); printer.Println();
+        printer.Print("verticalAlignment = "); VerticalAlignment.PrintEx(printer); printer.Println();
+        printer.Print("isHeader = "); IsHeader.PrintEx(printer); printer.Println();
       }
       printer.Print(")");
     }
@@ -2160,7 +2279,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:118</p>
+  /// <p>Generated from: RdComment.kt:137</p>
   /// </summary>
   public abstract class RdTextAnimation{
     //fields
@@ -2251,7 +2370,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:103</p>
+  /// <p>Generated from: RdComment.kt:122</p>
   /// </summary>
   public sealed class RdTextAttributes : IPrintable, IEquatable<RdTextAttributes>
   {
@@ -2356,7 +2475,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:94</p>
+  /// <p>Generated from: RdComment.kt:113</p>
   /// </summary>
   public sealed class RdTextHighlighter : IPrintable, IEquatable<RdTextHighlighter>
   {
@@ -2486,7 +2605,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:73</p>
+  /// <p>Generated from: RdComment.kt:92</p>
   /// </summary>
   public sealed class RdTextInvariant : RdInvariant
   {
@@ -2648,7 +2767,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:119</p>
+  /// <p>Generated from: RdComment.kt:138</p>
   /// </summary>
   public sealed class RdUnderlineTextAnimation : RdTextAnimation
   {
@@ -2710,5 +2829,15 @@ namespace JetBrains.Rider.Model
       Print(printer);
       return printer.ToString();
     }
+  }
+  
+  
+  /// <summary>
+  /// <p>Generated from: RdComment.kt:84</p>
+  /// </summary>
+  public enum RdVerticalAlignment {
+    Center,
+    Top,
+    Bottom
   }
 }
