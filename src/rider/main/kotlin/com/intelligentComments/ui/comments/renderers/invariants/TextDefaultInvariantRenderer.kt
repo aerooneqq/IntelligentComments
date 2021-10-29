@@ -2,7 +2,7 @@ package com.intelligentComments.ui.comments.renderers.invariants
 
 import com.intelligentComments.ui.util.CommentsUtil
 import com.intelligentComments.ui.util.UpdatedGraphicsCookie
-import com.intelligentComments.ui.comments.model.TextInvariantUiModel
+import com.intelligentComments.ui.comments.model.invariants.TextInvariantUiModel
 import com.intelligentComments.ui.core.RectanglesModel
 import com.intellij.openapi.editor.impl.EditorImpl
 import com.intellij.openapi.util.use

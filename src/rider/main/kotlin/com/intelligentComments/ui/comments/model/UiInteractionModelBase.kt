@@ -35,7 +35,7 @@ open class UiInteractionModelBase(val project: Project) {
         return true
     }
 
-    open fun handleClick(event: EditorMouseEvent): Boolean {
+    open fun handleClick(e: EditorMouseEvent): Boolean {
         return true
     }
 }

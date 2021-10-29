@@ -2,8 +2,8 @@ package com.intelligentComments.ui.comments.renderers.references
 
 import com.intelligentComments.ui.util.CommentsUtil
 import com.intelligentComments.ui.util.CommentsUtil.Companion.deltaBetweenHeaderAndContent
-import com.intelligentComments.ui.comments.model.ReferenceUiModel
-import com.intelligentComments.ui.comments.model.SectionWithHeaderUiModel
+import com.intelligentComments.ui.comments.model.references.ReferenceUiModel
+import com.intelligentComments.ui.comments.model.sections.SectionWithHeaderUiModel
 import com.intelligentComments.ui.comments.renderers.VerticalSectionWithHeaderRenderer
 import com.intelligentComments.ui.comments.renderers.references.ReferencesRenderer.Companion.deltaBetweenReferences
 import com.intelligentComments.ui.core.RectangleModelBuildContext

@@ -1,6 +1,6 @@
 package com.intelligentComments.ui.util
 
-import com.intelligentComments.ui.comments.model.ContentSegmentUiModel
+import com.intelligentComments.ui.comments.model.content.ContentSegmentUiModel
 import com.intelligentComments.ui.comments.renderers.segments.SegmentRenderer
 import com.intelligentComments.ui.core.RectangleModelBuildContext
 import com.intelligentComments.ui.core.RectanglesModel

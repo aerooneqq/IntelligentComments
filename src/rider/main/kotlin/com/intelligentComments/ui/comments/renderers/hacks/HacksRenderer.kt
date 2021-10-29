@@ -1,7 +1,7 @@
 package com.intelligentComments.ui.comments.renderers.hacks
 
-import com.intelligentComments.ui.comments.model.HackUiModel
-import com.intelligentComments.ui.comments.model.SectionWithHeaderUiModel
+import com.intelligentComments.ui.comments.model.hacks.HackUiModel
+import com.intelligentComments.ui.comments.model.sections.SectionWithHeaderUiModel
 import com.intelligentComments.ui.comments.renderers.VerticalSectionWithHeaderRenderer
 import com.intelligentComments.ui.core.RectangleModelBuildContext
 import com.intelligentComments.ui.core.RectangleModelBuildContributor

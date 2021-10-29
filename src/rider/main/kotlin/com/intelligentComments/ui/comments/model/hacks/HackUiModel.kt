@@ -1,10 +1,11 @@
-package com.intelligentComments.ui.comments.model
+package com.intelligentComments.ui.comments.model.hacks
 
 import com.intelligentComments.core.domain.core.Hack
 import com.intelligentComments.core.domain.core.HackWithTickets
+import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intellij.openapi.project.Project
 
-open class HackUiModel(hack: Hack, project: Project) : UiInteractionModelBase(project) {
+open class HackUiModel(private val hack: Hack, project: Project) : UiInteractionModelBase(project) {
     companion object {
         fun getFrom(project: Project, hack: Hack): HackUiModel {
             return when(hack) {
@@ -13,8 +14,4 @@ open class HackUiModel(hack: Hack, project: Project) : UiInteractionModelBase(pr
             }
         }
     }
-}
-
-class HackWithTicketsUiModel(hackWithTickets: HackWithTickets,
-                             project: Project) : HackUiModel(hackWithTickets, project) {
 }

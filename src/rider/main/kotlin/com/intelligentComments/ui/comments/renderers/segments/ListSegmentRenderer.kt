@@ -5,10 +5,10 @@ import com.intelligentComments.ui.util.UpdatedGraphicsCookie
 import com.intelligentComments.ui.util.UpdatedRectCookie
 import com.intelligentComments.ui.colors.Colors
 import com.intelligentComments.ui.colors.ColorsProvider
-import com.intelligentComments.ui.comments.model.ContentSegmentUiModel
-import com.intelligentComments.ui.comments.model.ImageContentSegmentUiModel
-import com.intelligentComments.ui.comments.model.ListContentSegmentUiModel
-import com.intelligentComments.ui.comments.model.TextContentSegmentUiModel
+import com.intelligentComments.ui.comments.model.content.ContentSegmentUiModel
+import com.intelligentComments.ui.comments.model.content.image.ImageContentSegmentUiModel
+import com.intelligentComments.ui.comments.model.content.list.ListContentSegmentUiModel
+import com.intelligentComments.ui.comments.model.content.text.TextContentSegmentUiModel
 import com.intelligentComments.ui.core.RectangleModelBuildContext
 import com.intelligentComments.ui.core.RectanglesModel
 import com.intelligentComments.ui.util.ContentSegmentsUtil

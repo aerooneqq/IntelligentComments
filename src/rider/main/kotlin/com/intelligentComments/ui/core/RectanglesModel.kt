@@ -10,8 +10,10 @@ import com.jetbrains.rd.util.getOrCreate
 import java.awt.Rectangle
 
 class RectanglesModelHolder(private val uiModel: IntelligentCommentUiModel) {
+    private var lastUpdateHash = 0
+
     var model: RectanglesModel? = null
-        set(value) {
+        private set(value) {
             application.assertIsDispatchThread()
             field = value
         }
@@ -19,7 +21,13 @@ class RectanglesModelHolder(private val uiModel: IntelligentCommentUiModel) {
 
     fun revalidate(editor: EditorImpl, xDelta: Int, yDelta: Int): RectanglesModel {
         application.assertIsDispatchThread()
+        val oldModel = model
+        val hashCode = uiModel.hashCode()
+
+        if (oldModel != null && hashCode == lastUpdateHash) return oldModel
+
         val newModel = CommentsUtil.buildRectanglesModel(editor, uiModel, xDelta, yDelta)
+        lastUpdateHash = hashCode
         model = newModel
         return newModel
     }

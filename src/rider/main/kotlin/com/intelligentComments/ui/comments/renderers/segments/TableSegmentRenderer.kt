@@ -4,8 +4,8 @@ import com.intelligentComments.ui.util.CommentsUtil
 import com.intelligentComments.ui.util.UpdatedGraphicsCookie
 import com.intelligentComments.ui.colors.Colors
 import com.intelligentComments.ui.colors.ColorsProvider
-import com.intelligentComments.ui.comments.model.TableCellUiModel
-import com.intelligentComments.ui.comments.model.TableContentSegmentUiModel
+import com.intelligentComments.ui.comments.model.content.table.TableCellUiModel
+import com.intelligentComments.ui.comments.model.content.table.TableContentSegmentUiModel
 import com.intelligentComments.ui.core.RectangleModelBuildContext
 import com.intelligentComments.ui.core.RectanglesModel
 import com.intellij.openapi.components.service

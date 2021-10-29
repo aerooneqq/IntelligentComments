@@ -2,7 +2,7 @@ package com.intelligentComments.ui.comments.renderers.segments
 
 import com.intelligentComments.ui.util.CommentsUtil
 import com.intelligentComments.ui.util.UpdatedRectCookie
-import com.intelligentComments.ui.comments.model.TextContentSegmentUiModel
+import com.intelligentComments.ui.comments.model.content.text.TextContentSegmentUiModel
 import com.intelligentComments.ui.core.RectangleModelBuildContext
 import com.intelligentComments.ui.core.RectanglesModel
 import com.intellij.openapi.editor.impl.EditorImpl

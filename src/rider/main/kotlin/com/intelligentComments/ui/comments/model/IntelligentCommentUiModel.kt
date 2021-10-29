@@ -1,6 +1,16 @@
 package com.intelligentComments.ui.comments.model
 
 import com.intelligentComments.core.domain.core.IntelligentComment
+import com.intelligentComments.ui.comments.model.authors.AuthorUiModel
+import com.intelligentComments.ui.comments.model.content.ContentSegmentUiModel
+import com.intelligentComments.ui.comments.model.hacks.HackUiModel
+import com.intelligentComments.ui.comments.model.invariants.InvariantUiModel
+import com.intelligentComments.ui.comments.model.references.ReferenceUiModel
+import com.intelligentComments.ui.comments.model.sections.HeaderTextInfo
+import com.intelligentComments.ui.comments.model.sections.SectionUiModel
+import com.intelligentComments.ui.comments.model.sections.SectionWithHeaderUiModel
+import com.intelligentComments.ui.comments.model.todo.ToDoUiModel
+import com.intelligentComments.ui.util.HashUtil
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.editor.event.EditorMouseEvent
 import com.intellij.openapi.project.Project
@@ -10,12 +20,6 @@ import javax.swing.Icon
 
 class IntelligentCommentUiModel(project: Project,
                                 val comment: IntelligentComment) : UiInteractionModelBase(project) {
-    private val myAuthors = mutableListOf<AuthorUiModel>()
-    private val myReferences = mutableListOf<ReferenceUiModel>()
-    private val myInvariants = mutableListOf<InvariantUiModel>()
-    private val myTodos = mutableListOf<ToDoUiModel>()
-    private val myHacks = mutableListOf<HackUiModel>()
-
     val authorsSection: SectionUiModel<AuthorUiModel>
     val contentSection: SectionWithHeaderUiModel<ContentSegmentUiModel>
     val referencesSection: SectionWithHeaderUiModel<ReferenceUiModel>
@@ -25,19 +29,25 @@ class IntelligentCommentUiModel(project: Project,
 
 
     init {
-        for (author in comment.allAuthors) myAuthors.add(AuthorUiModel.getFrom(project, author))
+        val authors = mutableListOf<AuthorUiModel>()
+        val references = mutableListOf<ReferenceUiModel>()
+        val invariants = mutableListOf<InvariantUiModel>()
+        val todos = mutableListOf<ToDoUiModel>()
+        val hacks = mutableListOf<HackUiModel>()
         val content = IntelligentCommentContentUiModel(project, comment.content)
-        for (reference in comment.references) myReferences.add(ReferenceUiModel.getFrom(project, reference))
-        for (invariant in comment.invariants) myInvariants.add(InvariantUiModel.getFrom(project, invariant))
-        for (todo in comment.todos) myTodos.add(ToDoUiModel.getFrom(project, todo))
-        for (hack in comment.hacks) myHacks.add(HackUiModel.getFrom(project, hack))
 
-        authorsSection = SectionUiModel(project, myAuthors)
+        for (author in comment.allAuthors) authors.add(AuthorUiModel.getFrom(project, author))
+        for (reference in comment.references) references.add(ReferenceUiModel.getFrom(project, reference))
+        for (invariant in comment.invariants) invariants.add(InvariantUiModel.getFrom(project, invariant))
+        for (todo in comment.todos) todos.add(ToDoUiModel.getFrom(project, todo))
+        for (hack in comment.hacks) hacks.add(HackUiModel.getFrom(project, hack))
+
+        authorsSection = SectionUiModel(project, authors)
         contentSection = getSectionHeaderUiModel(content.segments, AllIcons.FileTypes.Text, "Content")
-        referencesSection = getSectionHeaderUiModel(myReferences, AllIcons.FileTypes.Java, "References")
-        invariantsSection = getSectionHeaderUiModel(myInvariants, AllIcons.Nodes.Interface, "Invariants")
-        todosSection = getSectionHeaderUiModel(myTodos, AllIcons.General.TodoImportant, "ToDos")
-        hacksSection = getSectionHeaderUiModel(myHacks, AllIcons.General.Locate, "Hacks")
+        referencesSection = getSectionHeaderUiModel(references, AllIcons.FileTypes.Java, "References")
+        invariantsSection = getSectionHeaderUiModel(invariants, AllIcons.Nodes.Interface, "Invariants")
+        todosSection = getSectionHeaderUiModel(todos, AllIcons.General.TodoImportant, "ToDos")
+        hacksSection = getSectionHeaderUiModel(hacks, AllIcons.General.Locate, "Hacks")
     }
 
     private fun <T : UiInteractionModelBase> getSectionHeaderUiModel(items: Collection<T>,
@@ -65,4 +75,15 @@ class IntelligentCommentUiModel(project: Project,
         UIUtil.setCursor(e.editor.contentComponent, Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR))
         return false
     }
+
+    override fun hashCode(): Int {
+        return authorsSection.hashCode() % HashUtil.mod *
+               todosSection.hashCode() % HashUtil.mod *
+               hacksSection.hashCode() % HashUtil.mod *
+               referencesSection.hashCode() % HashUtil.mod *
+               invariantsSection.hashCode() % HashUtil.mod *
+               contentSection.hashCode() % HashUtil.mod
+    }
+
+    override fun equals(other: Any?): Boolean = other is IntelligentCommentUiModel && other.hashCode() == hashCode()
 }

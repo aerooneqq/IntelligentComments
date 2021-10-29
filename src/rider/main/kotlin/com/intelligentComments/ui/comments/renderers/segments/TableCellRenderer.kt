@@ -3,7 +3,7 @@ package com.intelligentComments.ui.comments.renderers.segments
 import com.intelligentComments.core.domain.core.HorizontalAlignment
 import com.intelligentComments.core.domain.core.VerticalAlignment
 import com.intelligentComments.ui.util.UpdatedGraphicsCookie
-import com.intelligentComments.ui.comments.model.TableCellUiModel
+import com.intelligentComments.ui.comments.model.content.table.TableCellUiModel
 import com.intelligentComments.ui.core.RectangleModelBuildContext
 import com.intelligentComments.ui.core.RectangleModelBuildContributor
 import com.intelligentComments.ui.core.RectanglesModel

@@ -1,7 +1,10 @@
-package com.intelligentComments.ui.comments.model
+package com.intelligentComments.ui.comments.model.sections
 
 import com.intelligentComments.core.domain.core.*
 import com.intelligentComments.ui.colors.Colors
+import com.intelligentComments.ui.comments.model.ExpandableUiModel
+import com.intelligentComments.ui.comments.model.UiInteractionModelBase
+import com.intelligentComments.ui.comments.model.highlighters.HighlightedTextUiWrapper
 import com.intellij.openapi.editor.event.EditorMouseEvent
 import com.intellij.openapi.project.Project
 import java.awt.Color
@@ -9,20 +12,6 @@ import java.awt.Font
 import java.awt.font.TextAttribute
 import java.util.*
 import javax.swing.Icon
-
-open class SectionUiModel<T : UiInteractionModelBase>(project: Project,
-                                                      val content: Collection<T>) : UiInteractionModelBase(project)
-
-class SectionWithHeaderUiModel<T : UiInteractionModelBase>(project: Project,
-                                                           content: Collection<T>,
-                                                           icon: Icon,
-                                                           headerText: HeaderTextInfo) : SectionUiModel<T>(project, content), ExpandableUiModel {
-    override var isExpanded: Boolean = true
-
-    val headerUiModel = SectionHeaderUiModel(project, icon, headerText, this)
-}
-
-data class HeaderTextInfo(val expandedName: String, val closedName: String)
 
 class SectionHeaderUiModel(project: Project,
                            val icon: Icon,

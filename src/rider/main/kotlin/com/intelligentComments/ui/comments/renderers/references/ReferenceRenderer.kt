@@ -1,8 +1,8 @@
 package com.intelligentComments.ui.comments.renderers.references
 
 import com.intelligentComments.ui.util.CommentsUtil
-import com.intelligentComments.ui.comments.model.DependencyReferenceUiModel
-import com.intelligentComments.ui.comments.model.ReferenceUiModel
+import com.intelligentComments.ui.comments.model.references.DependencyReferenceUiModel
+import com.intelligentComments.ui.comments.model.references.ReferenceUiModel
 import com.intelligentComments.ui.comments.renderers.ExpandableContentWithHeader
 import com.intelligentComments.ui.core.RectangleModelBuildContext
 import com.intelligentComments.ui.core.RectangleModelBuildContributor

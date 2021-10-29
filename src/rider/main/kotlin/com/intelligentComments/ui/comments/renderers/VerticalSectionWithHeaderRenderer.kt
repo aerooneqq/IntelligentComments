@@ -5,7 +5,7 @@ import com.intelligentComments.ui.colors.ColorsProvider
 import com.intelligentComments.ui.util.CommentsUtil
 import com.intelligentComments.ui.util.CommentsUtil.Companion.deltaBetweenHeaderAndContent
 import com.intelligentComments.ui.util.CommentsUtil.Companion.deltaBetweenIconAndTextInHeader
-import com.intelligentComments.ui.comments.model.SectionWithHeaderUiModel
+import com.intelligentComments.ui.comments.model.sections.SectionWithHeaderUiModel
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intelligentComments.ui.core.RectangleModelBuildContext
 import com.intelligentComments.ui.core.RectangleModelBuildContributor
@@ -15,7 +15,6 @@ import com.intelligentComments.ui.util.UpdatedGraphicsCookie
 import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.impl.EditorImpl
 import com.intellij.openapi.util.use
-import java.awt.Color
 import java.awt.Graphics
 import java.awt.Rectangle
 import kotlin.math.max

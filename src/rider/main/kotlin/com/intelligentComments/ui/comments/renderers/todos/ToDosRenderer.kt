@@ -1,13 +1,13 @@
 package com.intelligentComments.ui.comments.renderers.todos
 
-import com.intelligentComments.ui.util.CommentsUtil
-import com.intelligentComments.ui.comments.model.SectionWithHeaderUiModel
-import com.intelligentComments.ui.comments.model.ToDoUiModel
+import com.intelligentComments.ui.comments.model.sections.SectionWithHeaderUiModel
+import com.intelligentComments.ui.comments.model.todo.ToDoUiModel
 import com.intelligentComments.ui.comments.renderers.VerticalSectionWithHeaderRenderer
 import com.intelligentComments.ui.core.RectangleModelBuildContext
 import com.intelligentComments.ui.core.RectangleModelBuildContributor
 import com.intelligentComments.ui.core.RectanglesModel
 import com.intelligentComments.ui.core.Renderer
+import com.intelligentComments.ui.util.CommentsUtil
 import com.intellij.openapi.editor.impl.EditorImpl
 import java.awt.Graphics
 import java.awt.Rectangle

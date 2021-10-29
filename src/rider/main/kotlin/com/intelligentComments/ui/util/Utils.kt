@@ -1,7 +1,7 @@
 package com.intelligentComments.ui.util
 
-import com.intelligentComments.ui.comments.model.HighlightedTextUiWrapper
-import com.intelligentComments.ui.comments.model.HighlighterUiModel
+import com.intelligentComments.ui.comments.model.highlighters.HighlightedTextUiWrapper
+import com.intelligentComments.ui.comments.model.highlighters.HighlighterUiModel
 import com.intelligentComments.ui.comments.model.IntelligentCommentUiModel
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intelligentComments.ui.comments.renderers.CommentAuthorsRenderer

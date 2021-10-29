@@ -1,6 +1,6 @@
 package com.intelligentComments.core.domain.core
 
-import com.intelligentComments.ui.comments.model.HighlighterUiModel
+import com.intelligentComments.ui.comments.model.highlighters.HighlighterUiModel
 import java.awt.Color
 
 

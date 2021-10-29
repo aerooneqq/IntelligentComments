@@ -77,7 +77,7 @@ class IntelligentCommentsRenderer(private val intelligentComment: IntelligentCom
             adjustedRect = drawToDos(g, adjustedRect, editorImpl)
 
             for (rectangle in rectanglesModel!!.allRectangles) {
-                //g.drawRect(rectangle.x + rect.x, rectangle.y + rect.y, rectangle.width, rectangle.height)
+                g.drawRect(rectangle.x + rect.x, rectangle.y + rect.y, rectangle.width, rectangle.height)
             }
         }
     }

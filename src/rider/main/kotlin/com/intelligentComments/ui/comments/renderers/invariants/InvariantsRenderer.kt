@@ -2,8 +2,8 @@ package com.intelligentComments.ui.comments.renderers.invariants
 
 import com.intelligentComments.ui.util.CommentsUtil
 import com.intelligentComments.ui.util.CommentsUtil.Companion.deltaBetweenHeaderAndContent
-import com.intelligentComments.ui.comments.model.InvariantUiModel
-import com.intelligentComments.ui.comments.model.SectionWithHeaderUiModel
+import com.intelligentComments.ui.comments.model.invariants.InvariantUiModel
+import com.intelligentComments.ui.comments.model.sections.SectionWithHeaderUiModel
 import com.intelligentComments.ui.comments.renderers.VerticalSectionWithHeaderRenderer
 import com.intelligentComments.ui.comments.renderers.invariants.InvariantsRenderer.Companion.gapBetweenInvariants
 import com.intelligentComments.ui.core.RectangleModelBuildContext

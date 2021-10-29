@@ -1,7 +1,7 @@
 package com.intelligentComments.ui.comments.renderers.invariants
 
-import com.intelligentComments.ui.comments.model.InvariantUiModel
-import com.intelligentComments.ui.comments.model.TextInvariantUiModel
+import com.intelligentComments.ui.comments.model.invariants.InvariantUiModel
+import com.intelligentComments.ui.comments.model.invariants.TextInvariantUiModel
 import com.intelligentComments.ui.core.Renderer
 import com.intellij.openapi.editor.impl.EditorImpl
 
