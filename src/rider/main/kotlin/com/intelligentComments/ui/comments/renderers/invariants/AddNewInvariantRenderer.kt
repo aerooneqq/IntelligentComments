@@ -1,23 +1,29 @@
 package com.intelligentComments.ui.comments.renderers.invariants
 
-import com.intelligentComments.ui.util.TextUtil
-import com.intelligentComments.ui.comments.model.invariants.TextInvariantUiModel
+import com.intelligentComments.ui.comments.model.invariants.AddNewInvariantUiModel
 import com.intelligentComments.ui.core.RectanglesModel
+import com.intelligentComments.ui.util.TextUtil
 import com.intellij.openapi.editor.impl.EditorImpl
 import java.awt.Graphics
 import java.awt.Rectangle
 
-class TextDefaultInvariantRenderer(private val model: TextInvariantUiModel) : InvariantRenderer {
+class AddNewInvariantRenderer(private val model: AddNewInvariantUiModel) : InvariantRenderer {
     override fun render(g: Graphics,
                         rect: Rectangle,
                         editorImpl: EditorImpl,
                         rectanglesModel: RectanglesModel): Rectangle {
         val width = calculateWidth(editorImpl)
-        return InvariantRendererUtil.render(g, rect, editorImpl, model.borderColor, model.backgroundColor, width, model.text)
+        val background = editorImpl.contentComponent.background
+        return InvariantRendererUtil.render(g, rect, editorImpl, model.borderColor, background, width, model.text, model.icon)
     }
 
     private fun calculateWidth(editorImpl: EditorImpl): Int {
-        return TextUtil.getTextWidth(editorImpl, model.text) + InvariantRenderer.extraInvariantWidth
+        val iconDelta = InvariantRenderer.deltaBetweenTextAndIcon
+        val extraWidth = InvariantRenderer.extraInvariantWidth
+        val iconWidth = model.icon.iconWidth
+        val textWidth = TextUtil.getTextWidth(editorImpl, model.text)
+
+        return textWidth + iconWidth + extraWidth + iconDelta
     }
 
     override fun calculateWidthWithInvariantInterval(editorImpl: EditorImpl): Int {

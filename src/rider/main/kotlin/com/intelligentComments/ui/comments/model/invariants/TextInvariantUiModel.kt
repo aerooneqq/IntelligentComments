@@ -7,7 +7,7 @@ import com.intelligentComments.ui.util.HashUtil
 import com.intellij.openapi.project.Project
 
 class TextInvariantUiModel(project: Project,
-                           textInvariant: TextInvariant) : InvariantUiModel(project, textInvariant) {
+                           textInvariant: TextInvariant) : InvariantUiModel(project) {
     override val backgroundColorKey: ColorName = Colors.TextInvariantBackgroundColor
     override val hoveredBackgroundColorKey: ColorName = Colors.TextInvariantHoveredBackgroundColor
 

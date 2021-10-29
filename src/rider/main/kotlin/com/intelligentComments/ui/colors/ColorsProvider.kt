@@ -12,13 +12,21 @@ object Colors {
     val EmptyColor = ColorName("")
 
     val LeftLineBackgroundColor = ColorName("left.default.comment.line.background")
+
+    val AddNewInvariantBorderColor = ColorName("add.new.invariant.border.color")
+    val AddNewInvariantBorderHoveredColor = ColorName("add.new.invariant.border.hover.color")
+    val InvariantDefaultBorderColor = ColorName("text.invariant.border.default.background")
     val TextInvariantBackgroundColor = ColorName("text.invariant.background")
     val TextInvariantHoveredBackgroundColor = ColorName("text.invariant.background.hovered")
+
     val ReferenceHeaderBackgroundColor = ColorName("reference.header.background")
     val ReferenceHeaderHoveredBackgroundColor = ColorName("reference.header.background.hovered")
+
     val TextDefaultColor = ColorName("text.default.color")
     val TextDefaultHoveredColor = ColorName("text.default.color.hovered")
+
     val ListItemBulletBackground = ColorName("list.item.bullet.background.color")
+
     val TableBorderBackground = ColorName("table.border.background.color")
     val TableHeaderCellBackground = ColorName("table.header.cell.background.color")
 }

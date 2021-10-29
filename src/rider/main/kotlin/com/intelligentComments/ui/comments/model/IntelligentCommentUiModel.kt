@@ -4,6 +4,7 @@ import com.intelligentComments.core.domain.core.IntelligentComment
 import com.intelligentComments.ui.comments.model.authors.AuthorUiModel
 import com.intelligentComments.ui.comments.model.content.ContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.hacks.HackUiModel
+import com.intelligentComments.ui.comments.model.invariants.AddNewInvariantUiModel
 import com.intelligentComments.ui.comments.model.invariants.InvariantUiModel
 import com.intelligentComments.ui.comments.model.references.ReferenceUiModel
 import com.intelligentComments.ui.comments.model.sections.HeaderTextInfo
@@ -38,7 +39,10 @@ class IntelligentCommentUiModel(project: Project,
 
         for (author in comment.allAuthors) authors.add(AuthorUiModel.getFrom(project, author))
         for (reference in comment.references) references.add(ReferenceUiModel.getFrom(project, reference))
+
         for (invariant in comment.invariants) invariants.add(InvariantUiModel.getFrom(project, invariant))
+        invariants.add(AddNewInvariantUiModel(project))
+
         for (todo in comment.todos) todos.add(ToDoUiModel.getFrom(project, todo))
         for (hack in comment.hacks) hacks.add(HackUiModel.getFrom(project, hack))
 
