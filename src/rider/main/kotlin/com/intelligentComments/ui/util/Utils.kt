@@ -1,4 +1,4 @@
-package com.intelligentComments.ui
+package com.intelligentComments.ui.util
 
 import com.intelligentComments.ui.comments.model.HighlightedTextUiWrapper
 import com.intelligentComments.ui.comments.model.HighlighterUiModel
@@ -6,7 +6,6 @@ import com.intelligentComments.ui.comments.model.IntelligentCommentUiModel
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intelligentComments.ui.comments.renderers.CommentAuthorsRenderer
 import com.intelligentComments.ui.comments.renderers.invariants.InvariantsRenderer
-import com.intelligentComments.ui.comments.renderers.references.DependencyReferenceRenderer
 import com.intelligentComments.ui.comments.renderers.references.ReferencesRenderer
 import com.intelligentComments.ui.comments.renderers.segments.SegmentsRenderer
 import com.intelligentComments.ui.comments.renderers.todos.ToDosRenderer
@@ -14,59 +13,18 @@ import com.intelligentComments.ui.core.AttributedCharsIterator
 import com.intelligentComments.ui.core.RectangleModelBuildContext
 import com.intelligentComments.ui.core.RectanglesModel
 import com.intelligentComments.ui.core.Renderer
-import com.intellij.openapi.Disposable
 import com.intellij.openapi.editor.impl.EditorImpl
 import com.intellij.openapi.util.use
 import com.intellij.util.Range
 import com.intellij.util.ui.UIUtil
-import java.awt.*
+import java.awt.Font
+import java.awt.FontMetrics
+import java.awt.Graphics
+import java.awt.Rectangle
 import javax.swing.Icon
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.test.assertNotNull
-
-class UpdatedGraphicsCookie(private val graphics: Graphics,
-                            color: Color = graphics.color,
-                            font: Font = graphics.font) : Disposable {
-    private val previousColor = graphics.color
-    private val previousFont = graphics.font
-
-    init {
-        graphics.color = color
-        graphics.font = font
-    }
-
-    override fun dispose() {
-        graphics.color = previousColor
-        graphics.font = previousFont
-    }
-}
-
-class UpdatedRectCookie(private val rect: Rectangle,
-                        private val xDelta: Int = 0,
-                        private val yDelta: Int = 0,
-                        private val widthDelta: Int = 0,
-                        private val heightDelta: Int = 0) : Disposable {
-    private val initialRect = Rectangle(rect)
-
-    init {
-        rect.apply {
-            x += xDelta
-            y += yDelta
-            width += widthDelta
-            height += heightDelta
-        }
-    }
-
-    override fun dispose() {
-        rect.apply {
-            x = initialRect.x
-            y = initialRect.y
-            width = initialRect.width
-            height = initialRect.height
-        }
-    }
-}
 
 class WidthAndHeight {
     var width = 0

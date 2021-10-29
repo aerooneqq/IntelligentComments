@@ -1,6 +1,6 @@
 package com.intelligentComments.ui.comments.renderers.todos
 
-import com.intelligentComments.ui.CommentsUtil
+import com.intelligentComments.ui.util.CommentsUtil
 import com.intelligentComments.ui.comments.model.SectionWithHeaderUiModel
 import com.intelligentComments.ui.comments.model.ToDoUiModel
 import com.intelligentComments.ui.comments.renderers.VerticalSectionWithHeaderRenderer
@@ -52,7 +52,7 @@ class ToDosRendererImpl(private val section: SectionWithHeaderUiModel<ToDoUiMode
 
     override fun calculateContentWidth(editorImpl: EditorImpl): Int {
         var width = 0
-        executeActionWithToDosAndRenderers { todo, renderer ->
+        executeActionWithToDosAndRenderers { _, renderer ->
             width = max(width, renderer.calculateExpectedWidthInPixels(editorImpl))
         }
 
@@ -61,7 +61,7 @@ class ToDosRendererImpl(private val section: SectionWithHeaderUiModel<ToDoUiMode
 
     override fun calculateContentHeight(editorImpl: EditorImpl): Int {
         var height = 0
-        executeActionWithToDosAndRenderers { todo, renderer ->
+        executeActionWithToDosAndRenderers { _, renderer ->
             height += renderer.calculateExpectedHeightInPixels(editorImpl)
             height += deltaBetweenToDos
         }

@@ -1,7 +1,7 @@
 package com.intelligentComments.ui.comments.renderers.segments
 
-import com.intelligentComments.ui.CommentsUtil
-import com.intelligentComments.ui.UpdatedGraphicsCookie
+import com.intelligentComments.ui.util.CommentsUtil
+import com.intelligentComments.ui.util.UpdatedGraphicsCookie
 import com.intelligentComments.ui.colors.Colors
 import com.intelligentComments.ui.colors.ColorsProvider
 import com.intelligentComments.ui.comments.model.TableCellUiModel

@@ -2,7 +2,7 @@ package com.intelligentComments.ui.comments.renderers.segments
 
 import com.intelligentComments.core.domain.core.HorizontalAlignment
 import com.intelligentComments.core.domain.core.VerticalAlignment
-import com.intelligentComments.ui.UpdatedGraphicsCookie
+import com.intelligentComments.ui.util.UpdatedGraphicsCookie
 import com.intelligentComments.ui.comments.model.TableCellUiModel
 import com.intelligentComments.ui.core.RectangleModelBuildContext
 import com.intelligentComments.ui.core.RectangleModelBuildContributor
@@ -13,7 +13,6 @@ import com.intellij.openapi.editor.impl.EditorImpl
 import com.intellij.openapi.util.use
 import java.awt.Graphics
 import java.awt.Rectangle
-import java.lang.Integer.max
 
 class TableCellRenderer(private val cell: TableCellUiModel) : Renderer, RectangleModelBuildContributor {
     companion object {

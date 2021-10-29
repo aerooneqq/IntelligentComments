@@ -1,13 +1,12 @@
 package com.intelligentComments.ui.core
 
-import com.intelligentComments.ui.CommentsUtil
+import com.intelligentComments.ui.util.CommentsUtil
 import com.intelligentComments.ui.comments.model.IntelligentCommentUiModel
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intellij.openapi.editor.event.EditorMouseEvent
 import com.intellij.openapi.editor.impl.EditorImpl
 import com.jetbrains.rd.platform.util.application
 import com.jetbrains.rd.util.getOrCreate
-import java.awt.Point
 import java.awt.Rectangle
 
 class RectanglesModelHolder(private val uiModel: IntelligentCommentUiModel) {

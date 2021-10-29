@@ -1,7 +1,7 @@
 package com.intelligentComments.ui.comments.renderers.references
 
-import com.intelligentComments.ui.CommentsUtil
-import com.intelligentComments.ui.CommentsUtil.Companion.deltaBetweenHeaderAndContent
+import com.intelligentComments.ui.util.CommentsUtil
+import com.intelligentComments.ui.util.CommentsUtil.Companion.deltaBetweenHeaderAndContent
 import com.intelligentComments.ui.comments.model.ReferenceUiModel
 import com.intelligentComments.ui.comments.model.SectionWithHeaderUiModel
 import com.intelligentComments.ui.comments.renderers.VerticalSectionWithHeaderRenderer
@@ -45,8 +45,7 @@ class ReferencesRendererImpl(private val section: SectionWithHeaderUiModel<Refer
     }
 
     override fun calculateContentHeight(editorImpl: EditorImpl): Int {
-        var height = super.calculateExpectedHeightInPixels(editorImpl)
-
+        var height = 0
         for (reference in section.content) {
             height += ReferenceRenderer.getRendererFor(reference).calculateExpectedHeightInPixels(editorImpl)
             height += deltaBetweenReferences

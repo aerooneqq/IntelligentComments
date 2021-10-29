@@ -1,7 +1,7 @@
 package com.intelligentComments.ui.comments.renderers
 
-import com.intelligentComments.ui.CommentsUtil
-import com.intelligentComments.ui.CommentsUtil.Companion.heightDeltaBetweenSections
+import com.intelligentComments.ui.util.CommentsUtil
+import com.intelligentComments.ui.util.CommentsUtil.Companion.heightDeltaBetweenSections
 import com.intelligentComments.ui.comments.model.AuthorUiModel
 import com.intelligentComments.ui.core.RectangleModelBuildContext
 import com.intelligentComments.ui.core.RectangleModelBuildContributor

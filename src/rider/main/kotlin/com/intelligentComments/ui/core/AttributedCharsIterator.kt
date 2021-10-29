@@ -1,6 +1,6 @@
 package com.intelligentComments.ui.core
 
-import com.intelligentComments.ui.CommentsUtil
+import com.intelligentComments.ui.util.CommentsUtil
 import com.intelligentComments.ui.comments.model.HighlighterUiModel
 import java.awt.Font
 import java.awt.font.TextAttribute

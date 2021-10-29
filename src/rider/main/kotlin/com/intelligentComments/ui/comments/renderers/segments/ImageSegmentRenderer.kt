@@ -1,6 +1,6 @@
 package com.intelligentComments.ui.comments.renderers.segments
 
-import com.intelligentComments.ui.CommentsUtil
+import com.intelligentComments.ui.util.CommentsUtil
 import com.intelligentComments.ui.comments.model.DummyImageObserver
 import com.intelligentComments.ui.comments.model.ImageContentSegmentUiModel
 import com.intelligentComments.ui.core.RectangleModelBuildContext

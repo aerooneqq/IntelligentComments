@@ -1,6 +1,6 @@
 package com.intelligentComments.ui.comments.renderers
 
-import com.intelligentComments.ui.UpdatedRectCookie
+import com.intelligentComments.ui.util.UpdatedRectCookie
 import com.intelligentComments.ui.comments.model.HeaderUiModel
 import com.intelligentComments.ui.core.RectangleModelBuildContext
 import com.intelligentComments.ui.core.RectangleModelBuildContributor

@@ -1,7 +1,7 @@
 package com.intelligentComments.ui.comments.renderers
 
-import com.intelligentComments.ui.CommentsUtil
-import com.intelligentComments.ui.UpdatedGraphicsCookie
+import com.intelligentComments.ui.util.CommentsUtil
+import com.intelligentComments.ui.util.UpdatedGraphicsCookie
 import com.intelligentComments.ui.colors.Colors
 import com.intelligentComments.ui.colors.ColorsProvider
 import com.intelligentComments.ui.comments.model.IntelligentCommentUiModel
@@ -24,7 +24,7 @@ import java.awt.Rectangle
 
 class IntelligentCommentsRenderer(private val intelligentComment: IntelligentCommentUiModel) : EditorCustomElementRenderer {
     companion object {
-        private const val leftLineWidth = 3
+        private const val leftLineWidth = 2
         private const val deltaBetweenLeftLineAndContent = 10
 
         private val borderDeltas = Dimension(0, 5)

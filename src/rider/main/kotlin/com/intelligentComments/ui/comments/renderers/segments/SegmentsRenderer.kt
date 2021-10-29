@@ -1,7 +1,5 @@
 package com.intelligentComments.ui.comments.renderers.segments
 
-import com.intelligentComments.ui.CommentsUtil
-import com.intelligentComments.ui.CommentsUtil.Companion.deltaBetweenHeaderAndContent
 import com.intelligentComments.ui.comments.model.ContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.SectionWithHeaderUiModel
 import com.intelligentComments.ui.comments.renderers.VerticalSectionWithHeaderRenderer

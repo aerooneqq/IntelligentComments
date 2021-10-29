@@ -1,7 +1,5 @@
 package com.intelligentComments.ui.util
 
-import com.intelligentComments.ui.CommentsUtil
-import com.intelligentComments.ui.UpdatedGraphicsCookie
 import com.intellij.openapi.editor.impl.EditorImpl
 import com.intellij.openapi.util.use
 import java.awt.Color

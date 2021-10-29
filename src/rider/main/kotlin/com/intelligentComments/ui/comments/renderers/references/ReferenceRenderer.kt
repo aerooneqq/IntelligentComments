@@ -1,7 +1,6 @@
 package com.intelligentComments.ui.comments.renderers.references
 
-import com.intelligentComments.ui.CommentsUtil
-import com.intelligentComments.ui.UpdatedGraphicsCookie
+import com.intelligentComments.ui.util.CommentsUtil
 import com.intelligentComments.ui.comments.model.DependencyReferenceUiModel
 import com.intelligentComments.ui.comments.model.ReferenceUiModel
 import com.intelligentComments.ui.comments.renderers.ExpandableContentWithHeader
@@ -9,9 +8,7 @@ import com.intelligentComments.ui.core.RectangleModelBuildContext
 import com.intelligentComments.ui.core.RectangleModelBuildContributor
 import com.intelligentComments.ui.core.RectanglesModel
 import com.intelligentComments.ui.core.Renderer
-import com.intelligentComments.ui.util.HeaderWithBackground
 import com.intellij.openapi.editor.impl.EditorImpl
-import com.intellij.openapi.util.use
 import java.awt.Graphics
 import java.awt.Rectangle
 import kotlin.math.max

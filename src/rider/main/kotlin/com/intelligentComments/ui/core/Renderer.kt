@@ -1,6 +1,6 @@
 package com.intelligentComments.ui.core
 
-import com.intelligentComments.ui.WidthAndHeight
+import com.intelligentComments.ui.util.WidthAndHeight
 import com.intellij.openapi.editor.impl.EditorImpl
 import java.awt.Graphics
 import java.awt.Rectangle
