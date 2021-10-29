@@ -81,12 +81,15 @@ class IntelligentCommentUiModel(project: Project,
     }
 
     override fun hashCode(): Int {
-        return authorsSection.hashCode() % HashUtil.mod *
-               todosSection.hashCode() % HashUtil.mod *
-               hacksSection.hashCode() % HashUtil.mod *
-               referencesSection.hashCode() % HashUtil.mod *
-               invariantsSection.hashCode() % HashUtil.mod *
-               contentSection.hashCode() % HashUtil.mod
+        val hashCode = authorsSection.hashCode() % HashUtil.mod *
+                       todosSection.hashCode() % HashUtil.mod *
+                       hacksSection.hashCode() % HashUtil.mod *
+                       referencesSection.hashCode() % HashUtil.mod *
+                       invariantsSection.hashCode() % HashUtil.mod *
+                       contentSection.hashCode() % HashUtil.mod
+
+        assert(hashCode != 0)
+        return hashCode
     }
 
     override fun equals(other: Any?): Boolean = other is IntelligentCommentUiModel && other.hashCode() == hashCode()

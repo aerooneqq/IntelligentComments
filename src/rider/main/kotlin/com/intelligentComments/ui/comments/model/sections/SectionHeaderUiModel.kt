@@ -36,7 +36,7 @@ class SectionHeaderUiModel(project: Project,
         return object : TextHighlighter {
             override val startOffset: Int = 0
             override val endOffset: Int = text.length
-            override val attributes: TextAttributes = TextAttributesImpl(false, TextAttribute.WEIGHT_REGULAR, Font.PLAIN)
+            override val attributes: TextAttributes = TextAttributesImpl.defaultAttributes
             override val textColor: Color = defaultColor
             override val backgroundStyle: BackgroundStyle? = null
             override val mouseInOutAnimation: MouseInOutAnimation = ForegroundTextAnimation(hoveredColor, defaultColor)

@@ -23,7 +23,6 @@ class RectanglesModelHolder(private val uiModel: IntelligentCommentUiModel) {
         application.assertIsDispatchThread()
         val oldModel = model
         val hashCode = uiModel.hashCode()
-
         if (oldModel != null && hashCode == lastUpdateHash) return oldModel
 
         val newModel = RectanglesModelUtil.buildRectanglesModel(editor, uiModel, xDelta, yDelta)

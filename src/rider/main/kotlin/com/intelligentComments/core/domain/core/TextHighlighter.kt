@@ -2,6 +2,8 @@ package com.intelligentComments.core.domain.core
 
 import com.intelligentComments.ui.comments.model.highlighters.HighlighterUiModel
 import java.awt.Color
+import java.awt.Font
+import java.awt.font.TextAttribute
 
 
 interface TextHighlighter : UniqueEntity {
@@ -30,7 +32,11 @@ interface TextAttributes {
 
 data class TextAttributesImpl(override val underline: Boolean,
                               override val weight: Float,
-                              override val style: Int) : TextAttributes
+                              override val style: Int) : TextAttributes {
+    companion object {
+        val defaultAttributes = TextAttributesImpl(false, TextAttribute.WEIGHT_REGULAR, Font.PLAIN)
+    }
+}
 
 class UnderlineTextAnimation : MouseInOutAnimation {
     override fun applyTo(uiModel: HighlighterUiModel, mouseIn: Boolean): Boolean {

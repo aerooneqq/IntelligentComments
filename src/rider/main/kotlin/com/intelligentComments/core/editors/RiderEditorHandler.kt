@@ -111,7 +111,7 @@ This method depends on the synchronous nature of Method1,""".trimMargin(),
         }
 
         fun getToDo(): RdToDo {
-            val tickets = mutableListOf(getTicket())
+            val tickets = mutableListOf(getTicket(), getTicket(), getTicket(), getTicket())
             val description = RdContentSegments(mutableListOf(RdTextSegment(RdHighlightedText("This code", null))))
             val references = mutableListOf(getReference())
             return RdToDoWithTickets(tickets, getAuthor(), "Uncomment this code after 213", contentSegments, references)

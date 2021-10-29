@@ -24,6 +24,8 @@ object Colors {
 
     val TextDefaultColor = ColorName("text.default.color")
     val TextDefaultHoveredColor = ColorName("text.default.color.hovered")
+    val TextUrlColor = ColorName("text.url.color")
+    val TextUrlColorHovered = ColorName("text.url.color.hovered")
 
     val ListItemBulletBackground = ColorName("list.item.bullet.background.color")
 
