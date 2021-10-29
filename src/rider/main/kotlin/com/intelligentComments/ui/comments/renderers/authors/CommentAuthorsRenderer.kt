@@ -1,16 +1,15 @@
 package com.intelligentComments.ui.comments.renderers
 
-import com.intelligentComments.ui.util.CommentsUtil
-import com.intelligentComments.ui.util.CommentsUtil.Companion.heightDeltaBetweenSections
+import com.intelligentComments.ui.util.TextUtil
 import com.intelligentComments.ui.comments.model.authors.AuthorUiModel
 import com.intelligentComments.ui.core.RectangleModelBuildContext
 import com.intelligentComments.ui.core.RectangleModelBuildContributor
 import com.intelligentComments.ui.core.RectanglesModel
 import com.intelligentComments.ui.core.Renderer
+import com.intelligentComments.ui.util.RectanglesModelUtil.Companion.heightDeltaBetweenSections
 import com.intellij.openapi.editor.impl.EditorImpl
 import java.awt.Graphics
 import java.awt.Rectangle
-import kotlin.math.max
 
 interface CommentAuthorsRenderer : Renderer, RectangleModelBuildContributor {
     companion object {
@@ -35,7 +34,7 @@ class CommentAuthorsRendererImpl(private val authors: Collection<AuthorUiModel>)
                         rect: Rectangle,
                         editorImpl: EditorImpl,
                         rectanglesModel: RectanglesModel): Rectangle {
-        return CommentsUtil.renderText(g, rect, editorImpl, getText(), heightDeltaBetweenSections)
+        return TextUtil.renderText(g, rect, editorImpl, getText(), heightDeltaBetweenSections)
     }
 
     private fun getText(): String {
@@ -54,11 +53,11 @@ class CommentAuthorsRendererImpl(private val authors: Collection<AuthorUiModel>)
     }
 
     override fun calculateExpectedHeightInPixels(editorImpl: EditorImpl): Int {
-        return CommentsUtil.getTextHeight(editorImpl, null)
+        return TextUtil.getTextHeight(editorImpl, null)
     }
 
     override fun calculateExpectedWidthInPixels(editorImpl: EditorImpl): Int {
-        return CommentsUtil.getTextWidth(editorImpl, getText())
+        return TextUtil.getTextWidth(editorImpl, getText())
     }
 
     override fun accept(context: RectangleModelBuildContext) {
@@ -68,8 +67,8 @@ class CommentAuthorsRendererImpl(private val authors: Collection<AuthorUiModel>)
         val rect = Rectangle(context.rect.x, context.rect.y, width, height)
 
         context.rectanglesModel.addElement(interactionModel, rect)
-        context.widthAndHeight.height += height
-        context.widthAndHeight.width = max(context.widthAndHeight.width, width)
+        context.widthAndHeight.updateHeightSum(height)
+        context.widthAndHeight.updateWidthMax(width)
         context.rect.y += height
     }
 }

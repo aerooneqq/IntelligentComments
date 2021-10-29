@@ -1,8 +1,8 @@
 package com.intelligentComments.ui.core
 
-import com.intelligentComments.ui.util.CommentsUtil
 import com.intelligentComments.ui.comments.model.IntelligentCommentUiModel
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
+import com.intelligentComments.ui.util.RectanglesModelUtil
 import com.intellij.openapi.editor.event.EditorMouseEvent
 import com.intellij.openapi.editor.impl.EditorImpl
 import com.jetbrains.rd.platform.util.application
@@ -26,7 +26,7 @@ class RectanglesModelHolder(private val uiModel: IntelligentCommentUiModel) {
 
         if (oldModel != null && hashCode == lastUpdateHash) return oldModel
 
-        val newModel = CommentsUtil.buildRectanglesModel(editor, uiModel, xDelta, yDelta)
+        val newModel = RectanglesModelUtil.buildRectanglesModel(editor, uiModel, xDelta, yDelta)
         lastUpdateHash = hashCode
         model = newModel
         return newModel

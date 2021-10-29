@@ -1,6 +1,6 @@
 package com.intelligentComments.ui.core
 
-import com.intelligentComments.ui.util.CommentsUtil
+import com.intelligentComments.ui.util.TextUtil
 import com.intelligentComments.ui.comments.model.highlighters.HighlighterUiModel
 import java.awt.Font
 import java.awt.font.TextAttribute
@@ -23,8 +23,8 @@ class AttributedCharsIterator(private val chars: CharArray,
         attributes[TextAttribute.FOREGROUND] = highlighter.textColor
         attributes[TextAttribute.WEIGHT] = highlighter.weight
         attributes[TextAttribute.FONT] = when(highlighter.style) {
-            Font.BOLD -> CommentsUtil.boldFont
-            else -> CommentsUtil.font
+            Font.BOLD -> TextUtil.boldFont
+            else -> TextUtil.font
         }
     }
 

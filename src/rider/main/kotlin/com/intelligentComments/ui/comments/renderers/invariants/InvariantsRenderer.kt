@@ -1,7 +1,5 @@
 package com.intelligentComments.ui.comments.renderers.invariants
 
-import com.intelligentComments.ui.util.CommentsUtil
-import com.intelligentComments.ui.util.CommentsUtil.Companion.deltaBetweenHeaderAndContent
 import com.intelligentComments.ui.comments.model.invariants.InvariantUiModel
 import com.intelligentComments.ui.comments.model.sections.SectionWithHeaderUiModel
 import com.intelligentComments.ui.comments.renderers.VerticalSectionWithHeaderRenderer
@@ -10,6 +8,8 @@ import com.intelligentComments.ui.core.RectangleModelBuildContext
 import com.intelligentComments.ui.core.RectangleModelBuildContributor
 import com.intelligentComments.ui.core.RectanglesModel
 import com.intelligentComments.ui.core.Renderer
+import com.intelligentComments.ui.util.RectanglesModelUtil
+import com.intelligentComments.ui.util.RectanglesModelUtil.Companion.deltaBetweenHeaderAndContent
 import com.intellij.openapi.editor.impl.EditorImpl
 import java.awt.Graphics
 import java.awt.Rectangle
@@ -71,7 +71,7 @@ class InvariantsRendererImpl(private val section: SectionWithHeaderUiModel<Invar
 
     override fun acceptContent(context: RectangleModelBuildContext) {
         val rect = context.rect
-        CommentsUtil.addHeightDeltaTo(context.widthAndHeight, rect, deltaBetweenHeaderAndContent)
+        RectanglesModelUtil.addHeightDeltaTo(context.widthAndHeight, rect, deltaBetweenHeaderAndContent)
 
         val startX = rect.x
         for (invariant in section.content) {
@@ -87,7 +87,7 @@ class InvariantsRendererImpl(private val section: SectionWithHeaderUiModel<Invar
         val width = calculateContentWidth(context.editorImpl)
         rect.x = startX
 
-        CommentsUtil.addHeightDeltaTo(context, height)
-        context.widthAndHeight.width = max(context.widthAndHeight.width, width)
+        RectanglesModelUtil.addHeightDeltaTo(context, height)
+        context.widthAndHeight.updateWidthMax(width)
     }
 }

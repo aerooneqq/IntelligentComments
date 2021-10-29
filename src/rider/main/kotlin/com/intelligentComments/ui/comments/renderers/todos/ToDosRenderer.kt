@@ -7,7 +7,9 @@ import com.intelligentComments.ui.core.RectangleModelBuildContext
 import com.intelligentComments.ui.core.RectangleModelBuildContributor
 import com.intelligentComments.ui.core.RectanglesModel
 import com.intelligentComments.ui.core.Renderer
-import com.intelligentComments.ui.util.CommentsUtil
+import com.intelligentComments.ui.util.TextUtil
+import com.intelligentComments.ui.util.RectanglesModelUtil
+import com.intelligentComments.ui.util.RectanglesModelUtil.Companion.deltaBetweenHeaderAndContent
 import com.intellij.openapi.editor.impl.EditorImpl
 import java.awt.Graphics
 import java.awt.Rectangle
@@ -70,14 +72,14 @@ class ToDosRendererImpl(private val section: SectionWithHeaderUiModel<ToDoUiMode
     }
 
     override fun acceptContent(context: RectangleModelBuildContext) {
-        CommentsUtil.addHeightDeltaTo(context.widthAndHeight, context.rect, CommentsUtil.deltaBetweenHeaderAndContent)
+        RectanglesModelUtil.addHeightDeltaTo(context.widthAndHeight, context.rect, deltaBetweenHeaderAndContent)
 
         executeActionWithToDosAndRenderers { todo, renderer ->
             renderer.accept(context)
-            CommentsUtil.updateHeightAndAddModel(renderer, context, todo)
-            CommentsUtil.addHeightDeltaTo(context.widthAndHeight, context.rect, deltaBetweenToDos)
+            RectanglesModelUtil.updateHeightAndWidthAndAddModel(renderer, context, todo)
+            RectanglesModelUtil.addHeightDeltaTo(context.widthAndHeight, context.rect, deltaBetweenToDos)
         }
 
-        CommentsUtil.addHeightDeltaTo(context.widthAndHeight, context.rect, -deltaBetweenToDos)
+        RectanglesModelUtil.addHeightDeltaTo(context.widthAndHeight, context.rect, -deltaBetweenToDos)
     }
 }

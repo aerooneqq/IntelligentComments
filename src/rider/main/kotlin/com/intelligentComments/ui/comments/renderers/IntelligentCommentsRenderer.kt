@@ -1,6 +1,6 @@
 package com.intelligentComments.ui.comments.renderers
 
-import com.intelligentComments.ui.util.CommentsUtil
+import com.intelligentComments.ui.util.TextUtil
 import com.intelligentComments.ui.util.UpdatedGraphicsCookie
 import com.intelligentComments.ui.colors.Colors
 import com.intelligentComments.ui.colors.ColorsProvider
@@ -27,7 +27,7 @@ class IntelligentCommentsRenderer(private val intelligentComment: IntelligentCom
         private const val leftLineWidth = 2
         private const val deltaBetweenLeftLineAndContent = 10
 
-        private val borderDeltas = Dimension(0, 5)
+        private val borderDeltas = Dimension(0, 0)
     }
 
     private val myRectanglesModelHolder = RectanglesModelHolder(intelligentComment)
@@ -61,7 +61,7 @@ class IntelligentCommentsRenderer(private val intelligentComment: IntelligentCom
 
         val colorsProvider = project.service<ColorsProvider>()
         val defaultTextColor = colorsProvider.getColorFor(Colors.TextDefaultColor)
-        UpdatedGraphicsCookie(g, defaultTextColor, CommentsUtil.font).use {
+        UpdatedGraphicsCookie(g, defaultTextColor, TextUtil.font).use {
             val editorImpl = inlay.editor as? EditorImpl ?: return
 
             var adjustedRect = adjustContentRect(rect)

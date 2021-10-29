@@ -1,6 +1,6 @@
 package com.intelligentComments.ui.comments.renderers.segments
 
-import com.intelligentComments.ui.util.CommentsUtil
+import com.intelligentComments.ui.util.TextUtil
 import com.intelligentComments.ui.util.UpdatedGraphicsCookie
 import com.intelligentComments.ui.colors.Colors
 import com.intelligentComments.ui.colors.ColorsProvider
@@ -80,7 +80,7 @@ class TableSegmentRenderer(private val table: TableContentSegmentUiModel) : Segm
                               editorImpl: EditorImpl) {
         val text = table.header.highlightedTextUiWrapper.text
         val highlighters = table.header.highlightedTextUiWrapper.highlighters
-        CommentsUtil.renderLine(g, rect, editorImpl, text, highlighters, 0)
+        TextUtil.renderLine(g, rect, editorImpl, text, highlighters, 0)
     }
 
     private fun executeActionOverCellsAndRectangles(rowsHeights: List<Int>,
@@ -178,7 +178,7 @@ class TableSegmentRenderer(private val table: TableContentSegmentUiModel) : Segm
     private fun calculateCellsHeight(editorImpl: EditorImpl) = calculateRowsHeights(editorImpl).sum()
     private fun calculateNameHeight(editorImpl: EditorImpl): Int {
         val highlighters = table.header.highlightedTextUiWrapper.highlighters
-        return CommentsUtil.getLineHeightWithHighlighters(editorImpl, highlighters)
+        return TextUtil.getLineHeightWithHighlighters(editorImpl, highlighters)
     }
 
     override fun calculateExpectedWidthInPixels(editorImpl: EditorImpl): Int {
@@ -189,7 +189,7 @@ class TableSegmentRenderer(private val table: TableContentSegmentUiModel) : Segm
 
     private fun calculateCellsWidth(editorImpl: EditorImpl) = calculateColsWidths(editorImpl).sum()
     private fun calculateNameWidth(editorImpl: EditorImpl): Int {
-        return CommentsUtil.getTextWidthWithHighlighters(editorImpl, table.header.highlightedTextUiWrapper)
+        return TextUtil.getTextWidthWithHighlighters(editorImpl, table.header.highlightedTextUiWrapper)
     }
 
     override fun accept(context: RectangleModelBuildContext) {

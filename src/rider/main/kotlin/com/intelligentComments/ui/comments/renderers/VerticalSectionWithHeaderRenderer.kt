@@ -2,15 +2,16 @@ package com.intelligentComments.ui.comments.renderers
 
 import com.intelligentComments.ui.colors.Colors
 import com.intelligentComments.ui.colors.ColorsProvider
-import com.intelligentComments.ui.util.CommentsUtil
-import com.intelligentComments.ui.util.CommentsUtil.Companion.deltaBetweenHeaderAndContent
-import com.intelligentComments.ui.util.CommentsUtil.Companion.deltaBetweenIconAndTextInHeader
+import com.intelligentComments.ui.util.TextUtil
+import com.intelligentComments.ui.util.TextUtil.Companion.deltaBetweenIconAndTextInHeader
 import com.intelligentComments.ui.comments.model.sections.SectionWithHeaderUiModel
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intelligentComments.ui.core.RectangleModelBuildContext
 import com.intelligentComments.ui.core.RectangleModelBuildContributor
 import com.intelligentComments.ui.core.RectanglesModel
 import com.intelligentComments.ui.core.Renderer
+import com.intelligentComments.ui.util.RectanglesModelUtil
+import com.intelligentComments.ui.util.RectanglesModelUtil.Companion.deltaBetweenHeaderAndContent
 import com.intelligentComments.ui.util.UpdatedGraphicsCookie
 import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.impl.EditorImpl
@@ -38,7 +39,7 @@ abstract class VerticalSectionWithHeaderRenderer<T : UiInteractionModelBase>(
                               editorImpl: EditorImpl,
                               rectanglesModel: RectanglesModel): Rectangle {
         val deltaAfterHeader = if (shouldRenderContent) deltaBetweenHeaderAndContent else 0
-        var adjustedRect = CommentsUtil.renderTextWithIcon(g, rect, editorImpl, highlightedText, icon, 2, deltaAfterHeader)
+        var adjustedRect = TextUtil.renderTextWithIcon(g, rect, editorImpl, highlightedText, icon, 2, deltaAfterHeader)
 
         if (section.isExpanded) {
             drawLeftLine(g, adjustedRect, editorImpl)
@@ -54,7 +55,7 @@ abstract class VerticalSectionWithHeaderRenderer<T : UiInteractionModelBase>(
             }
         }
 
-        CommentsUtil.addDeltaBetweenSections(adjustedRect)
+        RectanglesModelUtil.addDeltaBetweenSections(adjustedRect)
         return adjustedRect
     }
 
@@ -75,14 +76,14 @@ abstract class VerticalSectionWithHeaderRenderer<T : UiInteractionModelBase>(
                                          rectanglesModel: RectanglesModel): Rectangle
 
     final override fun calculateExpectedHeightInPixels(editorImpl: EditorImpl): Int {
-        val height = CommentsUtil.calculateTextHeightWithIcon(editorImpl, icon, highlightedText)
+        val height = TextUtil.calculateTextHeightWithIcon(editorImpl, icon, highlightedText)
         return if (shouldRenderContent) height + calculateContentHeight(editorImpl) else height
     }
 
     protected abstract fun calculateContentWidth(editorImpl: EditorImpl): Int
 
     final override fun calculateExpectedWidthInPixels(editorImpl: EditorImpl): Int {
-        val width = CommentsUtil.calculateWidthOfTextWithIcon(editorImpl, icon, deltaBetweenIconAndTextInHeader, highlightedText)
+        val width = TextUtil.calculateWidthOfTextWithIcon(editorImpl, icon, deltaBetweenIconAndTextInHeader, highlightedText)
         return if (shouldRenderContent) max(width, calculateContentWidth(editorImpl) + leftContentIndent) else width
     }
 
@@ -94,19 +95,22 @@ abstract class VerticalSectionWithHeaderRenderer<T : UiInteractionModelBase>(
         val headerText = section.headerUiModel.headerText
 
         val headerRect = Rectangle(rect).apply {
-            height = CommentsUtil.calculateTextHeightWithIcon(context.editorImpl, icon, headerText)
-            width = CommentsUtil.calculateWidthOfTextWithIcon(context.editorImpl, icon, deltaBetweenIconAndTextInHeader, headerText)
+            height = TextUtil.calculateTextHeightWithIcon(context.editorImpl, icon, headerText)
+            width = TextUtil.calculateWidthOfTextWithIcon(context.editorImpl, icon, deltaBetweenIconAndTextInHeader, headerText)
         }
 
         val sectionHeaderModel = section.headerUiModel
         context.rectanglesModel.addElement(sectionHeaderModel, headerRect)
         context.rectanglesModel.addElement(highlightedText.highlighters[0], headerRect)
 
-        CommentsUtil.addHeightDeltaTo(context, headerRect.height)
+        RectanglesModelUtil.addHeightDeltaTo(context, headerRect.height)
 
         if (shouldRenderContent) {
             context.rect.x += leftContentIndent
-            acceptContent(context)
+            context.widthAndHeight.executeWithAdditionalWidth(leftContentIndent) {
+                acceptContent(context)
+            }
+
             context.rect.x -= leftContentIndent
         }
     }

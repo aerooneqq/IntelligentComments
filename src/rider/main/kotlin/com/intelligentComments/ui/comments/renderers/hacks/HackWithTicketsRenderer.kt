@@ -38,5 +38,4 @@ class HackWithTicketsRenderer(hack: HackWithTickets, project: Project) : HackRen
     override fun accept(context: RectangleModelBuildContext) {
         TODO("Not yet implemented")
     }
-
 }

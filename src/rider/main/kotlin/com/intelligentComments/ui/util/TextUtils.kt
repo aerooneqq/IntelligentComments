@@ -2,17 +2,8 @@ package com.intelligentComments.ui.util
 
 import com.intelligentComments.ui.comments.model.highlighters.HighlightedTextUiWrapper
 import com.intelligentComments.ui.comments.model.highlighters.HighlighterUiModel
-import com.intelligentComments.ui.comments.model.IntelligentCommentUiModel
-import com.intelligentComments.ui.comments.model.UiInteractionModelBase
-import com.intelligentComments.ui.comments.renderers.CommentAuthorsRenderer
-import com.intelligentComments.ui.comments.renderers.invariants.InvariantsRenderer
-import com.intelligentComments.ui.comments.renderers.references.ReferencesRenderer
-import com.intelligentComments.ui.comments.renderers.segments.SegmentsRenderer
-import com.intelligentComments.ui.comments.renderers.todos.ToDosRenderer
 import com.intelligentComments.ui.core.AttributedCharsIterator
 import com.intelligentComments.ui.core.RectangleModelBuildContext
-import com.intelligentComments.ui.core.RectanglesModel
-import com.intelligentComments.ui.core.Renderer
 import com.intellij.openapi.editor.impl.EditorImpl
 import com.intellij.openapi.util.use
 import com.intellij.util.Range
@@ -26,21 +17,13 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.test.assertNotNull
 
-class WidthAndHeight {
-    var width = 0
-    var height = 0
-}
-
-class CommentsUtil {
+class TextUtil {
     companion object {
         val font: Font = UIUtil.getLabelFont().deriveFont(12f)
         val boldFont: Font = font.deriveFont(Font.BOLD).deriveFont(14f)
 
-        private const val minCommentHeightPx = 0
-        const val heightDeltaBetweenSections = 10
-        const val deltaBetweenHeaderAndContent = 5
         const val deltaBetweenIconAndTextInHeader = 2
-        const val textHeightAdditionFactor = 2
+        private const val textHeightAdditionFactor = 2
 
         fun getFontMetrics(editorImpl: EditorImpl, highlighterUiModel: HighlighterUiModel?): FontMetrics {
             return when(highlighterUiModel?.style) {
@@ -380,78 +363,6 @@ class CommentsUtil {
 
                 yDelta += lineHeight
             }
-        }
-
-        fun addDeltaBetweenSections(rect: Rectangle) {
-            addHeightDelta(rect, heightDeltaBetweenSections)
-        }
-
-        fun addHeightDelta(rect: Rectangle, delta: Int) {
-            rect.y += delta
-            rect.height -= delta
-        }
-
-        fun buildRectanglesModel(editorImpl: EditorImpl,
-                                 intelligentComment: IntelligentCommentUiModel,
-                                 xDelta: Int,
-                                 yDelta: Int): RectanglesModel {
-            val widthAndHeight = WidthAndHeight().apply {
-                height = minCommentHeightPx
-            }
-
-            val initialRect = Rectangle(xDelta, yDelta, Int.MAX_VALUE, Int.MAX_VALUE)
-            val model = RectanglesModel()
-            val buildContext = RectangleModelBuildContext(model, widthAndHeight, initialRect, editorImpl)
-
-            fun updateRectYAndHeight(delta: Int) {
-                initialRect.y += delta
-                widthAndHeight.height += delta
-            }
-
-            CommentAuthorsRenderer.getRendererFor(intelligentComment.authorsSection.content).accept(buildContext)
-            updateRectYAndHeight(heightDeltaBetweenSections)
-
-            SegmentsRenderer.getRendererFor(intelligentComment.contentSection).accept(buildContext)
-            updateRectYAndHeight(heightDeltaBetweenSections)
-
-            ReferencesRenderer.getRendererFor(intelligentComment.referencesSection).accept(buildContext)
-            updateRectYAndHeight(heightDeltaBetweenSections)
-
-            InvariantsRenderer.getRendererFor(intelligentComment.invariantsSection).accept(buildContext)
-            updateRectYAndHeight(heightDeltaBetweenSections)
-
-            ToDosRenderer.getRendererFor(intelligentComment.todosSection).accept(buildContext)
-            updateRectYAndHeight(heightDeltaBetweenSections)
-
-            model.addElement(intelligentComment, Rectangle(xDelta, yDelta, widthAndHeight.width, widthAndHeight.height))
-
-            return model.apply {
-                setSize(widthAndHeight.width, widthAndHeight.height)
-                seal()
-            }
-        }
-
-        fun updateHeightAndAddModel(renderer: Renderer,
-                                    context: RectangleModelBuildContext,
-                                    uiInteractionModel: UiInteractionModelBase) {
-            val width = renderer.calculateExpectedWidthInPixels(context.editorImpl)
-            val height = renderer.calculateExpectedHeightInPixels(context.editorImpl)
-
-            context.widthAndHeight.height += height
-            context.widthAndHeight.width = max(width, context.widthAndHeight.width)
-
-            val rect = context.rect
-            context.rectanglesModel.addElement(uiInteractionModel, Rectangle(rect.x, rect.y, width, height))
-            rect.y += height
-        }
-
-        fun addHeightDeltaTo(widthAndHeight: WidthAndHeight, rect: Rectangle, delta: Int) {
-            widthAndHeight.height += delta
-            rect.y += delta
-        }
-
-        fun addHeightDeltaTo(context: RectangleModelBuildContext, delta: Int) {
-            addHeightDeltaTo(context.widthAndHeight, context.rect, delta)
         }
     }
 }

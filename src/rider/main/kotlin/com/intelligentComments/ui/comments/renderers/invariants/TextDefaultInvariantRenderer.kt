@@ -1,6 +1,6 @@
 package com.intelligentComments.ui.comments.renderers.invariants
 
-import com.intelligentComments.ui.util.CommentsUtil
+import com.intelligentComments.ui.util.TextUtil
 import com.intelligentComments.ui.util.UpdatedGraphicsCookie
 import com.intelligentComments.ui.comments.model.invariants.TextInvariantUiModel
 import com.intelligentComments.ui.core.RectanglesModel
@@ -30,7 +30,7 @@ class TextDefaultInvariantRenderer(private val invariant: TextInvariantUiModel) 
     }
 
     private fun calculateWidth(editorImpl: EditorImpl): Int {
-        return CommentsUtil.getTextWidth(editorImpl, invariant.text) + 10
+        return TextUtil.getTextWidth(editorImpl, invariant.text) + 10
     }
 
     override fun calculateWidthWithInvariantInterval(editorImpl: EditorImpl): Int {

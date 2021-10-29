@@ -1,10 +1,11 @@
 package com.intelligentComments.ui.comments.renderers.segments
 
-import com.intelligentComments.ui.util.CommentsUtil
+import com.intelligentComments.ui.util.TextUtil
 import com.intelligentComments.ui.comments.model.content.image.DummyImageObserver
 import com.intelligentComments.ui.comments.model.content.image.ImageContentSegmentUiModel
 import com.intelligentComments.ui.core.RectangleModelBuildContext
 import com.intelligentComments.ui.core.RectanglesModel
+import com.intelligentComments.ui.util.RectanglesModelUtil
 import com.intellij.openapi.editor.impl.EditorImpl
 import java.awt.Graphics
 import java.awt.Rectangle
@@ -41,8 +42,8 @@ class ImageSegmentRenderer(private val model: ImageContentSegmentUiModel) : Segm
 
         g.drawImage(imageHolder.image, adjustedX, rect.y, imageHolder.width, imageHolder.height, DummyImageObserver.instance)
         val adjustedRect = Rectangle(rect)
-        CommentsUtil.addHeightDelta(adjustedRect, imageHolder.height)
-        CommentsUtil.addHeightDelta(adjustedRect, deltaBetweenImageAndDescription)
+        RectanglesModelUtil.addHeightDelta(adjustedRect, imageHolder.height)
+        RectanglesModelUtil.addHeightDelta(adjustedRect, deltaBetweenImageAndDescription)
         return adjustedRect.apply {
             x = initialX
         }
@@ -65,7 +66,7 @@ class ImageSegmentRenderer(private val model: ImageContentSegmentUiModel) : Segm
                 rect
             }
 
-            return CommentsUtil.renderLine(g, rectForText, editorImpl, text.text, text.highlighters, deltaAfterDescription).apply {
+            return TextUtil.renderLine(g, rectForText, editorImpl, text.text, text.highlighters, deltaAfterDescription).apply {
                 x = initialX
             }
         }
@@ -75,7 +76,7 @@ class ImageSegmentRenderer(private val model: ImageContentSegmentUiModel) : Segm
 
     private fun calculateDescriptionWidth(editorImpl: EditorImpl): Int {
         val description = model.description ?: return 0
-        return CommentsUtil.getTextWidthWithHighlighters(editorImpl, description)
+        return TextUtil.getTextWidthWithHighlighters(editorImpl, description)
     }
 
     override fun calculateExpectedHeightInPixels(editorImpl: EditorImpl): Int {
@@ -87,7 +88,7 @@ class ImageSegmentRenderer(private val model: ImageContentSegmentUiModel) : Segm
     private fun getDescriptionHeight(editorImpl: EditorImpl): Int {
         val highlighters = model.description?.highlighters
         return if (highlighters != null) {
-            CommentsUtil.getLineHeightWithHighlighters(editorImpl, highlighters) + deltaAfterDescription
+            TextUtil.getLineHeightWithHighlighters(editorImpl, highlighters) + deltaAfterDescription
         } else {
             0
         }
@@ -96,7 +97,7 @@ class ImageSegmentRenderer(private val model: ImageContentSegmentUiModel) : Segm
     private fun getDescriptionWidth(editorImpl: EditorImpl): Int {
         val text = model.description
         return if (text != null) {
-            CommentsUtil.getTextWidthWithHighlighters(editorImpl, text)
+            TextUtil.getTextWidthWithHighlighters(editorImpl, text)
         } else {
             0
         }

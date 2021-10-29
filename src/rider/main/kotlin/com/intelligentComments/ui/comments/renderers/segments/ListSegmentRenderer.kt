@@ -1,6 +1,6 @@
 package com.intelligentComments.ui.comments.renderers.segments
 
-import com.intelligentComments.ui.util.CommentsUtil
+import com.intelligentComments.ui.util.TextUtil
 import com.intelligentComments.ui.util.UpdatedGraphicsCookie
 import com.intelligentComments.ui.util.UpdatedRectCookie
 import com.intelligentComments.ui.colors.Colors
@@ -21,7 +21,7 @@ import java.lang.Integer.max
 
 class ListSegmentRenderer(private val model: ListContentSegmentUiModel) : SegmentRenderer {
     companion object {
-        const val deltaBetweenHeaderAndContent = 2
+        private const val deltaBetweenListHeaderAndContent = 2
         const val leftIndentForListContent = 15
         const val bulletRadius = 6
     }
@@ -63,15 +63,15 @@ class ListSegmentRenderer(private val model: ListContentSegmentUiModel) : Segmen
         val header = model.header
         val headerText = header.textWrapper.text
         val headerHighlighters = header.textWrapper.highlighters
-        val delta = if (model.isExpanded) deltaBetweenHeaderAndContent else 0
-        return CommentsUtil.renderLine(g, rect, editorImpl, headerText, headerHighlighters, delta)
+        val delta = if (model.isExpanded) deltaBetweenListHeaderAndContent else 0
+        return TextUtil.renderLine(g, rect, editorImpl, headerText, headerHighlighters, delta)
     }
 
     private fun drawItemBullet(g: Graphics,
                                rect: Rectangle,
                                editorImpl: EditorImpl,
                                segment: ContentSegmentUiModel) {
-        val fontMetrics = CommentsUtil.getFontMetrics(editorImpl, null)
+        val fontMetrics = TextUtil.getFontMetrics(editorImpl, null)
 
         when (segment) {
             is ImageContentSegmentUiModel,
@@ -102,21 +102,21 @@ class ListSegmentRenderer(private val model: ListContentSegmentUiModel) : Segmen
 
     private fun getHeaderHeight(editorImpl: EditorImpl): Int {
         val highlighters = model.header.textWrapper.highlighters
-        return CommentsUtil.getLineHeightWithHighlighters(editorImpl, highlighters)
+        return TextUtil.getLineHeightWithHighlighters(editorImpl, highlighters)
     }
 
     private fun getHeaderHeightWithDelta(editorImpl: EditorImpl): Int {
         var height = getHeaderHeight(editorImpl)
-        height += if (model.isExpanded) deltaBetweenHeaderAndContent else 0
+        height += if (model.isExpanded) deltaBetweenListHeaderAndContent else 0
         return height
     }
 
     private fun getHeaderWidth(editorImpl: EditorImpl): Int {
-        return CommentsUtil.getTextWidth(editorImpl, model.header.textWrapper.text)
+        return TextUtil.getTextWidth(editorImpl, model.header.textWrapper.text)
     }
 
     override fun calculateExpectedWidthInPixels(editorImpl: EditorImpl): Int {
-        var headerWidth = CommentsUtil.getTextWidth(editorImpl, model.header.textWrapper.text)
+        var headerWidth = TextUtil.getTextWidth(editorImpl, model.header.textWrapper.text)
 
         executeIfExpanded {
             for (contentSegments in model.contentSegments) {
@@ -146,7 +146,7 @@ class ListSegmentRenderer(private val model: ListContentSegmentUiModel) : Segmen
 
     private fun acceptHeaderTextHighlighters(context: RectangleModelBuildContext) {
         val headerText = model.header.textWrapper
-        CommentsUtil.createRectanglesForHighlighters(headerText.text, headerText.highlighters, context)
+        TextUtil.createRectanglesForHighlighters(headerText.text, headerText.highlighters, context)
     }
 
     private fun acceptListItemsIfExpanded(context: RectangleModelBuildContext) {

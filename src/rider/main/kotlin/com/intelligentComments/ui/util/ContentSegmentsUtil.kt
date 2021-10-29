@@ -4,6 +4,7 @@ import com.intelligentComments.ui.comments.model.content.ContentSegmentUiModel
 import com.intelligentComments.ui.comments.renderers.segments.SegmentRenderer
 import com.intelligentComments.ui.core.RectangleModelBuildContext
 import com.intelligentComments.ui.core.RectanglesModel
+import com.intelligentComments.ui.util.RectanglesModelUtil.Companion.deltaBetweenHeaderAndContent
 import com.intellij.openapi.editor.impl.EditorImpl
 import java.awt.Graphics
 import java.awt.Rectangle
@@ -21,10 +22,10 @@ class ContentSegmentsUtil {
             var adjustedRect = Rectangle(rect)
             executeWithRenderers(contentSegments) { renderer, _ ->
                 adjustedRect = renderer.render(g, adjustedRect, editorImpl, rectanglesModel)
-                CommentsUtil.addHeightDelta(adjustedRect, deltaBetweenSegments)
+                RectanglesModelUtil.addHeightDelta(adjustedRect, deltaBetweenSegments)
             }
 
-            CommentsUtil.addHeightDelta(adjustedRect, -deltaBetweenSegments)
+            RectanglesModelUtil.addHeightDelta(adjustedRect, -deltaBetweenSegments)
             return adjustedRect
         }
 
@@ -57,15 +58,15 @@ class ContentSegmentsUtil {
         }
 
         fun accept(context: RectangleModelBuildContext, segments: Collection<ContentSegmentUiModel>) {
-            CommentsUtil.addHeightDeltaTo(context.widthAndHeight, context.rect, CommentsUtil.deltaBetweenHeaderAndContent)
+            RectanglesModelUtil.addHeightDeltaTo(context.widthAndHeight, context.rect, deltaBetweenHeaderAndContent)
 
             executeWithRenderers(segments) { renderer, segment ->
                 renderer.accept(context)
-                CommentsUtil.updateHeightAndAddModel(renderer, context, segment)
-                CommentsUtil.addHeightDeltaTo(context, deltaBetweenSegments)
+                RectanglesModelUtil.updateHeightAndWidthAndAddModel(renderer, context, segment)
+                RectanglesModelUtil.addHeightDeltaTo(context, deltaBetweenSegments)
             }
 
-            CommentsUtil.addHeightDeltaTo(context, -deltaBetweenSegments)
+            RectanglesModelUtil.addHeightDeltaTo(context, -deltaBetweenSegments)
         }
     }
 }

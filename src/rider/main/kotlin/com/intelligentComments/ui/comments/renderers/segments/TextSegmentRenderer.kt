@@ -1,6 +1,6 @@
 package com.intelligentComments.ui.comments.renderers.segments
 
-import com.intelligentComments.ui.util.CommentsUtil
+import com.intelligentComments.ui.util.TextUtil
 import com.intelligentComments.ui.util.UpdatedRectCookie
 import com.intelligentComments.ui.comments.model.content.text.TextContentSegmentUiModel
 import com.intelligentComments.ui.core.RectangleModelBuildContext
@@ -14,14 +14,14 @@ import kotlin.test.assertNotNull
 
 class TextSegmentRenderer(private val textSegment: TextContentSegmentUiModel) : SegmentRenderer {
     private val cachedLines = textSegment.text.split('\n')
-    private val cachedLinesHighlighters = CommentsUtil.getLinesHighlighters(cachedLines, textSegment.highlighters)
+    private val cachedLinesHighlighters = TextUtil.getLinesHighlighters(cachedLines, textSegment.highlighters)
 
 
     override fun render(g: Graphics,
                         rect: Rectangle,
                         editorImpl: EditorImpl,
                         rectanglesModel: RectanglesModel): Rectangle {
-        return CommentsUtil.renderLines(g, Rectangle(rect), editorImpl, cachedLines, textSegment.highlighters, 0)
+        return TextUtil.renderLines(g, Rectangle(rect), editorImpl, cachedLines, textSegment.highlighters, 0)
     }
 
     override fun calculateExpectedHeightInPixels(editorImpl: EditorImpl): Int {
@@ -29,28 +29,28 @@ class TextSegmentRenderer(private val textSegment: TextContentSegmentUiModel) : 
         for (i in cachedLines.indices) {
             val lineHighlighters = cachedLinesHighlighters[i]
             assertNotNull(lineHighlighters, "cachedLinesHighlighters[i] != null")
-            height += CommentsUtil.getLineHeightWithHighlighters(editorImpl, lineHighlighters)
+            height += TextUtil.getLineHeightWithHighlighters(editorImpl, lineHighlighters)
         }
 
         return height
     }
 
     override fun calculateExpectedWidthInPixels(editorImpl: EditorImpl): Int {
-        val fontMetrics = CommentsUtil.getFontMetrics(editorImpl, null)
+        val fontMetrics = TextUtil.getFontMetrics(editorImpl, null)
         var maxWidth = 0
 
         for (line in cachedLines) {
-            maxWidth = max(CommentsUtil.getTextWidth(fontMetrics, line), maxWidth)
+            maxWidth = max(TextUtil.getTextWidth(fontMetrics, line), maxWidth)
         }
 
         return maxWidth
     }
 
     override fun accept(context: RectangleModelBuildContext) {
-        val descent = CommentsUtil.getFontMetrics(context.editorImpl, null).descent
+        val descent = TextUtil.getFontMetrics(context.editorImpl, null).descent
 
         UpdatedRectCookie(context.rect, yDelta = descent).use {
-            CommentsUtil.createRectanglesForHighlighters(cachedLines, cachedLinesHighlighters, context)
+            TextUtil.createRectanglesForHighlighters(cachedLines, cachedLinesHighlighters, context)
         }
     }
 }

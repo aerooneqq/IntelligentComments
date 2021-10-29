@@ -7,7 +7,7 @@ class HashUtil {
         fun <T> calculateHashFor(items: Collection<T>): Int {
             var hash = 1
             for (item in items) hash *= item.hashCode() % mod
-            return hash
+            return hash % mod
         }
     }
 }

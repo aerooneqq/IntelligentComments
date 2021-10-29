@@ -23,11 +23,11 @@ class HeaderWithBackground {
         }
 
         fun calculateHeaderHeight(editorImpl: EditorImpl): Int {
-            return CommentsUtil.getTextHeight(editorImpl, null)
+            return TextUtil.getTextHeight(editorImpl, null)
         }
 
         fun calculateHeaderWidth(editorImpl: EditorImpl, text: String): Int {
-            val textWidth = CommentsUtil.getTextWidth(editorImpl, text)
+            val textWidth = TextUtil.getTextWidth(editorImpl, text)
             return textWidth + 2 * margin
         }
 
@@ -50,11 +50,11 @@ class HeaderWithBackground {
                              height: Int): Rectangle {
             val shift = calculateHeightShiftForName(editorImpl)
             val rectForText = Rectangle(rect.x + margin, rect.y - shift, rect.width, rect.height)
-            CommentsUtil.renderText(g, rectForText, editorImpl, text, 0)
+            TextUtil.renderText(g, rectForText, editorImpl, text, 0)
 
             return Rectangle(rect.x, rect.y + height, rect.width, rect.height - height)
         }
 
-        private fun calculateHeightShiftForName(editorImpl: EditorImpl) = CommentsUtil.getTextHeight(editorImpl, null) / 4
+        private fun calculateHeightShiftForName(editorImpl: EditorImpl) = TextUtil.getTextHeight(editorImpl, null) / 4
     }
 }

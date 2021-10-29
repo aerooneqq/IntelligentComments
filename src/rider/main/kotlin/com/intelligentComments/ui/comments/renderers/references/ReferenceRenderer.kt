@@ -1,6 +1,6 @@
 package com.intelligentComments.ui.comments.renderers.references
 
-import com.intelligentComments.ui.util.CommentsUtil
+import com.intelligentComments.ui.util.TextUtil
 import com.intelligentComments.ui.comments.model.references.DependencyReferenceUiModel
 import com.intelligentComments.ui.comments.model.references.ReferenceUiModel
 import com.intelligentComments.ui.comments.renderers.ExpandableContentWithHeader
@@ -39,9 +39,9 @@ class DependencyReferenceRenderer(private val reference: DependencyReferenceUiMo
         val adjustedRect = Rectangle(rect)
 
         if (reference.dependencyDescription.isEmpty()) {
-            CommentsUtil.renderText(g, adjustedRect, editorImpl, myNoDescriptionText, 0)
+            TextUtil.renderText(g, adjustedRect, editorImpl, myNoDescriptionText, 0)
         } else {
-            CommentsUtil.renderLines(g, adjustedRect, editorImpl, getLines(), 0)
+            TextUtil.renderLines(g, adjustedRect, editorImpl, getLines(), 0)
         }
 
         val heightDelta = calculateDescriptionHeight(editorImpl)
@@ -52,7 +52,7 @@ class DependencyReferenceRenderer(private val reference: DependencyReferenceUiMo
     }
 
     private fun calculateDescriptionHeight(editorImpl: EditorImpl): Int {
-        val textHeight = CommentsUtil.getTextHeight(editorImpl, null)
+        val textHeight = TextUtil.getTextHeight(editorImpl, null)
         return if (reference.dependencyDescription.isEmpty()) {
             textHeight
         } else {
@@ -72,11 +72,11 @@ class DependencyReferenceRenderer(private val reference: DependencyReferenceUiMo
 
     private fun calculateMaxWidthInDescription(editorImpl: EditorImpl): Int {
         if (reference.dependencyDescription.isEmpty())
-            return CommentsUtil.getTextWidth(editorImpl, myNoDescriptionText)
+            return TextUtil.getTextWidth(editorImpl, myNoDescriptionText)
 
         var maxWidth = 0
         for (line in getLines()) {
-            maxWidth = max(CommentsUtil.getTextWidth(editorImpl, line), maxWidth)
+            maxWidth = max(TextUtil.getTextWidth(editorImpl, line), maxWidth)
         }
 
         return maxWidth
