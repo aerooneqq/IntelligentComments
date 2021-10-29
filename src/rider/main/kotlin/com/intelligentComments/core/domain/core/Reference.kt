@@ -3,6 +3,7 @@ package com.intelligentComments.core.domain.core
 import java.nio.file.Path
 
 interface Reference : UniqueEntity {
+    val referenceName: String
 }
 
 interface FileBasedReference : Reference {
@@ -10,6 +11,5 @@ interface FileBasedReference : Reference {
 }
 
 interface DependencyReference : FileBasedReference {
-    val referenceName: String
     val dependencyDescription: String
 }

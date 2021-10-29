@@ -8,6 +8,7 @@ import com.intelligentComments.ui.comments.model.IntelligentCommentUiModel
 import com.intelligentComments.ui.comments.renderers.invariants.InvariantsRenderer
 import com.intelligentComments.ui.comments.renderers.references.ReferencesRenderer
 import com.intelligentComments.ui.comments.renderers.segments.SegmentsRenderer
+import com.intelligentComments.ui.comments.renderers.todos.ToDosRenderer
 import com.intelligentComments.ui.core.RectanglesModel
 import com.intelligentComments.ui.core.RectanglesModelHolder
 import com.intellij.openapi.components.service
@@ -73,6 +74,7 @@ class IntelligentCommentsRenderer(private val intelligentComment: IntelligentCom
             adjustedRect = drawCommentContent(g, adjustedRect, editorImpl)
             adjustedRect = drawReferences(g, adjustedRect, editorImpl)
             adjustedRect = drawInvariants(g, adjustedRect, editorImpl)
+            adjustedRect = drawToDos(g, adjustedRect, editorImpl)
 
             for (rectangle in rectanglesModel!!.allRectangles) {
                 //g.drawRect(rectangle.x + rect.x, rectangle.y + rect.y, rectangle.width, rectangle.height)
@@ -112,6 +114,12 @@ class IntelligentCommentsRenderer(private val intelligentComment: IntelligentCom
 
     private fun drawInvariants(g: Graphics, rect: Rectangle, editorImpl: EditorImpl): Rectangle {
         val renderer = InvariantsRenderer.getRendererFor(intelligentComment.invariantsSection)
+        val model = getOrCreateRectanglesModel(editorImpl)
+        return renderer.render(g, rect, editorImpl, model)
+    }
+
+    private fun drawToDos(g: Graphics, rect: Rectangle, editorImpl: EditorImpl): Rectangle {
+        val renderer = ToDosRenderer.getRendererFor(intelligentComment.todosSection)
         val model = getOrCreateRectanglesModel(editorImpl)
         return renderer.render(g, rect, editorImpl, model)
     }

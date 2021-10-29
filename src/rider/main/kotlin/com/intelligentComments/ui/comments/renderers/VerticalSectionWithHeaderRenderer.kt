@@ -3,6 +3,7 @@ package com.intelligentComments.ui.comments.renderers
 import com.intelligentComments.ui.CommentsUtil
 import com.intelligentComments.ui.CommentsUtil.Companion.deltaBetweenHeaderAndContent
 import com.intelligentComments.ui.CommentsUtil.Companion.deltaBetweenIconAndTextInHeader
+import com.intelligentComments.ui.UpdatedRectCookie
 import com.intelligentComments.ui.comments.model.SectionWithHeaderUiModel
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intelligentComments.ui.core.RectangleModelBuildContext
@@ -10,6 +11,7 @@ import com.intelligentComments.ui.core.RectangleModelBuildContributor
 import com.intelligentComments.ui.core.RectanglesModel
 import com.intelligentComments.ui.core.Renderer
 import com.intellij.openapi.editor.impl.EditorImpl
+import com.intellij.openapi.util.use
 import java.awt.Graphics
 import java.awt.Rectangle
 import kotlin.math.max
@@ -33,7 +35,14 @@ abstract class VerticalSectionWithHeaderRenderer<T : UiInteractionModelBase>(
         adjustedRect = if (!shouldRenderContent) {
             adjustedRect
         } else {
-            renderContent(g, adjustedRect, editorImpl, rectanglesModel)
+            var newRect: Rectangle? = null
+            UpdatedRectCookie(adjustedRect, xDelta = 10).use {
+                newRect = renderContent(g, adjustedRect, editorImpl, rectanglesModel)
+            }
+
+            newRect!!.apply {
+                x -= 10
+            }
         }
 
         CommentsUtil.addDeltaBetweenSections(adjustedRect)
@@ -76,7 +85,9 @@ abstract class VerticalSectionWithHeaderRenderer<T : UiInteractionModelBase>(
         CommentsUtil.addHeightDeltaTo(context, headerRect.height)
 
         if (shouldRenderContent) {
+            context.rect.x += 10
             acceptContent(context)
+            context.rect.x -= 10
         }
     }
 

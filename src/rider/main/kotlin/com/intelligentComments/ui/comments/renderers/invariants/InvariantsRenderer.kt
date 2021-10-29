@@ -73,6 +73,7 @@ class InvariantsRendererImpl(private val section: SectionWithHeaderUiModel<Invar
         val rect = context.rect
         CommentsUtil.addHeightDeltaTo(context.widthAndHeight, rect, deltaBetweenHeaderAndContent)
 
+        val startX = rect.x
         for (invariant in section.content) {
             val renderer = InvariantRenderer.getRendererFor(invariant)
             val height = renderer.calculateExpectedHeightInPixels(context.editorImpl)
@@ -82,9 +83,9 @@ class InvariantsRendererImpl(private val section: SectionWithHeaderUiModel<Invar
             rect.x += width + gapBetweenInvariants
         }
 
-        val height = calculateExpectedHeightInPixels(context.editorImpl)
-        val width = calculateExpectedWidthInPixels(context.editorImpl)
-        rect.x = 0
+        val height = calculateContentHeight(context.editorImpl)
+        val width = calculateContentWidth(context.editorImpl)
+        rect.x = startX
 
         CommentsUtil.addHeightDeltaTo(context, height)
         context.widthAndHeight.width = max(context.widthAndHeight.width, width)

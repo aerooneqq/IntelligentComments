@@ -6,17 +6,22 @@ import com.intellij.openapi.editor.event.EditorMouseEvent
 import com.intellij.openapi.project.Project
 import com.intellij.util.ui.UIUtil
 import java.awt.Cursor
+import javax.swing.Icon
 
 class IntelligentCommentUiModel(project: Project,
                                 val comment: IntelligentComment) : UiInteractionModelBase(project) {
     private val myAuthors = mutableListOf<AuthorUiModel>()
     private val myReferences = mutableListOf<ReferenceUiModel>()
     private val myInvariants = mutableListOf<InvariantUiModel>()
+    private val myTodos = mutableListOf<ToDoUiModel>()
+    private val myHacks = mutableListOf<HackUiModel>()
 
     val authorsSection: SectionUiModel<AuthorUiModel>
     val contentSection: SectionWithHeaderUiModel<ContentSegmentUiModel>
     val referencesSection: SectionWithHeaderUiModel<ReferenceUiModel>
     val invariantsSection: SectionWithHeaderUiModel<InvariantUiModel>
+    val todosSection: SectionWithHeaderUiModel<ToDoUiModel>
+    val hacksSection: SectionWithHeaderUiModel<HackUiModel>
 
 
     init {
@@ -24,17 +29,26 @@ class IntelligentCommentUiModel(project: Project,
         val content = IntelligentCommentContentUiModel(project, comment.content)
         for (reference in comment.references) myReferences.add(ReferenceUiModel.getFrom(project, reference))
         for (invariant in comment.invariants) myInvariants.add(InvariantUiModel.getFrom(project, invariant))
+        for (todo in comment.todos) myTodos.add(ToDoUiModel.getFrom(project, todo))
+        for (hack in comment.hacks) myHacks.add(HackUiModel.getFrom(project, hack))
 
         authorsSection = SectionUiModel(project, myAuthors)
+        contentSection = getSectionHeaderUiModel(content.segments, AllIcons.FileTypes.Text, "Content")
+        referencesSection = getSectionHeaderUiModel(myReferences, AllIcons.FileTypes.Java, "References")
+        invariantsSection = getSectionHeaderUiModel(myInvariants, AllIcons.Nodes.Interface, "Invariants")
+        todosSection = getSectionHeaderUiModel(myTodos, AllIcons.General.TodoImportant, "ToDos")
+        hacksSection = getSectionHeaderUiModel(myHacks, AllIcons.General.Locate, "Hacks")
+    }
 
-        val contentHeaderText = HeaderTextInfo("Content: ", "Content (click to expand)")
-        contentSection = SectionWithHeaderUiModel(project, content.segments, AllIcons.FileTypes.Text, contentHeaderText)
+    private fun <T : UiInteractionModelBase> getSectionHeaderUiModel(items: Collection<T>,
+                                                                     icon: Icon,
+                                                                     name: String) : SectionWithHeaderUiModel<T> {
+        val headerTextInfo = getHeaderInfo(name)
+        return SectionWithHeaderUiModel(project, items, icon, headerTextInfo)
+    }
 
-        val referenceHeaderText = HeaderTextInfo("References: ", "References (click to expand)")
-        referencesSection = SectionWithHeaderUiModel(project, myReferences, AllIcons.FileTypes.Java, referenceHeaderText)
-
-        val invariantHeaderText = HeaderTextInfo("Invariants: ", "Invariants (click to expand) ")
-        invariantsSection = SectionWithHeaderUiModel(project, myInvariants, AllIcons.Nodes.Interface, invariantHeaderText)
+    private fun getHeaderInfo(name: String): HeaderTextInfo {
+        return HeaderTextInfo("$name: ", "$name (click to expand)")
     }
 
     override fun handleMouseIn(e: EditorMouseEvent): Boolean {

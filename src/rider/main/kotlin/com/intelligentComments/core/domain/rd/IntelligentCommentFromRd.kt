@@ -14,6 +14,8 @@ class IntelligentCommentFromRd(private val rdComment: RdIntelligentComment,
     override val content: IntelligentCommentContent = createContent(project)
     override val references: Collection<Reference> = createReferences()
     override val invariants: Collection<Invariant> = createInvariants()
+    override val hacks: Collection<Hack> = createHacks()
+    override val todos: Collection<ToDo> = createToDos()
 
 
     private fun createAuthors(): List<AuthorFromRd> {
@@ -34,13 +36,10 @@ class IntelligentCommentFromRd(private val rdComment: RdIntelligentComment,
         }
     }
 
-    private fun createReferences(): List<ReferenceFromRd> {
-        return rdComment.references.map { ReferenceFromRd.getFrom(it) }
-    }
-
-    private fun createInvariants(): List<InvariantFromRd> {
-        return rdComment.invariants.map { InvariantFromRd.getFrom(it) }
-    }
+    private fun createReferences(): List<ReferenceFromRd> = rdComment.references.map { ReferenceFromRd.getFrom(it) }
+    private fun createInvariants(): List<InvariantFromRd> = rdComment.invariants.map { InvariantFromRd.getFrom(it) }
+    private fun createToDos(): List<ToDoFromRd> = rdComment.toDos.map { ToDoFromRd.getFrom(it, project) }
+    private fun createHacks(): List<HackFromRd> = rdComment.hacks.map { HackFromRd.getFrom(it, project) }
 
     fun getRenderer(project: Project): EditorCustomElementRenderer {
         return IntelligentCommentsRenderer(IntelligentCommentUiModel(project, this))

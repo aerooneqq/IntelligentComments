@@ -21,6 +21,8 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
 
         list("Invariants", RdInvariant)
         list("References", RdReference)
+        list("ToDos", RdToDo)
+        list("Hacks", RdHack)
     }
 
     val RdIntelligentCommentAuthor = structdef {
@@ -94,14 +96,15 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
         call("Evaluate", PredefinedType.int, PredefinedType.bool)
     }
 
-    val RdReference = basestruct { }
+    val RdReference = basestruct {
+        field("ReferenceName", PredefinedType.string)
+    }
 
     val RdFileBasedReference = basestruct extends RdReference {
         field("FilePath", PredefinedType.string)
     }
 
     val RdDependencyReference = structdef extends RdFileBasedReference {
-        field("ReferenceName", PredefinedType.string)
         field("DependencyDescription", PredefinedType.string)
     }
 
@@ -148,6 +151,33 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
         + "Regular"
         + "Bold"
     }
+
+    val RdToDo = basestruct {
+        field("Author", RdIntelligentCommentAuthor)
+        field("Name", PredefinedType.string)
+        field("Description", RdContentSegments)
+        field("BlockingReferences", immutableList(RdReference))
+    }
+
+    val RdToDoWithTickets = structdef extends RdToDo {
+        field("Tickets", immutableList(RdTicket))
+    }
+
+    val RdTicket = structdef {
+        field("Url", PredefinedType.string)
+        field("ShortName", PredefinedType.string)
+    }
+
+    val RdHack = basestruct {
+        field("Name", PredefinedType.string)
+        field("Description", RdContentSegments)
+        field("BlockingReferences", immutableList(RdReference))
+    }
+
+    val RdHackWithTickets = structdef extends RdHack {
+        field("Tickets", immutableList(RdTicket))
+    }
+
 
     init {
         map("Documents", SolutionModel.RdDocumentId, RdDocumentCommentsModel)

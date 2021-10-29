@@ -8,7 +8,7 @@ import com.intelligentComments.ui.colors.Colors
 import com.intellij.openapi.editor.event.EditorMouseEvent
 import com.intellij.openapi.project.Project
 
-open class ReferenceUiModel(project: Project) : UiInteractionModelBase(project), ExpandableUiModel {
+open class ReferenceUiModel(project: Project, reference: Reference) : UiInteractionModelBase(project), ExpandableUiModel {
     companion object {
         fun getFrom(project: Project, reference: Reference): ReferenceUiModel {
             return when(reference) {
@@ -18,15 +18,17 @@ open class ReferenceUiModel(project: Project) : UiInteractionModelBase(project),
         }
     }
 
-    val headerUiModel = ReferenceHeaderUiModel(project, this)
+    val headerUiModel = HeaderUiModel(project, this, reference.referenceName, Colors.ReferenceHeaderBackgroundColor, Colors.ReferenceHeaderHoveredBackgroundColor)
     override var isExpanded: Boolean = true
 }
 
-
-class ReferenceHeaderUiModel(project: Project,
-                             private val parent: ReferenceUiModel) : UiInteractionModelBase(project) {
-    override val backgroundColorKey: ColorName = Colors.ReferenceHeaderBackgroundColor
-    override val hoveredBackgroundColorKey: ColorName = Colors.ReferenceHeaderHoveredBackgroundColor
+class HeaderUiModel(project: Project,
+                    val parent: ExpandableUiModel,
+                    val text: String,
+                    defaultBackground: ColorName,
+                    hoveredBackground: ColorName) : UiInteractionModelBase(project) {
+    override val backgroundColorKey: ColorName = defaultBackground
+    override val hoveredBackgroundColorKey: ColorName = hoveredBackground
 
     override fun handleClick(e: EditorMouseEvent): Boolean {
         parent.isExpanded = !parent.isExpanded
@@ -35,7 +37,7 @@ class ReferenceHeaderUiModel(project: Project,
 }
 
 open class FileBasedReferenceUiModel(project: Project,
-                                     reference: FileBasedReference): ReferenceUiModel(project) {
+                                     reference: FileBasedReference): ReferenceUiModel(project, reference) {
     val filePath = reference.filePath
 }
 

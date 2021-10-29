@@ -8,6 +8,7 @@ import com.intelligentComments.ui.core.RectangleModelBuildContext
 import com.intelligentComments.ui.core.RectangleModelBuildContributor
 import com.intelligentComments.ui.core.RectanglesModel
 import com.intelligentComments.ui.core.Renderer
+import com.intelligentComments.ui.util.ContentSegmentsUtil
 import com.intellij.openapi.editor.impl.EditorImpl
 import com.intellij.openapi.util.use
 import java.awt.Graphics
@@ -31,17 +32,8 @@ class TableCellRenderer(private val cell: TableCellUiModel) : Renderer, Rectangl
             }
         }
 
-        var adjustedRect = calculateRectForCellContent(rect, editorImpl)
-
-        for (cellContent in cell.contentSegments.content) {
-            val renderer = SegmentRenderer.getRendererFor(cellContent)
-            adjustedRect = renderer.render(g, adjustedRect, editorImpl, rectanglesModel)
-            adjustedRect.y += deltaBetweenContentsInCell
-        }
-
-        return adjustedRect.apply {
-            y -= deltaBetweenContentsInCell
-        }
+        val adjustedRect = calculateRectForCellContent(rect, editorImpl)
+        return ContentSegmentsUtil.renderSegments(cell.contentSegments.content, g, adjustedRect, editorImpl, rectanglesModel)
     }
 
     private fun calculateRectForCellContent(rect: Rectangle, editorImpl: EditorImpl): Rectangle {
@@ -69,23 +61,12 @@ class TableCellRenderer(private val cell: TableCellUiModel) : Renderer, Rectangl
     }
 
     override fun calculateExpectedHeightInPixels(editorImpl: EditorImpl): Int {
-        var height = 0
-        for (cellContent in cell.contentSegments.content) {
-            height += SegmentRenderer.getRendererFor(cellContent).calculateExpectedHeightInPixels(editorImpl)
-            height += deltaBetweenContentsInCell
-        }
-
-        height -= deltaBetweenContentsInCell
+        val height = ContentSegmentsUtil.calculateContentHeight(cell.contentSegments.content, editorImpl)
         return height + 2 * cellMargin
     }
 
     override fun calculateExpectedWidthInPixels(editorImpl: EditorImpl): Int {
-        var width = 0
-        for (cellContent in cell.contentSegments.content) {
-            val cellContentWidth = SegmentRenderer.getRendererFor(cellContent).calculateExpectedWidthInPixels(editorImpl)
-            width = max(width, cellContentWidth)
-        }
-
+        val width = ContentSegmentsUtil.calculateContentWidth(cell.contentSegments.content, editorImpl)
         return width + 2 * cellMargin
     }
 

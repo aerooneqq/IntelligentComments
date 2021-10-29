@@ -18,7 +18,8 @@ class RiderEditorHandler : EditorHandler {
         }
 
         val comment = RdIntelligentComment(0, RdFileDocumentIdImpl("asdasd", ":asdasd"))
-        comment.authors.add(RdIntelligentCommentAuthor("Aero", Date()))
+        fun getAuthor() = RdIntelligentCommentAuthor("Aero", Date())
+        comment.authors.add(getAuthor())
 
         val text =
 """Известный профессор МТИ Гарольд Абельсон сказал: «Программы нужно писать для того, чтобы их читали люди, и лишь случайно — чтобы их исполняли машины».
@@ -89,26 +90,34 @@ class RiderEditorHandler : EditorHandler {
         comment.invariants.add(RdTextInvariant("Synchronous"))
         comment.invariants.add(RdTextInvariant("ReadLock"))
 
-        comment.references.add(RdDependencyReference(
-                "Aero.Software::Method1",
+        fun getReference() = RdDependencyReference(
                 """This method depends on the synchronous nature of Method1,""",
-                "C:\\Aero\\Software\\FactoryOfBeans.cs"))
+                "C:\\Aero\\Software\\FactoryOfBeans.cs",
+                "Aero.Software::Method1")
+
+        comment.references.add(getReference())
 
         comment.references.add(RdDependencyReference(
-                "Aero.Software.Domain.Models.UniqueEntity::ID",
                 """This method depends on that ID must be zero if the user is admin
 This method depends on the synchronous nature of Method1,""".trimMargin(),
-                "C:\\Aero\\Software\\Domain\\Models\\UniqueEntity.cs"))
+                "C:\\Aero\\Software\\Domain\\Models\\UniqueEntity.cs",
+                "Aero.Software.Domain.Models.UniqueEntity::ID"))
 
-        comment.references.add(RdDependencyReference(
-                "Aero.Software.Domain.Models.UniqueEntity::ID",
-                """This method depends on that ID must be zero if the user is admin""",
-                "C:\\Aero\\Software\\Domain\\Models\\UniqueEntity.cs"))
+        comment.references.add(getReference())
+        comment.references.add(getReference())
 
-        comment.references.add(RdDependencyReference(
-                "Aero.Software.Domain.Models.UniqueEntity::ID",
-                """This method depends on that ID must be zero if the user is admin""",
-                "C:\\Aero\\Software\\Domain\\Models\\UniqueEntity.cs"))
+        fun getTicket(): RdTicket {
+            return RdTicket("https://google.com", "RIDER-14321")
+        }
+
+        fun getToDo(): RdToDo {
+            val tickets = mutableListOf(getTicket())
+            val description = RdContentSegments(mutableListOf(RdTextSegment(RdHighlightedText("This code", null))))
+            val references = mutableListOf(getReference())
+            return RdToDoWithTickets(tickets, getAuthor(), "Uncomment this code after 213", contentSegments, references)
+        }
+
+        comment.toDos.add(getToDo())
 
         val intelligentComment = IntelligentCommentFromRd(comment, editor.project!!)
         val inlayRenderer = intelligentComment.getRenderer(editor.project!!)

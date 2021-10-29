@@ -4,10 +4,12 @@ import com.intelligentComments.ui.CommentsUtil
 import com.intelligentComments.ui.UpdatedGraphicsCookie
 import com.intelligentComments.ui.comments.model.DependencyReferenceUiModel
 import com.intelligentComments.ui.comments.model.ReferenceUiModel
+import com.intelligentComments.ui.comments.renderers.ExpandableContentWithHeader
 import com.intelligentComments.ui.core.RectangleModelBuildContext
 import com.intelligentComments.ui.core.RectangleModelBuildContributor
 import com.intelligentComments.ui.core.RectanglesModel
 import com.intelligentComments.ui.core.Renderer
+import com.intelligentComments.ui.util.HeaderWithBackground
 import com.intellij.openapi.editor.impl.EditorImpl
 import com.intellij.openapi.util.use
 import java.awt.Graphics
@@ -25,59 +27,19 @@ interface ReferenceRenderer : Renderer, RectangleModelBuildContributor {
     }
 }
 
-class DependencyReferenceRenderer(private val reference: DependencyReferenceUiModel) : ReferenceRenderer {
-    companion object {
-        const val margin = 5
-    }
-
+class DependencyReferenceRenderer(private val reference: DependencyReferenceUiModel) : ExpandableContentWithHeader(reference.headerUiModel), ReferenceRenderer {
     private val myNoDescriptionText = "No description was provided"
 
 
-    override fun render(g: Graphics,
-                        rect: Rectangle,
-                        editorImpl: EditorImpl,
-                        rectanglesModel: RectanglesModel): Rectangle {
-        var adjustedRect = drawBackgroundRoundedRect(g, rect, editorImpl)
-        adjustedRect = drawReferenceName(g, adjustedRect, editorImpl)
-
-        if (reference.isExpanded)
-            adjustedRect = drawReferenceComments(g, adjustedRect, editorImpl)
-
-        return adjustedRect
+    override fun renderContent(g: Graphics,
+                               rect: Rectangle,
+                               editorImpl: EditorImpl,
+                               rectanglesModel: RectanglesModel): Rectangle {
+        return drawReferenceComments(g, rect, editorImpl)
     }
-
-    private fun drawBackgroundRoundedRect(g: Graphics, rect: Rectangle, editorImpl: EditorImpl): Rectangle {
-        val headerHeight = calculateReferenceNameHeight(editorImpl)
-        val headerWidth = calculateHeaderWidth(editorImpl)
-
-        UpdatedGraphicsCookie(g, color = reference.headerUiModel.backgroundColor).use {
-            g.fillRoundRect(rect.x, rect.y, headerWidth, headerHeight, 3, 3)
-        }
-
-        return rect
-    }
-
-    private fun calculateHeaderWidth(editorImpl: EditorImpl): Int {
-        val textWidth = CommentsUtil.getTextWidth(editorImpl, reference.referenceName)
-        return textWidth + 2 * margin
-    }
-
-    private fun drawReferenceName(g: Graphics, rect: Rectangle, editorImpl: EditorImpl): Rectangle {
-        val shift = calculateHeightShiftForReferenceName(editorImpl)
-        val rectForText = Rectangle(rect.x + margin, rect.y - shift, rect.width, rect.height)
-        CommentsUtil.renderText(g, rectForText, editorImpl, reference.referenceName, 0)
-
-        val height = calculateReferenceNameHeight(editorImpl)
-        return Rectangle(rect.x, rect.y + height, rect.width, rect.height - height)
-    }
-
-    private fun calculateHeightShiftForReferenceName(editorImpl: EditorImpl) = CommentsUtil.getTextHeight(editorImpl, null) / 4
 
     private fun drawReferenceComments(g: Graphics, rect: Rectangle, editorImpl: EditorImpl): Rectangle {
-        val shift = calculateHeightShiftForReferenceName(editorImpl)
-        val adjustedRect = Rectangle(rect).apply {
-            y -= shift
-        }
+        val adjustedRect = Rectangle(rect)
 
         if (reference.dependencyDescription.isEmpty()) {
             CommentsUtil.renderText(g, adjustedRect, editorImpl, myNoDescriptionText, 0)
@@ -101,30 +63,14 @@ class DependencyReferenceRenderer(private val reference: DependencyReferenceUiMo
         }
     }
 
-    override fun calculateExpectedHeightInPixels(editorImpl: EditorImpl): Int {
-        val referenceNameHeight = calculateReferenceNameHeight(editorImpl)
-
-        val descriptionHeight = if (reference.isExpanded) {
-            calculateDescriptionHeight(editorImpl)
-        } else {
-            0
-        }
-
-        return referenceNameHeight + descriptionHeight
+    override fun calculateContentHeight(editorImpl: EditorImpl): Int {
+        return calculateDescriptionHeight(editorImpl)
     }
 
     private fun getLines() = reference.dependencyDescription.split('\n')
 
-    private fun calculateReferenceNameHeight(editorImpl: EditorImpl): Int {
-        return CommentsUtil.getTextHeight(editorImpl, null)
-    }
-
-    override fun calculateExpectedWidthInPixels(editorImpl: EditorImpl): Int {
-        val metrics = CommentsUtil.getFontMetrics(editorImpl, null)
-        var maxWidth = CommentsUtil.getTextWidth(metrics, reference.referenceName)
-        maxWidth = max(maxWidth, calculateMaxWidthInDescription(editorImpl))
-
-        return maxWidth
+    override fun calculateContentWidth(editorImpl: EditorImpl): Int {
+        return calculateMaxWidthInDescription(editorImpl)
     }
 
     private fun calculateMaxWidthInDescription(editorImpl: EditorImpl): Int {
@@ -139,22 +85,14 @@ class DependencyReferenceRenderer(private val reference: DependencyReferenceUiMo
         return maxWidth
     }
 
-    override fun accept(context: RectangleModelBuildContext) {
+    override fun acceptContent(context: RectangleModelBuildContext) {
         val editorImpl = context.editorImpl
-        val headerHeight = calculateReferenceNameHeight(editorImpl)
-        val headerWidth = calculateHeaderWidth(editorImpl)
-        val rect = Rectangle(context.rect)
+        val rect = context.rect
 
-        val headerRect = Rectangle(rect.x, rect.y, headerWidth, headerHeight)
-        context.rectanglesModel.addElement(reference.headerUiModel, headerRect)
+        val textWidth = calculateMaxWidthInDescription(editorImpl)
+        val textHeight = calculateDescriptionHeight(editorImpl)
 
-        if (reference.isExpanded) {
-            rect.y += calculateReferenceNameHeight(editorImpl)
-            val textWidth = calculateMaxWidthInDescription(editorImpl)
-            val textHeight = calculateDescriptionHeight(editorImpl)
-
-            val textRect = Rectangle(rect.x, rect.y, textWidth, textHeight)
-            context.rectanglesModel.addElement(reference.descriptionUiModel, textRect)
-        }
+        val textRect = Rectangle(rect.x, rect.y, textWidth, textHeight)
+        context.rectanglesModel.addElement(reference.descriptionUiModel, textRect)
     }
 }

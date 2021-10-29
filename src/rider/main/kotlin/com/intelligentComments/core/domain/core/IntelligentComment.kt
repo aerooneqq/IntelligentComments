@@ -5,4 +5,6 @@ interface IntelligentComment : UniqueEntity {
     val content: IntelligentCommentContent
     val references: Collection<Reference>
     val invariants: Collection<Invariant>
+    val todos: Collection<ToDo>
+    val hacks: Collection<Hack>
 }

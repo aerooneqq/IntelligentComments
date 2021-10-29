@@ -1,14 +1,15 @@
 package com.intelligentComments.ui
 
-import com.intelligentComments.core.domain.core.HighlightedText
 import com.intelligentComments.ui.comments.model.HighlightedTextUiWrapper
 import com.intelligentComments.ui.comments.model.HighlighterUiModel
 import com.intelligentComments.ui.comments.model.IntelligentCommentUiModel
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intelligentComments.ui.comments.renderers.CommentAuthorsRenderer
 import com.intelligentComments.ui.comments.renderers.invariants.InvariantsRenderer
+import com.intelligentComments.ui.comments.renderers.references.DependencyReferenceRenderer
 import com.intelligentComments.ui.comments.renderers.references.ReferencesRenderer
 import com.intelligentComments.ui.comments.renderers.segments.SegmentsRenderer
+import com.intelligentComments.ui.comments.renderers.todos.ToDosRenderer
 import com.intelligentComments.ui.core.AttributedCharsIterator
 import com.intelligentComments.ui.core.RectangleModelBuildContext
 import com.intelligentComments.ui.core.RectanglesModel
@@ -459,6 +460,9 @@ class CommentsUtil {
             updateRectYAndHeight(heightDeltaBetweenSections)
 
             InvariantsRenderer.getRendererFor(intelligentComment.invariantsSection).accept(buildContext)
+            updateRectYAndHeight(heightDeltaBetweenSections)
+
+            ToDosRenderer.getRendererFor(intelligentComment.todosSection).accept(buildContext)
             updateRectYAndHeight(heightDeltaBetweenSections)
 
             model.addElement(intelligentComment, Rectangle(xDelta, yDelta, widthAndHeight.width, widthAndHeight.height))

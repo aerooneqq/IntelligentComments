@@ -5,7 +5,6 @@ import com.intellij.openapi.project.Project
 import com.jetbrains.rd.platform.diagnostics.logAssertion
 import java.awt.Color
 import java.util.*
-import kotlin.collections.HashMap
 
 data class ColorName(val name: String)
 
@@ -58,7 +57,7 @@ class ColorsProviderImpl(project: Project) : ColorsProvider {
 
     private fun loadColorsIfNeeded() {
         if (properties.isEmpty) {
-            properties.load(javaClass.classLoader.getResourceAsStream("colors/DefaultColors.properties"))
+            properties.load(javaClass.classLoader.getResourceAsStream("colors/DarkColors.properties"))
         }
     }
 }

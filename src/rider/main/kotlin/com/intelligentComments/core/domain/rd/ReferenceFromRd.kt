@@ -18,6 +18,8 @@ open class ReferenceFromRd(private val reference: RdReference) : UniqueEntityImp
             }
         }
     }
+
+    override val referenceName: String = reference.referenceName
 }
 
 open class FileBasedReferenceFromRd(private val reference: RdFileBasedReference) : ReferenceFromRd(reference), FileBasedReference {

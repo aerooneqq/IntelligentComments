@@ -66,6 +66,7 @@ class CommentAuthorsRendererImpl(private val authors: Collection<AuthorUiModel>)
         val height = calculateExpectedHeightInPixels(context.editorImpl)
         val interactionModel = authors.first()
         val rect = Rectangle(context.rect.x, context.rect.y, width, height)
+
         context.rectanglesModel.addElement(interactionModel, rect)
         context.widthAndHeight.height += height
         context.widthAndHeight.width = max(context.widthAndHeight.width, width)
