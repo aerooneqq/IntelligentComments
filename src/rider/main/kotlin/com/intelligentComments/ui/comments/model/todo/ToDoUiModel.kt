@@ -7,6 +7,7 @@ import com.intelligentComments.ui.comments.model.ExpandableUiModel
 import com.intelligentComments.ui.comments.model.HeaderUiModel
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intelligentComments.ui.comments.model.content.ContentSegmentsUiModel
+import com.intelligentComments.ui.comments.model.references.ReferenceUiModel
 import com.intelligentComments.ui.util.HashUtil
 import com.intellij.openapi.project.Project
 
@@ -22,11 +23,16 @@ open class ToDoUiModel(todo: ToDo, project: Project) : UiInteractionModelBase(pr
 
     override var isExpanded: Boolean = true
 
-    val name = todo.name
     val description = ContentSegmentsUiModel(project, todo.description)
-    val headerUiModel = HeaderUiModel(project, this, todo.name, Colors.ReferenceHeaderBackgroundColor, Colors.ReferenceHeaderHoveredBackgroundColor)
+    val headerUiModel = HeaderUiModel(project, this, todo.name, Colors.ToDoHeaderBackgroundColor, Colors.ToDoHeaderHoveredBackgroundColor)
+    val blockingReferences = todo.blockingReferences.map { ReferenceUiModel(project, it)}
 
-    override fun hashCode(): Int = (isExpanded.hashCode() * name.hashCode() * description.hashCode() * headerUiModel.hashCode()) % HashUtil.mod
+    override fun hashCode(): Int {
+        var hash = isExpanded.hashCode() * description.hashCode() % HashUtil.mod
+        hash *= (headerUiModel.hashCode() * HashUtil.calculateHashFor(blockingReferences)) % HashUtil.mod
+        return hash
+    }
+
     override fun equals(other: Any?): Boolean = other is ToDoUiModel && other.hashCode() == hashCode()
 }
 

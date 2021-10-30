@@ -22,6 +22,12 @@ object Colors {
     val ReferenceHeaderBackgroundColor = ColorName("reference.header.background")
     val ReferenceHeaderHoveredBackgroundColor = ColorName("reference.header.background.hovered")
 
+    val ToDoHeaderBackgroundColor = ColorName("todo.header.background")
+    val ToDoHeaderHoveredBackgroundColor = ColorName("todo.header.background.hovered")
+
+    val HackHeaderBackgroundColor = ColorName("hack.header.background")
+    val HackHeaderHoveredBackgroundColor = ColorName("hack.header.background.hovered")
+
     val TextDefaultColor = ColorName("text.default.color")
     val TextDefaultHoveredColor = ColorName("text.default.color.hovered")
     val TextUrlColor = ColorName("text.url.color")
