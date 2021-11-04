@@ -5,6 +5,7 @@ import com.intelligentComments.ui.util.UpdatedGraphicsCookie
 import com.intelligentComments.ui.colors.Colors
 import com.intelligentComments.ui.colors.ColorsProvider
 import com.intelligentComments.ui.comments.model.IntelligentCommentUiModel
+import com.intelligentComments.ui.comments.renderers.authors.CommentAuthorsRenderer
 import com.intelligentComments.ui.comments.renderers.invariants.InvariantsRenderer
 import com.intelligentComments.ui.comments.renderers.references.ReferencesRenderer
 import com.intelligentComments.ui.comments.renderers.segments.SegmentsRenderer

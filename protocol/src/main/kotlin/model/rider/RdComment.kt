@@ -5,24 +5,27 @@ import com.jetbrains.rider.model.nova.ide.SolutionModel
 
 @Suppress("unused")
 object RdCommentsModel : Ext(SolutionModel.Solution) {
-    val RdDocumentCommentsModel = classdef {
-        list("Comments", RdComment)
+    val RdDocumentComments = structdef {
+        field("Comments", immutableList(RdComment))
     }
 
-    val RdComment = baseclass {
+    val RdComment = basestruct {
         field("Offset", PredefinedType.int)
-        field("DocumentId", SolutionModel.RdDocumentId)
     }
 
-    val RdIntelligentComment = classdef extends RdComment {
-        list("Authors", RdIntelligentCommentAuthor)
-        property("Date", PredefinedType.dateTime)
-        property("Content", RdIntelligentCommentContent)
+    val RdDocComment = structdef extends RdComment {
+        field("Content", RdIntelligentCommentContent.nullable).optional
+    }
 
-        list("Invariants", RdInvariant)
-        list("References", RdReference)
-        list("ToDos", RdToDo)
-        list("Hacks", RdHack)
+    val RdIntelligentComment = structdef extends RdComment {
+        field("Authors", immutableList(RdIntelligentCommentAuthor).nullable).optional
+        field("Date", PredefinedType.dateTime)
+        field("Content", RdIntelligentCommentContent.nullable).optional
+
+        field("Invariants", immutableList(RdInvariant).nullable).optional
+        field("References", immutableList(RdReference).nullable).optional
+        field("ToDos", immutableList(RdToDo).nullable).optional
+        field("Hacks", immutableList(RdHack).nullable).optional
     }
 
     val RdIntelligentCommentAuthor = structdef {
@@ -30,7 +33,7 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
         field("Date", PredefinedType.dateTime)
     }
 
-    val RdIntelligentCommentContent = classdef {
+    val RdIntelligentCommentContent = structdef {
         field("Content", RdContentSegments)
     }
 
@@ -180,6 +183,6 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
 
 
     init {
-        map("Documents", SolutionModel.RdDocumentId, RdDocumentCommentsModel)
+        map("Comments", SolutionModel.RdDocumentId, RdDocumentComments)
     }
 }

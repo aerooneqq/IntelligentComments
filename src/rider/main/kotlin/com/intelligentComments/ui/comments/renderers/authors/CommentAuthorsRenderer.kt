@@ -1,4 +1,4 @@
-package com.intelligentComments.ui.comments.renderers
+package com.intelligentComments.ui.comments.renderers.authors
 
 import com.intelligentComments.ui.util.TextUtil
 import com.intelligentComments.ui.comments.model.authors.AuthorUiModel

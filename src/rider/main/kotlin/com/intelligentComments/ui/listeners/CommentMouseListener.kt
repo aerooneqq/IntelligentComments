@@ -11,8 +11,9 @@ class CommentMouseListener(private val inlay: Inlay<*>) : EditorMouseListener {
 
     override fun mouseClicked(event: EditorMouseEvent) {
         val rectanglesModel = renderer.rectanglesModel ?: return
+        val bounds = inlay.bounds ?: return
 
-        if (rectanglesModel.dispatchMouseClick(event)) {
+        if (rectanglesModel.dispatchMouseClick(event, bounds)) {
             inlay.update()
             inlay.repaint()
             event.editor.component.revalidate()

@@ -1,21 +1,21 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net472</TargetFramework>
-    <IsPackable>false</IsPackable>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net472</TargetFramework>
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="JetBrains.ReSharper.SDK.Tests" Version="$(SdkVersion)" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="JetBrains.ReSharper.SDK.Tests" Version="$(SdkVersion)"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\ReSharperPlugin.IntelligentComments\ReSharperPlugin.IntelligentComments.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\ReSharperPlugin.IntelligentComments\ReSharperPlugin.IntelligentComments.csproj"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <Compile Remove="test/**/*" />
-    <None Include="test/**/*" />
-  </ItemGroup>
+    <ItemGroup>
+        <Compile Remove="test/**/*"/>
+        <None Include="test/**/*"/>
+    </ItemGroup>
 
 </Project>

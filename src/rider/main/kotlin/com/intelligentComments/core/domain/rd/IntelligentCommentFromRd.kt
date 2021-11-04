@@ -19,7 +19,7 @@ class IntelligentCommentFromRd(private val rdComment: RdIntelligentComment,
 
 
     private fun createAuthors(): List<AuthorFromRd> {
-        return rdComment.authors.map { AuthorFromRd(it) }
+        return rdComment.authors?.map { AuthorFromRd(it) } ?: emptyList()
     }
 
     private fun createContent(project: Project): IntelligentCommentContent {
@@ -27,7 +27,7 @@ class IntelligentCommentFromRd(private val rdComment: RdIntelligentComment,
             private val myCachedSegments: Collection<ContentSegment>
 
             init {
-                val segments = rdComment.content.valueOrNull?.content?.content
+                val segments = rdComment.content?.content?.content
                 myCachedSegments = segments?.map { ContentSegmentFromRd.getFrom(it, project) } ?: emptyList()
             }
 
@@ -36,10 +36,10 @@ class IntelligentCommentFromRd(private val rdComment: RdIntelligentComment,
         }
     }
 
-    private fun createReferences(): List<ReferenceFromRd> = rdComment.references.map { ReferenceFromRd.getFrom(it) }
-    private fun createInvariants(): List<InvariantFromRd> = rdComment.invariants.map { InvariantFromRd.getFrom(it) }
-    private fun createToDos(): List<ToDoFromRd> = rdComment.toDos.map { ToDoFromRd.getFrom(it, project) }
-    private fun createHacks(): List<HackFromRd> = rdComment.hacks.map { HackFromRd.getFrom(it, project) }
+    private fun createReferences(): List<ReferenceFromRd> = rdComment.references?.map { ReferenceFromRd.getFrom(it) } ?: emptyList()
+    private fun createInvariants(): List<InvariantFromRd> = rdComment.invariants?.map { InvariantFromRd.getFrom(it) } ?: emptyList()
+    private fun createToDos(): List<ToDoFromRd> = rdComment.toDos?.map { ToDoFromRd.getFrom(it, project) } ?: emptyList()
+    private fun createHacks(): List<HackFromRd> = rdComment.hacks?.map { HackFromRd.getFrom(it, project) } ?: emptyList()
 
     fun getRenderer(project: Project): EditorCustomElementRenderer {
         return IntelligentCommentsRenderer(IntelligentCommentUiModel(project, this))

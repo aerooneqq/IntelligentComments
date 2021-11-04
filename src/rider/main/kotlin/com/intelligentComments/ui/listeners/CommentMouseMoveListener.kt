@@ -11,7 +11,8 @@ class CommentMouseMoveListener(private val inlay: Inlay<*>) : EditorMouseMotionL
 
     override fun mouseMoved(e: EditorMouseEvent) {
         val rectanglesModel = renderer.rectanglesModel ?: return
-        if (rectanglesModel.dispatchMouseMove(e)) {
+        val bounds = inlay.bounds ?: return
+        if (rectanglesModel.dispatchMouseMove(e, bounds)) {
             inlay.repaint()
         }
     }

@@ -17,9 +17,8 @@ class RiderEditorHandler : EditorHandler {
             showWhenFolded(false)
         }
 
-        val comment = RdIntelligentComment(0, RdFileDocumentIdImpl("asdasd", ":asdasd"))
         fun getAuthor() = RdIntelligentCommentAuthor("Aero", Date())
-        comment.authors.add(getAuthor())
+        val authors = mutableListOf(getAuthor())
 
         val text =
 """Известный профессор МТИ Гарольд Абельсон сказал: «Программы нужно писать для того, чтобы их читали люди, и лишь случайно — чтобы их исполняли машины».
@@ -86,25 +85,26 @@ class RiderEditorHandler : EditorHandler {
         val contentSegments = RdContentSegments(contents)
         val content = RdIntelligentCommentContent(contentSegments)
 
-        comment.content.set(content)
-        comment.invariants.add(RdTextInvariant("Synchronous"))
-        comment.invariants.add(RdTextInvariant("ReadLock"))
+        val invariants = mutableListOf<RdInvariant>()
+        invariants.add(RdTextInvariant("Synchronous"))
+        invariants.add(RdTextInvariant("ReadLock"))
 
         fun getReference() = RdDependencyReference(
                 """This method depends on the synchronous nature of Method1,""",
                 "C:\\Aero\\Software\\FactoryOfBeans.cs",
                 "Aero.Software::Method1")
 
-        comment.references.add(getReference())
+        val references = mutableListOf<RdReference>()
+        references.add(getReference())
 
-        comment.references.add(RdDependencyReference(
+        references.add(RdDependencyReference(
                 """This method depends on that ID must be zero if the user is admin
 This method depends on the synchronous nature of Method1,""".trimMargin(),
                 "C:\\Aero\\Software\\Domain\\Models\\UniqueEntity.cs",
                 "Aero.Software.Domain.Models.UniqueEntity::ID"))
 
-        comment.references.add(getReference())
-        comment.references.add(getReference())
+        references.add(getReference())
+        references.add(getReference())
 
         fun getTicket(): RdTicket {
             return RdTicket("https://google.com", "RIDER-14321")
@@ -117,12 +117,14 @@ This method depends on the synchronous nature of Method1,""".trimMargin(),
             return RdToDoWithTickets(tickets, getAuthor(), "Uncomment this code after 213", contentSegments, references)
         }
 
-        comment.toDos.add(getToDo())
+        val todos = mutableListOf<RdToDo>()
+        todos.add(getToDo())
 
+        val comment = RdIntelligentComment(authors, Date(), content, invariants, references, todos, null, 0)
         val intelligentComment = IntelligentCommentFromRd(comment, editor.project!!)
         val inlayRenderer = intelligentComment.getRenderer(editor.project!!)
         val inlay = editor.inlayModel.addBlockElement(0, properties, inlayRenderer)
-        
+
         editor.addEditorMouseMotionListener(CommentMouseMoveListener(inlay!!), monitoringLifetime.createNestedDisposable())
         editor.addEditorMouseListener(CommentMouseListener(inlay), monitoringLifetime.createNestedDisposable())
 

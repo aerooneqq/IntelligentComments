@@ -2,7 +2,7 @@ package com.intelligentComments.ui.util
 
 import com.intelligentComments.ui.comments.model.IntelligentCommentUiModel
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
-import com.intelligentComments.ui.comments.renderers.CommentAuthorsRenderer
+import com.intelligentComments.ui.comments.renderers.authors.CommentAuthorsRenderer
 import com.intelligentComments.ui.comments.renderers.invariants.InvariantsRenderer
 import com.intelligentComments.ui.comments.renderers.references.ReferencesRenderer
 import com.intelligentComments.ui.comments.renderers.segments.SegmentsRenderer
@@ -49,6 +49,7 @@ class RectanglesModelUtil {
             updateRectYAndHeight(heightDeltaBetweenSections)
 
             ToDosRenderer.getRendererFor(intelligentComment.todosSection).accept(buildContext)
+            updateRectYAndHeight(heightDeltaBetweenSections)
 
             model.addElement(intelligentComment, Rectangle(xDelta, yDelta, widthAndHeight.width, widthAndHeight.height))
 
