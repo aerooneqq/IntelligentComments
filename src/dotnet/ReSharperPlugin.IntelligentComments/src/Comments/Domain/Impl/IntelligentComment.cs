@@ -4,12 +4,13 @@ using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.Content;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.Content;
 
-namespace ReSharperPlugin.IntelligentComments.Comments.Domain.Impl;
+namespace ReSharperPlugin.IntelligentComments.Comments.Domain.Impl
+{
+  public record DocComment(
+    IIntelligentCommentContent Content,
+    ITreeNodePointer<ITreeNode> CommentOwnerPointer) : IDocComment;
 
-public record DocComment(
-  IIntelligentCommentContent Content,
-  ITreeNodePointer<ITreeNode> CommentOwnerPointer) : IDocComment;
-
-public record IntelligentComment(
-  ITreeNodePointer<ITreeNode> CommentOwnerPointer,
-  IIntelligentCommentContent Content) : IIntelligentComment;
+  public record IntelligentComment(
+    ITreeNodePointer<ITreeNode> CommentOwnerPointer,
+    IIntelligentCommentContent Content) : IIntelligentComment;
+}

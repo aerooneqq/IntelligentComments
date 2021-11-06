@@ -12,6 +12,10 @@ interface ContentSegments {
     val segments: Collection<ContentSegment>
 }
 
+interface ParagraphContentSegment : ContentSegment {
+    val content: ContentSegments
+}
+
 interface TextContentSegment : ContentSegment {
     val highlightedText: HighlightedText
 }
@@ -56,4 +60,9 @@ interface TableCellProperties {
     val verticalAlignment: VerticalAlignment
     val horizontalAlignment: HorizontalAlignment
     val isHeader: Boolean
+}
+
+interface Parameter : ContentSegment {
+    val name: String
+    val description: ContentSegments
 }

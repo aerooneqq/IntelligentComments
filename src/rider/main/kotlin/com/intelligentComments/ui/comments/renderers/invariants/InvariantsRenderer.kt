@@ -71,8 +71,6 @@ class InvariantsRendererImpl(private val section: SectionWithHeaderUiModel<Invar
 
     override fun acceptContent(context: RectangleModelBuildContext) {
         val rect = context.rect
-        RectanglesModelUtil.addHeightDeltaTo(context.widthAndHeight, rect, deltaBetweenHeaderAndContent)
-
         val startX = rect.x
         for (invariant in section.content) {
             val renderer = InvariantRenderer.getRendererFor(invariant)

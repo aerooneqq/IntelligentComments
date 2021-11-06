@@ -6,39 +6,42 @@ using JetBrains.Util;
 using JetBrains.Util.Logging;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 
-namespace ReSharperPlugin.IntelligentComments.Comments.Calculations;
-
-public class XmlDocsProcessor : IRecursiveElementProcessor
+namespace ReSharperPlugin.IntelligentComments.Comments.Calculations
 {
-  [NotNull] [ItemNotNull] private readonly IList<ICommentBase> myComments;
-
-  [NotNull] [ItemNotNull] public IReadOnlyList<ICommentBase> Comments => myComments.AsIReadOnlyList();
-
-  
-  public XmlDocsProcessor()
+  public class XmlDocsProcessor : IRecursiveElementProcessor
   {
-    myComments = new List<ICommentBase>();
-  }
-  
+    [NotNull] [ItemNotNull] private readonly IList<ICommentBase> myComments;
+    [NotNull] private readonly IHighlightersProvider myHighlightersProvider;
 
-  public bool InteriorShouldBeProcessed(ITreeNode element) => true;
+    [NotNull] [ItemNotNull] public IReadOnlyList<ICommentBase> Comments => myComments.AsIReadOnlyList();
 
-  public void ProcessBeforeInterior(ITreeNode element)
-  {
-    if (element is IXmlDocOwnerTreeNode xmlDocOwner)
+
+    public XmlDocsProcessor([NotNull] IHighlightersProvider highlightersProvider)
     {
-      var builder = new DocCommentBuilder();
+      myHighlightersProvider = highlightersProvider;
+      myComments = new List<ICommentBase>();
+    }
 
-      if (builder.Build(xmlDocOwner) is { } comment)
+
+    public bool InteriorShouldBeProcessed(ITreeNode element) => true;
+
+    public void ProcessBeforeInterior(ITreeNode element)
+    {
+      if (element is IXmlDocOwnerTreeNode xmlDocOwner)
       {
-        myComments.Add(comment);
+        var builder = new DocCommentBuilder(myHighlightersProvider);
+
+        if (builder.Build(xmlDocOwner) is { } comment)
+        {
+          myComments.Add(comment);
+        }
       }
     }
-  }
 
-  public void ProcessAfterInterior(ITreeNode element)
-  {
-  }
+    public void ProcessAfterInterior(ITreeNode element)
+    {
+    }
 
-  public bool ProcessingIsFinished => false;
+    public bool ProcessingIsFinished => false;
+  }
 }

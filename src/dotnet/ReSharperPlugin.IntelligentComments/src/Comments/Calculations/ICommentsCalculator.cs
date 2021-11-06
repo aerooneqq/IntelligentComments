@@ -2,9 +2,10 @@ using System.Collections.Generic;
 using JetBrains.DocumentModel;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 
-namespace ReSharperPlugin.IntelligentComments.Comments.Calculations;
-
-public interface ICommentsCalculator
+namespace ReSharperPlugin.IntelligentComments.Comments.Calculations
 {
-  IEnumerable<ICommentBase> CalculateFor(IDocument document);
+  public interface ICommentsCalculator
+  {
+    IEnumerable<ICommentBase> CalculateFor(IDocument document);
+  } 
 }

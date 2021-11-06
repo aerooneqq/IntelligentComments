@@ -11,8 +11,10 @@ import com.intelligentComments.ui.comments.model.sections.HeaderTextInfo
 import com.intelligentComments.ui.comments.model.sections.SectionUiModel
 import com.intelligentComments.ui.comments.model.sections.SectionWithHeaderUiModel
 import com.intelligentComments.ui.comments.model.todo.ToDoUiModel
+import com.intelligentComments.ui.comments.renderers.IntelligentCommentsRenderer
 import com.intelligentComments.ui.util.HashUtil
 import com.intellij.icons.AllIcons
+import com.intellij.openapi.editor.EditorCustomElementRenderer
 import com.intellij.openapi.editor.event.EditorMouseEvent
 import com.intellij.openapi.project.Project
 import com.intellij.util.ui.UIUtil
@@ -20,7 +22,7 @@ import java.awt.Cursor
 import javax.swing.Icon
 
 class IntelligentCommentUiModel(project: Project,
-                                val comment: IntelligentComment) : UiInteractionModelBase(project) {
+                                val comment: IntelligentComment) : UiInteractionModelBase(project), RootUiModel {
     val authorsSection: SectionUiModel<AuthorUiModel>
     val contentSection: SectionWithHeaderUiModel<ContentSegmentUiModel>
     val referencesSection: SectionWithHeaderUiModel<ReferenceUiModel>
@@ -53,6 +55,7 @@ class IntelligentCommentUiModel(project: Project,
         todosSection = getSectionHeaderUiModel(todos, AllIcons.General.TodoImportant, "ToDos")
         hacksSection = getSectionHeaderUiModel(hacks, AllIcons.General.Locate, "Hacks")
     }
+
 
     private fun <T : UiInteractionModelBase> getSectionHeaderUiModel(items: Collection<T>,
                                                                      icon: Icon,
@@ -93,4 +96,8 @@ class IntelligentCommentUiModel(project: Project,
     }
 
     override fun equals(other: Any?): Boolean = other is IntelligentCommentUiModel && other.hashCode() == hashCode()
+
+    override fun getRenderer(project: Project): EditorCustomElementRenderer {
+        return IntelligentCommentsRenderer(this)
+    }
 }

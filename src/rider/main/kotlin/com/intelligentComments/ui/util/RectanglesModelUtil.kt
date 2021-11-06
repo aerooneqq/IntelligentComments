@@ -1,5 +1,6 @@
 package com.intelligentComments.ui.util
 
+import com.intelligentComments.ui.comments.model.DocCommentUiModel
 import com.intelligentComments.ui.comments.model.IntelligentCommentUiModel
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intelligentComments.ui.comments.renderers.authors.CommentAuthorsRenderer
@@ -17,44 +18,80 @@ class RectanglesModelUtil {
     companion object {
         const val deltaBetweenHeaderAndContent = 5
         const val heightDeltaBetweenSections = 10
-        private const val minCommentHeightPx = 0
+
 
         fun buildRectanglesModel(editorImpl: EditorImpl,
-                                 intelligentComment: IntelligentCommentUiModel,
+                                 model: UiInteractionModelBase,
                                  xDelta: Int,
                                  yDelta: Int): RectanglesModel {
-            val widthAndHeight = WidthAndHeight().apply {
-                updateHeightSum(minCommentHeightPx)
+            return when(model) {
+                is IntelligentCommentUiModel -> buildRectanglesModel(editorImpl, model, xDelta, yDelta)
+                is DocCommentUiModel -> buildRectanglesModel(editorImpl, model, xDelta, yDelta)
+                else -> throw IllegalArgumentException(model.toString())
             }
+        }
 
+        private fun buildRectanglesModel(editorImpl: EditorImpl,
+                                         model: DocCommentUiModel,
+                                         xDelta: Int,
+                                         yDelta: Int): RectanglesModel {
+            val context = createRectanglesBuildContext(xDelta, yDelta, editorImpl)
+            SegmentsRenderer.getRendererFor(model.contentSection).accept(context)
+
+            addTopmostModel(context, xDelta, yDelta, model)
+            return context.rectanglesModel.apply {
+                setSize(context.widthAndHeight.width, context.widthAndHeight.height)
+                seal()
+            }
+        }
+
+        private fun addTopmostModel(context: RectangleModelBuildContext,
+                                    xDelta: Int,
+                                    yDelta: Int,
+                                    model: UiInteractionModelBase) {
+            val widthAndHeight = context.widthAndHeight
+            val rectanglesModel = context.rectanglesModel
+            val overallRect = Rectangle(xDelta, yDelta, widthAndHeight.width, widthAndHeight.height)
+            rectanglesModel.addElement(model, overallRect)
+        }
+
+        private fun createRectanglesBuildContext(xDelta: Int, yDelta: Int, editorImpl: EditorImpl): RectangleModelBuildContext {
+            val widthAndHeight = WidthAndHeight()
             val initialRect = Rectangle(xDelta, yDelta, Int.MAX_VALUE, Int.MAX_VALUE)
             val model = RectanglesModel()
-            val buildContext = RectangleModelBuildContext(model, widthAndHeight, initialRect, editorImpl)
+            return RectangleModelBuildContext(model, widthAndHeight, initialRect, editorImpl)
+        }
 
-            fun updateRectYAndHeight(delta: Int) {
-                initialRect.y += delta
-                widthAndHeight.updateHeightSum(delta)
-            }
+        private fun updateRectYAndHeight(delta: Int, context: RectangleModelBuildContext) {
+            context.rect.y += delta
+            context.widthAndHeight.updateHeightSum(delta)
+        }
 
-            CommentAuthorsRenderer.getRendererFor(intelligentComment.authorsSection.content).accept(buildContext)
-            updateRectYAndHeight(heightDeltaBetweenSections)
+        private fun buildRectanglesModel(editorImpl: EditorImpl,
+                                         intelligentComment: IntelligentCommentUiModel,
+                                         xDelta: Int,
+                                         yDelta: Int): RectanglesModel {
+            val context = createRectanglesBuildContext(xDelta, yDelta, editorImpl)
 
-            SegmentsRenderer.getRendererFor(intelligentComment.contentSection).accept(buildContext)
-            updateRectYAndHeight(heightDeltaBetweenSections)
+            CommentAuthorsRenderer.getRendererFor(intelligentComment.authorsSection.content).accept(context)
+            updateRectYAndHeight(heightDeltaBetweenSections, context)
 
-            ReferencesRenderer.getRendererFor(intelligentComment.referencesSection).accept(buildContext)
-            updateRectYAndHeight(heightDeltaBetweenSections)
+            SegmentsRenderer.getRendererFor(intelligentComment.contentSection).accept(context)
+            updateRectYAndHeight(heightDeltaBetweenSections, context)
 
-            InvariantsRenderer.getRendererFor(intelligentComment.invariantsSection).accept(buildContext)
-            updateRectYAndHeight(heightDeltaBetweenSections)
+            ReferencesRenderer.getRendererFor(intelligentComment.referencesSection).accept(context)
+            updateRectYAndHeight(heightDeltaBetweenSections, context)
 
-            ToDosRenderer.getRendererFor(intelligentComment.todosSection).accept(buildContext)
-            updateRectYAndHeight(heightDeltaBetweenSections)
+            InvariantsRenderer.getRendererFor(intelligentComment.invariantsSection).accept(context)
+            updateRectYAndHeight(heightDeltaBetweenSections, context)
 
-            model.addElement(intelligentComment, Rectangle(xDelta, yDelta, widthAndHeight.width, widthAndHeight.height))
+            ToDosRenderer.getRendererFor(intelligentComment.todosSection).accept(context)
+            updateRectYAndHeight(heightDeltaBetweenSections, context)
 
-            return model.apply {
-                setSize(widthAndHeight.width, widthAndHeight.height)
+            addTopmostModel(context, xDelta, yDelta, intelligentComment)
+
+            return context.rectanglesModel.apply {
+                setSize(context.widthAndHeight.width, context.widthAndHeight.height)
                 seal()
             }
         }

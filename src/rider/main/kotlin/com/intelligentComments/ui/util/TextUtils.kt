@@ -23,7 +23,7 @@ class TextUtil {
         val boldFont: Font = font.deriveFont(Font.BOLD).deriveFont(14f)
 
         const val deltaBetweenIconAndTextInHeader = 2
-        private const val textHeightAdditionFactor = 2
+        private const val textHeightAdditionFactor = 0
 
         fun getFontMetrics(editorImpl: EditorImpl, highlighterUiModel: HighlighterUiModel?): FontMetrics {
             return when(highlighterUiModel?.style) {
@@ -72,7 +72,15 @@ class TextUtil {
         private fun getTextHeight(fontMetrics: FontMetrics) = fontMetrics.ascent + textHeightAdditionFactor
 
         fun getTextHeight(editorImpl: EditorImpl, highlighter: HighlighterUiModel?): Int {
-            return getTextHeight(getFontMetrics(editorImpl, highlighter))
+            var height = getTextHeight(getFontMetrics(editorImpl, highlighter))
+            if (highlighter != null) {
+                val backgroundStyle = highlighter.backgroundStyle
+                if (backgroundStyle != null && backgroundStyle.roundedRect) {
+                    height += 3
+                }
+            }
+
+            return height
         }
 
         fun renderText(g: Graphics,

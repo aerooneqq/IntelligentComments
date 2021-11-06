@@ -47,12 +47,13 @@ class RiderEditorHandler : EditorHandler {
         val innerListContent2 = RdTextSegment(RdHighlightedText(text))
         val listContent2 = RdListSegment(mutableListOf(RdContentSegments(mutableListOf(innerListContent, innerListContent2))), getListHeader("Inner list:"))
         val listContent3 = RdTextSegment(RdHighlightedText(text))
-        val listSegment4 = RdFileBasedImageSegment("/Users/aero/Desktop/maxresdefault.jpg", RdHighlightedText("This cat is awesome"))
+        val catPath = "C:\\Users\\Evgenii Stepanov\\Desktop\\fbfff6a63b4c0931887c8a399234fe07.jpg"
+        val listSegment4 = RdFileBasedImageSegment(catPath, RdHighlightedText("This cat is awesome"))
         val listContents = mutableListOf(RdContentSegments(mutableListOf(listContent1)), RdContentSegments(mutableListOf(listContent2)), RdContentSegments(mutableListOf(listSegment4)), RdContentSegments(mutableListOf(listContent3)))
         contents.add(RdListSegment(listContents, getListHeader("List:")))
 
-        val imageSegment = RdFileBasedImageSegment("/Users/aero/Desktop/maxresdefault.jpg", RdHighlightedText("This cat is awesome"))
-        val imageSegment1 = RdFileBasedImageSegment("/Users/aero/Desktop/maxresdefault.jpg", RdHighlightedText("This cat is awesome This cat is awesome This cat is awesome This cat is awesome This cat is awesome This cat is awesome"))
+        val imageSegment = RdFileBasedImageSegment(catPath, RdHighlightedText("This cat is awesome"))
+        val imageSegment1 = RdFileBasedImageSegment(catPath, RdHighlightedText("This cat is awesome This cat is awesome This cat is awesome This cat is awesome This cat is awesome This cat is awesome"))
         contents.add(imageSegment)
         contents.add(imageSegment1)
 
@@ -63,7 +64,7 @@ class RiderEditorHandler : EditorHandler {
             val text = RdTextSegment(RdHighlightedText("asdsadasdaasdasdsdasdad"))
             val listText = RdTextSegment(RdHighlightedText("Super puper puper list"))
             val list = RdListSegment(mutableListOf(RdContentSegments(mutableListOf(listText))), getListHeader("List inside table:"))
-            val imageSegment = RdFileBasedImageSegment("/Users/aero/Desktop/maxresdefault.jpg", RdHighlightedText("This cat is awesome"))
+            val imageSegment = RdFileBasedImageSegment(catPath, RdHighlightedText("This cat is awesome"))
             val contentList = mutableListOf(text, list)
             if (idx == 0 || idx == 3) contentList.add(imageSegment)
             ++idx

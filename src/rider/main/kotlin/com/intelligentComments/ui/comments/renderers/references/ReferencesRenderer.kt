@@ -68,8 +68,6 @@ class ReferencesRendererImpl(private val section: SectionWithHeaderUiModel<Refer
     }
 
     override fun acceptContent(context: RectangleModelBuildContext) {
-        RectanglesModelUtil.addHeightDeltaTo(context.widthAndHeight, context.rect, deltaBetweenHeaderAndContent)
-
         for (reference in section.content) {
             val renderer = ReferenceRenderer.getRendererFor(reference)
             renderer.accept(context)

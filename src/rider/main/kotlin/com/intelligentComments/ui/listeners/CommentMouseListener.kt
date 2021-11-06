@@ -1,12 +1,13 @@
 package com.intelligentComments.ui.listeners
 
 import com.intelligentComments.ui.comments.renderers.IntelligentCommentsRenderer
+import com.intelligentComments.ui.comments.renderers.RendererWithRectangleModel
 import com.intellij.openapi.editor.Inlay
 import com.intellij.openapi.editor.event.EditorMouseEvent
 import com.intellij.openapi.editor.event.EditorMouseListener
 
 class CommentMouseListener(private val inlay: Inlay<*>) : EditorMouseListener {
-    private val renderer = inlay.renderer as IntelligentCommentsRenderer
+    private val renderer = inlay.renderer as RendererWithRectangleModel
 
 
     override fun mouseClicked(event: EditorMouseEvent) {

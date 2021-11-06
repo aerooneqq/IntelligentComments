@@ -8,47 +8,47 @@ using JetBrains.RdBackend.Common.Features;
 using JetBrains.Rider.Backend.Features.TextControls;
 using JetBrains.Rider.Model;
 using JetBrains.TextControl;
-using ReSharperPlugin.IntelligentComments.Comments;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations;
 using ReSharperPlugin.IntelligentComments.Comments.Domain;
 
-namespace ReSharperPlugin.IntelligentComments.Core;
-
-[SolutionComponent]
-public class CommentsEditorsHost
+namespace ReSharperPlugin.IntelligentComments.Core
 {
-  [NotNull] private readonly CommentsCalculationsManager myCommentsCalculationsManager;
-  [NotNull] private readonly RdCommentsModel myRdCommentsHost;
-  [NotNull] private readonly RiderTextControlHost myTextControlHost;
-
-
-  public CommentsEditorsHost(
-    Lifetime lifetime,
-    [NotNull] ISolution solution,
-    [NotNull] ITextControlManager textControlManager,
-    [NotNull] CommentsCalculationsManager commentsCalculationsManager,
-    [NotNull] RiderTextControlHost textControlHost)
+  [SolutionComponent]
+  public class CommentsEditorsHost
   {
-    myCommentsCalculationsManager = commentsCalculationsManager;
-    myTextControlHost = textControlHost;
-    myRdCommentsHost = solution.GetProtocolSolution().GetRdCommentsModel();
-    textControlManager.VisibleTextControls.AddRemove.Advise(lifetime, HandleVisibleEditorsChange);
-  }
+    [NotNull] private readonly CommentsCalculationsManager myCommentsCalculationsManager;
+    [NotNull] private readonly RdCommentsModel myRdCommentsHost;
+    [NotNull] private readonly RiderTextControlHost myTextControlHost;
 
 
-  private void HandleVisibleEditorsChange(AddRemoveEventArgs<ITextControl> args)
-  {
-    if (args.Action == AddRemove.Add)
+    public CommentsEditorsHost(
+      Lifetime lifetime,
+      [NotNull] ISolution solution,
+      [NotNull] ITextControlManager textControlManager,
+      [NotNull] CommentsCalculationsManager commentsCalculationsManager,
+      [NotNull] RiderTextControlHost textControlHost)
     {
-      var document = args.Value.Document;
-      myCommentsCalculationsManager.CalculateFor(document, comments =>
-      {
-        if (comments is null) return;
-        var rdComments = new RdDocumentComments(comments.Select(CommentsUtil.ToRdComment).ToList());
+      myCommentsCalculationsManager = commentsCalculationsManager;
+      myTextControlHost = textControlHost;
+      myRdCommentsHost = solution.GetProtocolSolution().GetRdCommentsModel();
+      textControlManager.VisibleTextControls.AddRemove.Advise(lifetime, HandleVisibleEditorsChange);
+    }
 
-        var (documentId, _, _, _) = myTextControlHost.GetTextControlId(args.Value);
-        myRdCommentsHost.Comments[documentId] = rdComments;
-      });
+
+    private void HandleVisibleEditorsChange(AddRemoveEventArgs<ITextControl> args)
+    {
+      if (args.Action == AddRemove.Add)
+      {
+        var document = args.Value.Document;
+        myCommentsCalculationsManager.CalculateFor(document, comments =>
+        {
+          if (comments is null) return;
+          var rdComments = new RdDocumentComments(comments.Select(CommentsUtil.ToRdComment).ToList());
+
+          var (documentId, _, _, _) = myTextControlHost.GetTextControlId(args.Value);
+          myRdCommentsHost.Comments[documentId] = rdComments;
+        });
+      }
     }
   }
 }

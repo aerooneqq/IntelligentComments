@@ -47,10 +47,6 @@ class TextSegmentRenderer(private val textSegment: TextContentSegmentUiModel) : 
     }
 
     override fun accept(context: RectangleModelBuildContext) {
-        val descent = TextUtil.getFontMetrics(context.editorImpl, null).descent
-
-        UpdatedRectCookie(context.rect, yDelta = descent).use {
-            TextUtil.createRectanglesForHighlighters(cachedLines, cachedLinesHighlighters, context)
-        }
+        TextUtil.createRectanglesForHighlighters(cachedLines, cachedLinesHighlighters, context)
     }
 }

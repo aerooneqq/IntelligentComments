@@ -1,8 +1,9 @@
 using JetBrains.Annotations;
 
-namespace ReSharperPlugin.IntelligentComments.Comments.Domain.Core.Content;
-
-public interface ITextContentSegment : IContentSegment
+namespace ReSharperPlugin.IntelligentComments.Comments.Domain.Core.Content
 {
-  [NotNull] IHighlightedText Text { get; }
+  public interface ITextContentSegment : IContentSegment
+  {
+    [NotNull] IHighlightedText Text { get; }
+  }
 }

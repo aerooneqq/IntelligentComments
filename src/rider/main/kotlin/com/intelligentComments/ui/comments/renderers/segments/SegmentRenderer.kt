@@ -16,6 +16,8 @@ interface SegmentRenderer : Renderer, RectangleModelBuildContributor {
                 is ListContentSegmentUiModel -> ListSegmentRenderer(segment)
                 is ImageContentSegmentUiModel -> ImageSegmentRenderer(segment)
                 is TableContentSegmentUiModel -> TableSegmentRenderer(segment)
+                is ParagraphUiModel -> ParagraphRendererImpl(segment)
+                is ParameterUiModel -> ParameterRenderer(segment)
                 else -> throw IllegalArgumentException(segment.toString())
             }
         }

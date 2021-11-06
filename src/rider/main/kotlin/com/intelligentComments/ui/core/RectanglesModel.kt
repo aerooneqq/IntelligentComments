@@ -1,6 +1,5 @@
 package com.intelligentComments.ui.core
 
-import com.intelligentComments.ui.comments.model.IntelligentCommentUiModel
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intelligentComments.ui.util.RectanglesModelUtil
 import com.intellij.openapi.editor.event.EditorMouseEvent
@@ -9,7 +8,7 @@ import com.jetbrains.rd.platform.util.application
 import com.jetbrains.rd.util.getOrCreate
 import java.awt.Rectangle
 
-class RectanglesModelHolder(private val uiModel: IntelligentCommentUiModel) {
+class RectanglesModelHolder(private val uiModel: UiInteractionModelBase) {
     private var lastUpdateHash = 0
 
     var model: RectanglesModel? = null

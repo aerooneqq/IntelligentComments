@@ -6,16 +6,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="JetBrains.ReSharper.SDK.Tests" Version="$(SdkVersion)"/>
+        <PackageReference Include="JetBrains.ReSharper.SDK.Tests" Version="$(SdkVersion)" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\ReSharperPlugin.IntelligentComments\ReSharperPlugin.IntelligentComments.csproj"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <Compile Remove="test/**/*"/>
-        <None Include="test/**/*"/>
+        <Compile Remove="test/**/*" />
+        <None Include="test/**/*" />
     </ItemGroup>
 
 </Project>

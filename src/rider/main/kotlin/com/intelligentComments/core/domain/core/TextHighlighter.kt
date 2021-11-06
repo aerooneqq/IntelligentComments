@@ -20,6 +20,11 @@ interface BackgroundStyle {
     val roundedRect: Boolean
 }
 
+class BackgroundStyleImpl(backgroundColor: Color, roundedRect: Boolean) : BackgroundStyle {
+    override val backgroundColor: Color = backgroundColor
+    override val roundedRect: Boolean = roundedRect
+}
+
 interface MouseInOutAnimation {
     fun applyTo(uiModel: HighlighterUiModel, mouseIn: Boolean): Boolean
 }

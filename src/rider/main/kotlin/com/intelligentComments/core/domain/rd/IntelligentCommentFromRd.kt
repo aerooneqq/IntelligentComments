@@ -22,20 +22,7 @@ class IntelligentCommentFromRd(private val rdComment: RdIntelligentComment,
         return rdComment.authors?.map { AuthorFromRd(it) } ?: emptyList()
     }
 
-    private fun createContent(project: Project): IntelligentCommentContent {
-        return object : IntelligentCommentContent {
-            private val myCachedSegments: Collection<ContentSegment>
-
-            init {
-                val segments = rdComment.content?.content?.content
-                myCachedSegments = segments?.map { ContentSegmentFromRd.getFrom(it, project) } ?: emptyList()
-            }
-
-            override val segments: Collection<ContentSegment> = myCachedSegments
-            override val id: UUID = UUID.randomUUID()
-        }
-    }
-
+    private fun createContent(project: Project) = IntelligentCommentContentFromRd(rdComment.content, project)
     private fun createReferences(): List<ReferenceFromRd> = rdComment.references?.map { ReferenceFromRd.getFrom(it) } ?: emptyList()
     private fun createInvariants(): List<InvariantFromRd> = rdComment.invariants?.map { InvariantFromRd.getFrom(it) } ?: emptyList()
     private fun createToDos(): List<ToDoFromRd> = rdComment.toDos?.map { ToDoFromRd.getFrom(it, project) } ?: emptyList()

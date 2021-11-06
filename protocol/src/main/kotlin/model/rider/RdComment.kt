@@ -43,6 +43,23 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
         field("Content", immutableList(RdContentSegment))
     }
 
+    val RdParam = structdef extends RdContentSegment {
+        field("Name", PredefinedType.string)
+        field("Description", RdContentSegments)
+    }
+
+    val RdParagraphSegment = structdef extends RdContentSegment {
+        field("Content", RdContentSegments)
+    }
+
+    val RdReturnSection = structdef extends RdContentSegment {
+
+    }
+
+    val RdExceptionsSection = structdef extends RdContentSegment {
+
+    }
+
     val RdTextSegment = structdef extends RdContentSegment {
         field("Text", RdHighlightedText)
     }
@@ -123,6 +140,7 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
         field("Attributes", RdTextAttributes)
         field("BackgroundStyle", RdBackgroundStyle.nullable).optional
         field("Animation", RdTextAnimation.nullable).optional
+        field("References", immutableList(RdReference).nullable).optional
     }
 
     val RdTextAttributes = structdef {

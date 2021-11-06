@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <LanguageTargets>$(MSBuildToolsPath)\Microsoft.CSharp.targets</LanguageTargets>
-        <LangVersion>10</LangVersion>
+        <LangVersion>9</LangVersion>
     </PropertyGroup>
 
     <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />

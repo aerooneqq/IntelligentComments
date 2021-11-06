@@ -9,8 +9,10 @@ import com.intelligentComments.ui.comments.model.content.text.TextContentSegment
 import com.intelligentComments.ui.util.HashUtil
 import com.intellij.openapi.project.Project
 
-open class ContentSegmentUiModel(project: Project,
-                                 private val segment: ContentSegment) : UiInteractionModelBase(project) {
+abstract class ContentSegmentUiModel(
+    project: Project,
+    private val segment: ContentSegment
+) : UiInteractionModelBase(project) {
     companion object {
         fun getFrom(project: Project, segment: ContentSegment): ContentSegmentUiModel {
             return when(segment) {
@@ -18,6 +20,8 @@ open class ContentSegmentUiModel(project: Project,
                 is ListContentSegment -> ListContentSegmentUiModel(project, segment)
                 is ImageContentSegment -> ImageContentSegmentUiModel(project, segment)
                 is TableContentSegment -> TableContentSegmentUiModel(project, segment)
+                is ParagraphContentSegment -> ParagraphUiModel(project, segment)
+                is Parameter -> ParameterUiModel(project, segment)
                 else -> throw IllegalArgumentException(segment.toString())
             }
         }

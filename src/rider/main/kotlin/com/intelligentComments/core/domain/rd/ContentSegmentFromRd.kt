@@ -16,6 +16,8 @@ open class ContentSegmentFromRd(private val contentSegment: RdContentSegment) : 
                 is RdListSegment -> ListSegmentFromRd(contentSegment, project)
                 is RdFileBasedImageSegment -> FileBasedImageSegmentFromRd(contentSegment, project)
                 is RdTableSegment -> TableSegmentFromRd(contentSegment, project)
+                is RdParagraphSegment -> ParagraphContentSegmentFromRd(contentSegment, project)
+                is RdParam -> ParameterFromRd(contentSegment, project)
                 else -> throw IllegalArgumentException(contentSegment.toString())
             }
         }
@@ -25,6 +27,11 @@ open class ContentSegmentFromRd(private val contentSegment: RdContentSegment) : 
 class ContentSegmentsFromRd(contentSegments: RdContentSegments,
                             project: Project) : ContentSegments {
     override val segments: Collection<ContentSegment> = contentSegments.content.map { ContentSegmentFromRd.getFrom(it, project) }
+}
+
+class ParagraphContentSegmentFromRd(paragraph: RdParagraphSegment,
+                                    project: Project) : ContentSegmentFromRd(paragraph), ParagraphContentSegment {
+    override val content: ContentSegments = ContentSegmentsFromRd(paragraph.content, project)
 }
 
 class TextContentSegmentFromRd(segment: RdTextSegment,
@@ -108,4 +115,9 @@ fun RdHorizontalAlignment.toAlignment(): HorizontalAlignment = when(this) {
     RdHorizontalAlignment.Center -> HorizontalAlignment.CENTER
     RdHorizontalAlignment.Right -> HorizontalAlignment.RIGHT
     RdHorizontalAlignment.Left -> HorizontalAlignment.LEFT
+}
+
+class ParameterFromRd(rdParam: RdParam, project: Project) : ContentSegmentFromRd(rdParam), Parameter {
+    override val name: String = rdParam.name
+    override val description: ContentSegments = ContentSegmentsFromRd(rdParam.description, project)
 }

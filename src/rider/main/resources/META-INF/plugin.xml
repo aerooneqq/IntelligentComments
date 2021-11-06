@@ -23,5 +23,8 @@
     <component>
       <implementation-class>com.intelligentComments.core.editors.IntelligentCommentsEditorsFactoryListener</implementation-class>
     </component>
+    <component>
+      <implementation-class>com.intelligentComments.core.editors.RiderCommentsHost</implementation-class>
+    </component>
   </project-components>
 </idea-plugin>

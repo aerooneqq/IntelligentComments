@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using JetBrains.Annotations;
+using JetBrains.Application.BuildScript.Application.Zones;
 using JetBrains.Application.Threading;
 using JetBrains.DocumentModel;
 using JetBrains.ProjectModel;
@@ -10,32 +11,40 @@ using JetBrains.Util;
 using JetBrains.Util.Logging;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 
-namespace ReSharperPlugin.IntelligentComments.Comments.Calculations;
-
-public class CommentsCalculatorImpl : ICommentsCalculator
+namespace ReSharperPlugin.IntelligentComments.Comments.Calculations
 {
-  private static readonly ILogger ourLogger = Logger.GetLogger<CommentsCalculatorImpl>();
-  
-  [NotNull] private readonly IShellLocks myShellLocks;
-  [NotNull] private readonly ISolution mySolution;
-
-
-  public CommentsCalculatorImpl([NotNull] ISolution solution, [NotNull] IShellLocks shellLocks)
+  [SolutionComponent]
+  public class CommentsCalculatorImpl : ICommentsCalculator
   {
-    mySolution = solution;
-    myShellLocks = shellLocks;
-  }
+    private static readonly ILogger ourLogger = Logger.GetLogger<CommentsCalculatorImpl>();
+
+    [NotNull] private readonly IShellLocks myShellLocks;
+    [NotNull] private readonly ISolution mySolution;
+    [NotNull] private readonly IHighlightersProvider myHighlightersProvider;
 
 
-  public IEnumerable<ICommentBase> CalculateFor(IDocument document)
-  {
-    myShellLocks.AssertReadAccessAllowed();
+    public CommentsCalculatorImpl(
+      [NotNull] ISolution solution, [NotNull] IShellLocks shellLocks, IHighlightersProvider highlightersProvider)
+    {
+      myHighlightersProvider = highlightersProvider;
+      mySolution = solution;
+      myShellLocks = shellLocks;
+    }
 
-    if (document.GetPsiSourceFile(mySolution)?.GetPrimaryPsiFile() is not ICSharpFile file)
-      return EmptyList<IIntelligentComment>.Enumerable;
 
-    var processor = new XmlDocsProcessor();
-    file.ProcessThisAndDescendants(processor);
-    return processor.Comments;
+    public IEnumerable<ICommentBase> CalculateFor(IDocument document)
+    {
+      myShellLocks.AssertReadAccessAllowed();
+      
+      if (document.GetPsiSourceFile(mySolution)?.GetPrimaryPsiFile() is not ICSharpFile file)
+      {
+        ourLogger.LogAssertion($"Primary psi file is not C# one {document.Moniker}");
+        return EmptyList<IIntelligentComment>.Enumerable;
+      }
+      
+      var processor = new XmlDocsProcessor(myHighlightersProvider);
+      file.ProcessThisAndDescendants(processor);
+      return processor.Comments;
+    }
   }
 }

@@ -72,8 +72,6 @@ class ToDosRendererImpl(private val section: SectionWithHeaderUiModel<ToDoUiMode
     }
 
     override fun acceptContent(context: RectangleModelBuildContext) {
-        RectanglesModelUtil.addHeightDeltaTo(context.widthAndHeight, context.rect, deltaBetweenHeaderAndContent)
-
         executeActionWithToDosAndRenderers { todo, renderer ->
             renderer.accept(context)
             RectanglesModelUtil.updateHeightAndWidthAndAddModel(renderer, context, todo)

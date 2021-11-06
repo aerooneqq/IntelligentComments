@@ -58,8 +58,6 @@ class ContentSegmentsUtil {
         }
 
         fun accept(context: RectangleModelBuildContext, segments: Collection<ContentSegmentUiModel>) {
-            RectanglesModelUtil.addHeightDeltaTo(context.widthAndHeight, context.rect, deltaBetweenHeaderAndContent)
-
             executeWithRenderers(segments) { renderer, segment ->
                 renderer.accept(context)
                 RectanglesModelUtil.updateHeightAndWidthAndAddModel(renderer, context, segment)

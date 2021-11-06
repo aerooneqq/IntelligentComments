@@ -21,7 +21,7 @@ import java.awt.Rectangle
 import kotlin.math.max
 
 abstract class VerticalSectionWithHeaderRenderer<T : UiInteractionModelBase>(
-        private val section: SectionWithHeaderUiModel<T>) : Renderer, RectangleModelBuildContributor {
+    private val section: SectionWithHeaderUiModel<T>) : Renderer, RectangleModelBuildContributor {
 
     companion object {
         const val leftContentIndent = 20
@@ -104,6 +104,9 @@ abstract class VerticalSectionWithHeaderRenderer<T : UiInteractionModelBase>(
         context.rectanglesModel.addElement(highlightedText.highlighters[0], headerRect)
 
         RectanglesModelUtil.addHeightDeltaTo(context, headerRect.height)
+
+        val deltaAfterHeader = if (shouldRenderContent) deltaBetweenHeaderAndContent else 0
+        RectanglesModelUtil.addHeightDeltaTo(context, deltaAfterHeader)
 
         if (shouldRenderContent) {
             context.rect.x += leftContentIndent
