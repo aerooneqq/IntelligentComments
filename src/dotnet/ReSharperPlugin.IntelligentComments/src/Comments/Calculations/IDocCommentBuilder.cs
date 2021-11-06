@@ -28,7 +28,7 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Calculations
 
       
       public WithPushedToStackContentSegments([NotNull] Stack<IContentSegments> stack, [NotNull] ILogger logger)
-        : this(stack, new ContentSegments(new List<IContentSegment>()), logger)
+        : this(stack, ContentSegments.GetEmpty(), logger)
       {
       }
       
@@ -87,7 +87,8 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Calculations
       }
     }
 
-    private const string UndefinedParamName = "???";
+    private const string UndefinedParam = "???";
+    private const string CRef = "cref";
     
     [NotNull] private static readonly ILogger ourLogger = Logger.GetLogger<DocCommentBuilder>();
   
@@ -112,7 +113,7 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Calculations
       {
         if (owner.GetXMLDoc(true) is not { } xmlNode) return null;
 
-        var topmostContentSegments = new ContentSegments(new List<IContentSegment>());
+        var topmostContentSegments = ContentSegments.GetEmpty();
         using (new WithPushedToStackContentSegments(myContentSegmentsStack, topmostContentSegments, ourLogger))
         {
           Visit(xmlNode);
@@ -172,7 +173,7 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Calculations
       ExecuteActionOverChildren(element, Visit);
     }
 
-    private static string PreprocessText(string text) => text.Replace("\n ", "\n");
+    private static string PreprocessText([NotNull] string text) => text.Replace("\n ", "\n");
 
     public override void VisitParam(XmlElement element)
     {
@@ -180,7 +181,7 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Calculations
       var paramName = element.GetAttribute("name");
       if (paramName == string.Empty)
       {
-        paramName = UndefinedParamName;
+        paramName = UndefinedParam;
       }
 
       var paramSegment = new ParamContentSegment(paramName);
@@ -192,7 +193,7 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Calculations
       ExecuteWithTopmostContentSegments(segments => segments.Segments.Add(paramSegment));
     }
     
-    private void ExecuteWithTopmostContentSegments(Action<IContentSegments> action)
+    private void ExecuteWithTopmostContentSegments([NotNull] Action<IContentSegments> action)
     {
       if (myContentSegmentsStack.Count == 0)
       {
@@ -215,15 +216,48 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Calculations
 
     public override void VisitPara(XmlElement element)
     {
-      var contentSegments = new ContentSegments(new List<IContentSegment>());
-      var paragraphContentSegment = new ParagraphContentSegment(contentSegments);
-      
+      var paragraphContentSegment = new ParagraphContentSegment(ContentSegments.GetEmpty());
+      ProcessEntityWithContentSegments(paragraphContentSegment, element);
+    }
+
+    private void ProcessEntityWithContentSegments(
+      [NotNull] IEntityWithContentSegments entityWithContentSegments, [NotNull] XmlElement element)
+    {
+      var contentSegments = entityWithContentSegments.ContentSegments;
       using (new WithPushedToStackContentSegments(myContentSegmentsStack, contentSegments, ourLogger))
       {
         ExecuteActionOverChildren(element, Visit);
       }
       
-      ExecuteWithTopmostContentSegments(segments => segments.Segments.Add(paragraphContentSegment));
+      ExecuteWithTopmostContentSegments(segments => segments.Segments.Add(entityWithContentSegments));
+    }
+
+    public override void VisitReturns(XmlElement element)
+    {
+      myVisitedNodes.Add(element);
+      var returnSegment = new ReturnContentSegment(ContentSegments.GetEmpty());
+      ProcessEntityWithContentSegments(returnSegment, element);
+    }
+
+    public override void VisitRemarks(XmlElement element)
+    {
+      myVisitedNodes.Add(element);
+      var remarksSegment = new RemarksContentSegment(ContentSegments.GetEmpty());
+      ProcessEntityWithContentSegments(remarksSegment, element);
+    }
+
+    public override void VisitException(XmlElement element)
+    {
+      myVisitedNodes.Add(element);
+      string exceptionName = UndefinedParam;
+      if (element.GetAttributeNode(CRef) is { } attribute)
+      {
+        myVisitedNodes.Add(attribute);
+        exceptionName = attribute.Value;
+      }
+      
+      var exceptionSegment = new ExceptionContentSegment(exceptionName);
+      ProcessEntityWithContentSegments(exceptionSegment, element);
     }
   }
 }

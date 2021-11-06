@@ -65,8 +65,26 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Domain
         ITextContentSegment textSegment => textSegment.ToRdTextSegment(),
         IParagraphContentSegment paragraph => paragraph.ToRdParagraph(),
         IParamContentSegment param => param.ToRdParam(),
+        IReturnContentSegment @return => @return.ToRdReturn(),
+        IRemarksSegment remarks => remarks.ToRdRemarks(),
+        IExceptionSegment exceptionSegment => exceptionSegment.ToRdExceptionSegment(),
         _ => throw new ArgumentOutOfRangeException(segment.GetType().Name)
       };
+    }
+
+    private static RdExceptionsSegment ToRdExceptionSegment(this IExceptionSegment segment)
+    {
+      return new RdExceptionsSegment(segment.ExceptionName, null, segment.ContentSegments.ToRdContentSegments());
+    }
+    
+    private static RdRemarksSegment ToRdRemarks(this IRemarksSegment remarksSegment)
+    {
+      return new RdRemarksSegment(remarksSegment.ContentSegments.ToRdContentSegments());
+    }
+    
+    private static RdReturnSegment ToRdReturn(this IReturnContentSegment returnContentSegment)
+    {
+      return new RdReturnSegment(returnContentSegment.ContentSegments.ToRdContentSegments());
     }
     
     private static RdParam ToRdParam(this IParamContentSegment param)

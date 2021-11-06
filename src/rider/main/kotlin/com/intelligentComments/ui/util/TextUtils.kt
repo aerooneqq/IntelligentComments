@@ -181,6 +181,14 @@ class TextUtil {
         fun renderLine(g: Graphics,
                        rect: Rectangle,
                        editorImpl: EditorImpl,
+                       text: HighlightedTextUiWrapper,
+                       delta: Int): Rectangle {
+            return renderLine(g, rect, editorImpl, text.text, text.highlighters, delta)
+        }
+
+        fun renderLine(g: Graphics,
+                       rect: Rectangle,
+                       editorImpl: EditorImpl,
                        line: String,
                        highlighters: Collection<HighlighterUiModel>,
                        delta: Int): Rectangle {

@@ -3,16 +3,14 @@ using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.Content;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.Content
 {
-  public class ParamContentSegment : IParamContentSegment
+  public class ParamContentSegment : EntityWithContentSegments, IParamContentSegment
   {
     public string Name { get; }
-    public IContentSegments ContentSegments { get; }
 
-    
-    public ParamContentSegment(string name)
+
+    public ParamContentSegment(string name) : base(Content.ContentSegments.GetEmpty())
     {
       Name = name;
-      ContentSegments = new ContentSegments(new List<IContentSegment>());
     }
   }
 }

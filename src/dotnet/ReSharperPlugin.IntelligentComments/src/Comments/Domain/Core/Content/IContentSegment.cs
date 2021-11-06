@@ -11,4 +11,18 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Domain.Core.Content
   {
     [NotNull] IList<IContentSegment> Segments { get; }
   }
+
+  public interface IEntityWithContentSegments : IContentSegment
+  {
+    public IContentSegments ContentSegments { get; }
+  }
+
+  public interface IRemarksSegment : IEntityWithContentSegments
+  {
+  }
+
+  public interface IExceptionSegment : IEntityWithContentSegments
+  {
+    string ExceptionName { get; }
+  }
 }

@@ -33,31 +33,35 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
         field("Date", PredefinedType.dateTime)
     }
 
-    val RdIntelligentCommentContent = structdef {
+    val RdContentSegment = basestruct { }
+
+    val RdSegmentWithContent = basestruct extends RdContentSegment {
         field("Content", RdContentSegments)
     }
 
-    val RdContentSegment = basestruct { }
+    val RdIntelligentCommentContent = structdef extends RdSegmentWithContent {
+    }
 
     val RdContentSegments = structdef {
         field("Content", immutableList(RdContentSegment))
     }
 
-    val RdParam = structdef extends RdContentSegment {
+    val RdParam = structdef extends RdSegmentWithContent {
         field("Name", PredefinedType.string)
-        field("Description", RdContentSegments)
     }
 
-    val RdParagraphSegment = structdef extends RdContentSegment {
-        field("Content", RdContentSegments)
+    val RdRemarksSegment = structdef extends RdSegmentWithContent {
     }
 
-    val RdReturnSection = structdef extends RdContentSegment {
-
+    val RdParagraphSegment = structdef extends RdSegmentWithContent {
     }
 
-    val RdExceptionsSection = structdef extends RdContentSegment {
+    val RdReturnSegment = structdef extends RdSegmentWithContent {
+    }
 
+    val RdExceptionsSegment = structdef extends RdSegmentWithContent {
+        field("Name", PredefinedType.string)
+        field("ExceptionReference", RdReference.nullable).optional
     }
 
     val RdTextSegment = structdef extends RdContentSegment {

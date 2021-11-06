@@ -47,7 +47,7 @@ class RiderEditorHandler : EditorHandler {
         val innerListContent2 = RdTextSegment(RdHighlightedText(text))
         val listContent2 = RdListSegment(mutableListOf(RdContentSegments(mutableListOf(innerListContent, innerListContent2))), getListHeader("Inner list:"))
         val listContent3 = RdTextSegment(RdHighlightedText(text))
-        val catPath = "C:\\Users\\Evgenii Stepanov\\Desktop\\fbfff6a63b4c0931887c8a399234fe07.jpg"
+        val catPath = "/Users/aero/Desktop/maxresdefault.jpg"
         val listSegment4 = RdFileBasedImageSegment(catPath, RdHighlightedText("This cat is awesome"))
         val listContents = mutableListOf(RdContentSegments(mutableListOf(listContent1)), RdContentSegments(mutableListOf(listContent2)), RdContentSegments(mutableListOf(listSegment4)), RdContentSegments(mutableListOf(listContent3)))
         contents.add(RdListSegment(listContents, getListHeader("List:")))

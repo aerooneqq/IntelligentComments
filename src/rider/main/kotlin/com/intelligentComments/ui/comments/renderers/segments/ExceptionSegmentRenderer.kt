@@ -1,13 +1,13 @@
 package com.intelligentComments.ui.comments.renderers.segments
 
-import com.intelligentComments.ui.comments.model.content.ParameterUiModel
+import com.intelligentComments.ui.comments.model.content.exceptions.ExceptionUiModel
 import com.intelligentComments.ui.core.RectanglesModel
 import com.intelligentComments.ui.util.TextUtil
 import com.intellij.openapi.editor.impl.EditorImpl
 import java.awt.Graphics
 import java.awt.Rectangle
 
-class ParameterRenderer(private val model: ParameterUiModel) : LeftHeaderRightContentRenderer(model.description) {
+class ExceptionSegmentRenderer(private val model: ExceptionUiModel) : LeftHeaderRightContentRenderer(model.content), SegmentRenderer {
     override fun calculateHeaderWidth(editorImpl: EditorImpl): Int {
         return TextUtil.getTextWidthWithHighlighters(editorImpl, model.name)
     }

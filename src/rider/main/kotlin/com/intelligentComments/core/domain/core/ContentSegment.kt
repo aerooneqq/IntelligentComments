@@ -12,9 +12,11 @@ interface ContentSegments {
     val segments: Collection<ContentSegment>
 }
 
-interface ParagraphContentSegment : ContentSegment {
+interface EntityWithContentSegments : ContentSegment {
     val content: ContentSegments
 }
+
+interface ParagraphContentSegment : EntityWithContentSegments
 
 interface TextContentSegment : ContentSegment {
     val highlightedText: HighlightedText
@@ -62,7 +64,14 @@ interface TableCellProperties {
     val isHeader: Boolean
 }
 
-interface Parameter : ContentSegment {
+interface ParameterSegment : EntityWithContentSegments {
     val name: String
-    val description: ContentSegments
+}
+
+interface ReturnSegment : EntityWithContentSegments
+
+interface RemarksSegment : EntityWithContentSegments
+
+interface ExceptionSegment : EntityWithContentSegments {
+    val name: String
 }

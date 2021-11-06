@@ -2,8 +2,7 @@ using JetBrains.Annotations;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Domain.Core.Content
 {
-  public interface IParagraphContentSegment : IContentSegment
+  public interface IParagraphContentSegment : IEntityWithContentSegments
   {
-    [NotNull] public IContentSegments ContentSegments { get; }
   }
 }

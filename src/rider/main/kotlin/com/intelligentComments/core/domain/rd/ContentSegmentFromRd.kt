@@ -18,6 +18,9 @@ open class ContentSegmentFromRd(private val contentSegment: RdContentSegment) : 
                 is RdTableSegment -> TableSegmentFromRd(contentSegment, project)
                 is RdParagraphSegment -> ParagraphContentSegmentFromRd(contentSegment, project)
                 is RdParam -> ParameterFromRd(contentSegment, project)
+                is RdReturnSegment -> ReturnFromRd(contentSegment, project)
+                is RdRemarksSegment -> RemarksSegmentFromRd(contentSegment, project)
+                is RdExceptionsSegment -> ExceptionSegmentFromRd(contentSegment, project)
                 else -> throw IllegalArgumentException(contentSegment.toString())
             }
         }
@@ -72,7 +75,7 @@ class FileBasedImageSegmentFromRd(private val segment: RdFileBasedImageSegment,
         }
 }
 
-class TableSegmentFromRd(private val segment: RdTableSegment,
+class TableSegmentFromRd(segment: RdTableSegment,
                          project: Project) : ContentSegmentFromRd(segment), TableContentSegment {
     override val header: HighlightedText = HighlightedTextFromRd(segment.header, project)
     override val rows: Collection<TableRow> = segment.rows.map { TableRowFromRd(it, project) }
@@ -117,7 +120,22 @@ fun RdHorizontalAlignment.toAlignment(): HorizontalAlignment = when(this) {
     RdHorizontalAlignment.Left -> HorizontalAlignment.LEFT
 }
 
-class ParameterFromRd(rdParam: RdParam, project: Project) : ContentSegmentFromRd(rdParam), Parameter {
+class ParameterFromRd(rdParam: RdParam, project: Project) : ContentSegmentFromRd(rdParam), ParameterSegment {
     override val name: String = rdParam.name
-    override val description: ContentSegments = ContentSegmentsFromRd(rdParam.description, project)
+    override val content: ContentSegments = ContentSegmentsFromRd(rdParam.content, project)
+}
+
+class ReturnFromRd(rdReturn: RdReturnSegment, project: Project) : ContentSegmentFromRd(rdReturn), ReturnSegment {
+    override val content: ContentSegments = ContentSegmentsFromRd(rdReturn.content, project)
+}
+
+class RemarksSegmentFromRd(rdRemarksSection: RdRemarksSegment,
+                           project: Project) : ContentSegmentFromRd(rdRemarksSection), RemarksSegment {
+    override val content: ContentSegments = ContentSegmentsFromRd(rdRemarksSection.content, project)
+}
+
+class ExceptionSegmentFromRd(rdExceptionSegment: RdExceptionsSegment,
+                             project: Project) : ContentSegmentFromRd(rdExceptionSegment), ExceptionSegment {
+    override val name: String = rdExceptionSegment.name
+    override val content: ContentSegments = ContentSegmentsFromRd(rdExceptionSegment.content, project)
 }

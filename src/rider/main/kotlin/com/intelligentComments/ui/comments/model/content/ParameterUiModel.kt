@@ -8,7 +8,7 @@ import java.awt.Color
 import java.util.*
 
 class ParameterUiModel(project: Project,
-                       private val parameter: Parameter) : ContentSegmentUiModel(project, parameter) {
+                       private val parameter: ParameterSegment) : ContentSegmentUiModel(project, parameter) {
     val name = HighlightedTextUiWrapper(project, getHighlightedName())
 
     private fun getHighlightedName(): HighlightedText {
@@ -27,5 +27,5 @@ class ParameterUiModel(project: Project,
         return HighlightedTextImpl(parameter.name, listOf(highlighter))
     }
 
-    val description = ContentSegmentsUiModel(project, parameter.description)
+    val description = ContentSegmentsUiModel(project, parameter.content)
 }
