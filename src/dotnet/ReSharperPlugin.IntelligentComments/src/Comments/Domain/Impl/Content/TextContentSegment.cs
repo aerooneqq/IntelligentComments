@@ -1,4 +1,5 @@
 using JetBrains.Annotations;
+using JetBrains.Diagnostics;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.Content;
 
@@ -16,6 +17,24 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.Content
     public TextContentSegment([NotNull] IHighlightedText text)
     {
       Text = text;
+    }
+    
+    
+    public void Normalize()
+    {
+      Text.SortHighlighters();
+      AssertOverlappingHighlighters();
+      Text.Normalize();
+    }
+    
+    private void AssertOverlappingHighlighters()
+    {
+      int lastRightRange = -1;
+      foreach (var highlighter in Text.Highlighters)
+      {
+        Assertion.Assert(highlighter.StartOffset > lastRightRange, "highlighter.StartOffset > lastRightRange");
+        lastRightRange = highlighter.EndOffset;
+      }
     }
   }
   

@@ -50,10 +50,25 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Calculations
         }
         
         var contentSegments = myStack.Pop();
+        void Normalize()
+        {
+          foreach (var segment in contentSegments.Segments)
+          {
+            if (segment is ITextContentSegment textContentSegment)
+            {
+              textContentSegment.Normalize();
+            }
+          }
+        }
+        
         int index = 0;
         while (index != contentSegments.Segments.Count)
         {
-          if (index + 1 >= contentSegments.Segments.Count) return;
+          if (index + 1 >= contentSegments.Segments.Count)
+          {
+            Normalize();
+            return;
+          }
 
           var currentSegment = contentSegments.Segments[index];
           var nextSegment = contentSegments.Segments[index + 1];
@@ -67,6 +82,8 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Calculations
           currentTextSegment.MergeWith(nextTextSegment);
           contentSegments.Segments.RemoveAt(index + 1);
         }
+        
+        Normalize();
       }
     }
 
@@ -143,6 +160,7 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Calculations
       myVisitedNodes.Add(element);
       if (element.ChildNodes.Count == 1 && element.FirstChild is XmlText { Value: { } value })
       {
+        value = PreprocessText(value);
         var highlighter = myHighlightersProvider.GetCXmlElementHighlighter(0, value.Length);
         var highlightedText = new HighlightedText(value, new[] { highlighter });
         var textContentSegment = new MergeableTextContentSegment(highlightedText);
@@ -153,6 +171,8 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Calculations
       
       ExecuteActionOverChildren(element, Visit);
     }
+
+    private static string PreprocessText(string text) => text.Replace("\n ", "\n");
 
     public override void VisitParam(XmlElement element)
     {
@@ -189,7 +209,7 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Calculations
     public override void VisitText(XmlText text)
     {
       myVisitedNodes.Add(text);
-      var textContentSegment = new MergeableTextContentSegment(new HighlightedText(text.Value));
+      var textContentSegment = new MergeableTextContentSegment(new HighlightedText(PreprocessText(text.Value)));
       ExecuteWithTopmostContentSegments(segments => segments.Segments.Add(textContentSegment));
     }
 

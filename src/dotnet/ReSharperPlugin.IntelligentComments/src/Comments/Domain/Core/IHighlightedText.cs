@@ -10,5 +10,7 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Domain.Core
 
 
     void Add(IHighlightedText other);
+    void SortHighlighters();
+    void Normalize();
   }
 }

@@ -15,5 +15,8 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Domain.Core
     string Key,
     int StartOffset,
     int EndOffset,
-    TextHighlighterAttributes Attributes);
+    TextHighlighterAttributes Attributes)
+  {
+    public bool IsValid() => StartOffset >= 0 && StartOffset < EndOffset;
+  }
 }
