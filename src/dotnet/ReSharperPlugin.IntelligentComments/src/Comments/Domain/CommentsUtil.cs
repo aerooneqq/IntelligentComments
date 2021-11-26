@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Diagnostics;
+using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Rider.Model;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.Content;
@@ -27,8 +28,9 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Domain
       var node = docComment.CommentOwnerPointer.GetTreeNode();
       Assertion.AssertNotNull(node, "node != null");
 
-      var offset = node.GetTreeStartOffset().Offset;
-      return new RdDocComment(content, offset);
+      var (startOffset, endOffset) = node.GetDocumentRange();
+      var rdRange = new RdTextRange(startOffset.Offset, endOffset.Offset);
+      return new RdDocComment(content, docComment.CreateIdentifier(), rdRange);
     }
 
     private static RdComment ToRdComment(this IIntelligentComment comment)
@@ -37,9 +39,12 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Domain
       var node = comment.CommentOwnerPointer.GetTreeNode();
       Assertion.AssertNotNull(node, "node != null");
 
-      var offset = node.GetTreeStartOffset().Offset;
       var authors = new List<RdIntelligentCommentAuthor> { new("Aero", DateTime.Now) };
-      return new RdIntelligentComment(authors, DateTime.Now, content, null, null, null, null, offset);
+      var (startOffset, endOffset) = node.GetDocumentRange();
+      var rdRange = new RdTextRange(startOffset.Offset, endOffset.Offset);
+      var identifier = comment.CreateIdentifier();
+      
+      return new RdIntelligentComment(authors, DateTime.Now, content, null, null, null, null, identifier, rdRange);
     }
 
     private static RdIntelligentCommentContent ToRdContent(this IIntelligentCommentContent content)

@@ -14,6 +14,7 @@ import com.intelligentComments.ui.comments.model.todo.ToDoUiModel
 import com.intelligentComments.ui.comments.renderers.IntelligentCommentsRenderer
 import com.intelligentComments.ui.util.HashUtil
 import com.intellij.icons.AllIcons
+import com.intellij.openapi.editor.CustomFoldRegionRenderer
 import com.intellij.openapi.editor.EditorCustomElementRenderer
 import com.intellij.openapi.editor.event.EditorMouseEvent
 import com.intellij.openapi.project.Project
@@ -97,7 +98,11 @@ class IntelligentCommentUiModel(project: Project,
 
     override fun equals(other: Any?): Boolean = other is IntelligentCommentUiModel && other.hashCode() == hashCode()
 
-    override fun getRenderer(project: Project): EditorCustomElementRenderer {
+    override fun getCustomFoldRegionRenderer(project: Project): CustomFoldRegionRenderer {
+        return IntelligentCommentsRenderer(this)
+    }
+
+    override fun getEditorCustomElementRenderer(project: Project): EditorCustomElementRenderer {
         return IntelligentCommentsRenderer(this)
     }
 }

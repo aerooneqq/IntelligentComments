@@ -4,6 +4,7 @@ import com.intelligentComments.ui.colors.ColorName
 import com.intelligentComments.ui.colors.Colors
 import com.intelligentComments.ui.colors.ColorsProvider
 import com.intellij.openapi.components.service
+import com.intellij.openapi.editor.CustomFoldRegionRenderer
 import com.intellij.openapi.editor.EditorCustomElementRenderer
 import com.intellij.openapi.editor.event.EditorMouseEvent
 import com.intellij.openapi.project.Project
@@ -42,7 +43,8 @@ open class UiInteractionModelBase(val project: Project) {
 }
 
 interface RootUiModel {
-    fun getRenderer(project: Project): EditorCustomElementRenderer
+    fun getEditorCustomElementRenderer(project: Project): EditorCustomElementRenderer
+    fun getCustomFoldRegionRenderer(project: Project): CustomFoldRegionRenderer
 }
 
 interface ExpandableUiModel {

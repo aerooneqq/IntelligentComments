@@ -35,10 +35,12 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Calculations
     public IEnumerable<ICommentBase> CalculateFor(IDocument document)
     {
       myShellLocks.AssertReadAccessAllowed();
+      mySolution.GetPsiServices().Files.AssertAllDocumentAreCommitted();
       
-      if (document.GetPsiSourceFile(mySolution)?.GetPrimaryPsiFile() is not ICSharpFile file)
+      var file = document.GetPsiSourceFile(mySolution)?.GetPrimaryPsiFile();
+      if (file is not ICSharpFile)
       {
-        ourLogger.LogAssertion($"Primary psi file is not C# one {document.Moniker}");
+        ourLogger.LogAssertion($"Primary psi file is not C# ({file?.GetType().Name}) one {document.Moniker}");
         return EmptyList<IIntelligentComment>.Enumerable;
       }
       

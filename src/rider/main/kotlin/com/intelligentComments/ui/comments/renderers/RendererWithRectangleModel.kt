@@ -7,7 +7,10 @@ import com.intelligentComments.ui.core.RectanglesModel
 import com.intelligentComments.ui.core.RectanglesModelHolder
 import com.intelligentComments.ui.util.TextUtil
 import com.intelligentComments.ui.util.UpdatedGraphicsCookie
+import com.intelligentComments.ui.util.UpdatedRectCookie
 import com.intellij.openapi.components.service
+import com.intellij.openapi.editor.CustomFoldRegion
+import com.intellij.openapi.editor.CustomFoldRegionRenderer
 import com.intellij.openapi.editor.EditorCustomElementRenderer
 import com.intellij.openapi.editor.Inlay
 import com.intellij.openapi.editor.impl.EditorImpl
@@ -17,7 +20,7 @@ import com.jetbrains.rd.platform.util.application
 import java.awt.Graphics
 import java.awt.Rectangle
 
-abstract class RendererWithRectangleModel(model: UiInteractionModelBase) : EditorCustomElementRenderer {
+abstract class RendererWithRectangleModel(model: UiInteractionModelBase) : EditorCustomElementRenderer, CustomFoldRegionRenderer {
     private val rectangleModelHolder = RectanglesModelHolder(model)
 
     val rectanglesModel
@@ -26,6 +29,16 @@ abstract class RendererWithRectangleModel(model: UiInteractionModelBase) : Edito
     abstract val xDelta: Int
     abstract val yDelta: Int
 
+
+    final override fun calcHeightInPixels(foldRegion: CustomFoldRegion): Int {
+        application.assertIsDispatchThread()
+        return calculateExpectedHeight(foldRegion.editor as EditorImpl)
+    }
+
+    final override fun calcWidthInPixels(foldRegion: CustomFoldRegion): Int {
+        application.assertIsDispatchThread()
+        return calculateExpectedWith(foldRegion.editor as EditorImpl)
+    }
 
     final override fun calcWidthInPixels(inlay: Inlay<*>): Int {
         application.assertIsDispatchThread()
@@ -49,14 +62,33 @@ abstract class RendererWithRectangleModel(model: UiInteractionModelBase) : Edito
                              g: Graphics,
                              targetRegion: Rectangle,
                              textAttributes: TextAttributes) {
+       doPaint(inlay.editor as? EditorImpl ?: return, g, targetRegion, textAttributes)
+    }
+
+    final override fun paint(region: CustomFoldRegion,
+                             g: Graphics,
+                             targetRegion: Rectangle,
+                             textAttributes: TextAttributes) {
+        doPaint(region.editor as? EditorImpl ?: return, g, targetRegion, textAttributes)
+    }
+
+    private fun doPaint(editor: EditorImpl,
+                        g: Graphics,
+                        targetRegion: Rectangle,
+                        textAttributes: TextAttributes) {
         application.assertIsDispatchThread()
 
-        val project = inlay.editor.project ?: return
+        val project = editor.project ?: return
         val colorsProvider = project.service<ColorsProvider>()
         val defaultTextColor = colorsProvider.getColorFor(Colors.TextDefaultColor)
 
+        UpdatedRectCookie(targetRegion, xDelta = xDelta, yDelta = yDelta).use {
+            UpdatedGraphicsCookie(g, defaultTextColor, TextUtil.font).use {
+                paintInternal(editor, g, targetRegion, textAttributes, colorsProvider)
+            }
+        }
+
         UpdatedGraphicsCookie(g, defaultTextColor, TextUtil.font).use {
-            paintInternal(inlay, g, targetRegion, textAttributes, colorsProvider)
             for (rectangle in rectanglesModel!!.allRectangles) {
                 g.drawRect(rectangle.x + targetRegion.x, rectangle.y + targetRegion.y, rectangle.width, rectangle.height)
             }
@@ -64,7 +96,7 @@ abstract class RendererWithRectangleModel(model: UiInteractionModelBase) : Edito
     }
 
     protected abstract fun paintInternal(
-        inlay: Inlay<*>,
+        editorImpl: EditorImpl,
         g: Graphics,
         targetRegion: Rectangle,
         textAttributes: TextAttributes,

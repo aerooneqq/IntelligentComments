@@ -30,14 +30,12 @@ class IntelligentCommentsRenderer(private val model: IntelligentCommentUiModel) 
 
 
     override fun paintInternal(
-        inlay: Inlay<*>,
+        editorImpl: EditorImpl,
         g: Graphics,
         targetRegion: Rectangle,
         textAttributes: TextAttributes,
         colorsProvider: ColorsProvider
     ) {
-        val editorImpl = inlay.editor as? EditorImpl ?: return
-
         var adjustedRect = adjustContentRect(targetRegion)
         val leftLineBackgroundColor = colorsProvider.getColorFor(Colors.LeftLineBackgroundColor)
         UpdatedGraphicsCookie(g, color = leftLineBackgroundColor).use {

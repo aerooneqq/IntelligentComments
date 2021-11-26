@@ -121,7 +121,7 @@ This method depends on the synchronous nature of Method1,""".trimMargin(),
         val todos = mutableListOf<RdToDo>()
         todos.add(getToDo())
 
-        val comment = RdIntelligentComment(authors, Date(), content, invariants, references, todos, null, 0)
+        val comment = RdIntelligentComment(authors, Date(), content, invariants, references, todos, null, 0, RdTextRange(0, 0))
         val intelligentComment = IntelligentCommentFromRd(comment, editor.project!!)
         val inlayRenderer = intelligentComment.getRenderer(editor.project!!)
         val inlay = editor.inlayModel.addBlockElement(0, properties, inlayRenderer)

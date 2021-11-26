@@ -111,7 +111,10 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Calculations
     {
       try
       {
-        if (owner.GetXMLDoc(true) is not { } xmlNode) return null;
+        if (owner.GetXMLDoc(true) is not { } xmlNode)
+        {
+          return null;
+        }
 
         var topmostContentSegments = ContentSegments.GetEmpty();
         using (new WithPushedToStackContentSegments(myContentSegmentsStack, topmostContentSegments, ourLogger))
@@ -120,7 +123,7 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Calculations
         }
         
         var content = new IntelligentCommentContent(topmostContentSegments);
-        return new DocComment(content, owner.CreatePointer());
+        return new DocComment(content, owner.FirstChild.CreatePointer());
       }
       catch (Exception ex)
       {

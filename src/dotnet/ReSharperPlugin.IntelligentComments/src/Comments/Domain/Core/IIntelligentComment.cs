@@ -8,6 +8,7 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Domain.Core
   public interface ICommentBase
   {
     [NotNull] ITreeNodePointer<ITreeNode> CommentOwnerPointer { get; }
+    int CreateIdentifier();
   }
 
   public interface IDocComment : ICommentBase

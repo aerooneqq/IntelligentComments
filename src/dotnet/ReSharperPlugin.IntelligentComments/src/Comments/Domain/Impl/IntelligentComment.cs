@@ -6,11 +6,21 @@ using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.Content;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Domain.Impl
 {
+  public record DocCommentBase(
+    IIntelligentCommentContent Content,
+    ITreeNodePointer<ITreeNode> CommentOwnerPointer) : ICommentBase
+  {
+    public int CreateIdentifier()
+    {
+      return CommentOwnerPointer.GetTreeNode().GetDocumentRange().TextRange.GetHashCode();
+    }
+  }
+
   public record DocComment(
     IIntelligentCommentContent Content,
-    ITreeNodePointer<ITreeNode> CommentOwnerPointer) : IDocComment;
+    ITreeNodePointer<ITreeNode> CommentOwnerPointer) : DocCommentBase(Content, CommentOwnerPointer), IDocComment;
 
   public record IntelligentComment(
     ITreeNodePointer<ITreeNode> CommentOwnerPointer,
-    IIntelligentCommentContent Content) : IIntelligentComment;
+    IIntelligentCommentContent Content) : DocCommentBase(Content, CommentOwnerPointer), IIntelligentComment;
 }

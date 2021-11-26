@@ -10,7 +10,8 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
     }
 
     val RdComment = basestruct {
-        field("Offset", PredefinedType.int)
+        field("CommentIdentifier", PredefinedType.int)
+        field("Range", SolutionModel.RdTextRange)
     }
 
     val RdDocComment = structdef extends RdComment {
@@ -201,6 +202,10 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
 
     val RdHackWithTickets = structdef extends RdHack {
         field("Tickets", immutableList(RdTicket))
+    }
+
+    val RdDocCommentFoldingModel = structdef extends SolutionModel.HighlighterModel {
+        field("CommentIdentifier", PredefinedType.int)
     }
 
 

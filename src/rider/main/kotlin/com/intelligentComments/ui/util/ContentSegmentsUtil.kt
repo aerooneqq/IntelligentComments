@@ -64,7 +64,9 @@ class ContentSegmentsUtil {
                 RectanglesModelUtil.addHeightDeltaTo(context, deltaBetweenSegments)
             }
 
-            RectanglesModelUtil.addHeightDeltaTo(context, -deltaBetweenSegments)
+            if (segments.size > 0) {
+                RectanglesModelUtil.addHeightDeltaTo(context, -deltaBetweenSegments)
+            }
         }
     }
 }

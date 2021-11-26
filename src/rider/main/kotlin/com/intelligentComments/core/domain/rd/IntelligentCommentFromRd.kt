@@ -5,6 +5,8 @@ import com.intelligentComments.ui.comments.renderers.IntelligentCommentsRenderer
 import com.intelligentComments.ui.comments.model.IntelligentCommentUiModel
 import com.intellij.openapi.editor.EditorCustomElementRenderer
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.TextRange
+import com.intellij.util.Range
 import com.jetbrains.rd.ide.model.RdIntelligentComment
 import java.util.*
 
@@ -31,4 +33,6 @@ class IntelligentCommentFromRd(private val rdComment: RdIntelligentComment,
     fun getRenderer(project: Project): EditorCustomElementRenderer {
         return IntelligentCommentsRenderer(IntelligentCommentUiModel(project, this))
     }
+
+    override val underlyingTextRange = TextRange(rdComment.range.startOffset, rdComment.range.endOffset)
 }
