@@ -15,37 +15,40 @@ import java.awt.Graphics
 import java.awt.Rectangle
 
 interface SegmentsRenderer : Renderer, RectangleModelBuildContributor {
-    companion object {
-        fun getRendererFor(segmentsSection: SectionUiModel<ContentSegmentUiModel>): SegmentsRenderer {
-            return when(segmentsSection) {
-                is SectionWithHeaderUiModel -> SegmentsRendererWithHeader(segmentsSection)
-                else -> DefaultSegmentsRenderer(segmentsSection)
-            }
-        }
+  companion object {
+    fun getRendererFor(segmentsSection: SectionUiModel<ContentSegmentUiModel>): SegmentsRenderer {
+      return when (segmentsSection) {
+        is SectionWithHeaderUiModel -> SegmentsRendererWithHeader(segmentsSection)
+        else -> DefaultSegmentsRenderer(segmentsSection)
+      }
     }
+  }
 }
 
-class DefaultSegmentsRenderer(section: SectionUiModel<ContentSegmentUiModel>) : ContentSegmentsRenderer(section.content), SegmentsRenderer
+class DefaultSegmentsRenderer(section: SectionUiModel<ContentSegmentUiModel>) :
+  ContentSegmentsRenderer(section.content), SegmentsRenderer
 
-class SegmentsRendererWithHeader(private val segmentsSection: SectionWithHeaderUiModel<ContentSegmentUiModel>)
-    : VerticalSectionWithHeaderRenderer<ContentSegmentUiModel>(segmentsSection), SegmentsRenderer {
+class SegmentsRendererWithHeader(private val segmentsSection: SectionWithHeaderUiModel<ContentSegmentUiModel>) :
+  VerticalSectionWithHeaderRenderer<ContentSegmentUiModel>(segmentsSection), SegmentsRenderer {
 
-    override fun renderContent(g: Graphics,
-                               rect: Rectangle,
-                               editorImpl: EditorImpl,
-                               rectanglesModel: RectanglesModel): Rectangle {
-        return ContentSegmentsUtil.renderSegments(segmentsSection.content, g, rect, editorImpl, rectanglesModel)
-    }
+  override fun renderContent(
+    g: Graphics,
+    rect: Rectangle,
+    editorImpl: EditorImpl,
+    rectanglesModel: RectanglesModel
+  ): Rectangle {
+    return ContentSegmentsUtil.renderSegments(segmentsSection.content, g, rect, editorImpl, rectanglesModel)
+  }
 
-    override fun calculateContentHeight(editorImpl: EditorImpl): Int {
-        return ContentSegmentsUtil.calculateContentHeight(segmentsSection.content, editorImpl)
-    }
+  override fun calculateContentHeight(editorImpl: EditorImpl): Int {
+    return ContentSegmentsUtil.calculateContentHeight(segmentsSection.content, editorImpl)
+  }
 
-    override fun calculateContentWidth(editorImpl: EditorImpl): Int {
-        return ContentSegmentsUtil.calculateContentWidth(segmentsSection.content, editorImpl)
-    }
+  override fun calculateContentWidth(editorImpl: EditorImpl): Int {
+    return ContentSegmentsUtil.calculateContentWidth(segmentsSection.content, editorImpl)
+  }
 
-    override fun acceptContent(context: RectangleModelBuildContext) {
-        ContentSegmentsUtil.accept(context, segmentsSection.content)
-    }
+  override fun acceptContent(context: RectangleModelBuildContext) {
+    ContentSegmentsUtil.accept(context, segmentsSection.content)
+  }
 }

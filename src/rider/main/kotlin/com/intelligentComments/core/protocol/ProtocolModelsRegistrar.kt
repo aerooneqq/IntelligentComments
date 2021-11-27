@@ -6,7 +6,7 @@ import com.jetbrains.rdclient.util.idea.LifetimedProjectComponent
 import com.jetbrains.rider.projectView.solution
 
 class ProtocolModelsRegistrar(project: Project) : LifetimedProjectComponent(project) {
-    init {
-        project.solution.protocol.serializers.registerSerializersOwnerOnce(RdCommentsModel)
-    }
+  init {
+    project.solution.protocol.serializers.registerSerializersOwnerOnce(RdCommentsModel)
+  }
 }

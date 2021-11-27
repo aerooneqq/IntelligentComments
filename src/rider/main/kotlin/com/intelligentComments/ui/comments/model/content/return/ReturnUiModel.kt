@@ -8,13 +8,13 @@ import com.intelligentComments.ui.comments.model.highlighters.HighlightedTextUiW
 import com.intellij.openapi.project.Project
 
 class ReturnUiModel(project: Project, ret: ReturnSegment) : ContentSegmentUiModel(project, ret) {
-    companion object {
-        const val returnSectionName = "Returns:"
-    }
+  companion object {
+    const val returnSectionName = "Returns:"
+  }
 
-    val content = ContentSegmentsUiModel(project, ret.content)
-    val headerText = HighlightedTextUiWrapper(project, HighlightedTextImpl(returnSectionName, emptyList()))
+  val content = ContentSegmentsUiModel(project, ret.content)
+  val headerText = HighlightedTextUiWrapper(project, HighlightedTextImpl(returnSectionName, emptyList()))
 
-    override fun hashCode(): Int = content.hashCode()
-    override fun equals(other: Any?): Boolean = other is ReturnUiModel && other.hashCode() == hashCode()
+  override fun hashCode(): Int = content.hashCode()
+  override fun equals(other: Any?): Boolean = other is ReturnUiModel && other.hashCode() == hashCode()
 }

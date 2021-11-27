@@ -6,8 +6,10 @@ import com.intellij.openapi.editor.markup.RangeHighlighter
 import com.intellij.openapi.project.Project
 import com.jetbrains.rd.ide.model.RdDocComment
 
-class DocCommentFromRd(rdDocComment: RdDocComment,
-                       project: Project,
-                       range: RangeHighlighter) : CommentFromRd(rdDocComment, range), DocComment {
-    override val content: IntelligentCommentContent = IntelligentCommentContentFromRd(rdDocComment.content, project)
+class DocCommentFromRd(
+  rdDocComment: RdDocComment,
+  project: Project,
+  range: RangeHighlighter
+) : CommentFromRd(rdDocComment, range), DocComment {
+  override val content: IntelligentCommentContent = IntelligentCommentContentFromRd(rdDocComment.content, project)
 }

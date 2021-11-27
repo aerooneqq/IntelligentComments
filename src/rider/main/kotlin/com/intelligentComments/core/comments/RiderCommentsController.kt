@@ -61,10 +61,12 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
     }
   }
 
-  private fun subscribeToCommentAppearance(lifetime: Lifetime,
-                                           editor: EditorImpl,
-                                           commentIdentifier: Int,
-                                           map: ViewableMap<Int, CommentBase>) {
+  private fun subscribeToCommentAppearance(
+    lifetime: Lifetime,
+    editor: EditorImpl,
+    commentIdentifier: Int,
+    map: ViewableMap<Int, CommentBase>
+  ) {
     map.advise(lifetime) {
       if (it.key == commentIdentifier) {
         val comment = it.newValueOpt ?: return@advise
@@ -88,7 +90,7 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
   }
 
   private fun getCommentFoldingRenderer(comment: CommentBase, editor: Editor): CustomFoldRegionRenderer {
-    return when(comment) {
+    return when (comment) {
       is DocComment -> DocCommentUiModel(comment, project, editor).getCustomFoldRegionRenderer(project)
       is IntelligentComment -> IntelligentCommentUiModel(project, comment).getCustomFoldRegionRenderer(project)
       else -> throw IllegalArgumentException(comment.javaClass.name)

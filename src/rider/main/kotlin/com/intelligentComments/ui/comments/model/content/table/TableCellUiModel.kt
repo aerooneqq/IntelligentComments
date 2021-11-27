@@ -9,12 +9,12 @@ import com.intelligentComments.ui.util.HashUtil
 import com.intellij.openapi.project.Project
 
 class TableCellUiModel(cell: TableCell, project: Project) : UiInteractionModelBase(project) {
-    val contentSegments = ContentSegmentsUiModel(project, cell.contentSegments)
-    val properties = cell.properties
+  val contentSegments = ContentSegmentsUiModel(project, cell.contentSegments)
+  val properties = cell.properties
 
-    override val backgroundColorKey: ColorName
-        get() = if (properties.isHeader) Colors.TableHeaderCellBackground else Colors.EmptyColor
+  override val backgroundColorKey: ColorName
+    get() = if (properties.isHeader) Colors.TableHeaderCellBackground else Colors.EmptyColor
 
-    override fun hashCode(): Int = (contentSegments.hashCode() * properties.hashCode()) % HashUtil.mod
-    override fun equals(other: Any?): Boolean = other is TableCellUiModel && other.hashCode() == hashCode()
+  override fun hashCode(): Int = (contentSegments.hashCode() * properties.hashCode()) % HashUtil.mod
+  override fun equals(other: Any?): Boolean = other is TableCellUiModel && other.hashCode() == hashCode()
 }

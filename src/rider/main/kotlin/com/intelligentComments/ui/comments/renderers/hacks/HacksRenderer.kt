@@ -13,31 +13,35 @@ import java.awt.Graphics
 import java.awt.Rectangle
 
 interface HacksRenderer : Renderer, RectangleModelBuildContributor {
-    companion object {
-        fun getFrom(section: SectionWithHeaderUiModel<HackUiModel>, project: Project): HacksRenderer {
-            return HacksRendererImpl(section, project)
-        }
+  companion object {
+    fun getFrom(section: SectionWithHeaderUiModel<HackUiModel>, project: Project): HacksRenderer {
+      return HacksRendererImpl(section, project)
     }
+  }
 }
 
-class HacksRendererImpl(private val section: SectionWithHeaderUiModel<HackUiModel>,
-                        private val project: Project) : VerticalSectionWithHeaderRenderer<HackUiModel>(section), HacksRenderer {
-    override fun renderContent(g: Graphics,
-                               rect: Rectangle,
-                               editorImpl: EditorImpl,
-                               rectanglesModel: RectanglesModel): Rectangle {
-        TODO("Not yet implemented")
-    }
+class HacksRendererImpl(
+  private val section: SectionWithHeaderUiModel<HackUiModel>,
+  private val project: Project
+) : VerticalSectionWithHeaderRenderer<HackUiModel>(section), HacksRenderer {
+  override fun renderContent(
+    g: Graphics,
+    rect: Rectangle,
+    editorImpl: EditorImpl,
+    rectanglesModel: RectanglesModel
+  ): Rectangle {
+    TODO("Not yet implemented")
+  }
 
-    override fun calculateContentWidth(editorImpl: EditorImpl): Int {
-        TODO("Not yet implemented")
-    }
+  override fun calculateContentWidth(editorImpl: EditorImpl): Int {
+    TODO("Not yet implemented")
+  }
 
-    override fun calculateContentHeight(editorImpl: EditorImpl): Int {
-        TODO("Not yet implemented")
-    }
+  override fun calculateContentHeight(editorImpl: EditorImpl): Int {
+    TODO("Not yet implemented")
+  }
 
-    override fun acceptContent(context: RectangleModelBuildContext) {
-        TODO("Not yet implemented")
-    }
+  override fun acceptContent(context: RectangleModelBuildContext) {
+    TODO("Not yet implemented")
+  }
 }

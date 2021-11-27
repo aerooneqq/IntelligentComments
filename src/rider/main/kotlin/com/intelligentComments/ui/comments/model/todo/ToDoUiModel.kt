@@ -12,27 +12,28 @@ import com.intelligentComments.ui.util.HashUtil
 import com.intellij.openapi.project.Project
 
 open class ToDoUiModel(todo: ToDo, project: Project) : UiInteractionModelBase(project), ExpandableUiModel {
-    companion object {
-        fun getFrom(project: Project, todo: ToDo): ToDoUiModel {
-            return when(todo) {
-                is ToDoWithTickets -> ToDoWithTicketsUiModel(todo, project)
-                else -> throw IllegalArgumentException(todo.toString())
-            }
-        }
+  companion object {
+    fun getFrom(project: Project, todo: ToDo): ToDoUiModel {
+      return when (todo) {
+        is ToDoWithTickets -> ToDoWithTicketsUiModel(todo, project)
+        else -> throw IllegalArgumentException(todo.toString())
+      }
     }
+  }
 
-    override var isExpanded: Boolean = true
+  override var isExpanded: Boolean = true
 
-    val description = ContentSegmentsUiModel(project, todo.description)
-    val headerUiModel = HeaderUiModel(project, this, todo.name, Colors.ToDoHeaderBackgroundColor, Colors.ToDoHeaderHoveredBackgroundColor)
-    val blockingReferences = todo.blockingReferences.map { ReferenceUiModel(project, it)}
+  val description = ContentSegmentsUiModel(project, todo.description)
+  val headerUiModel =
+    HeaderUiModel(project, this, todo.name, Colors.ToDoHeaderBackgroundColor, Colors.ToDoHeaderHoveredBackgroundColor)
+  val blockingReferences = todo.blockingReferences.map { ReferenceUiModel(project, it) }
 
-    override fun hashCode(): Int {
-        var hash = isExpanded.hashCode() * description.hashCode() % HashUtil.mod
-        hash *= (headerUiModel.hashCode() * HashUtil.calculateHashFor(blockingReferences)) % HashUtil.mod
-        return hash
-    }
+  override fun hashCode(): Int {
+    var hash = isExpanded.hashCode() * description.hashCode() % HashUtil.mod
+    hash *= (headerUiModel.hashCode() * HashUtil.calculateHashFor(blockingReferences)) % HashUtil.mod
+    return hash
+  }
 
-    override fun equals(other: Any?): Boolean = other is ToDoUiModel && other.hashCode() == hashCode()
+  override fun equals(other: Any?): Boolean = other is ToDoUiModel && other.hashCode() == hashCode()
 }
 

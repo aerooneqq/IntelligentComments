@@ -7,54 +7,60 @@ import java.awt.Graphics
 import java.awt.Rectangle
 
 class HeaderWithBackground {
-    companion object {
-        private const val margin = 5
+  companion object {
+    private const val margin = 5
 
-        fun drawTextWithBackground(g: Graphics,
-                                   rect: Rectangle,
-                                   editorImpl: EditorImpl,
-                                   text: String,
-                                   color: Color): Rectangle {
-            val height = calculateHeaderHeight(editorImpl)
-            val width = calculateHeaderWidth(editorImpl, text)
-            val adjustedRect = drawBackgroundRoundedRect(g, rect, width, height, color)
+    fun drawTextWithBackground(
+      g: Graphics,
+      rect: Rectangle,
+      editorImpl: EditorImpl,
+      text: String,
+      color: Color
+    ): Rectangle {
+      val height = calculateHeaderHeight(editorImpl)
+      val width = calculateHeaderWidth(editorImpl, text)
+      val adjustedRect = drawBackgroundRoundedRect(g, rect, width, height, color)
 
-            return drawName(g, adjustedRect, editorImpl, text, height)
-        }
-
-        fun calculateHeaderHeight(editorImpl: EditorImpl): Int {
-            return TextUtil.getTextHeight(editorImpl, null)
-        }
-
-        fun calculateHeaderWidth(editorImpl: EditorImpl, text: String): Int {
-            val textWidth = TextUtil.getTextWidth(editorImpl, text)
-            return textWidth + 2 * margin
-        }
-
-        private fun drawBackgroundRoundedRect(g: Graphics,
-                                              rect: Rectangle,
-                                              headerWidth: Int,
-                                              headerHeight: Int,
-                                              color: Color): Rectangle {
-            UpdatedGraphicsCookie(g, color = color).use {
-                g.fillRoundRect(rect.x, rect.y, headerWidth, headerHeight, 3, 3)
-            }
-
-            return rect
-        }
-
-        private fun drawName(g: Graphics,
-                             rect: Rectangle,
-                             editorImpl: EditorImpl,
-                             text: String,
-                             height: Int): Rectangle {
-            val shift = calculateHeightShiftForName(editorImpl)
-            val rectForText = Rectangle(rect.x + margin, rect.y - shift, rect.width, rect.height)
-            TextUtil.renderText(g, rectForText, editorImpl, text, 0)
-
-            return Rectangle(rect.x, rect.y + height, rect.width, rect.height - height)
-        }
-
-        private fun calculateHeightShiftForName(editorImpl: EditorImpl) = TextUtil.getTextHeight(editorImpl, null) / 4
+      return drawName(g, adjustedRect, editorImpl, text, height)
     }
+
+    fun calculateHeaderHeight(editorImpl: EditorImpl): Int {
+      return TextUtil.getTextHeight(editorImpl, null)
+    }
+
+    fun calculateHeaderWidth(editorImpl: EditorImpl, text: String): Int {
+      val textWidth = TextUtil.getTextWidth(editorImpl, text)
+      return textWidth + 2 * margin
+    }
+
+    private fun drawBackgroundRoundedRect(
+      g: Graphics,
+      rect: Rectangle,
+      headerWidth: Int,
+      headerHeight: Int,
+      color: Color
+    ): Rectangle {
+      UpdatedGraphicsCookie(g, color = color).use {
+        g.fillRoundRect(rect.x, rect.y, headerWidth, headerHeight, 3, 3)
+      }
+
+      return rect
+    }
+
+    private fun drawName(
+      g: Graphics,
+      rect: Rectangle,
+      editorImpl: EditorImpl,
+      text: String,
+      height: Int
+    ): Rectangle {
+      val shift = calculateHeightShiftForName(editorImpl)
+      val rectForText = Rectangle(rect.x + margin, rect.y - shift, rect.width, rect.height)
+      TextUtil.renderText(g, rectForText, editorImpl, text, 0)
+
+      return Rectangle(rect.x, rect.y + height, rect.width, rect.height - height)
+    }
+
+    private fun calculateHeightShiftForName(editorImpl: EditorImpl) = TextUtil.getTextHeight(editorImpl, null) / 4
+  }
 }

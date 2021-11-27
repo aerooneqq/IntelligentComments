@@ -10,20 +10,21 @@ import java.nio.file.Path
 import java.nio.file.Paths
 
 open class ReferenceFromRd(private val reference: RdReference) : UniqueEntityImpl(), Reference {
-    companion object {
-        fun getFrom(reference: RdReference): ReferenceFromRd {
-            return when(reference) {
-                is RdDependencyReference -> DependencyReferenceFromRd(reference)
-                else -> throw IllegalArgumentException(reference.toString())
-            }
-        }
+  companion object {
+    fun getFrom(reference: RdReference): ReferenceFromRd {
+      return when (reference) {
+        is RdDependencyReference -> DependencyReferenceFromRd(reference)
+        else -> throw IllegalArgumentException(reference.toString())
+      }
     }
+  }
 
-    override val referenceName: String = reference.referenceName
+  override val referenceName: String = reference.referenceName
 }
 
-open class FileBasedReferenceFromRd(private val reference: RdFileBasedReference) : ReferenceFromRd(reference), FileBasedReference {
-    private val myCachedPath = Paths.get(reference.filePath)
+open class FileBasedReferenceFromRd(private val reference: RdFileBasedReference) : ReferenceFromRd(reference),
+  FileBasedReference {
+  private val myCachedPath = Paths.get(reference.filePath)
 
-    override val filePath: Path = myCachedPath
+  override val filePath: Path = myCachedPath
 }

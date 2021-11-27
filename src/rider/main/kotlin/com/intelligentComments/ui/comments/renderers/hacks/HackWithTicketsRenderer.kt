@@ -12,30 +12,35 @@ import java.awt.Graphics
 import java.awt.Rectangle
 
 interface HackRenderer : Renderer, RectangleModelBuildContributor {
-    companion object {
-        fun getFrom(hack: Hack, project: Project): HackRenderer {
-            return when(hack) {
-                is HackWithTickets -> HackWithTicketsRenderer(hack, project)
-                else -> throw IllegalArgumentException(hack.toString())
-            }
-        }
+  companion object {
+    fun getFrom(hack: Hack, project: Project): HackRenderer {
+      return when (hack) {
+        is HackWithTickets -> HackWithTicketsRenderer(hack, project)
+        else -> throw IllegalArgumentException(hack.toString())
+      }
     }
+  }
 }
 
 class HackWithTicketsRenderer(hack: HackWithTickets, project: Project) : HackRenderer {
-    override fun render(g: Graphics, rect: Rectangle, editorImpl: EditorImpl, rectanglesModel: RectanglesModel): Rectangle {
-        TODO("Not yet implemented")
-    }
+  override fun render(
+    g: Graphics,
+    rect: Rectangle,
+    editorImpl: EditorImpl,
+    rectanglesModel: RectanglesModel
+  ): Rectangle {
+    TODO("Not yet implemented")
+  }
 
-    override fun calculateExpectedHeightInPixels(editorImpl: EditorImpl): Int {
-        TODO("Not yet implemented")
-    }
+  override fun calculateExpectedHeightInPixels(editorImpl: EditorImpl): Int {
+    TODO("Not yet implemented")
+  }
 
-    override fun calculateExpectedWidthInPixels(editorImpl: EditorImpl): Int {
-        TODO("Not yet implemented")
-    }
+  override fun calculateExpectedWidthInPixels(editorImpl: EditorImpl): Int {
+    TODO("Not yet implemented")
+  }
 
-    override fun accept(context: RectangleModelBuildContext) {
-        TODO("Not yet implemented")
-    }
+  override fun accept(context: RectangleModelBuildContext) {
+    TODO("Not yet implemented")
+  }
 }

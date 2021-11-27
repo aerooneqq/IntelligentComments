@@ -9,133 +9,151 @@ import java.io.File
 import javax.imageio.ImageIO
 
 open class ContentSegmentFromRd(private val contentSegment: RdContentSegment) : UniqueEntityImpl(), ContentSegment {
-    companion object {
-        fun getFrom(contentSegment: RdContentSegment, project: Project): ContentSegmentFromRd {
-            return when(contentSegment) {
-                is RdTextSegment -> TextContentSegmentFromRd(contentSegment, project)
-                is RdListSegment -> ListSegmentFromRd(contentSegment, project)
-                is RdFileBasedImageSegment -> FileBasedImageSegmentFromRd(contentSegment, project)
-                is RdTableSegment -> TableSegmentFromRd(contentSegment, project)
-                is RdParagraphSegment -> ParagraphContentSegmentFromRd(contentSegment, project)
-                is RdParam -> ParameterFromRd(contentSegment, project)
-                is RdReturnSegment -> ReturnFromRd(contentSegment, project)
-                is RdRemarksSegment -> RemarksSegmentFromRd(contentSegment, project)
-                is RdExceptionsSegment -> ExceptionSegmentFromRd(contentSegment, project)
-                else -> throw IllegalArgumentException(contentSegment.toString())
-            }
-        }
+  companion object {
+    fun getFrom(contentSegment: RdContentSegment, project: Project): ContentSegmentFromRd {
+      return when (contentSegment) {
+        is RdTextSegment -> TextContentSegmentFromRd(contentSegment, project)
+        is RdListSegment -> ListSegmentFromRd(contentSegment, project)
+        is RdFileBasedImageSegment -> FileBasedImageSegmentFromRd(contentSegment, project)
+        is RdTableSegment -> TableSegmentFromRd(contentSegment, project)
+        is RdParagraphSegment -> ParagraphContentSegmentFromRd(contentSegment, project)
+        is RdParam -> ParameterFromRd(contentSegment, project)
+        is RdReturnSegment -> ReturnFromRd(contentSegment, project)
+        is RdRemarksSegment -> RemarksSegmentFromRd(contentSegment, project)
+        is RdExceptionsSegment -> ExceptionSegmentFromRd(contentSegment, project)
+        else -> throw IllegalArgumentException(contentSegment.toString())
+      }
     }
+  }
 }
 
-class ContentSegmentsFromRd(contentSegments: RdContentSegments,
-                            project: Project) : ContentSegments {
-    override val segments: Collection<ContentSegment> = contentSegments.content.map { ContentSegmentFromRd.getFrom(it, project) }
+class ContentSegmentsFromRd(
+  contentSegments: RdContentSegments,
+  project: Project
+) : ContentSegments {
+  override val segments: Collection<ContentSegment> =
+    contentSegments.content.map { ContentSegmentFromRd.getFrom(it, project) }
 }
 
-class ParagraphContentSegmentFromRd(paragraph: RdParagraphSegment,
-                                    project: Project) : ContentSegmentFromRd(paragraph), ParagraphContentSegment {
-    override val content: ContentSegments = ContentSegmentsFromRd(paragraph.content, project)
+class ParagraphContentSegmentFromRd(
+  paragraph: RdParagraphSegment,
+  project: Project
+) : ContentSegmentFromRd(paragraph), ParagraphContentSegment {
+  override val content: ContentSegments = ContentSegmentsFromRd(paragraph.content, project)
 }
 
-class TextContentSegmentFromRd(segment: RdTextSegment,
-                               project: Project) : ContentSegmentFromRd(segment), TextContentSegment {
-    override val highlightedText: HighlightedText = HighlightedTextFromRd(segment.text, project)
+class TextContentSegmentFromRd(
+  segment: RdTextSegment,
+  project: Project
+) : ContentSegmentFromRd(segment), TextContentSegment {
+  override val highlightedText: HighlightedText = HighlightedTextFromRd(segment.text, project)
 }
 
-class HighlightedTextFromRd(highlightedText: RdHighlightedText,
-                            project: Project) : HighlightedText {
-    override val highlighters: Collection<TextHighlighter>
-    override val text: String = highlightedText.text
+class HighlightedTextFromRd(
+  highlightedText: RdHighlightedText,
+  project: Project
+) : HighlightedText {
+  override val highlighters: Collection<TextHighlighter>
+  override val text: String = highlightedText.text
 
-    init {
-        highlighters = highlightedText.highlighters?.map { TextHighlighterFromRd(project, it) } ?: listOf()
-    }
+  init {
+    highlighters = highlightedText.highlighters?.map { TextHighlighterFromRd(project, it) } ?: listOf()
+  }
 }
 
 class ListSegmentFromRd(segment: RdListSegment, project: Project) : ContentSegmentFromRd(segment), ListContentSegment {
-    override val content: Collection<ContentSegments> = segment.listContent.map { ContentSegmentsFromRd(it, project) }
-    override val header: HighlightedText = HighlightedTextFromRd(segment.header, project)
+  override val content: Collection<ContentSegments> = segment.listContent.map { ContentSegmentsFromRd(it, project) }
+  override val header: HighlightedText = HighlightedTextFromRd(segment.header, project)
 }
 
-class FileBasedImageSegmentFromRd(private val segment: RdFileBasedImageSegment,
-                                  project: Project) : ContentSegmentFromRd(segment), ImageContentSegment {
-    override val description: HighlightedText = HighlightedTextFromRd(segment.description, project)
+class FileBasedImageSegmentFromRd(
+  private val segment: RdFileBasedImageSegment,
+  project: Project
+) : ContentSegmentFromRd(segment), ImageContentSegment {
+  override val description: HighlightedText = HighlightedTextFromRd(segment.description, project)
 
-    private var cachedImage: Image? = null
-    override val image: Image
-        get() {
-            val loadedImage = cachedImage
-            if (loadedImage == null) {
-                val image = ImageIO.read(File(segment.path))
-                cachedImage = image
-                return image
-            }
+  private var cachedImage: Image? = null
+  override val image: Image
+    get() {
+      val loadedImage = cachedImage
+      if (loadedImage == null) {
+        val image = ImageIO.read(File(segment.path))
+        cachedImage = image
+        return image
+      }
 
-            return loadedImage
-        }
+      return loadedImage
+    }
 }
 
-class TableSegmentFromRd(segment: RdTableSegment,
-                         project: Project) : ContentSegmentFromRd(segment), TableContentSegment {
-    override val header: HighlightedText = HighlightedTextFromRd(segment.header, project)
-    override val rows: Collection<TableRow> = segment.rows.map { TableRowFromRd(it, project) }
+class TableSegmentFromRd(
+  segment: RdTableSegment,
+  project: Project
+) : ContentSegmentFromRd(segment), TableContentSegment {
+  override val header: HighlightedText = HighlightedTextFromRd(segment.header, project)
+  override val rows: Collection<TableRow> = segment.rows.map { TableRowFromRd(it, project) }
 }
 
-class TableRowFromRd(private val row: RdTableRow, project: Project): TableRow {
-    override val cells: Collection<TableCell> = row.cells.map { TableCellFromRd(it, project) }
+class TableRowFromRd(private val row: RdTableRow, project: Project) : TableRow {
+  override val cells: Collection<TableCell> = row.cells.map { TableCellFromRd(it, project) }
 }
 
 class TableCellFromRd(cell: RdTableCell, project: Project) : UiInteractionModelBase(project), TableCell {
-    override val contentSegments: ContentSegments = ContentSegmentsFromRd(cell.content, project)
-    override val properties: TableCellProperties
+  override val contentSegments: ContentSegments = ContentSegmentsFromRd(cell.content, project)
+  override val properties: TableCellProperties
 
-    init {
-        properties = if (cell.properties != null) {
-            TableCellPropertiesFromRd(cell.properties)
-        } else {
-            TableCellPropertiesFromRd.defaultProperties
-        }
+  init {
+    properties = if (cell.properties != null) {
+      TableCellPropertiesFromRd(cell.properties)
+    } else {
+      TableCellPropertiesFromRd.defaultProperties
     }
+  }
 }
 
 class TableCellPropertiesFromRd(properties: RdTableCellProperties) : TableCellProperties {
-    companion object {
-        val defaultProperties = TableCellPropertiesFromRd(RdTableCellProperties(RdHorizontalAlignment.Center, RdVerticalAlignment.Center, false))
-    }
+  companion object {
+    val defaultProperties =
+      TableCellPropertiesFromRd(RdTableCellProperties(RdHorizontalAlignment.Center, RdVerticalAlignment.Center, false))
+  }
 
-    override val verticalAlignment: VerticalAlignment = properties.verticalAlignment.toAlignment()
-    override val horizontalAlignment: HorizontalAlignment = properties.horizontalAlignment.toAlignment()
-    override val isHeader: Boolean = properties.isHeader
+  override val verticalAlignment: VerticalAlignment = properties.verticalAlignment.toAlignment()
+  override val horizontalAlignment: HorizontalAlignment = properties.horizontalAlignment.toAlignment()
+  override val isHeader: Boolean = properties.isHeader
 }
 
-fun RdVerticalAlignment.toAlignment(): VerticalAlignment = when(this) {
-    RdVerticalAlignment.Top -> VerticalAlignment.TOP
-    RdVerticalAlignment.Bottom -> VerticalAlignment.BOTTOM
-    RdVerticalAlignment.Center -> VerticalAlignment.CENTER
+fun RdVerticalAlignment.toAlignment(): VerticalAlignment = when (this) {
+  RdVerticalAlignment.Top -> VerticalAlignment.TOP
+  RdVerticalAlignment.Bottom -> VerticalAlignment.BOTTOM
+  RdVerticalAlignment.Center -> VerticalAlignment.CENTER
 }
 
-fun RdHorizontalAlignment.toAlignment(): HorizontalAlignment = when(this) {
-    RdHorizontalAlignment.Center -> HorizontalAlignment.CENTER
-    RdHorizontalAlignment.Right -> HorizontalAlignment.RIGHT
-    RdHorizontalAlignment.Left -> HorizontalAlignment.LEFT
+fun RdHorizontalAlignment.toAlignment(): HorizontalAlignment = when (this) {
+  RdHorizontalAlignment.Center -> HorizontalAlignment.CENTER
+  RdHorizontalAlignment.Right -> HorizontalAlignment.RIGHT
+  RdHorizontalAlignment.Left -> HorizontalAlignment.LEFT
 }
 
 class ParameterFromRd(rdParam: RdParam, project: Project) : ContentSegmentFromRd(rdParam), ParameterSegment {
-    override val name: String = rdParam.name
-    override val content: ContentSegments = ContentSegmentsFromRd(rdParam.content, project)
+  override val name: String = rdParam.name
+  override val content: ContentSegments = ContentSegmentsFromRd(rdParam.content, project)
 }
 
 class ReturnFromRd(rdReturn: RdReturnSegment, project: Project) : ContentSegmentFromRd(rdReturn), ReturnSegment {
-    override val content: ContentSegments = ContentSegmentsFromRd(rdReturn.content, project)
+  override val content: ContentSegments = ContentSegmentsFromRd(rdReturn.content, project)
 }
 
-class RemarksSegmentFromRd(rdRemarksSection: RdRemarksSegment,
-                           project: Project) : ContentSegmentFromRd(rdRemarksSection), RemarksSegment {
-    override val content: ContentSegments = ContentSegmentsFromRd(rdRemarksSection.content, project)
+class RemarksSegmentFromRd(
+  rdRemarksSection: RdRemarksSegment,
+  project: Project
+) : ContentSegmentFromRd(rdRemarksSection), RemarksSegment {
+  override val content: ContentSegments = ContentSegmentsFromRd(rdRemarksSection.content, project)
 }
 
-class ExceptionSegmentFromRd(rdExceptionSegment: RdExceptionsSegment,
-                             project: Project) : ContentSegmentFromRd(rdExceptionSegment), ExceptionSegment {
-    override val name: String = rdExceptionSegment.name
-    override val content: ContentSegments = ContentSegmentsFromRd(rdExceptionSegment.content, project)
+class ExceptionSegmentFromRd(
+  rdExceptionSegment: RdExceptionsSegment,
+  project: Project
+) : ContentSegmentFromRd(rdExceptionSegment), ExceptionSegment {
+  override val name: String = rdExceptionSegment.name
+  override val content: ContentSegments = ContentSegmentsFromRd(rdExceptionSegment.content, project)
 }

@@ -10,24 +10,26 @@ import com.intellij.openapi.editor.EditorCustomElementRenderer
 import com.intellij.openapi.project.Project
 import com.intellij.psi.impl.source.tree.injected.changesHandler.range
 
-class DocCommentUiModel(val docComment: DocComment,
-                        project: Project,
-                        val editor: Editor) : UiInteractionModelBase(project), RootUiModel {
-    val contentSection: SectionUiModel<ContentSegmentUiModel>
-    val underlyingTextRange = docComment.highlighter.range
+class DocCommentUiModel(
+  val docComment: DocComment,
+  project: Project,
+  val editor: Editor
+) : UiInteractionModelBase(project), RootUiModel {
+  val contentSection: SectionUiModel<ContentSegmentUiModel>
+  val underlyingTextRange = docComment.highlighter.range
 
 
-    init {
-        val segments = docComment.content.segments.map { ContentSegmentUiModel.getFrom(project, it) }
-        contentSection = SectionUiModel(project, segments)
-    }
+  init {
+    val segments = docComment.content.segments.map { ContentSegmentUiModel.getFrom(project, it) }
+    contentSection = SectionUiModel(project, segments)
+  }
 
 
-    override fun getCustomFoldRegionRenderer(project: Project): CustomFoldRegionRenderer {
-        return DocCommentRenderer(this)
-    }
+  override fun getCustomFoldRegionRenderer(project: Project): CustomFoldRegionRenderer {
+    return DocCommentRenderer(this)
+  }
 
-    override fun getEditorCustomElementRenderer(project: Project): EditorCustomElementRenderer {
-        return DocCommentRenderer(this)
-    }
+  override fun getEditorCustomElementRenderer(project: Project): EditorCustomElementRenderer {
+    return DocCommentRenderer(this)
+  }
 }

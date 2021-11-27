@@ -7,8 +7,10 @@ import com.intelligentComments.ui.comments.model.content.ContentSegmentsUiModel
 import com.intelligentComments.ui.comments.model.highlighters.HighlightedTextUiWrapper
 import com.intellij.openapi.project.Project
 
-class ExceptionUiModel(project: Project,
-                       exceptionSegment: ExceptionSegment) : ContentSegmentUiModel(project, exceptionSegment) {
-    val name = HighlightedTextUiWrapper(project, HighlightedTextImpl(exceptionSegment.name, emptyList()))
-    val content = ContentSegmentsUiModel(project, exceptionSegment.content)
+class ExceptionUiModel(
+  project: Project,
+  exceptionSegment: ExceptionSegment
+) : ContentSegmentUiModel(project, exceptionSegment) {
+  val name = HighlightedTextUiWrapper(project, HighlightedTextImpl(exceptionSegment.name, emptyList()))
+  val content = ContentSegmentsUiModel(project, exceptionSegment.content)
 }

@@ -6,14 +6,15 @@ import com.intellij.openapi.project.Project
 import com.jetbrains.rd.ide.model.RdIntelligentCommentContent
 import java.util.*
 
-class IntelligentCommentContentFromRd(rdContent: RdIntelligentCommentContent?, project: Project) : IntelligentCommentContent {
-    private val myCachedSegments: Collection<ContentSegment>
+class IntelligentCommentContentFromRd(rdContent: RdIntelligentCommentContent?, project: Project) :
+  IntelligentCommentContent {
+  private val myCachedSegments: Collection<ContentSegment>
 
-    init {
-        val segments = rdContent?.content?.content
-        myCachedSegments = segments?.map { ContentSegmentFromRd.getFrom(it, project) } ?: emptyList()
-    }
+  init {
+    val segments = rdContent?.content?.content
+    myCachedSegments = segments?.map { ContentSegmentFromRd.getFrom(it, project) } ?: emptyList()
+  }
 
-    override val segments: Collection<ContentSegment> = myCachedSegments
-    override val id: UUID = UUID.randomUUID()
+  override val segments: Collection<ContentSegment> = myCachedSegments
+  override val id: UUID = UUID.randomUUID()
 }

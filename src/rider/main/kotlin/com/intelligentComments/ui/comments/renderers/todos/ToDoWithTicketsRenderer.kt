@@ -16,135 +16,144 @@ import java.awt.Graphics
 import java.awt.Rectangle
 
 interface ToDoRenderer : Renderer, RectangleModelBuildContributor {
-    companion object {
-        fun getRendererFor(todo: ToDoUiModel): ToDoRenderer {
-            return when(todo) {
-                is ToDoWithTicketsUiModel -> ToDoWithTicketsRenderer(todo)
-                else -> throw IllegalArgumentException(todo.toString())
-            }
-        }
+  companion object {
+    fun getRendererFor(todo: ToDoUiModel): ToDoRenderer {
+      return when (todo) {
+        is ToDoWithTicketsUiModel -> ToDoWithTicketsRenderer(todo)
+        else -> throw IllegalArgumentException(todo.toString())
+      }
     }
+  }
 }
 
-class ToDoWithTicketsRenderer(private val todo: ToDoWithTicketsUiModel) : ExpandableContentWithHeader(todo.headerUiModel), ToDoRenderer {
-    companion object {
-        private const val heightDelta = 4
-        private const val deltaBetweenTicketsHeaderAndTickets = 4
-        private const val ticketsHeader = "Related tickets:"
+class ToDoWithTicketsRenderer(private val todo: ToDoWithTicketsUiModel) :
+  ExpandableContentWithHeader(todo.headerUiModel), ToDoRenderer {
+  companion object {
+    private const val heightDelta = 4
+    private const val deltaBetweenTicketsHeaderAndTickets = 4
+    private const val ticketsHeader = "Related tickets:"
+  }
+
+
+  override fun renderContent(
+    g: Graphics,
+    rect: Rectangle,
+    editorImpl: EditorImpl,
+    rectanglesModel: RectanglesModel
+  ): Rectangle {
+    var adjustedRect = Rectangle(rect).apply {
+      y += heightDelta
     }
 
-
-    override fun renderContent(g: Graphics,
-                               rect: Rectangle,
-                               editorImpl: EditorImpl,
-                               rectanglesModel: RectanglesModel): Rectangle {
-        var adjustedRect = Rectangle(rect).apply {
-            y += heightDelta
-        }
-
-        adjustedRect = renderTickets(g, adjustedRect, editorImpl, rectanglesModel).apply {
-            y += heightDelta
-        }
-
-        return renderToDoDescription(g, adjustedRect, editorImpl, rectanglesModel)
+    adjustedRect = renderTickets(g, adjustedRect, editorImpl, rectanglesModel).apply {
+      y += heightDelta
     }
 
-    private fun renderTickets(g: Graphics,
-                              rect: Rectangle,
-                              editorImpl: EditorImpl,
-                              rectanglesModel: RectanglesModel): Rectangle {
-        val textWidth = TextUtil.getTextWidth(editorImpl, ticketsHeader)
-        TextUtil.renderText(g, rect, editorImpl, ticketsHeader, heightDelta)
-        var adjustedRect = Rectangle(rect).apply { x += textWidth + deltaBetweenTicketsHeaderAndTickets }
+    return renderToDoDescription(g, adjustedRect, editorImpl, rectanglesModel)
+  }
 
-        for (i in todo.tickets.indices) {
-            adjustedRect = renderTicket(g, adjustedRect, editorImpl, todo.tickets[i], i != todo.tickets.size - 1)
-        }
+  private fun renderTickets(
+    g: Graphics,
+    rect: Rectangle,
+    editorImpl: EditorImpl,
+    rectanglesModel: RectanglesModel
+  ): Rectangle {
+    val textWidth = TextUtil.getTextWidth(editorImpl, ticketsHeader)
+    TextUtil.renderText(g, rect, editorImpl, ticketsHeader, heightDelta)
+    var adjustedRect = Rectangle(rect).apply { x += textWidth + deltaBetweenTicketsHeaderAndTickets }
 
-        return Rectangle(rect).apply {
-            y += TextUtil.getTextHeight(editorImpl, null)
-        }
+    for (i in todo.tickets.indices) {
+      adjustedRect = renderTicket(g, adjustedRect, editorImpl, todo.tickets[i], i != todo.tickets.size - 1)
     }
 
-    private fun renderTicket(g: Graphics,
-                             rect: Rectangle,
-                             editorImpl: EditorImpl,
-                             ticket: TicketUiModel,
-                             addComma: Boolean): Rectangle {
-        val text = ticket.nameText.text
-        val highlighters = ticket.nameText.highlighters
-        TextUtil.renderLine(g, rect, editorImpl, text, highlighters, 0)
-        var width = TextUtil.getTextWidthWithHighlighters(editorImpl, ticket.nameText)
-        val adjustedRect = Rectangle(rect).apply { x += width }
+    return Rectangle(rect).apply {
+      y += TextUtil.getTextHeight(editorImpl, null)
+    }
+  }
 
-        if (addComma) {
-            val commaAndSpace = ", "
-            TextUtil.renderLine(g, adjustedRect, editorImpl, commaAndSpace, listOf(), 0)
-            width += TextUtil.getTextWidth(editorImpl, commaAndSpace)
-        }
+  private fun renderTicket(
+    g: Graphics,
+    rect: Rectangle,
+    editorImpl: EditorImpl,
+    ticket: TicketUiModel,
+    addComma: Boolean
+  ): Rectangle {
+    val text = ticket.nameText.text
+    val highlighters = ticket.nameText.highlighters
+    TextUtil.renderLine(g, rect, editorImpl, text, highlighters, 0)
+    var width = TextUtil.getTextWidthWithHighlighters(editorImpl, ticket.nameText)
+    val adjustedRect = Rectangle(rect).apply { x += width }
 
-        return Rectangle(rect).apply { x += width }
+    if (addComma) {
+      val commaAndSpace = ", "
+      TextUtil.renderLine(g, adjustedRect, editorImpl, commaAndSpace, listOf(), 0)
+      width += TextUtil.getTextWidth(editorImpl, commaAndSpace)
     }
 
-    private fun renderToDoDescription(g: Graphics,
-                                      rect: Rectangle,
-                                      editorImpl: EditorImpl,
-                                      rectanglesModel: RectanglesModel): Rectangle {
-        return ContentSegmentsUtil.renderSegments(todo.description.content, g, rect, editorImpl, rectanglesModel)
+    return Rectangle(rect).apply { x += width }
+  }
+
+  private fun renderToDoDescription(
+    g: Graphics,
+    rect: Rectangle,
+    editorImpl: EditorImpl,
+    rectanglesModel: RectanglesModel
+  ): Rectangle {
+    return ContentSegmentsUtil.renderSegments(todo.description.content, g, rect, editorImpl, rectanglesModel)
+  }
+
+  override fun calculateContentHeight(editorImpl: EditorImpl): Int {
+    val ticketsHeaderHeight = calculateTicketsHeight(editorImpl) + heightDelta
+    val contentHeight = ContentSegmentsUtil.calculateContentHeight(todo.description.content, editorImpl) + heightDelta
+    return ticketsHeaderHeight + contentHeight
+  }
+
+  private fun calculateTicketsHeight(editorImpl: EditorImpl): Int {
+    return TextUtil.getTextHeight(editorImpl, null)
+  }
+
+  override fun calculateContentWidth(editorImpl: EditorImpl): Int {
+    return ContentSegmentsUtil.calculateContentWidth(todo.description.content, editorImpl)
+  }
+
+  override fun acceptContent(context: RectangleModelBuildContext) {
+    val currentRect = acceptForTickets(context)
+
+    for (segment in todo.description.content) {
+      val renderer = SegmentRenderer.getRendererFor(segment)
+      val rect = Rectangle(currentRect).apply {
+        width = renderer.calculateExpectedWidthInPixels(context.editorImpl)
+        height = renderer.calculateExpectedHeightInPixels(context.editorImpl)
+      }
+
+      context.rectanglesModel.addElement(segment, rect)
+      renderer.accept(context.withRectangle(rect))
+      currentRect.y += rect.height + ContentSegmentsUtil.deltaBetweenSegments
+    }
+  }
+
+  private fun acceptForTickets(context: RectangleModelBuildContext): Rectangle {
+    val rect = Rectangle(context.rect).apply { y += heightDelta }
+    val editorImpl = context.editorImpl
+    val ticketsHeight = calculateTicketsHeight(context.editorImpl)
+    var xDelta = TextUtil.getTextWidth(context.editorImpl, ticketsHeader) + deltaBetweenTicketsHeaderAndTickets
+
+    val tickets = todo.tickets
+    val commaAndSpaceWidth = TextUtil.getTextWidth(editorImpl, ", ")
+    for (i in tickets.indices) {
+      val width = TextUtil.getTextWidthWithHighlighters(editorImpl, tickets[i].nameText)
+      val currentRect = Rectangle(rect).apply {
+        x += xDelta
+        this.width = width
+        this.height = ticketsHeight
+      }
+
+      context.rectanglesModel.addElement(tickets[i].nameText.highlighters[0], currentRect)
+      xDelta += width + commaAndSpaceWidth
     }
 
-    override fun calculateContentHeight(editorImpl: EditorImpl): Int {
-        val ticketsHeaderHeight = calculateTicketsHeight(editorImpl) + heightDelta
-        val contentHeight = ContentSegmentsUtil.calculateContentHeight(todo.description.content, editorImpl) + heightDelta
-        return ticketsHeaderHeight + contentHeight
+    return Rectangle(context.rect).apply {
+      y += ticketsHeight + 2 * heightDelta
     }
-
-    private fun calculateTicketsHeight(editorImpl: EditorImpl): Int {
-        return TextUtil.getTextHeight(editorImpl, null)
-    }
-
-    override fun calculateContentWidth(editorImpl: EditorImpl): Int {
-        return ContentSegmentsUtil.calculateContentWidth(todo.description.content, editorImpl)
-    }
-
-    override fun acceptContent(context: RectangleModelBuildContext) {
-        val currentRect = acceptForTickets(context)
-
-        for (segment in todo.description.content) {
-            val renderer = SegmentRenderer.getRendererFor(segment)
-            val rect = Rectangle(currentRect).apply {
-                width = renderer.calculateExpectedWidthInPixels(context.editorImpl)
-                height = renderer.calculateExpectedHeightInPixels(context.editorImpl)
-            }
-
-            context.rectanglesModel.addElement(segment, rect)
-            renderer.accept(context.withRectangle(rect))
-            currentRect.y += rect.height + ContentSegmentsUtil.deltaBetweenSegments
-        }
-    }
-
-    private fun acceptForTickets(context: RectangleModelBuildContext): Rectangle {
-        val rect = Rectangle(context.rect).apply { y += heightDelta }
-        val editorImpl = context.editorImpl
-        val ticketsHeight = calculateTicketsHeight(context.editorImpl)
-        var xDelta = TextUtil.getTextWidth(context.editorImpl, ticketsHeader) + deltaBetweenTicketsHeaderAndTickets
-
-        val tickets = todo.tickets
-        val commaAndSpaceWidth = TextUtil.getTextWidth(editorImpl, ", ")
-        for (i in tickets.indices) {
-            val width = TextUtil.getTextWidthWithHighlighters(editorImpl, tickets[i].nameText)
-            val currentRect = Rectangle(rect).apply {
-                x += xDelta
-                this.width = width
-                this.height = ticketsHeight
-            }
-
-            context.rectanglesModel.addElement(tickets[i].nameText.highlighters[0], currentRect)
-            xDelta += width + commaAndSpaceWidth
-        }
-
-        return Rectangle(context.rect).apply {
-            y += ticketsHeight + 2 * heightDelta
-        }
-    }
+  }
 }

@@ -3,69 +3,69 @@ package com.intelligentComments.core.domain.core
 import java.awt.Image
 
 interface IntelligentCommentContent : UniqueEntity {
-    val segments: Collection<ContentSegment>
+  val segments: Collection<ContentSegment>
 }
 
 interface ContentSegment : UniqueEntity
 
 interface ContentSegments {
-    val segments: Collection<ContentSegment>
+  val segments: Collection<ContentSegment>
 }
 
 interface EntityWithContentSegments : ContentSegment {
-    val content: ContentSegments
+  val content: ContentSegments
 }
 
 interface ParagraphContentSegment : EntityWithContentSegments
 
 interface TextContentSegment : ContentSegment {
-    val highlightedText: HighlightedText
+  val highlightedText: HighlightedText
 }
 
 interface ImageContentSegment : ContentSegment {
-    val image: Image
-    val description: HighlightedText?
+  val image: Image
+  val description: HighlightedText?
 }
 
 interface ListContentSegment : ContentSegment {
-    val content: Collection<ContentSegments>
-    val header: HighlightedText
+  val content: Collection<ContentSegments>
+  val header: HighlightedText
 }
 
 interface TableContentSegment : ContentSegment {
-    val header: HighlightedText
-    val rows: Collection<TableRow>
+  val header: HighlightedText
+  val rows: Collection<TableRow>
 }
 
 interface TableRow {
-    val cells: Collection<TableCell>
+  val cells: Collection<TableCell>
 }
 
 interface TableCell {
-    val contentSegments: ContentSegments
-    val properties: TableCellProperties
+  val contentSegments: ContentSegments
+  val properties: TableCellProperties
 }
 
 enum class HorizontalAlignment {
-    CENTER,
-    LEFT,
-    RIGHT
+  CENTER,
+  LEFT,
+  RIGHT
 }
 
 enum class VerticalAlignment {
-    CENTER,
-    TOP,
-    BOTTOM
+  CENTER,
+  TOP,
+  BOTTOM
 }
 
 interface TableCellProperties {
-    val verticalAlignment: VerticalAlignment
-    val horizontalAlignment: HorizontalAlignment
-    val isHeader: Boolean
+  val verticalAlignment: VerticalAlignment
+  val horizontalAlignment: HorizontalAlignment
+  val isHeader: Boolean
 }
 
 interface ParameterSegment : EntityWithContentSegments {
-    val name: String
+  val name: String
 }
 
 interface ReturnSegment : EntityWithContentSegments
@@ -73,5 +73,5 @@ interface ReturnSegment : EntityWithContentSegments
 interface RemarksSegment : EntityWithContentSegments
 
 interface ExceptionSegment : EntityWithContentSegments {
-    val name: String
+  val name: String
 }

@@ -7,77 +7,78 @@ import com.intelligentComments.ui.core.RectangleModelBuildContext
 import com.intelligentComments.ui.core.RectangleModelBuildContributor
 import com.intelligentComments.ui.core.RectanglesModel
 import com.intelligentComments.ui.core.Renderer
-import com.intelligentComments.ui.util.TextUtil
 import com.intelligentComments.ui.util.RectanglesModelUtil
-import com.intelligentComments.ui.util.RectanglesModelUtil.Companion.deltaBetweenHeaderAndContent
 import com.intellij.openapi.editor.impl.EditorImpl
 import java.awt.Graphics
 import java.awt.Rectangle
 import java.lang.Integer.max
 
 interface ToDosRenderer : Renderer, RectangleModelBuildContributor {
-    companion object {
-        fun getRendererFor(section: SectionWithHeaderUiModel<ToDoUiModel>): ToDosRenderer {
-            return ToDosRendererImpl(section)
-        }
+  companion object {
+    fun getRendererFor(section: SectionWithHeaderUiModel<ToDoUiModel>): ToDosRenderer {
+      return ToDosRendererImpl(section)
     }
+  }
 }
 
-class ToDosRendererImpl(private val section: SectionWithHeaderUiModel<ToDoUiModel>) : VerticalSectionWithHeaderRenderer<ToDoUiModel>(section), ToDosRenderer {
-    companion object {
-        const val deltaBetweenToDos = 10
+class ToDosRendererImpl(private val section: SectionWithHeaderUiModel<ToDoUiModel>) :
+  VerticalSectionWithHeaderRenderer<ToDoUiModel>(section), ToDosRenderer {
+  companion object {
+    const val deltaBetweenToDos = 10
+  }
+
+
+  override fun renderContent(
+    g: Graphics,
+    rect: Rectangle,
+    editorImpl: EditorImpl,
+    rectanglesModel: RectanglesModel
+  ): Rectangle {
+    var adjustedRect = Rectangle(rect)
+
+    executeActionWithToDosAndRenderers { todo, renderer ->
+      adjustedRect = renderer.render(g, adjustedRect, editorImpl, rectanglesModel)
+      adjustedRect.y += deltaBetweenToDos
     }
 
+    return adjustedRect.apply {
+      y -= deltaBetweenToDos
+    }
+  }
 
-    override fun renderContent(g: Graphics,
-                               rect: Rectangle,
-                               editorImpl: EditorImpl,
-                               rectanglesModel: RectanglesModel): Rectangle {
-        var adjustedRect = Rectangle(rect)
+  private fun executeActionWithToDosAndRenderers(action: (ToDoUiModel, ToDoRenderer) -> Unit) {
+    for (todo in section.content) {
+      val renderer = ToDoRenderer.getRendererFor(todo)
+      action(todo, renderer)
+    }
+  }
 
-        executeActionWithToDosAndRenderers { todo, renderer ->
-            adjustedRect = renderer.render(g, adjustedRect, editorImpl, rectanglesModel)
-            adjustedRect.y += deltaBetweenToDos
-        }
-
-        return adjustedRect.apply {
-            y -= deltaBetweenToDos
-        }
+  override fun calculateContentWidth(editorImpl: EditorImpl): Int {
+    var width = 0
+    executeActionWithToDosAndRenderers { _, renderer ->
+      width = max(width, renderer.calculateExpectedWidthInPixels(editorImpl))
     }
 
-    private fun executeActionWithToDosAndRenderers(action: (ToDoUiModel, ToDoRenderer) -> Unit) {
-        for (todo in section.content) {
-            val renderer = ToDoRenderer.getRendererFor(todo)
-            action(todo, renderer)
-        }
+    return width
+  }
+
+  override fun calculateContentHeight(editorImpl: EditorImpl): Int {
+    var height = 0
+    executeActionWithToDosAndRenderers { _, renderer ->
+      height += renderer.calculateExpectedHeightInPixels(editorImpl)
+      height += deltaBetweenToDos
     }
 
-    override fun calculateContentWidth(editorImpl: EditorImpl): Int {
-        var width = 0
-        executeActionWithToDosAndRenderers { _, renderer ->
-            width = max(width, renderer.calculateExpectedWidthInPixels(editorImpl))
-        }
+    return height - deltaBetweenToDos
+  }
 
-        return width
+  override fun acceptContent(context: RectangleModelBuildContext) {
+    executeActionWithToDosAndRenderers { todo, renderer ->
+      renderer.accept(context)
+      RectanglesModelUtil.updateHeightAndWidthAndAddModel(renderer, context, todo)
+      RectanglesModelUtil.addHeightDeltaTo(context.widthAndHeight, context.rect, deltaBetweenToDos)
     }
 
-    override fun calculateContentHeight(editorImpl: EditorImpl): Int {
-        var height = 0
-        executeActionWithToDosAndRenderers { _, renderer ->
-            height += renderer.calculateExpectedHeightInPixels(editorImpl)
-            height += deltaBetweenToDos
-        }
-
-        return height - deltaBetweenToDos
-    }
-
-    override fun acceptContent(context: RectangleModelBuildContext) {
-        executeActionWithToDosAndRenderers { todo, renderer ->
-            renderer.accept(context)
-            RectanglesModelUtil.updateHeightAndWidthAndAddModel(renderer, context, todo)
-            RectanglesModelUtil.addHeightDeltaTo(context.widthAndHeight, context.rect, deltaBetweenToDos)
-        }
-
-        RectanglesModelUtil.addHeightDeltaTo(context.widthAndHeight, context.rect, -deltaBetweenToDos)
-    }
+    RectanglesModelUtil.addHeightDeltaTo(context.widthAndHeight, context.rect, -deltaBetweenToDos)
+  }
 }

@@ -12,10 +12,11 @@ import com.jetbrains.rd.util.lifetime.LifetimeDefinition
 import com.jetbrains.rd.util.reactive.ViewableMap
 import com.jetbrains.rdclient.daemon.FrontendMarkupAdapterListener
 import com.jetbrains.rdclient.daemon.highlighters.MarkupListenerAggregator
-import com.jetbrains.rider.xamarin.xcAssets.models.deserizlizeIconXcAssets
 
-class DocCommentsFoldingAggregator(project: Project,
-                                   document: Document) : MarkupListenerAggregator(project, document) {
+class DocCommentsFoldingAggregator(
+  project: Project,
+  document: Document
+) : MarkupListenerAggregator(project, document) {
   override fun canHandleEditor(editor: EditorImpl): Boolean {
     return true
   }
@@ -27,8 +28,10 @@ class DocCommentsFoldingAggregator(project: Project,
 
 class DocCommentsFoldingAdapter(private val editor: EditorImpl) : FrontendMarkupAdapterListener {
   companion object {
-    private fun executeOverDocHighlighters(highlighters: List<RangeHighlighterEx>,
-                                           action: (RangeHighlighterEx, RdDocCommentFoldingModel) -> Unit) {
+    private fun executeOverDocHighlighters(
+      highlighters: List<RangeHighlighterEx>,
+      action: (RangeHighlighterEx, RdDocCommentFoldingModel) -> Unit
+    ) {
       for (highlighter in highlighters) {
         val foldingModel = highlighter.getUserData(DocCommentModelKey)
         if (foldingModel != null) {
@@ -48,7 +51,11 @@ class DocCommentsFoldingAdapter(private val editor: EditorImpl) : FrontendMarkup
   override fun afterUpdated(highlighter: RangeHighlighterEx) {
   }
 
-  override fun attributesChanged(highlighter: RangeHighlighterEx, renderersChanged: Boolean, fontStyleOrColorChanged: Boolean) {
+  override fun attributesChanged(
+    highlighter: RangeHighlighterEx,
+    renderersChanged: Boolean,
+    fontStyleOrColorChanged: Boolean
+  ) {
   }
 
   override fun afterBulkAdd(highlighters: List<RangeHighlighterEx>) {
@@ -65,7 +72,12 @@ class DocCommentsFoldingAdapter(private val editor: EditorImpl) : FrontendMarkup
     }
   }
 
-  override fun attributesChanged(highlighter: RangeHighlighterEx, renderersChanged: Boolean, fontStyleChanged: Boolean, foregroundColorChanged: Boolean) {
+  override fun attributesChanged(
+    highlighter: RangeHighlighterEx,
+    renderersChanged: Boolean,
+    fontStyleChanged: Boolean,
+    foregroundColorChanged: Boolean
+  ) {
   }
 
   override fun beforeBulkRemove(highlighters: List<RangeHighlighterEx>) {

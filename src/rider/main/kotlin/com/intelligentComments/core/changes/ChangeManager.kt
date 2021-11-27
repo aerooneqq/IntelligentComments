@@ -1,4 +1,3 @@
 package com.intelligentComments.core.changes
 
-interface ChangeManager {
-}
+interface ChangeManager

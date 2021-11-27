@@ -8,17 +8,17 @@ import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intellij.openapi.project.Project
 
 open class InvariantUiModel(project: Project) : UiInteractionModelBase(project) {
-    companion object {
-        fun getFrom(project: Project, invariant: Invariant): InvariantUiModel {
-            return when(invariant) {
-                is TextInvariant -> TextInvariantUiModel(project, invariant)
-                else -> throw IllegalArgumentException(invariant.toString())
-            }
-        }
+  companion object {
+    fun getFrom(project: Project, invariant: Invariant): InvariantUiModel {
+      return when (invariant) {
+        is TextInvariant -> TextInvariantUiModel(project, invariant)
+        else -> throw IllegalArgumentException(invariant.toString())
+      }
     }
+  }
 
-    val borderColor
-        get() = colorsProvider.getColorFor(borderColorKey)
+  val borderColor
+    get() = colorsProvider.getColorFor(borderColorKey)
 
-    protected open val borderColorKey: ColorName = Colors.InvariantDefaultBorderColor
+  protected open val borderColorKey: ColorName = Colors.InvariantDefaultBorderColor
 }

@@ -6,6 +6,6 @@ import com.jetbrains.rd.ide.model.RdIntelligentCommentAuthor
 import java.util.*
 
 class AuthorFromRd(author: RdIntelligentCommentAuthor) : UniqueEntityImpl(), CommentAuthor {
-    override val name: String = author.name
-    override val date: Date = author.date
+  override val name: String = author.name
+  override val date: Date = author.date
 }

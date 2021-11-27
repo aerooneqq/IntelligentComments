@@ -9,72 +9,73 @@ import com.intelligentComments.ui.core.RectangleModelBuildContributor
 import com.intelligentComments.ui.core.RectanglesModel
 import com.intelligentComments.ui.core.Renderer
 import com.intelligentComments.ui.util.RectanglesModelUtil
-import com.intelligentComments.ui.util.RectanglesModelUtil.Companion.deltaBetweenHeaderAndContent
 import com.intellij.openapi.editor.impl.EditorImpl
 import java.awt.Graphics
 import java.awt.Rectangle
 import kotlin.math.max
 
 interface ReferencesRenderer : Renderer, RectangleModelBuildContributor {
-    companion object {
-        const val deltaBetweenReferences = 10
+  companion object {
+    const val deltaBetweenReferences = 10
 
-        fun getRendererFor(referencesSection: SectionWithHeaderUiModel<ReferenceUiModel>): ReferencesRenderer {
-            return ReferencesRendererImpl(referencesSection)
-        }
+    fun getRendererFor(referencesSection: SectionWithHeaderUiModel<ReferenceUiModel>): ReferencesRenderer {
+      return ReferencesRendererImpl(referencesSection)
     }
+  }
 }
 
-class ReferencesRendererImpl(private val section: SectionWithHeaderUiModel<ReferenceUiModel>)
-    : VerticalSectionWithHeaderRenderer<ReferenceUiModel>(section), ReferencesRenderer {
+class ReferencesRendererImpl(private val section: SectionWithHeaderUiModel<ReferenceUiModel>) :
+  VerticalSectionWithHeaderRenderer<ReferenceUiModel>(section), ReferencesRenderer {
 
-    override fun renderContent(g: Graphics,
-                               rect: Rectangle,
-                               editorImpl: EditorImpl,
-                               rectanglesModel: RectanglesModel): Rectangle {
-        var adjustedRect = rect
+  override fun renderContent(
+    g: Graphics,
+    rect: Rectangle,
+    editorImpl: EditorImpl,
+    rectanglesModel: RectanglesModel
+  ): Rectangle {
+    var adjustedRect = rect
 
-        for (reference in section.content) {
-            val renderer = ReferenceRenderer.getRendererFor(reference)
-            adjustedRect = renderer.render(g, adjustedRect, editorImpl, rectanglesModel)
-            adjustedRect.y += deltaBetweenReferences
-        }
-
-        adjustedRect.y -= deltaBetweenReferences
-        return adjustedRect
+    for (reference in section.content) {
+      val renderer = ReferenceRenderer.getRendererFor(reference)
+      adjustedRect = renderer.render(g, adjustedRect, editorImpl, rectanglesModel)
+      adjustedRect.y += deltaBetweenReferences
     }
 
-    override fun calculateContentHeight(editorImpl: EditorImpl): Int {
-        var height = 0
+    adjustedRect.y -= deltaBetweenReferences
+    return adjustedRect
+  }
 
-        for (reference in section.content) {
-            height += ReferenceRenderer.getRendererFor(reference).calculateExpectedHeightInPixels(editorImpl)
-            height += deltaBetweenReferences
-        }
+  override fun calculateContentHeight(editorImpl: EditorImpl): Int {
+    var height = 0
 
-        height -= deltaBetweenReferences
-        return height
+    for (reference in section.content) {
+      height += ReferenceRenderer.getRendererFor(reference).calculateExpectedHeightInPixels(editorImpl)
+      height += deltaBetweenReferences
     }
 
-    override fun calculateContentWidth(editorImpl: EditorImpl): Int {
-        var width = 0
+    height -= deltaBetweenReferences
+    return height
+  }
 
-        for (reference in section.content) {
-            val renderer = ReferenceRenderer.getRendererFor(reference)
-            width = max(width, renderer.calculateExpectedWidthInPixels(editorImpl))
-        }
+  override fun calculateContentWidth(editorImpl: EditorImpl): Int {
+    var width = 0
 
-        return width
+    for (reference in section.content) {
+      val renderer = ReferenceRenderer.getRendererFor(reference)
+      width = max(width, renderer.calculateExpectedWidthInPixels(editorImpl))
     }
 
-    override fun acceptContent(context: RectangleModelBuildContext) {
-        for (reference in section.content) {
-            val renderer = ReferenceRenderer.getRendererFor(reference)
-            renderer.accept(context)
-            RectanglesModelUtil.updateHeightAndWidthAndAddModel(renderer, context, reference)
-            RectanglesModelUtil.addHeightDeltaTo(context.widthAndHeight, context.rect, deltaBetweenReferences)
-        }
+    return width
+  }
 
-        RectanglesModelUtil.addHeightDeltaTo(context.widthAndHeight, context.rect, -deltaBetweenReferences)
+  override fun acceptContent(context: RectangleModelBuildContext) {
+    for (reference in section.content) {
+      val renderer = ReferenceRenderer.getRendererFor(reference)
+      renderer.accept(context)
+      RectanglesModelUtil.updateHeightAndWidthAndAddModel(renderer, context, reference)
+      RectanglesModelUtil.addHeightDeltaTo(context.widthAndHeight, context.rect, deltaBetweenReferences)
     }
+
+    RectanglesModelUtil.addHeightDeltaTo(context.widthAndHeight, context.rect, -deltaBetweenReferences)
+  }
 }

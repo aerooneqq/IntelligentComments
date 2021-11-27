@@ -5,17 +5,17 @@ import com.intelligentComments.ui.util.HashUtil
 import com.intellij.openapi.project.Project
 
 class HighlightedTextUiWrapper(project: Project, highlightedText: HighlightedText) {
-    val text = highlightedText.text
-    val highlighters = highlightedText.highlighters.map { HighlighterUiModel.getFor(project, it) }
+  val text = highlightedText.text
+  val highlighters = highlightedText.highlighters.map { HighlighterUiModel.getFor(project, it) }
 
-    override fun hashCode(): Int {
-        var textHashCode = text.hashCode()
-        if (textHashCode == 0) {
-            textHashCode = 1
-        }
-
-        return (textHashCode * HashUtil.calculateHashFor(highlighters)) % HashUtil.mod
+  override fun hashCode(): Int {
+    var textHashCode = text.hashCode()
+    if (textHashCode == 0) {
+      textHashCode = 1
     }
 
-    override fun equals(other: Any?): Boolean = other is HighlightedTextUiWrapper && other.hashCode() == hashCode()
+    return (textHashCode * HashUtil.calculateHashFor(highlighters)) % HashUtil.mod
+  }
+
+  override fun equals(other: Any?): Boolean = other is HighlightedTextUiWrapper && other.hashCode() == hashCode()
 }
