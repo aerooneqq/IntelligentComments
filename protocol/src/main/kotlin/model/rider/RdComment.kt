@@ -206,6 +206,7 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
 
     val RdDocCommentFoldingModel = structdef extends SolutionModel.HighlighterModel {
         field("CommentIdentifier", PredefinedType.int)
+        field("DocComment", RdDocComment)
     }
 
 

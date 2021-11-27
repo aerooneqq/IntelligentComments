@@ -14,6 +14,7 @@ import com.intellij.openapi.editor.CustomFoldRegionRenderer
 import com.intellij.openapi.editor.EditorCustomElementRenderer
 import com.intellij.openapi.editor.Inlay
 import com.intellij.openapi.editor.impl.EditorImpl
+import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.openapi.editor.markup.TextAttributes
 import com.intellij.openapi.util.use
 import com.jetbrains.rd.platform.util.application

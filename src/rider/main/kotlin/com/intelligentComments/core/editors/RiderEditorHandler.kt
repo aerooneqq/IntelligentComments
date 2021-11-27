@@ -5,6 +5,7 @@ import com.intelligentComments.ui.listeners.CommentMouseListener
 import com.intelligentComments.ui.listeners.CommentMouseMoveListener
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.InlayProperties
+import com.intellij.openapi.editor.ex.RangeHighlighterEx
 import com.intellij.openapi.rd.createNestedDisposable
 import com.jetbrains.rd.ide.model.*
 import com.jetbrains.rd.util.Date
@@ -122,14 +123,5 @@ This method depends on the synchronous nature of Method1,""".trimMargin(),
         todos.add(getToDo())
 
         val comment = RdIntelligentComment(authors, Date(), content, invariants, references, todos, null, 0, RdTextRange(0, 0))
-        val intelligentComment = IntelligentCommentFromRd(comment, editor.project!!)
-        val inlayRenderer = intelligentComment.getRenderer(editor.project!!)
-        val inlay = editor.inlayModel.addBlockElement(0, properties, inlayRenderer)
-
-        editor.addEditorMouseMotionListener(CommentMouseMoveListener(inlay!!), monitoringLifetime.createNestedDisposable())
-        editor.addEditorMouseListener(CommentMouseListener(inlay), monitoringLifetime.createNestedDisposable())
-
-        inlay.update()
-        inlay.repaint()
     }
 }

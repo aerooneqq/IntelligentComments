@@ -1,15 +1,18 @@
 package com.intelligentComments.ui.comments.renderers
 
+import com.intelligentComments.core.domain.core.DocComment
 import com.intelligentComments.ui.colors.ColorsProvider
 import com.intelligentComments.ui.comments.model.DocCommentUiModel
 import com.intelligentComments.ui.comments.renderers.segments.SegmentsRenderer
-import com.intellij.openapi.editor.Document
+import com.intellij.icons.AllIcons
 import com.intellij.openapi.editor.Inlay
 import com.intellij.openapi.editor.impl.EditorImpl
+import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.openapi.editor.markup.TextAttributes
 import com.intellij.util.text.CharArrayUtil
 import java.awt.Graphics
 import java.awt.Rectangle
+import javax.swing.Icon
 
 class DocCommentRenderer(private val model: DocCommentUiModel) : RendererWithRectangleModel(model) {
     private var myXDelta = -1
@@ -50,5 +53,26 @@ class DocCommentRenderer(private val model: DocCommentUiModel) : RendererWithRec
         val model = getOrCreateRectanglesModel(editorImpl)
         val renderer = SegmentsRenderer.getRendererFor(this.model.contentSection)
         return renderer.render(g, rect, editorImpl, model)
+    }
+
+    override fun calcGutterIconRenderer(inlay: Inlay<*>): GutterIconRenderer {
+        return DocCommentSwitchRenderModeGutterMark(model.docComment)
+    }
+}
+
+class DocCommentSwitchRenderModeGutterMark(private val docComment: DocComment) : GutterIconRenderer() {
+    private val icon = AllIcons.Gutter.JavadocEdit
+
+
+    override fun equals(other: Any?): Boolean {
+        return other is DocCommentSwitchRenderModeGutterMark && docComment == other.docComment
+    }
+
+    override fun hashCode(): Int {
+        return docComment.hashCode()
+    }
+
+    override fun getIcon(): Icon {
+        return icon
     }
 }

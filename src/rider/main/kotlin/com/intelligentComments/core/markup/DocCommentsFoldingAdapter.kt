@@ -1,17 +1,18 @@
 package com.intelligentComments.core.markup
 
-import com.intelligentComments.core.editors.RiderCommentsHost
-import com.intellij.openapi.components.service
+import com.intelligentComments.core.comments.RiderCommentsController
+import com.intelligentComments.core.domain.rd.DocCommentFromRd
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.ex.RangeHighlighterEx
 import com.intellij.openapi.editor.impl.EditorImpl
-import com.intellij.openapi.editor.markup.RangeHighlighter
 import com.intellij.openapi.project.Project
+import com.jetbrains.rd.ide.model.RdDocCommentFoldingModel
 import com.jetbrains.rd.util.lifetime.Lifetime
 import com.jetbrains.rd.util.lifetime.LifetimeDefinition
 import com.jetbrains.rd.util.reactive.ViewableMap
 import com.jetbrains.rdclient.daemon.FrontendMarkupAdapterListener
 import com.jetbrains.rdclient.daemon.highlighters.MarkupListenerAggregator
+import com.jetbrains.rider.xamarin.xcAssets.models.deserizlizeIconXcAssets
 
 class DocCommentsFoldingAggregator(project: Project,
                                    document: Document) : MarkupListenerAggregator(project, document) {
@@ -27,11 +28,11 @@ class DocCommentsFoldingAggregator(project: Project,
 class DocCommentsFoldingAdapter(private val editor: EditorImpl) : FrontendMarkupAdapterListener {
   companion object {
     private fun executeOverDocHighlighters(highlighters: List<RangeHighlighterEx>,
-                                           action: (RangeHighlighterEx, Int) -> Unit) {
+                                           action: (RangeHighlighterEx, RdDocCommentFoldingModel) -> Unit) {
       for (highlighter in highlighters) {
-        val commentIdentifier = highlighter.getUserData(DocCommentIdentifierKey)
-        if (commentIdentifier != null) {
-          action(highlighter, commentIdentifier)
+        val foldingModel = highlighter.getUserData(DocCommentModelKey)
+        if (foldingModel != null) {
+          action(highlighter, foldingModel)
         }
       }
     }
@@ -51,12 +52,16 @@ class DocCommentsFoldingAdapter(private val editor: EditorImpl) : FrontendMarkup
   }
 
   override fun afterBulkAdd(highlighters: List<RangeHighlighterEx>) {
-    val host = editor.project?.getComponent(RiderCommentsHost::class.java) ?: return
+    editor.project?.let {
+      val controller = it.getComponent(RiderCommentsController::class.java) ?: return
 
-    executeOverDocHighlighters(highlighters) { _, id ->
-      val def = LifetimeDefinition()
-      highlightersLifetimes[id] = def
-      host.renderDocComment(editor, id, def.lifetime)
+      executeOverDocHighlighters(highlighters) { highlighter, model ->
+        val def = LifetimeDefinition()
+        highlightersLifetimes[model.commentIdentifier] = def
+
+        val docComment = DocCommentFromRd(model.docComment, it, highlighter)
+        controller.addComment(editor, docComment, def.lifetime)
+      }
     }
   }
 
@@ -64,8 +69,8 @@ class DocCommentsFoldingAdapter(private val editor: EditorImpl) : FrontendMarkup
   }
 
   override fun beforeBulkRemove(highlighters: List<RangeHighlighterEx>) {
-    executeOverDocHighlighters(highlighters) { _, id ->
-      highlightersLifetimes.remove(id)?.terminate()
+    executeOverDocHighlighters(highlighters) { _, model ->
+      highlightersLifetimes.remove(model.commentIdentifier)?.terminate()
     }
   }
 

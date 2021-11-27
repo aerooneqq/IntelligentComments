@@ -75,7 +75,7 @@ namespace JetBrains.Rider.Model
     
     
     
-    protected override long SerializationHash => -1584237743343121023L;
+    protected override long SerializationHash => -333130669355196095L;
     
     protected override Action<ISerializers> Register => RegisterDeclaredTypesSerializers;
     public static void RegisterDeclaredTypesSerializers(ISerializers serializers)
@@ -823,11 +823,13 @@ namespace JetBrains.Rider.Model
     //fields
     //public fields
     public int CommentIdentifier {get; private set;}
+    [NotNull] public RdDocComment DocComment {get; private set;}
     
     //private fields
     //primary constructor
     public RdDocCommentFoldingModel(
       int commentIdentifier,
+      [NotNull] RdDocComment docComment,
       int layer,
       bool isExactRange,
       [NotNull] AbstractDocumentVersion documentVersion,
@@ -855,7 +857,10 @@ namespace JetBrains.Rider.Model
       end
      ) 
     {
+      if (docComment == null) throw new ArgumentNullException("docComment");
+      
       CommentIdentifier = commentIdentifier;
+      DocComment = docComment;
     }
     //secondary constructor
     //deconstruct trait
@@ -876,7 +881,8 @@ namespace JetBrains.Rider.Model
       var start = reader.ReadInt();
       var end = reader.ReadInt();
       var commentIdentifier = reader.ReadInt();
-      var _result = new RdDocCommentFoldingModel(commentIdentifier, layer, isExactRange, documentVersion, isGreedyToLeft, isGreedyToRight, isThinErrorStripeMark, textToHighlight, textAttributesKey, id, properties, start, end);
+      var docComment = RdDocComment.Read(ctx, reader);
+      var _result = new RdDocCommentFoldingModel(commentIdentifier, docComment, layer, isExactRange, documentVersion, isGreedyToLeft, isGreedyToRight, isThinErrorStripeMark, textToHighlight, textAttributesKey, id, properties, start, end);
       return _result;
     };
     public static CtxReadDelegate<string> ReadStringNullable = JetBrains.Rd.Impl.Serializers.ReadString.NullableClass();
@@ -898,6 +904,7 @@ namespace JetBrains.Rider.Model
       writer.Write(value.Start);
       writer.Write(value.End);
       writer.Write(value.CommentIdentifier);
+      RdDocComment.Write(ctx, writer, value.DocComment);
     };
     public static  CtxWriteDelegate<string> WriteStringNullable = JetBrains.Rd.Impl.Serializers.WriteString.NullableClass();
     public static  CtxWriteDelegate<JetBrains.Rider.Model.HighlighterRegistration.TextAttributesKeyModel> WriteTextAttributesKeyModelInternedNullable = JetBrains.Rider.Model.HighlighterRegistration.TextAttributesKeyModel.Write.Interned("Protocol").NullableClass();
@@ -919,7 +926,7 @@ namespace JetBrains.Rider.Model
     {
       if (ReferenceEquals(null, other)) return false;
       if (ReferenceEquals(this, other)) return true;
-      return CommentIdentifier == other.CommentIdentifier && Layer == other.Layer && IsExactRange == other.IsExactRange && Equals(DocumentVersion, other.DocumentVersion) && IsGreedyToLeft == other.IsGreedyToLeft && IsGreedyToRight == other.IsGreedyToRight && IsThinErrorStripeMark == other.IsThinErrorStripeMark && Equals(TextToHighlight, other.TextToHighlight) && Equals(TextAttributesKey, other.TextAttributesKey) && Id == other.Id && Equals(Properties, other.Properties) && Start == other.Start && End == other.End;
+      return CommentIdentifier == other.CommentIdentifier && Equals(DocComment, other.DocComment) && Layer == other.Layer && IsExactRange == other.IsExactRange && Equals(DocumentVersion, other.DocumentVersion) && IsGreedyToLeft == other.IsGreedyToLeft && IsGreedyToRight == other.IsGreedyToRight && IsThinErrorStripeMark == other.IsThinErrorStripeMark && Equals(TextToHighlight, other.TextToHighlight) && Equals(TextAttributesKey, other.TextAttributesKey) && Id == other.Id && Equals(Properties, other.Properties) && Start == other.Start && End == other.End;
     }
     //hash code trait
     public override int GetHashCode()
@@ -927,6 +934,7 @@ namespace JetBrains.Rider.Model
       unchecked {
         var hash = 0;
         hash = hash * 31 + CommentIdentifier.GetHashCode();
+        hash = hash * 31 + DocComment.GetHashCode();
         hash = hash * 31 + Layer.GetHashCode();
         hash = hash * 31 + IsExactRange.GetHashCode();
         hash = hash * 31 + DocumentVersion.GetHashCode();
@@ -948,6 +956,7 @@ namespace JetBrains.Rider.Model
       printer.Println("RdDocCommentFoldingModel (");
       using (printer.IndentCookie()) {
         printer.Print("commentIdentifier = "); CommentIdentifier.PrintEx(printer); printer.Println();
+        printer.Print("docComment = "); DocComment.PrintEx(printer); printer.Println();
         printer.Print("layer = "); Layer.PrintEx(printer); printer.Println();
         printer.Print("isExactRange = "); IsExactRange.PrintEx(printer); printer.Println();
         printer.Print("documentVersion = "); DocumentVersion.PrintEx(printer); printer.Println();

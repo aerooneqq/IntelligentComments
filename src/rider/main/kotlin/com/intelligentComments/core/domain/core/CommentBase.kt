@@ -1,8 +1,8 @@
 package com.intelligentComments.core.domain.core
 
-import com.intellij.openapi.util.TextRange
-import com.intellij.util.Range
+import com.intellij.openapi.editor.markup.RangeHighlighter
 
 interface CommentBase : UniqueEntity {
-    val underlyingTextRange: TextRange
+    val highlighter: RangeHighlighter
+    val commentIdentifier: Int
 }

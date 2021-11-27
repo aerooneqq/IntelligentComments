@@ -8,12 +8,13 @@ import com.intellij.openapi.editor.CustomFoldRegionRenderer
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.EditorCustomElementRenderer
 import com.intellij.openapi.project.Project
+import com.intellij.psi.impl.source.tree.injected.changesHandler.range
 
-class DocCommentUiModel(docComment: DocComment,
+class DocCommentUiModel(val docComment: DocComment,
                         project: Project,
                         val editor: Editor) : UiInteractionModelBase(project), RootUiModel {
     val contentSection: SectionUiModel<ContentSegmentUiModel>
-    val underlyingTextRange = docComment.underlyingTextRange
+    val underlyingTextRange = docComment.highlighter.range
 
 
     init {

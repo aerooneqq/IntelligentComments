@@ -75,7 +75,7 @@ class RdCommentsModel private constructor(
         
         
         
-        const val serializationHash = -1584237743343121023L
+        const val serializationHash = -333130669355196095L
         
     }
     override val serializersOwner: ISerializersOwner get() = RdCommentsModel
@@ -636,6 +636,7 @@ class RdDocComment (
  */
 class RdDocCommentFoldingModel (
     val commentIdentifier: Int,
+    val docComment: RdDocComment,
     layer: Int,
     isExactRange: Boolean,
     documentVersion: AbstractDocumentVersion,
@@ -682,7 +683,8 @@ class RdDocCommentFoldingModel (
             val start = buffer.readInt()
             val end = buffer.readInt()
             val commentIdentifier = buffer.readInt()
-            return RdDocCommentFoldingModel(commentIdentifier, layer, isExactRange, documentVersion, isGreedyToLeft, isGreedyToRight, isThinErrorStripeMark, textToHighlight, textAttributesKey, id, properties, start, end)
+            val docComment = RdDocComment.read(ctx, buffer)
+            return RdDocCommentFoldingModel(commentIdentifier, docComment, layer, isExactRange, documentVersion, isGreedyToLeft, isGreedyToRight, isThinErrorStripeMark, textToHighlight, textAttributesKey, id, properties, start, end)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: RdDocCommentFoldingModel)  {
@@ -699,6 +701,7 @@ class RdDocCommentFoldingModel (
             buffer.writeInt(value.start)
             buffer.writeInt(value.end)
             buffer.writeInt(value.commentIdentifier)
+            RdDocComment.write(ctx, buffer, value.docComment)
         }
         
         
@@ -715,6 +718,7 @@ class RdDocCommentFoldingModel (
         other as RdDocCommentFoldingModel
         
         if (commentIdentifier != other.commentIdentifier) return false
+        if (docComment != other.docComment) return false
         if (layer != other.layer) return false
         if (isExactRange != other.isExactRange) return false
         if (documentVersion != other.documentVersion) return false
@@ -734,6 +738,7 @@ class RdDocCommentFoldingModel (
     override fun hashCode(): Int  {
         var __r = 0
         __r = __r*31 + commentIdentifier.hashCode()
+        __r = __r*31 + docComment.hashCode()
         __r = __r*31 + layer.hashCode()
         __r = __r*31 + isExactRange.hashCode()
         __r = __r*31 + documentVersion.hashCode()
@@ -753,6 +758,7 @@ class RdDocCommentFoldingModel (
         printer.println("RdDocCommentFoldingModel (")
         printer.indent {
             print("commentIdentifier = "); commentIdentifier.print(printer); println()
+            print("docComment = "); docComment.print(printer); println()
             print("layer = "); layer.print(printer); println()
             print("isExactRange = "); isExactRange.print(printer); println()
             print("documentVersion = "); documentVersion.print(printer); println()

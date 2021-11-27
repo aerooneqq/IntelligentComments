@@ -4,14 +4,13 @@ import com.intelligentComments.core.domain.core.*
 import com.intelligentComments.ui.comments.renderers.IntelligentCommentsRenderer
 import com.intelligentComments.ui.comments.model.IntelligentCommentUiModel
 import com.intellij.openapi.editor.EditorCustomElementRenderer
+import com.intellij.openapi.editor.markup.RangeHighlighter
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.TextRange
-import com.intellij.util.Range
 import com.jetbrains.rd.ide.model.RdIntelligentComment
-import java.util.*
 
 class IntelligentCommentFromRd(private val rdComment: RdIntelligentComment,
-                               private val project: Project) : UniqueEntityImpl(), IntelligentComment {
+                               private val project: Project,
+                               highlighter: RangeHighlighter) : CommentFromRd(rdComment, highlighter), IntelligentComment {
     override val allAuthors: Collection<CommentAuthor> = createAuthors()
     override val content: IntelligentCommentContent = createContent(project)
     override val references: Collection<Reference> = createReferences()
@@ -33,6 +32,4 @@ class IntelligentCommentFromRd(private val rdComment: RdIntelligentComment,
     fun getRenderer(project: Project): EditorCustomElementRenderer {
         return IntelligentCommentsRenderer(IntelligentCommentUiModel(project, this))
     }
-
-    override val underlyingTextRange = TextRange(rdComment.range.startOffset, rdComment.range.endOffset)
 }

@@ -6,7 +6,7 @@ import com.jetbrains.rd.ide.model.HighlighterModel
 import com.jetbrains.rd.ide.model.RdDocCommentFoldingModel
 import com.jetbrains.rdclient.daemon.IProtocolHighlighterModelHandler
 
-val DocCommentIdentifierKey = Key<Int>("DocCommentIdentifier")
+val DocCommentModelKey = Key<RdDocCommentFoldingModel>("DocCommentModel")
 
 class DocCommentsFoldingHandler : IProtocolHighlighterModelHandler {
   override fun accept(model: HighlighterModel): Boolean {
@@ -23,13 +23,14 @@ class DocCommentsFoldingHandler : IProtocolHighlighterModelHandler {
 
   override fun initialize(model: HighlighterModel, highlighter: RangeHighlighter) {
     model as RdDocCommentFoldingModel
-    highlighter.putUserData(DocCommentIdentifierKey, model.commentIdentifier)
+    highlighter.putUserData(DocCommentModelKey, model)
   }
 
   override fun move(startOffset: Int, endOffset: Int, model: HighlighterModel): HighlighterModel? {
     return (model as RdDocCommentFoldingModel).run {
       RdDocCommentFoldingModel(
         commentIdentifier,
+        docComment,
         layer,
         isExactRange,
         documentVersion,
