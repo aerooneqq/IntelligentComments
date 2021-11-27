@@ -2,25 +2,27 @@ using JetBrains.Annotations;
 using JetBrains.Diagnostics;
 using JetBrains.ProjectModel;
 using JetBrains.RdBackend.Common.Features.Daemon;
-using JetBrains.RdBackend.Common.Features.Daemon.HighlighterTypes.Foldings;
-using JetBrains.ReSharper.Daemon.CodeFolding;
+using JetBrains.RdBackend.Common.Features.Daemon.HighlighterTypes.DefaultHighlighters;
 using JetBrains.Rider.Model;
 using JetBrains.TextControl.DocumentMarkup;
 using ReSharperPlugin.IntelligentComments.Comments.Daemon;
 using ReSharperPlugin.IntelligentComments.Comments.Domain;
+using ReSharperPlugin.IntelligentComments.Protocol;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Highlighters;
 
 [SolutionComponent]
 public class DocCommentsFoldingHighlightersCreator : IRiderHighlighterModelCreator
 {
-  [NotNull] private readonly RiderFoldingHighlighterModelCreator myDefaultCreator;
+  [NotNull] private readonly RiderDefaultHighlighterModelCreator myDefaultCreator;
 
     
   public int Priority => HighlighterModelCreatorPriorities.CODE_FOLDING + 1;
 
     
-  public DocCommentsFoldingHighlightersCreator([NotNull] RiderFoldingHighlighterModelCreator defaultCreator)
+  public DocCommentsFoldingHighlightersCreator(
+    [NotNull] RiderDefaultHighlighterModelCreator defaultCreator, 
+    [NotNull] ProtocolModelRegistrar protocolModelRegistrar)
   {
     myDefaultCreator = defaultCreator;
   }
@@ -36,7 +38,7 @@ public class DocCommentsFoldingHighlightersCreator : IRiderHighlighterModelCreat
     var docCommentFoldingHighlighting = highlighter.UserData as DocCommentFoldingHighlighting;
     Assertion.Assert(docCommentFoldingHighlighting is { }, "docCommentFoldingHighlighting is { }");
       
-    var model = myDefaultCreator.CreateModel(id, documentVersion, highlighter, shift) as FoldingHighlighterModel;
+    var model = myDefaultCreator.CreateModel(id, documentVersion, highlighter, shift);
     Assertion.Assert(model is { }, "model is { }");
 
     var commentIdentifier = highlighter.Range.GetHashCode();

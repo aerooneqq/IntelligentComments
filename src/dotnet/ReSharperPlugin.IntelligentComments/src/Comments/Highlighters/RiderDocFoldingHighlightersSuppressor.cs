@@ -11,7 +11,6 @@ public class RiderDocFoldingHighlightersSuppressor : IRiderHighlighterSuppressor
 {
   public bool IsSuppressed(IHighlighter highlighter)
   {
-    Logger.LogMessage("ASDASDASDASD");
     return highlighter.UserData is CodeFoldingHighlighting
     {
       AttributeId: CodeFoldingAttributes.DOCUMENTATION_COMMENTS_FOLDING_ATTRIBUTE

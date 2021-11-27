@@ -40,7 +40,7 @@ public class CommentsCalculatorImpl : ICommentsCalculator
     var file = document.GetPsiSourceFile(mySolution)?.GetPrimaryPsiFile();
     if (file is not ICSharpFile)
     {
-      ourLogger.LogAssertion($"Primary psi file is not C# ({file?.GetType().Name}) one {document.Moniker}");
+      ourLogger.LogAssertion($"Primary psi file is not C# ({file?.GetType().Name}) for {document.Moniker}");
       return EmptyList<IIntelligentComment>.Enumerable;
     }
       

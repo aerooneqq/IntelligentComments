@@ -1,10 +1,17 @@
 package model.rider
 
 import com.jetbrains.rd.generator.nova.*
+import com.jetbrains.rider.model.nova.ide.IdeRoot
 import com.jetbrains.rider.model.nova.ide.SolutionModel
 
+
 @Suppress("unused")
-object RdCommentsModel : Ext(SolutionModel.Solution) {
+object RdCommentsModel : Ext(SolutionModel.RdDocumentModel) {
+    val RdDocCommentFoldingModel = structdef extends SolutionModel.HighlighterModel {
+        field("CommentIdentifier", PredefinedType.int)
+        field("DocComment", RdDocComment)
+    }
+
     val RdDocumentComments = structdef {
         field("Comments", immutableList(RdComment))
     }
@@ -202,15 +209,5 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
 
     val RdHackWithTickets = structdef extends RdHack {
         field("Tickets", immutableList(RdTicket))
-    }
-
-    val RdDocCommentFoldingModel = structdef extends SolutionModel.HighlighterModel {
-        field("CommentIdentifier", PredefinedType.int)
-        field("DocComment", RdDocComment)
-    }
-
-
-    init {
-        map("Comments", SolutionModel.RdDocumentId, RdDocumentComments)
     }
 }
