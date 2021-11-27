@@ -1,7 +1,6 @@
-namespace ReSharperPlugin.IntelligentComments.Comments.Domain.Core.Content
+namespace ReSharperPlugin.IntelligentComments.Comments.Domain.Core.Content;
+
+public interface IMergeableContentSegment
 {
-  public interface IMergeableContentSegment
-  {
-    void MergeWith(IMergeableContentSegment other);
-  }
+  void MergeWith(IMergeableContentSegment other);
 }

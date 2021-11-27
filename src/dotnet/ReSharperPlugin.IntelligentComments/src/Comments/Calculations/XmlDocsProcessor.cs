@@ -5,42 +5,41 @@ using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Util;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 
-namespace ReSharperPlugin.IntelligentComments.Comments.Calculations
+namespace ReSharperPlugin.IntelligentComments.Comments.Calculations;
+
+public class XmlDocsProcessor : IRecursiveElementProcessor
 {
-  public class XmlDocsProcessor : IRecursiveElementProcessor
+  [NotNull] [ItemNotNull] private readonly IList<ICommentBase> myComments;
+  [NotNull] private readonly IHighlightersProvider myHighlightersProvider;
+
+  [NotNull] [ItemNotNull] public IReadOnlyList<ICommentBase> Comments => myComments.AsIReadOnlyList();
+
+
+  public XmlDocsProcessor([NotNull] IHighlightersProvider highlightersProvider)
   {
-    [NotNull] [ItemNotNull] private readonly IList<ICommentBase> myComments;
-    [NotNull] private readonly IHighlightersProvider myHighlightersProvider;
+    myHighlightersProvider = highlightersProvider;
+    myComments = new List<ICommentBase>();
+  }
 
-    [NotNull] [ItemNotNull] public IReadOnlyList<ICommentBase> Comments => myComments.AsIReadOnlyList();
 
+  public bool InteriorShouldBeProcessed(ITreeNode element) => true;
 
-    public XmlDocsProcessor([NotNull] IHighlightersProvider highlightersProvider)
+  public void ProcessBeforeInterior(ITreeNode element)
+  {
+    if (element is IXmlDocOwnerTreeNode xmlDocOwner)
     {
-      myHighlightersProvider = highlightersProvider;
-      myComments = new List<ICommentBase>();
-    }
+      var builder = new DocCommentBuilder(myHighlightersProvider);
 
-
-    public bool InteriorShouldBeProcessed(ITreeNode element) => true;
-
-    public void ProcessBeforeInterior(ITreeNode element)
-    {
-      if (element is IXmlDocOwnerTreeNode xmlDocOwner)
+      if (builder.Build(xmlDocOwner) is { } comment)
       {
-        var builder = new DocCommentBuilder(myHighlightersProvider);
-
-        if (builder.Build(xmlDocOwner) is { } comment)
-        {
-          myComments.Add(comment);
-        }
+        myComments.Add(comment);
       }
     }
-
-    public void ProcessAfterInterior(ITreeNode element)
-    {
-    }
-
-    public bool ProcessingIsFinished => false;
   }
+
+  public void ProcessAfterInterior(ITreeNode element)
+  {
+  }
+
+  public bool ProcessingIsFinished => false;
 }

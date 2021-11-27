@@ -1,8 +1,7 @@
 using JetBrains.Annotations;
 
-namespace ReSharperPlugin.IntelligentComments.Comments.Domain.Core.Content
+namespace ReSharperPlugin.IntelligentComments.Comments.Domain.Core.Content;
+
+public interface IIntelligentCommentContent : IEntityWithContentSegments
 {
-  public interface IIntelligentCommentContent : IEntityWithContentSegments
-  {
-  }
 }

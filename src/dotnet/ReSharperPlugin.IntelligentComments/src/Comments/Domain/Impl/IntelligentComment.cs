@@ -4,23 +4,22 @@ using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.Content;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.Content;
 
-namespace ReSharperPlugin.IntelligentComments.Comments.Domain.Impl
+namespace ReSharperPlugin.IntelligentComments.Comments.Domain.Impl;
+
+public record DocCommentBase(
+  IIntelligentCommentContent Content,
+  ITreeNodePointer<ITreeNode> CommentOwnerPointer) : ICommentBase
 {
-  public record DocCommentBase(
-    IIntelligentCommentContent Content,
-    ITreeNodePointer<ITreeNode> CommentOwnerPointer) : ICommentBase
+  public int CreateIdentifier()
   {
-    public int CreateIdentifier()
-    {
-      return CommentOwnerPointer.GetTreeNode().GetDocumentRange().TextRange.GetHashCode();
-    }
+    return CommentOwnerPointer.GetTreeNode().GetDocumentRange().TextRange.GetHashCode();
   }
-
-  public record DocComment(
-    IIntelligentCommentContent Content,
-    ITreeNodePointer<ITreeNode> CommentOwnerPointer) : DocCommentBase(Content, CommentOwnerPointer), IDocComment;
-
-  public record IntelligentComment(
-    ITreeNodePointer<ITreeNode> CommentOwnerPointer,
-    IIntelligentCommentContent Content) : DocCommentBase(Content, CommentOwnerPointer), IIntelligentComment;
 }
+
+public record DocComment(
+  IIntelligentCommentContent Content,
+  ITreeNodePointer<ITreeNode> CommentOwnerPointer) : DocCommentBase(Content, CommentOwnerPointer), IDocComment;
+
+public record IntelligentComment(
+  ITreeNodePointer<ITreeNode> CommentOwnerPointer,
+  IIntelligentCommentContent Content) : DocCommentBase(Content, CommentOwnerPointer), IIntelligentComment;

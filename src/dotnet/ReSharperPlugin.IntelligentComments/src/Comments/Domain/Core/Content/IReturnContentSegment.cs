@@ -1,6 +1,5 @@
-namespace ReSharperPlugin.IntelligentComments.Comments.Domain.Core.Content
+namespace ReSharperPlugin.IntelligentComments.Comments.Domain.Core.Content;
+
+public interface IReturnContentSegment : IEntityWithContentSegments
 {
-  public interface IReturnContentSegment : IEntityWithContentSegments
-  {
-  }
 }

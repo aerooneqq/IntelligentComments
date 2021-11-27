@@ -12,255 +12,254 @@ using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.Content;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.Content;
 
-namespace ReSharperPlugin.IntelligentComments.Comments.Calculations
+namespace ReSharperPlugin.IntelligentComments.Comments.Calculations;
+
+public interface IDocCommentBuilder
 {
-  public interface IDocCommentBuilder
+  [CanBeNull] IDocComment Build(IXmlDocOwnerTreeNode node);
+}
+
+public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
+{
+  private readonly struct WithPushedToStackContentSegments : IDisposable
   {
-    [CanBeNull] IDocComment Build(IXmlDocOwnerTreeNode node);
-  }
-
-  public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
-  {
-    private readonly struct WithPushedToStackContentSegments : IDisposable
-    {
-      [NotNull] private readonly Stack<IContentSegments> myStack;
-      [NotNull] private readonly ILogger myLogger;
+    [NotNull] private readonly Stack<IContentSegments> myStack;
+    [NotNull] private readonly ILogger myLogger;
 
       
-      public WithPushedToStackContentSegments([NotNull] Stack<IContentSegments> stack, [NotNull] ILogger logger)
-        : this(stack, ContentSegments.GetEmpty(), logger)
-      {
-      }
+    public WithPushedToStackContentSegments([NotNull] Stack<IContentSegments> stack, [NotNull] ILogger logger)
+      : this(stack, ContentSegments.GetEmpty(), logger)
+    {
+    }
       
-      public WithPushedToStackContentSegments(
-        [NotNull] Stack<IContentSegments> stack, [NotNull] IContentSegments segmentsToPush, ILogger logger)
-      {
-        myStack = stack;
-        myLogger = logger;
-        myStack.Push(segmentsToPush);
-      }
+    public WithPushedToStackContentSegments(
+      [NotNull] Stack<IContentSegments> stack, [NotNull] IContentSegments segmentsToPush, ILogger logger)
+    {
+      myStack = stack;
+      myLogger = logger;
+      myStack.Push(segmentsToPush);
+    }
       
       
-      public void Dispose()
+    public void Dispose()
+    {
+      if (myStack.Count == 0)
       {
-        if (myStack.Count == 0)
-        {
-          myLogger.LogAssertion("Stack was empty before possible Pop()");
-          return;
-        }
-        
-        var contentSegments = myStack.Pop();
-        void Normalize()
-        {
-          foreach (var segment in contentSegments.Segments)
-          {
-            if (segment is ITextContentSegment textContentSegment)
-            {
-              textContentSegment.Normalize();
-            }
-          }
-        }
-        
-        int index = 0;
-        while (index != contentSegments.Segments.Count)
-        {
-          if (index + 1 >= contentSegments.Segments.Count)
-          {
-            Normalize();
-            return;
-          }
-
-          var currentSegment = contentSegments.Segments[index];
-          var nextSegment = contentSegments.Segments[index + 1];
-          if (currentSegment is not IMergeableContentSegment currentTextSegment ||
-              nextSegment is not IMergeableContentSegment nextTextSegment)
-          {
-            ++index;
-            continue;
-          }
-          
-          currentTextSegment.MergeWith(nextTextSegment);
-          contentSegments.Segments.RemoveAt(index + 1);
-        }
-        
-        Normalize();
-      }
-    }
-
-    private const string UndefinedParam = "???";
-    private const string CRef = "cref";
-    
-    [NotNull] private static readonly ILogger ourLogger = Logger.GetLogger<DocCommentBuilder>();
-  
-    [NotNull] private readonly Stack<IContentSegments> myContentSegmentsStack;
-    [NotNull] private readonly ISet<XmlNode> myVisitedNodes;
-    [NotNull] private readonly IHighlightersProvider myHighlightersProvider;
-
-
-    public DocCommentBuilder([NotNull] IHighlightersProvider highlightersProvider)
-    {
-      myHighlightersProvider = highlightersProvider;
-      myContentSegmentsStack = new Stack<IContentSegments>();
-      myContentSegmentsStack.Push(new ContentSegments(new List<IContentSegment>()));
-      
-      myVisitedNodes = new HashSet<XmlNode>();
-    }
-    
-
-    public IDocComment Build(IXmlDocOwnerTreeNode owner)
-    {
-      try
-      {
-        if (owner.GetXMLDoc(true) is not { } xmlNode)
-        {
-          return null;
-        }
-
-        var topmostContentSegments = ContentSegments.GetEmpty();
-        using (new WithPushedToStackContentSegments(myContentSegmentsStack, topmostContentSegments, ourLogger))
-        {
-          Visit(xmlNode);
-        }
-        
-        var content = new IntelligentCommentContent(topmostContentSegments);
-        return new DocComment(content, owner.FirstChild.CreatePointer());
-      }
-      catch (Exception ex)
-      {
-        ourLogger.LogException(ex);
-        return null;
-      }
-    }
-    
-
-    public override void Visit(XmlNode node)
-    {
-      if (myVisitedNodes.Contains(node)) return;
-      base.Visit(node);
-    }
-
-    public override void VisitSummary(XmlElement element)
-    {
-      myVisitedNodes.Add(element);
-      ExecuteActionOverChildren(element, Visit);
-    }
-    
-    private static void ExecuteActionOverChildren(XmlElement parent, Action<XmlNode> actionWithNode)
-    {
-      foreach (var child in parent)
-      {
-        if (child is not XmlNode childXmlNode)
-        {
-          ourLogger.LogAssertion($"Child is not of expected type ({child?.GetType().Name})");
-          continue;
-        }
-
-        actionWithNode(childXmlNode);
-      }
-    }
-
-    public override void VisitC(XmlElement element)
-    {
-      myVisitedNodes.Add(element);
-      if (element.ChildNodes.Count == 1 && element.FirstChild is XmlText { Value: { } value })
-      {
-        value = PreprocessText(value);
-        var highlighter = myHighlightersProvider.GetCXmlElementHighlighter(0, value.Length);
-        var highlightedText = new HighlightedText(value, new[] { highlighter });
-        var textContentSegment = new MergeableTextContentSegment(highlightedText);
-        ExecuteWithTopmostContentSegments(segments => segments.Segments.Add(textContentSegment));
-
+        myLogger.LogAssertion("Stack was empty before possible Pop()");
         return;
       }
-      
-      ExecuteActionOverChildren(element, Visit);
-    }
-
-    private static string PreprocessText([NotNull] string text) => text.Replace("\n ", "\n");
-
-    public override void VisitParam(XmlElement element)
-    {
-      myVisitedNodes.Add(element);
-      var paramName = element.GetAttribute("name");
-      if (paramName == string.Empty)
+        
+      var contentSegments = myStack.Pop();
+      void Normalize()
       {
-        paramName = UndefinedParam;
-      }
-
-      var paramSegment = new ParamContentSegment(paramName);
-      using (new WithPushedToStackContentSegments(myContentSegmentsStack, paramSegment.ContentSegments, ourLogger))
-      {
-        ExecuteActionOverChildren(element, Visit);
-      }
-      
-      ExecuteWithTopmostContentSegments(segments => segments.Segments.Add(paramSegment));
-    }
-    
-    private void ExecuteWithTopmostContentSegments([NotNull] Action<IContentSegments> action)
-    {
-      if (myContentSegmentsStack.Count == 0)
-      {
-        ourLogger.LogAssertion("Trying to get content segments when stack is empty");
-        using (new WithPushedToStackContentSegments(myContentSegmentsStack, ourLogger))
+        foreach (var segment in contentSegments.Segments)
         {
-          action(myContentSegmentsStack.Peek());
+          if (segment is ITextContentSegment textContentSegment)
+          {
+            textContentSegment.Normalize();
+          }
         }
       }
+        
+      int index = 0;
+      while (index != contentSegments.Segments.Count)
+      {
+        if (index + 1 >= contentSegments.Segments.Count)
+        {
+          Normalize();
+          return;
+        }
 
-      action(myContentSegmentsStack.Peek());
+        var currentSegment = contentSegments.Segments[index];
+        var nextSegment = contentSegments.Segments[index + 1];
+        if (currentSegment is not IMergeableContentSegment currentTextSegment ||
+            nextSegment is not IMergeableContentSegment nextTextSegment)
+        {
+          ++index;
+          continue;
+        }
+          
+        currentTextSegment.MergeWith(nextTextSegment);
+        contentSegments.Segments.RemoveAt(index + 1);
+      }
+        
+      Normalize();
     }
+  }
 
-    public override void VisitText(XmlText text)
+  private const string UndefinedParam = "???";
+  private const string CRef = "cref";
+    
+  [NotNull] private static readonly ILogger ourLogger = Logger.GetLogger<DocCommentBuilder>();
+  
+  [NotNull] private readonly Stack<IContentSegments> myContentSegmentsStack;
+  [NotNull] private readonly ISet<XmlNode> myVisitedNodes;
+  [NotNull] private readonly IHighlightersProvider myHighlightersProvider;
+
+
+  public DocCommentBuilder([NotNull] IHighlightersProvider highlightersProvider)
+  {
+    myHighlightersProvider = highlightersProvider;
+    myContentSegmentsStack = new Stack<IContentSegments>();
+    myContentSegmentsStack.Push(new ContentSegments(new List<IContentSegment>()));
+      
+    myVisitedNodes = new HashSet<XmlNode>();
+  }
+    
+
+  public IDocComment Build(IXmlDocOwnerTreeNode owner)
+  {
+    try
     {
-      myVisitedNodes.Add(text);
-      var textContentSegment = new MergeableTextContentSegment(new HighlightedText(PreprocessText(text.Value)));
+      if (owner.GetXMLDoc(true) is not { } xmlNode)
+      {
+        return null;
+      }
+
+      var topmostContentSegments = ContentSegments.GetEmpty();
+      using (new WithPushedToStackContentSegments(myContentSegmentsStack, topmostContentSegments, ourLogger))
+      {
+        Visit(xmlNode);
+      }
+        
+      var content = new IntelligentCommentContent(topmostContentSegments);
+      return new DocComment(content, owner.FirstChild.CreatePointer());
+    }
+    catch (Exception ex)
+    {
+      ourLogger.LogException(ex);
+      return null;
+    }
+  }
+    
+
+  public override void Visit(XmlNode node)
+  {
+    if (myVisitedNodes.Contains(node)) return;
+    base.Visit(node);
+  }
+
+  public override void VisitSummary(XmlElement element)
+  {
+    myVisitedNodes.Add(element);
+    ExecuteActionOverChildren(element, Visit);
+  }
+    
+  private static void ExecuteActionOverChildren(XmlElement parent, Action<XmlNode> actionWithNode)
+  {
+    foreach (var child in parent)
+    {
+      if (child is not XmlNode childXmlNode)
+      {
+        ourLogger.LogAssertion($"Child is not of expected type ({child?.GetType().Name})");
+        continue;
+      }
+
+      actionWithNode(childXmlNode);
+    }
+  }
+
+  public override void VisitC(XmlElement element)
+  {
+    myVisitedNodes.Add(element);
+    if (element.ChildNodes.Count == 1 && element.FirstChild is XmlText { Value: { } value })
+    {
+      value = PreprocessText(value);
+      var highlighter = myHighlightersProvider.GetCXmlElementHighlighter(0, value.Length);
+      var highlightedText = new HighlightedText(value, new[] { highlighter });
+      var textContentSegment = new MergeableTextContentSegment(highlightedText);
       ExecuteWithTopmostContentSegments(segments => segments.Segments.Add(textContentSegment));
-    }
 
-    public override void VisitPara(XmlElement element)
-    {
-      var paragraphContentSegment = new ParagraphContentSegment(ContentSegments.GetEmpty());
-      ProcessEntityWithContentSegments(paragraphContentSegment, element);
+      return;
     }
-
-    private void ProcessEntityWithContentSegments(
-      [NotNull] IEntityWithContentSegments entityWithContentSegments, [NotNull] XmlElement element)
-    {
-      var contentSegments = entityWithContentSegments.ContentSegments;
-      using (new WithPushedToStackContentSegments(myContentSegmentsStack, contentSegments, ourLogger))
-      {
-        ExecuteActionOverChildren(element, Visit);
-      }
       
-      ExecuteWithTopmostContentSegments(segments => segments.Segments.Add(entityWithContentSegments));
+    ExecuteActionOverChildren(element, Visit);
+  }
+
+  private static string PreprocessText([NotNull] string text) => text.Replace("\n ", "\n");
+
+  public override void VisitParam(XmlElement element)
+  {
+    myVisitedNodes.Add(element);
+    var paramName = element.GetAttribute("name");
+    if (paramName == string.Empty)
+    {
+      paramName = UndefinedParam;
     }
 
-    public override void VisitReturns(XmlElement element)
+    var paramSegment = new ParamContentSegment(paramName);
+    using (new WithPushedToStackContentSegments(myContentSegmentsStack, paramSegment.ContentSegments, ourLogger))
     {
-      myVisitedNodes.Add(element);
-      var returnSegment = new ReturnContentSegment(ContentSegments.GetEmpty());
-      ProcessEntityWithContentSegments(returnSegment, element);
+      ExecuteActionOverChildren(element, Visit);
     }
-
-    public override void VisitRemarks(XmlElement element)
-    {
-      myVisitedNodes.Add(element);
-      var remarksSegment = new RemarksContentSegment(ContentSegments.GetEmpty());
-      ProcessEntityWithContentSegments(remarksSegment, element);
-    }
-
-    public override void VisitException(XmlElement element)
-    {
-      myVisitedNodes.Add(element);
-      string exceptionName = UndefinedParam;
-      if (element.GetAttributeNode(CRef) is { } attribute)
-      {
-        myVisitedNodes.Add(attribute);
-        exceptionName = attribute.Value;
-      }
       
-      var exceptionSegment = new ExceptionContentSegment(exceptionName);
-      ProcessEntityWithContentSegments(exceptionSegment, element);
+    ExecuteWithTopmostContentSegments(segments => segments.Segments.Add(paramSegment));
+  }
+    
+  private void ExecuteWithTopmostContentSegments([NotNull] Action<IContentSegments> action)
+  {
+    if (myContentSegmentsStack.Count == 0)
+    {
+      ourLogger.LogAssertion("Trying to get content segments when stack is empty");
+      using (new WithPushedToStackContentSegments(myContentSegmentsStack, ourLogger))
+      {
+        action(myContentSegmentsStack.Peek());
+      }
     }
+
+    action(myContentSegmentsStack.Peek());
+  }
+
+  public override void VisitText(XmlText text)
+  {
+    myVisitedNodes.Add(text);
+    var textContentSegment = new MergeableTextContentSegment(new HighlightedText(PreprocessText(text.Value)));
+    ExecuteWithTopmostContentSegments(segments => segments.Segments.Add(textContentSegment));
+  }
+
+  public override void VisitPara(XmlElement element)
+  {
+    var paragraphContentSegment = new ParagraphContentSegment(ContentSegments.GetEmpty());
+    ProcessEntityWithContentSegments(paragraphContentSegment, element);
+  }
+
+  private void ProcessEntityWithContentSegments(
+    [NotNull] IEntityWithContentSegments entityWithContentSegments, [NotNull] XmlElement element)
+  {
+    var contentSegments = entityWithContentSegments.ContentSegments;
+    using (new WithPushedToStackContentSegments(myContentSegmentsStack, contentSegments, ourLogger))
+    {
+      ExecuteActionOverChildren(element, Visit);
+    }
+      
+    ExecuteWithTopmostContentSegments(segments => segments.Segments.Add(entityWithContentSegments));
+  }
+
+  public override void VisitReturns(XmlElement element)
+  {
+    myVisitedNodes.Add(element);
+    var returnSegment = new ReturnContentSegment(ContentSegments.GetEmpty());
+    ProcessEntityWithContentSegments(returnSegment, element);
+  }
+
+  public override void VisitRemarks(XmlElement element)
+  {
+    myVisitedNodes.Add(element);
+    var remarksSegment = new RemarksContentSegment(ContentSegments.GetEmpty());
+    ProcessEntityWithContentSegments(remarksSegment, element);
+  }
+
+  public override void VisitException(XmlElement element)
+  {
+    myVisitedNodes.Add(element);
+    string exceptionName = UndefinedParam;
+    if (element.GetAttributeNode(CRef) is { } attribute)
+    {
+      myVisitedNodes.Add(attribute);
+      exceptionName = attribute.Value;
+    }
+      
+    var exceptionSegment = new ExceptionContentSegment(exceptionName);
+    ProcessEntityWithContentSegments(exceptionSegment, element);
   }
 }

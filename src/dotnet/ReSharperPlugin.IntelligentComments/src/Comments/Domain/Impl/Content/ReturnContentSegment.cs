@@ -1,11 +1,10 @@
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.Content;
 
-namespace ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.Content
+namespace ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.Content;
+
+public class ReturnContentSegment : EntityWithContentSegments, IReturnContentSegment
 {
-  public class ReturnContentSegment : EntityWithContentSegments, IReturnContentSegment
+  public ReturnContentSegment(IContentSegments contentSegments) : base(contentSegments)
   {
-    public ReturnContentSegment(IContentSegments contentSegments) : base(contentSegments)
-    {
-    }
   }
 }

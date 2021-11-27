@@ -13,63 +13,62 @@ using JetBrains.ReSharper.Resources.Shell;
 using JetBrains.Util;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 
-namespace ReSharperPlugin.IntelligentComments.Comments.Calculations
+namespace ReSharperPlugin.IntelligentComments.Comments.Calculations;
+
+[SolutionComponent]
+public class CommentsCalculationsManager
 {
-  [SolutionComponent]
-  public class CommentsCalculationsManager
+  private readonly Lifetime myLifetime;
+  [NotNull] private readonly IDictionary<string, SequentialLifetimes> myLifetimes;
+  [NotNull] private readonly IShellLocks myShellLocks;
+  [NotNull] private readonly IPsiServices myPsiServices;
+  [NotNull] private readonly RiderSolutionLoadStateMonitor mySolutionLoadStateMonitor;
+  [NotNull] private readonly ICommentsCalculator myCommentsCalculator;
+
+
+  public CommentsCalculationsManager(
+    Lifetime lifetime,
+    [NotNull] IShellLocks shellLocks,
+    [NotNull] IPsiServices psiServices,
+    [NotNull] RiderSolutionLoadStateMonitor solutionLoadStateMonitor,
+    [NotNull] ICommentsCalculator commentsCalculator)
   {
-    private readonly Lifetime myLifetime;
-    [NotNull] private readonly IDictionary<string, SequentialLifetimes> myLifetimes;
-    [NotNull] private readonly IShellLocks myShellLocks;
-    [NotNull] private readonly IPsiServices myPsiServices;
-    [NotNull] private readonly RiderSolutionLoadStateMonitor mySolutionLoadStateMonitor;
-    [NotNull] private readonly ICommentsCalculator myCommentsCalculator;
+    myLifetime = lifetime;
+    myShellLocks = shellLocks;
+    myPsiServices = psiServices;
+    mySolutionLoadStateMonitor = solutionLoadStateMonitor;
+    myCommentsCalculator = commentsCalculator;
+    myLifetimes = new Dictionary<string, SequentialLifetimes>();
+  }
 
 
-    public CommentsCalculationsManager(
-      Lifetime lifetime,
-      [NotNull] IShellLocks shellLocks,
-      [NotNull] IPsiServices psiServices,
-      [NotNull] RiderSolutionLoadStateMonitor solutionLoadStateMonitor,
-      [NotNull] ICommentsCalculator commentsCalculator)
+  public void CalculateFor(
+    [NotNull] IDocument document,
+    [NotNull] Action<IEnumerable<ICommentBase>> afterCalculationAction)
+  {
+    mySolutionLoadStateMonitor.SolutionLoadedAndProjectModelCachesReady.WhenTrueOnce(myLifetime, () =>
     {
-      myLifetime = lifetime;
-      myShellLocks = shellLocks;
-      myPsiServices = psiServices;
-      mySolutionLoadStateMonitor = solutionLoadStateMonitor;
-      myCommentsCalculator = commentsCalculator;
-      myLifetimes = new Dictionary<string, SequentialLifetimes>();
-    }
-
-
-    public void CalculateFor(
-      [NotNull] IDocument document,
-      [NotNull] Action<IEnumerable<ICommentBase>> afterCalculationAction)
-    {
-      mySolutionLoadStateMonitor.SolutionLoadedAndProjectModelCachesReady.WhenTrueOnce(myLifetime, () =>
+      myPsiServices.CachesState.IsIdle.WhenTrueOnce(myLifetime, () =>
       {
-        myPsiServices.CachesState.IsIdle.WhenTrueOnce(myLifetime, () =>
+        myShellLocks.ExecuteOrQueueReadLock($"{nameof(CalculateFor)}", () =>
         {
-          myShellLocks.ExecuteOrQueueReadLock($"{nameof(CalculateFor)}", () =>
+          myPsiServices.Files.ExecuteAfterCommitAllDocuments(() =>
           {
-            myPsiServices.Files.ExecuteAfterCommitAllDocuments(() =>
+            myShellLocks.AssertMainThread();
+            var lifetimes = myLifetimes.GetOrCreateValue(document.Moniker, () => new SequentialLifetimes(myLifetime));
+            var lifetime = lifetimes.Next();
+
+            IEnumerable<ICommentBase> comments = null;
+            var ira = new InterruptableReadActivityThe(lifetime, myShellLocks, () => lifetime.IsNotAlive)
             {
-              myShellLocks.AssertMainThread();
-              var lifetimes = myLifetimes.GetOrCreateValue(document.Moniker, () => new SequentialLifetimes(myLifetime));
-              var lifetime = lifetimes.Next();
+              FuncRun = () => comments = myCommentsCalculator.CalculateFor(document),
+              FuncCompleted = () => afterCalculationAction(comments)
+            };
 
-              IEnumerable<ICommentBase> comments = null;
-              var ira = new InterruptableReadActivityThe(lifetime, myShellLocks, () => lifetime.IsNotAlive)
-              {
-                FuncRun = () => comments = myCommentsCalculator.CalculateFor(document),
-                FuncCompleted = () => afterCalculationAction(comments)
-              };
-
-              ira.DoStart();
-            });
+            ira.DoStart();
           });
         });
       });
-    }
+    });
   }
 }

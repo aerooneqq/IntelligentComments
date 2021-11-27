@@ -1,16 +1,15 @@
 using System.Collections.Generic;
 using JetBrains.Annotations;
 
-namespace ReSharperPlugin.IntelligentComments.Comments.Domain.Core
+namespace ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
+
+public interface IHighlightedText
 {
-  public interface IHighlightedText
-  {
-    [NotNull] string Text { get; }
-    [NotNull] IList<TextHighlighter> Highlighters { get; }
+  [NotNull] string Text { get; }
+  [NotNull] IList<TextHighlighter> Highlighters { get; }
 
 
-    void Add(IHighlightedText other);
-    void SortHighlighters();
-    void Normalize();
-  }
+  void Add(IHighlightedText other);
+  void SortHighlighters();
+  void Normalize();
 }

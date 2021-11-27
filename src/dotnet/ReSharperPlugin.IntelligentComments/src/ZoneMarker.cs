@@ -4,14 +4,13 @@ using JetBrains.Rider.Backend.Env;
 using JetBrains.Rider.Backend.Product;
 using JetBrains.TextControl;
 
-namespace ReSharperPlugin.IntelligentComments
+namespace ReSharperPlugin.IntelligentComments;
+
+[ZoneMarker]
+public class ZoneMarker : 
+  IRequire<IProjectModelZone>, 
+  IRequire<ITextControlsZone>, 
+  IRequire<IRiderFeatureZone>,
+  IRequire<IRiderProductEnvironmentZone>
 {
-  [ZoneMarker]
-  public class ZoneMarker : 
-    IRequire<IProjectModelZone>, 
-    IRequire<ITextControlsZone>, 
-    IRequire<IRiderFeatureZone>,
-    IRequire<IRiderProductEnvironmentZone>
-  {
-  }
 }
