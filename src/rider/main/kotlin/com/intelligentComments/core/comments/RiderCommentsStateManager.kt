@@ -1,22 +1,33 @@
 package com.intelligentComments.core.comments
 
-import com.intelligentComments.core.domain.core.CommentBase
+import com.intellij.openapi.components.PersistentStateComponent
+import com.intellij.openapi.components.State
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
-import com.jetbrains.rdclient.util.idea.LifetimedProjectComponent
+import com.intellij.psi.PsiDocumentManager
+import com.jetbrains.rd.platform.util.application
+
+data class SolutionCommentsState(
+  val documentsComments: MutableMap<String, MutableMap<Int, CommentState>>
+)
 
 data class CommentState(val isInRenderMode: Boolean)
 
-class RiderCommentsStateManager(project: Project) : LifetimedProjectComponent(project) {
-  private val states = HashMap<CommentBase, CommentState>()
+@State(
+  name = "SolutionCommentsState"
+)
+class RiderCommentsStateManager(project: Project) : PersistentStateComponent<SolutionCommentsState> {
+  private val documentManager: PsiDocumentManager = project.service()
+  private var states: MutableMap<String, MutableMap<Int, CommentState>> = HashMap()
 
 
-  fun registerComment(comment: CommentBase): CommentState {
-    val state = CommentState(true)
-    states[comment] = state
-    return state
+  override fun getState(): SolutionCommentsState {
+    application.assertIsDispatchThread()
+    return SolutionCommentsState(states)
   }
 
-  fun getStateFor(comment: CommentBase): CommentState? {
-    return states[comment]
+  override fun loadState(solutionCommentsState: SolutionCommentsState) {
+    application.assertIsDispatchThread()
+    states = solutionCommentsState.documentsComments
   }
 }

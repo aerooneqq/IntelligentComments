@@ -22,8 +22,8 @@ import com.jetbrains.rd.platform.util.application
 import java.awt.Graphics
 import java.awt.Rectangle
 
-abstract class RendererWithRectangleModel(model: UiInteractionModelBase) : EditorCustomElementRenderer,
-  CustomFoldRegionRenderer {
+abstract class RendererWithRectangleModel(
+  model: UiInteractionModelBase) : EditorCustomElementRenderer, CustomFoldRegionRenderer {
   private val rectangleModelHolder = RectanglesModelHolder(model)
 
   val rectanglesModel

@@ -13,6 +13,7 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.impl.EditorImpl
 import com.intellij.openapi.project.Project
 import com.jetbrains.rd.platform.util.application
+import com.jetbrains.rd.platform.util.getComponent
 import com.jetbrains.rd.platform.util.getLogger
 import com.jetbrains.rd.util.reactive.ViewableMap
 import com.jetbrains.rdclient.util.idea.LifetimedProjectComponent
@@ -98,12 +99,12 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
     val endOffset = comment.highlighter.endOffset
     val document = editor.document
 
-    foldingModel.runBatchFoldingOperation {
-      val foldStartLine = document.getLineNumber(startOffset)
-      val foldEndLine = document.getLineNumber(endOffset)
-      val foldStartOffset = document.getLineStartOffset(foldStartLine)
-      val foldEndOffset = document.getLineEndOffset(foldEndLine)
+    val foldStartLine = document.getLineNumber(startOffset)
+    val foldEndLine = document.getLineNumber(endOffset)
+    val foldStartOffset = document.getLineStartOffset(foldStartLine)
+    val foldEndOffset = document.getLineEndOffset(foldEndLine)
 
+    foldingModel.runBatchFoldingOperation {
       val oldFolding = foldingModel.getFoldRegion(foldStartOffset, foldEndOffset)
       if (oldFolding != null && oldFolding is CustomFoldRegion && oldFolding.renderer is DocCommentRenderer) {
         val oldFoldingRenderer = oldFolding.renderer
@@ -113,18 +114,16 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
           foldingModel.removeFoldRegion(oldFolding)
         }
       }
+    }
 
-      SwingUtilities.invokeLater {
-        foldingModel.runBatchFoldingOperation {
-          val renderer = getCommentFoldingRenderer(comment, editor)
-          val folding = foldingModel.addCustomLinesFolding(foldStartLine, foldEndLine, renderer)
+    foldingModel.runBatchFoldingOperation {
+      val renderer = getCommentFoldingRenderer(comment, editor)
+      val folding = foldingModel.addCustomLinesFolding(foldStartLine, foldEndLine, renderer)
 
-          if (folding == null) {
-            logger.error("Failed to create folding region for ${comment.id}")
-          } else {
-            foldings[comment.id] = folding
-          }
-        }
+      if (folding == null) {
+        logger.error("Failed to create folding region for ${comment.id}")
+      } else {
+        foldings[comment.id] = folding
       }
     }
   }
