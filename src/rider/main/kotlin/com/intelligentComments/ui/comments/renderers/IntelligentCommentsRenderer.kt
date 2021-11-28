@@ -10,6 +10,7 @@ import com.intelligentComments.ui.comments.renderers.segments.SegmentsRenderer
 import com.intelligentComments.ui.comments.renderers.todos.ToDosRenderer
 import com.intelligentComments.ui.util.UpdatedGraphicsCookie
 import com.intellij.openapi.editor.impl.EditorImpl
+import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.openapi.editor.markup.TextAttributes
 import com.intellij.openapi.util.use
 import java.awt.Dimension
@@ -93,5 +94,9 @@ class IntelligentCommentsRenderer(private val model: IntelligentCommentUiModel) 
     val renderer = ToDosRenderer.getRendererFor(model.todosSection)
     val model = getOrCreateRectanglesModel(editorImpl)
     return renderer.render(g, rect, editorImpl, model)
+  }
+
+  override fun doCalculateGutterIconRenderer(editorImpl: EditorImpl): GutterIconRenderer? {
+    return null
   }
 }

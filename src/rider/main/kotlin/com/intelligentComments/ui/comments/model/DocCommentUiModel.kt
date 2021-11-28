@@ -17,6 +17,7 @@ class DocCommentUiModel(
 ) : UiInteractionModelBase(project), RootUiModel {
   val contentSection: SectionUiModel<ContentSegmentUiModel>
   val underlyingTextRange = docComment.highlighter.range
+  var isInRenderMode = true
 
 
   init {

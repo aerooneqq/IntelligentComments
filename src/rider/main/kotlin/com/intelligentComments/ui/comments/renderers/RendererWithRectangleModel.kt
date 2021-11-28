@@ -8,12 +8,14 @@ import com.intelligentComments.ui.core.RectanglesModelHolder
 import com.intelligentComments.ui.util.TextUtil
 import com.intelligentComments.ui.util.UpdatedGraphicsCookie
 import com.intelligentComments.ui.util.UpdatedRectCookie
+import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.CustomFoldRegion
 import com.intellij.openapi.editor.CustomFoldRegionRenderer
 import com.intellij.openapi.editor.EditorCustomElementRenderer
 import com.intellij.openapi.editor.Inlay
 import com.intellij.openapi.editor.impl.EditorImpl
+import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.openapi.editor.markup.TextAttributes
 import com.intellij.openapi.util.use
 import com.jetbrains.rd.platform.util.application
@@ -109,4 +111,9 @@ abstract class RendererWithRectangleModel(model: UiInteractionModelBase) : Edito
     textAttributes: TextAttributes,
     colorsProvider: ColorsProvider
   )
+
+  override fun calcGutterIconRenderer(region: CustomFoldRegion): GutterIconRenderer? = doCalculateGutterIconRenderer(region.editor as EditorImpl)
+  override fun calcGutterIconRenderer(inlay: Inlay<*>): GutterIconRenderer? = doCalculateGutterIconRenderer(inlay.editor as EditorImpl)
+
+  protected abstract fun doCalculateGutterIconRenderer(editorImpl: EditorImpl): GutterIconRenderer?
 }

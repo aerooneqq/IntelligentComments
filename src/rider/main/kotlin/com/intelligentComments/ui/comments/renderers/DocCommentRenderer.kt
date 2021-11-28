@@ -1,20 +1,26 @@
 package com.intelligentComments.ui.comments.renderers
 
+import com.intelligentComments.core.comments.RiderCommentsController
 import com.intelligentComments.core.domain.core.DocComment
 import com.intelligentComments.ui.colors.ColorsProvider
 import com.intelligentComments.ui.comments.model.DocCommentUiModel
 import com.intelligentComments.ui.comments.renderers.segments.SegmentsRenderer
 import com.intellij.icons.AllIcons
+import com.intellij.openapi.actionSystem.AnAction
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.editor.CustomFoldRegion
 import com.intellij.openapi.editor.Inlay
 import com.intellij.openapi.editor.impl.EditorImpl
 import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.openapi.editor.markup.TextAttributes
+import com.intellij.openapi.project.Project
 import com.intellij.util.text.CharArrayUtil
+import com.jetbrains.rider.util.idea.Editor
 import java.awt.Graphics
 import java.awt.Rectangle
 import javax.swing.Icon
 
-class DocCommentRenderer(private val model: DocCommentUiModel) : RendererWithRectangleModel(model) {
+class DocCommentRenderer(val model: DocCommentUiModel) : RendererWithRectangleModel(model) {
   private var myXDelta = -1
   override val xDelta: Int
     get() {
@@ -55,13 +61,23 @@ class DocCommentRenderer(private val model: DocCommentUiModel) : RendererWithRec
     return renderer.render(g, rect, editorImpl, model)
   }
 
-  override fun calcGutterIconRenderer(inlay: Inlay<*>): GutterIconRenderer {
-    return DocCommentSwitchRenderModeGutterMark(model.docComment)
+  override fun doCalculateGutterIconRenderer(editorImpl: EditorImpl): GutterIconRenderer? {
+    val project = editorImpl.project ?: return null
+    val highlighter = model.docComment.highlighter
+    var existingGutter = highlighter.gutterIconRenderer
+    if (existingGutter != null) {
+      return existingGutter
+    }
+
+    existingGutter = DocCommentSwitchRenderModeGutterMark(model.docComment, project)
+    highlighter.gutterIconRenderer = existingGutter
+    return existingGutter
   }
 }
 
-class DocCommentSwitchRenderModeGutterMark(private val docComment: DocComment) : GutterIconRenderer() {
-  private val icon = AllIcons.Gutter.JavadocEdit
+class DocCommentSwitchRenderModeGutterMark(private val docComment: DocComment,
+                                           project: Project) : GutterIconRenderer() {
+  private val controller = project.getComponent(RiderCommentsController::class.java)
 
 
   override fun equals(other: Any?): Boolean {
@@ -73,6 +89,25 @@ class DocCommentSwitchRenderModeGutterMark(private val docComment: DocComment) :
   }
 
   override fun getIcon(): Icon {
-    return icon
+    return if (controller.isInRenderMode(docComment.id)) {
+      AllIcons.Gutter.JavadocEdit
+    } else {
+      AllIcons.Gutter.JavadocRead
+    }
+  }
+
+  override fun getAlignment(): Alignment = Alignment.LEFT
+  override fun getTooltipText(): String = if (controller.isInRenderMode(docComment.id)) {
+    "Go to edit mode"
+  } else {
+    "Go to render mode"
+  }
+
+  override fun getClickAction(): AnAction = object : AnAction() {
+    override fun actionPerformed(e: AnActionEvent) {
+      e.dataContext.Editor?.let { editor ->
+        controller.toggleModeChange(docComment.id, editor as EditorImpl)
+      }
+    }
   }
 }

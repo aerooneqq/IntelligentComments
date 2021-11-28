@@ -42,9 +42,6 @@ class DocCommentsFoldingAdapter(private val editor: EditorImpl) : FrontendMarkup
   }
 
 
-  private val highlightersLifetimes = ViewableMap<Int, LifetimeDefinition>()
-
-
   override fun afterAdded(highlighter: RangeHighlighterEx) {
   }
 
@@ -63,11 +60,8 @@ class DocCommentsFoldingAdapter(private val editor: EditorImpl) : FrontendMarkup
       val controller = it.getComponent(RiderCommentsController::class.java) ?: return
 
       executeOverDocHighlighters(highlighters) { highlighter, model ->
-        val def = LifetimeDefinition()
-        highlightersLifetimes[model.commentIdentifier] = def
-
         val docComment = DocCommentFromRd(model.docComment, it, highlighter)
-        controller.addComment(editor, docComment, def.lifetime)
+        controller.addComment(editor, docComment)
       }
     }
   }
@@ -81,9 +75,6 @@ class DocCommentsFoldingAdapter(private val editor: EditorImpl) : FrontendMarkup
   }
 
   override fun beforeBulkRemove(highlighters: List<RangeHighlighterEx>) {
-    executeOverDocHighlighters(highlighters) { _, model ->
-      highlightersLifetimes.remove(model.commentIdentifier)?.terminate()
-    }
   }
 
   override fun beforeRemoved(highlighter: RangeHighlighterEx) {
