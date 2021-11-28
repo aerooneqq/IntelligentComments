@@ -1,8 +1,8 @@
 package com.intelligentComments.ui.comments.renderers.segments
 
 import com.intelligentComments.ui.comments.model.content.ContentSegmentUiModel
-import com.intelligentComments.ui.comments.model.content.ParagraphUiModel
-import com.intelligentComments.ui.comments.model.content.ParameterUiModel
+import com.intelligentComments.ui.comments.model.content.paragraphs.ParagraphUiModel
+import com.intelligentComments.ui.comments.model.content.params.ParameterUiModel
 import com.intelligentComments.ui.comments.model.content.`return`.ReturnUiModel
 import com.intelligentComments.ui.comments.model.content.exceptions.ExceptionUiModel
 import com.intelligentComments.ui.comments.model.content.image.ImageContentSegmentUiModel

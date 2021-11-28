@@ -99,7 +99,7 @@ abstract class RendererWithRectangleModel(
 
     UpdatedGraphicsCookie(g, defaultTextColor, TextUtil.font).use {
       for (rectangle in rectanglesModel!!.allRectangles) {
-        g.drawRect(rectangle.x + targetRegion.x, rectangle.y + targetRegion.y, rectangle.width, rectangle.height)
+        //g.drawRect(rectangle.x + targetRegion.x, rectangle.y + targetRegion.y, rectangle.width, rectangle.height)
       }
     }
   }

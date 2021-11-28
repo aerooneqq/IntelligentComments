@@ -61,7 +61,7 @@ class TableSegmentRenderer(private val table: TableContentSegmentUiModel) : Segm
     val height = rowsHeights.sum()
     val width = colsWidths.sum()
 
-    val borderColor = table.project.service<ColorsProvider>().getColorFor(Colors.TableBorderBackground)
+    val borderColor = table.project.service<ColorsProvider>().getColorFor(Colors.TableBorderBackgroundColor)
     UpdatedGraphicsCookie(g, color = borderColor).use {
       drawLines(g, rect, rowsHeights, width) { gr, r, delta, dim -> drawHorizontalLine(gr, r, delta, dim) }
       drawLines(g, rect, colsWidths, height) { gr, r, delta, dim -> drawVerticalLine(gr, r, delta, dim) }

@@ -44,6 +44,7 @@ class TextHighlighterFromRd(
 class BackgroundStyleFromRd(rdBackgroundStyle: RdBackgroundStyle) : BackgroundStyle {
   override val backgroundColor: Color = Color.decode(rdBackgroundStyle.backgroundColor.hex)
   override val roundedRect: Boolean = rdBackgroundStyle.roundedRect
+  override val leftRightPadding: Int = rdBackgroundStyle.leftRightMargin
 }
 
 fun RdTextAnimation.toTextAnimation(highlighter: TextHighlighter, project: Project): MouseInOutAnimation {

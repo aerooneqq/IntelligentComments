@@ -83,7 +83,7 @@ class ListSegmentRenderer(private val model: ListContentSegmentUiModel) : Segmen
       is ImageContentSegmentUiModel,
       is ListContentSegmentUiModel,
       is TextContentSegmentUiModel -> {
-        val bulletColor = model.project.service<ColorsProvider>().getColorFor(Colors.ListItemBulletBackground)
+        val bulletColor = model.project.service<ColorsProvider>().getColorFor(Colors.ListItemBulletBackgroundColor)
         UpdatedGraphicsCookie(g, color = bulletColor).use {
           g.fillOval(rect.x - 11, rect.y + fontMetrics.descent + fontMetrics.ascent / 4, bulletRadius, bulletRadius)
         }

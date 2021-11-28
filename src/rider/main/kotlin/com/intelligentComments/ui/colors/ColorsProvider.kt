@@ -30,13 +30,18 @@ object Colors {
 
   val TextDefaultColor = ColorName("text.default.color")
   val TextDefaultHoveredColor = ColorName("text.default.color.hovered")
+  val TextInSectionsHeadersColor = ColorName("text.in.sections.headers.color")
   val TextUrlColor = ColorName("text.url.color")
   val TextUrlColorHovered = ColorName("text.url.color.hovered")
 
-  val ListItemBulletBackground = ColorName("list.item.bullet.background.color")
+  val ParamNameBackgroundColor = ColorName("param.name.background.color")
+  val ReturnBackgroundColor = ColorName("return.background.color")
+  val ExceptionBackgroundColor = ColorName("exception.background.color")
 
-  val TableBorderBackground = ColorName("table.border.background.color")
-  val TableHeaderCellBackground = ColorName("table.header.cell.background.color")
+  val ListItemBulletBackgroundColor = ColorName("list.item.bullet.background.color")
+
+  val TableBorderBackgroundColor = ColorName("table.border.background.color")
+  val TableHeaderCellBackgroundColor = ColorName("table.header.cell.background.color")
 }
 
 interface ColorsProvider {

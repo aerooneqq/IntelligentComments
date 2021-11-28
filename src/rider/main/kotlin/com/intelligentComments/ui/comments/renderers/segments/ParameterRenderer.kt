@@ -1,6 +1,6 @@
 package com.intelligentComments.ui.comments.renderers.segments
 
-import com.intelligentComments.ui.comments.model.content.ParameterUiModel
+import com.intelligentComments.ui.comments.model.content.params.ParameterUiModel
 import com.intelligentComments.ui.core.RectanglesModel
 import com.intelligentComments.ui.util.TextUtil
 import com.intellij.openapi.editor.impl.EditorImpl

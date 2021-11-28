@@ -67,7 +67,7 @@ namespace JetBrains.Rider.Model
     
     
     
-    protected override long SerializationHash => 2084335260369702500L;
+    protected override long SerializationHash => 2734547604445218520L;
     
     protected override Action<ISerializers> Register => RegisterDeclaredTypesSerializers;
     public static void RegisterDeclaredTypesSerializers(ISerializers serializers)
@@ -149,25 +149,29 @@ namespace JetBrains.Rider.Model
     //public fields
     [NotNull] public RdColor BackgroundColor {get; private set;}
     public bool RoundedRect {get; private set;}
+    public int LeftRightMargin {get; private set;}
     
     //private fields
     //primary constructor
     public RdBackgroundStyle(
       [NotNull] RdColor backgroundColor,
-      bool roundedRect
+      bool roundedRect,
+      int leftRightMargin
     )
     {
       if (backgroundColor == null) throw new ArgumentNullException("backgroundColor");
       
       BackgroundColor = backgroundColor;
       RoundedRect = roundedRect;
+      LeftRightMargin = leftRightMargin;
     }
     //secondary constructor
     //deconstruct trait
-    public void Deconstruct([NotNull] out RdColor backgroundColor, out bool roundedRect)
+    public void Deconstruct([NotNull] out RdColor backgroundColor, out bool roundedRect, out int leftRightMargin)
     {
       backgroundColor = BackgroundColor;
       roundedRect = RoundedRect;
+      leftRightMargin = LeftRightMargin;
     }
     //statics
     
@@ -175,7 +179,8 @@ namespace JetBrains.Rider.Model
     {
       var backgroundColor = RdColor.Read(ctx, reader);
       var roundedRect = reader.ReadBool();
-      var _result = new RdBackgroundStyle(backgroundColor, roundedRect);
+      var leftRightMargin = reader.ReadInt();
+      var _result = new RdBackgroundStyle(backgroundColor, roundedRect, leftRightMargin);
       return _result;
     };
     
@@ -183,6 +188,7 @@ namespace JetBrains.Rider.Model
     {
       RdColor.Write(ctx, writer, value.BackgroundColor);
       writer.Write(value.RoundedRect);
+      writer.Write(value.LeftRightMargin);
     };
     
     //constants
@@ -201,7 +207,7 @@ namespace JetBrains.Rider.Model
     {
       if (ReferenceEquals(null, other)) return false;
       if (ReferenceEquals(this, other)) return true;
-      return Equals(BackgroundColor, other.BackgroundColor) && RoundedRect == other.RoundedRect;
+      return Equals(BackgroundColor, other.BackgroundColor) && RoundedRect == other.RoundedRect && LeftRightMargin == other.LeftRightMargin;
     }
     //hash code trait
     public override int GetHashCode()
@@ -210,6 +216,7 @@ namespace JetBrains.Rider.Model
         var hash = 0;
         hash = hash * 31 + BackgroundColor.GetHashCode();
         hash = hash * 31 + RoundedRect.GetHashCode();
+        hash = hash * 31 + LeftRightMargin.GetHashCode();
         return hash;
       }
     }
@@ -220,6 +227,7 @@ namespace JetBrains.Rider.Model
       using (printer.IndentCookie()) {
         printer.Print("backgroundColor = "); BackgroundColor.PrintEx(printer); printer.Println();
         printer.Print("roundedRect = "); RoundedRect.PrintEx(printer); printer.Println();
+        printer.Print("leftRightMargin = "); LeftRightMargin.PrintEx(printer); printer.Println();
       }
       printer.Print(")");
     }
@@ -234,7 +242,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:169</p>
+  /// <p>Generated from: RdComment.kt:170</p>
   /// </summary>
   public sealed class RdColor : IPrintable, IEquatable<RdColor>
   {
@@ -1369,7 +1377,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:183</p>
+  /// <p>Generated from: RdComment.kt:184</p>
   /// </summary>
   public enum RdFontStyle {
     Regular,
@@ -1378,7 +1386,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:175</p>
+  /// <p>Generated from: RdComment.kt:176</p>
   /// </summary>
   public sealed class RdForegroundColorAnimation : RdTextAnimation
   {
@@ -1459,7 +1467,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:204</p>
+  /// <p>Generated from: RdComment.kt:205</p>
   /// </summary>
   public abstract class RdHack{
     //fields
@@ -1504,7 +1512,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:210</p>
+  /// <p>Generated from: RdComment.kt:211</p>
   /// </summary>
   public sealed class RdHackWithTickets : RdHack
   {
@@ -2584,7 +2592,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:179</p>
+  /// <p>Generated from: RdComment.kt:180</p>
   /// </summary>
   public sealed class RdPredefinedForegroundColorAnimation : RdTextAnimation
   {
@@ -3422,7 +3430,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:173</p>
+  /// <p>Generated from: RdComment.kt:174</p>
   /// </summary>
   public abstract class RdTextAnimation{
     //fields
@@ -3920,7 +3928,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:199</p>
+  /// <p>Generated from: RdComment.kt:200</p>
   /// </summary>
   public sealed class RdTicket : IPrintable, IEquatable<RdTicket>
   {
@@ -4014,7 +4022,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:188</p>
+  /// <p>Generated from: RdComment.kt:189</p>
   /// </summary>
   public abstract class RdToDo{
     //fields
@@ -4063,7 +4071,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:195</p>
+  /// <p>Generated from: RdComment.kt:196</p>
   /// </summary>
   public sealed class RdToDoWithTickets : RdToDo
   {
@@ -4269,7 +4277,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:174</p>
+  /// <p>Generated from: RdComment.kt:175</p>
   /// </summary>
   public sealed class RdUnderlineTextAnimation : RdTextAnimation
   {

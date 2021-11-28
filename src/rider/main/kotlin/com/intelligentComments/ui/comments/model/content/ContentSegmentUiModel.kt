@@ -6,6 +6,8 @@ import com.intelligentComments.ui.comments.model.content.`return`.ReturnUiModel
 import com.intelligentComments.ui.comments.model.content.exceptions.ExceptionUiModel
 import com.intelligentComments.ui.comments.model.content.image.ImageContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.list.ListContentSegmentUiModel
+import com.intelligentComments.ui.comments.model.content.paragraphs.ParagraphUiModel
+import com.intelligentComments.ui.comments.model.content.params.ParameterUiModel
 import com.intelligentComments.ui.comments.model.content.remarks.RemarksUiModel
 import com.intelligentComments.ui.comments.model.content.table.TableContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.text.TextContentSegmentUiModel

@@ -7,207 +7,208 @@ import com.jetbrains.rider.model.nova.ide.SolutionModel
 
 @Suppress("unused")
 object RdCommentsModel : Ext(SolutionModel.RdDocumentModel) {
-    val RdDocCommentFoldingModel = structdef extends SolutionModel.HighlighterModel {
-        field("CommentIdentifier", PredefinedType.int)
-        field("DocComment", RdDocComment)
-    }
+  val RdDocCommentFoldingModel = structdef extends SolutionModel.HighlighterModel {
+    field("CommentIdentifier", PredefinedType.int)
+    field("DocComment", RdDocComment)
+  }
 
-    val RdDocumentComments = structdef {
-        field("Comments", immutableList(RdComment))
-    }
+  val RdDocumentComments = structdef {
+    field("Comments", immutableList(RdComment))
+  }
 
-    val RdComment = basestruct {
-        field("CommentIdentifier", PredefinedType.int)
-        field("Range", SolutionModel.RdTextRange)
-    }
+  val RdComment = basestruct {
+    field("CommentIdentifier", PredefinedType.int)
+    field("Range", SolutionModel.RdTextRange)
+  }
 
-    val RdDocComment = structdef extends RdComment {
-        field("Content", RdIntelligentCommentContent.nullable).optional
-    }
+  val RdDocComment = structdef extends RdComment {
+    field("Content", RdIntelligentCommentContent.nullable).optional
+  }
 
-    val RdIntelligentComment = structdef extends RdComment {
-        field("Authors", immutableList(RdIntelligentCommentAuthor).nullable).optional
-        field("Date", PredefinedType.dateTime)
-        field("Content", RdIntelligentCommentContent.nullable).optional
+  val RdIntelligentComment = structdef extends RdComment {
+    field("Authors", immutableList(RdIntelligentCommentAuthor).nullable).optional
+    field("Date", PredefinedType.dateTime)
+    field("Content", RdIntelligentCommentContent.nullable).optional
 
-        field("Invariants", immutableList(RdInvariant).nullable).optional
-        field("References", immutableList(RdReference).nullable).optional
-        field("ToDos", immutableList(RdToDo).nullable).optional
-        field("Hacks", immutableList(RdHack).nullable).optional
-    }
+    field("Invariants", immutableList(RdInvariant).nullable).optional
+    field("References", immutableList(RdReference).nullable).optional
+    field("ToDos", immutableList(RdToDo).nullable).optional
+    field("Hacks", immutableList(RdHack).nullable).optional
+  }
 
-    val RdIntelligentCommentAuthor = structdef {
-        field("Name", PredefinedType.string)
-        field("Date", PredefinedType.dateTime)
-    }
+  val RdIntelligentCommentAuthor = structdef {
+    field("Name", PredefinedType.string)
+    field("Date", PredefinedType.dateTime)
+  }
 
-    val RdContentSegment = basestruct { }
+  val RdContentSegment = basestruct { }
 
-    val RdSegmentWithContent = basestruct extends RdContentSegment {
-        field("Content", RdContentSegments)
-    }
+  val RdSegmentWithContent = basestruct extends RdContentSegment {
+    field("Content", RdContentSegments)
+  }
 
-    val RdIntelligentCommentContent = structdef extends RdSegmentWithContent {
-    }
+  val RdIntelligentCommentContent = structdef extends RdSegmentWithContent {
+  }
 
-    val RdContentSegments = structdef {
-        field("Content", immutableList(RdContentSegment))
-    }
+  val RdContentSegments = structdef {
+    field("Content", immutableList(RdContentSegment))
+  }
 
-    val RdParam = structdef extends RdSegmentWithContent {
-        field("Name", PredefinedType.string)
-    }
+  val RdParam = structdef extends RdSegmentWithContent {
+    field("Name", PredefinedType.string)
+  }
 
-    val RdRemarksSegment = structdef extends RdSegmentWithContent {
-    }
+  val RdRemarksSegment = structdef extends RdSegmentWithContent {
+  }
 
-    val RdParagraphSegment = structdef extends RdSegmentWithContent {
-    }
+  val RdParagraphSegment = structdef extends RdSegmentWithContent {
+  }
 
-    val RdReturnSegment = structdef extends RdSegmentWithContent {
-    }
+  val RdReturnSegment = structdef extends RdSegmentWithContent {
+  }
 
-    val RdExceptionsSegment = structdef extends RdSegmentWithContent {
-        field("Name", PredefinedType.string)
-        field("ExceptionReference", RdReference.nullable).optional
-    }
+  val RdExceptionsSegment = structdef extends RdSegmentWithContent {
+    field("Name", PredefinedType.string)
+    field("ExceptionReference", RdReference.nullable).optional
+  }
 
-    val RdTextSegment = structdef extends RdContentSegment {
-        field("Text", RdHighlightedText)
-    }
+  val RdTextSegment = structdef extends RdContentSegment {
+    field("Text", RdHighlightedText)
+  }
 
-    val RdImageSegment = basestruct extends RdContentSegment {
-        field("Description", RdHighlightedText)
-    }
+  val RdImageSegment = basestruct extends RdContentSegment {
+    field("Description", RdHighlightedText)
+  }
 
-    val RdFileBasedImageSegment = structdef extends RdImageSegment {
-        field("Path", PredefinedType.string)
-    }
+  val RdFileBasedImageSegment = structdef extends RdImageSegment {
+    field("Path", PredefinedType.string)
+  }
 
-    val RdListSegment = structdef extends RdContentSegment {
-        field("ListContent", immutableList(RdContentSegments))
-        field("Header", RdHighlightedText)
-    }
+  val RdListSegment = structdef extends RdContentSegment {
+    field("ListContent", immutableList(RdContentSegments))
+    field("Header", RdHighlightedText)
+  }
 
-    val RdTableSegment = structdef extends RdContentSegment {
-        field("Header", RdHighlightedText)
-        field("Rows", immutableList(RdTableRow))
-    }
+  val RdTableSegment = structdef extends RdContentSegment {
+    field("Header", RdHighlightedText)
+    field("Rows", immutableList(RdTableRow))
+  }
 
-    val RdTableRow = structdef {
-        field("Cells", immutableList(RdTableCell))
-    }
+  val RdTableRow = structdef {
+    field("Cells", immutableList(RdTableCell))
+  }
 
-    val RdTableCell = structdef {
-        field("Content", RdContentSegments)
-        field("Properties", RdTableCellProperties.nullable).optional
-    }
+  val RdTableCell = structdef {
+    field("Content", RdContentSegments)
+    field("Properties", RdTableCellProperties.nullable).optional
+  }
 
-    val RdTableCellProperties = structdef {
-        field("HorizontalAlignment", RdHorizontalAlignment)
-        field("VerticalAlignment", RdVerticalAlignment)
-        field("IsHeader", PredefinedType.bool)
-    }
+  val RdTableCellProperties = structdef {
+    field("HorizontalAlignment", RdHorizontalAlignment)
+    field("VerticalAlignment", RdVerticalAlignment)
+    field("IsHeader", PredefinedType.bool)
+  }
 
-    val RdHorizontalAlignment = enum {
-        + "Center"
-        + "Left"
-        + "Right"
-    }
+  val RdHorizontalAlignment = enum {
+    +"Center"
+    +"Left"
+    +"Right"
+  }
 
-    val RdVerticalAlignment = enum {
-        + "Center"
-        + "Top"
-        + "Bottom"
-    }
+  val RdVerticalAlignment = enum {
+    +"Center"
+    +"Top"
+    +"Bottom"
+  }
 
-    val RdInvariant = basestruct { }
+  val RdInvariant = basestruct { }
 
-    val RdTextInvariant = structdef extends RdInvariant {
-        field("Text", PredefinedType.string)
-        call("Evaluate", PredefinedType.int, PredefinedType.bool)
-    }
+  val RdTextInvariant = structdef extends RdInvariant {
+    field("Text", PredefinedType.string)
+    call("Evaluate", PredefinedType.int, PredefinedType.bool)
+  }
 
-    val RdReference = basestruct {
-        field("ReferenceName", PredefinedType.string)
-    }
+  val RdReference = basestruct {
+    field("ReferenceName", PredefinedType.string)
+  }
 
-    val RdFileBasedReference = basestruct extends RdReference {
-        field("FilePath", PredefinedType.string)
-    }
+  val RdFileBasedReference = basestruct extends RdReference {
+    field("FilePath", PredefinedType.string)
+  }
 
-    val RdDependencyReference = structdef extends RdFileBasedReference {
-        field("DependencyDescription", PredefinedType.string)
-    }
+  val RdDependencyReference = structdef extends RdFileBasedReference {
+    field("DependencyDescription", PredefinedType.string)
+  }
 
-    val RdHighlightedText = structdef {
-        field("Text", PredefinedType.string)
-        field("Highlighters", immutableList(RdTextHighlighter).nullable).optional
-    }
+  val RdHighlightedText = structdef {
+    field("Text", PredefinedType.string)
+    field("Highlighters", immutableList(RdTextHighlighter).nullable).optional
+  }
 
-    val RdTextHighlighter = structdef {
-        field("Key", PredefinedType.string)
-        field("StartOffset", PredefinedType.int)
-        field("EndOffset", PredefinedType.int)
-        field("Attributes", RdTextAttributes)
-        field("BackgroundStyle", RdBackgroundStyle.nullable).optional
-        field("Animation", RdTextAnimation.nullable).optional
-        field("References", immutableList(RdReference).nullable).optional
-    }
+  val RdTextHighlighter = structdef {
+    field("Key", PredefinedType.string)
+    field("StartOffset", PredefinedType.int)
+    field("EndOffset", PredefinedType.int)
+    field("Attributes", RdTextAttributes)
+    field("BackgroundStyle", RdBackgroundStyle.nullable).optional
+    field("Animation", RdTextAnimation.nullable).optional
+    field("References", immutableList(RdReference).nullable).optional
+  }
 
-    val RdTextAttributes = structdef {
-        field("FontStyle", RdFontStyle.nullable).optional
-        field("Underline", PredefinedType.bool.nullable).optional
-        field("FontWeight", PredefinedType.float.nullable).optional
-    }
+  val RdTextAttributes = structdef {
+    field("FontStyle", RdFontStyle.nullable).optional
+    field("Underline", PredefinedType.bool.nullable).optional
+    field("FontWeight", PredefinedType.float.nullable).optional
+  }
 
-    val RdBackgroundStyle = structdef {
-        field("BackgroundColor", RdColor)
-        field("RoundedRect", PredefinedType.bool)
-    }
+  val RdBackgroundStyle = structdef {
+    field("BackgroundColor", RdColor)
+    field("RoundedRect", PredefinedType.bool)
+    field("LeftRightMargin", PredefinedType.int)
+  }
 
-    val RdColor = structdef {
-        field("Hex", PredefinedType.string)
-    }
+  val RdColor = structdef {
+    field("Hex", PredefinedType.string)
+  }
 
-    val RdTextAnimation = basestruct { }
-    val RdUnderlineTextAnimation = structdef extends RdTextAnimation { }
-    val RdForegroundColorAnimation = structdef extends RdTextAnimation {
-        field("HoveredColor", RdColor)
-    }
+  val RdTextAnimation = basestruct { }
+  val RdUnderlineTextAnimation = structdef extends RdTextAnimation { }
+  val RdForegroundColorAnimation = structdef extends RdTextAnimation {
+    field("HoveredColor", RdColor)
+  }
 
-    val RdPredefinedForegroundColorAnimation = structdef extends RdTextAnimation {
-        field("Key", PredefinedType.string)
-    }
+  val RdPredefinedForegroundColorAnimation = structdef extends RdTextAnimation {
+    field("Key", PredefinedType.string)
+  }
 
-    val RdFontStyle = enum {
-        + "Regular"
-        + "Bold"
-    }
+  val RdFontStyle = enum {
+    +"Regular"
+    +"Bold"
+  }
 
-    val RdToDo = basestruct {
-        field("Author", RdIntelligentCommentAuthor)
-        field("Name", PredefinedType.string)
-        field("Description", RdContentSegments)
-        field("BlockingReferences", immutableList(RdReference))
-    }
+  val RdToDo = basestruct {
+    field("Author", RdIntelligentCommentAuthor)
+    field("Name", PredefinedType.string)
+    field("Description", RdContentSegments)
+    field("BlockingReferences", immutableList(RdReference))
+  }
 
-    val RdToDoWithTickets = structdef extends RdToDo {
-        field("Tickets", immutableList(RdTicket))
-    }
+  val RdToDoWithTickets = structdef extends RdToDo {
+    field("Tickets", immutableList(RdTicket))
+  }
 
-    val RdTicket = structdef {
-        field("Url", PredefinedType.string)
-        field("ShortName", PredefinedType.string)
-    }
+  val RdTicket = structdef {
+    field("Url", PredefinedType.string)
+    field("ShortName", PredefinedType.string)
+  }
 
-    val RdHack = basestruct {
-        field("Name", PredefinedType.string)
-        field("Description", RdContentSegments)
-        field("BlockingReferences", immutableList(RdReference))
-    }
+  val RdHack = basestruct {
+    field("Name", PredefinedType.string)
+    field("Description", RdContentSegments)
+    field("BlockingReferences", immutableList(RdReference))
+  }
 
-    val RdHackWithTickets = structdef extends RdHack {
-        field("Tickets", immutableList(RdTicket))
-    }
+  val RdHackWithTickets = structdef extends RdHack {
+    field("Tickets", immutableList(RdTicket))
+  }
 }

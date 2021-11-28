@@ -18,12 +18,13 @@ interface TextHighlighter : UniqueEntity {
 interface BackgroundStyle {
   val backgroundColor: Color
   val roundedRect: Boolean
+  val leftRightPadding: Int
 }
 
-class BackgroundStyleImpl(backgroundColor: Color, roundedRect: Boolean) : BackgroundStyle {
-  override val backgroundColor: Color = backgroundColor
-  override val roundedRect: Boolean = roundedRect
-}
+class BackgroundStyleImpl(
+  override val backgroundColor: Color,
+  override val roundedRect: Boolean,
+  override val leftRightPadding: Int) : BackgroundStyle
 
 interface MouseInOutAnimation {
   fun applyTo(uiModel: HighlighterUiModel, mouseIn: Boolean): Boolean

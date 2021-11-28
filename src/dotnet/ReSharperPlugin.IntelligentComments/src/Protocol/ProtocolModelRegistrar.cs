@@ -1,3 +1,4 @@
+using JetBrains.Application;
 using JetBrains.ProjectModel;
 using JetBrains.RdBackend.Common.Features;
 using JetBrains.Rider.Model;

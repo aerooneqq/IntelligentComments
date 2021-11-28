@@ -1,6 +1,8 @@
-package com.intelligentComments.ui.comments.model.content
+package com.intelligentComments.ui.comments.model.content.paragraphs
 
 import com.intelligentComments.core.domain.core.ParagraphContentSegment
+import com.intelligentComments.ui.comments.model.content.ContentSegmentUiModel
+import com.intelligentComments.ui.comments.model.content.ContentSegmentsUiModel
 import com.intellij.openapi.project.Project
 
 class ParagraphUiModel(

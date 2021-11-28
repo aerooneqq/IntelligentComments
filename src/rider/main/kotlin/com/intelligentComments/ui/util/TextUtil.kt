@@ -308,14 +308,18 @@ class TextUtil {
       val from = range.from
       val to = range.to
       val metrics = getFontMetrics(editorImpl, highlighterModel)
-      val textWidth = getTextWidth(editorImpl, line, from, to - 1, highlighterModel)
+      var textWidth = getTextWidth(editorImpl, line, from, to - 1, highlighterModel)
       val textHeight = getTextHeight(editorImpl, highlighterModel)
+
+      var xDelta = 0
 
       if (highlighterModel == null) {
         g.drawChars(line, from, to - from, rect.x + currentTextLength, rect.y)
       } else {
         val backgroundStyle = highlighterModel.backgroundStyle
         if (backgroundStyle != null) {
+          textWidth += 2 * backgroundStyle.leftRightPadding
+          xDelta = backgroundStyle.leftRightPadding
           UpdatedGraphicsCookie(g, color = backgroundStyle.backgroundColor).use {
             val y = rect.y - textHeight + metrics.descent
             if (backgroundStyle.roundedRect) {
@@ -326,7 +330,7 @@ class TextUtil {
           }
         }
 
-        g.drawString(AttributedCharsIterator(line, from, to, highlighterModel), rect.x + currentTextLength, rect.y)
+        g.drawString(AttributedCharsIterator(line, from, to, highlighterModel), rect.x + currentTextLength + xDelta, rect.y)
       }
 
       return textWidth

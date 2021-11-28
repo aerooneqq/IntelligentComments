@@ -74,7 +74,7 @@ class RdCommentsModel private constructor(
         
         
         
-        const val serializationHash = 2084335260369702500L
+        const val serializationHash = 2734547604445218520L
         
     }
     override val serializersOwner: ISerializersOwner get() = RdCommentsModel
@@ -121,7 +121,8 @@ val RdDocumentModel.rdCommentsModel get() = getOrCreateExtension("rdCommentsMode
  */
 data class RdBackgroundStyle (
     val backgroundColor: RdColor,
-    val roundedRect: Boolean
+    val roundedRect: Boolean,
+    val leftRightMargin: Int
 ) : IPrintable {
     //companion
     
@@ -132,12 +133,14 @@ data class RdBackgroundStyle (
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdBackgroundStyle  {
             val backgroundColor = RdColor.read(ctx, buffer)
             val roundedRect = buffer.readBool()
-            return RdBackgroundStyle(backgroundColor, roundedRect)
+            val leftRightMargin = buffer.readInt()
+            return RdBackgroundStyle(backgroundColor, roundedRect, leftRightMargin)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: RdBackgroundStyle)  {
             RdColor.write(ctx, buffer, value.backgroundColor)
             buffer.writeBool(value.roundedRect)
+            buffer.writeInt(value.leftRightMargin)
         }
         
         
@@ -155,6 +158,7 @@ data class RdBackgroundStyle (
         
         if (backgroundColor != other.backgroundColor) return false
         if (roundedRect != other.roundedRect) return false
+        if (leftRightMargin != other.leftRightMargin) return false
         
         return true
     }
@@ -163,6 +167,7 @@ data class RdBackgroundStyle (
         var __r = 0
         __r = __r*31 + backgroundColor.hashCode()
         __r = __r*31 + roundedRect.hashCode()
+        __r = __r*31 + leftRightMargin.hashCode()
         return __r
     }
     //pretty print
@@ -171,6 +176,7 @@ data class RdBackgroundStyle (
         printer.indent {
             print("backgroundColor = "); backgroundColor.print(printer); println()
             print("roundedRect = "); roundedRect.print(printer); println()
+            print("leftRightMargin = "); leftRightMargin.print(printer); println()
         }
         printer.print(")")
     }
@@ -180,7 +186,7 @@ data class RdBackgroundStyle (
 
 
 /**
- * #### Generated from [RdComment.kt:169]
+ * #### Generated from [RdComment.kt:170]
  */
 data class RdColor (
     val hex: String
@@ -1070,7 +1076,7 @@ class RdFileBasedReference_Unknown (
 
 
 /**
- * #### Generated from [RdComment.kt:183]
+ * #### Generated from [RdComment.kt:184]
  */
 enum class RdFontStyle {
     Regular, 
@@ -1084,7 +1090,7 @@ enum class RdFontStyle {
 
 
 /**
- * #### Generated from [RdComment.kt:175]
+ * #### Generated from [RdComment.kt:176]
  */
 class RdForegroundColorAnimation (
     val hoveredColor: RdColor
@@ -1144,7 +1150,7 @@ class RdForegroundColorAnimation (
 
 
 /**
- * #### Generated from [RdComment.kt:204]
+ * #### Generated from [RdComment.kt:205]
  */
 abstract class RdHack (
     val name: String,
@@ -1179,7 +1185,7 @@ abstract class RdHack (
 
 
 /**
- * #### Generated from [RdComment.kt:210]
+ * #### Generated from [RdComment.kt:211]
  */
 class RdHackWithTickets (
     val tickets: List<RdTicket>,
@@ -2011,7 +2017,7 @@ class RdParam (
 
 
 /**
- * #### Generated from [RdComment.kt:179]
+ * #### Generated from [RdComment.kt:180]
  */
 class RdPredefinedForegroundColorAnimation (
     val key: String
@@ -2631,7 +2637,7 @@ class RdTableSegment (
 
 
 /**
- * #### Generated from [RdComment.kt:173]
+ * #### Generated from [RdComment.kt:174]
  */
 abstract class RdTextAnimation (
 ) : IPrintable {
@@ -2994,7 +3000,7 @@ class RdTextSegment (
 
 
 /**
- * #### Generated from [RdComment.kt:199]
+ * #### Generated from [RdComment.kt:200]
  */
 data class RdTicket (
     val url: String,
@@ -3057,7 +3063,7 @@ data class RdTicket (
 
 
 /**
- * #### Generated from [RdComment.kt:188]
+ * #### Generated from [RdComment.kt:189]
  */
 abstract class RdToDo (
     val author: RdIntelligentCommentAuthor,
@@ -3094,7 +3100,7 @@ abstract class RdToDo (
 
 
 /**
- * #### Generated from [RdComment.kt:195]
+ * #### Generated from [RdComment.kt:196]
  */
 class RdToDoWithTickets (
     val tickets: List<RdTicket>,
@@ -3260,7 +3266,7 @@ class RdToDo_Unknown (
 
 
 /**
- * #### Generated from [RdComment.kt:174]
+ * #### Generated from [RdComment.kt:175]
  */
 class RdUnderlineTextAnimation (
 ) : RdTextAnimation (

@@ -29,7 +29,7 @@ class RiderEditorHandler : EditorHandler {
       0,
       4,
       RdTextAttributes(),
-      backgroundStyle = RdBackgroundStyle(RdColor("#FFFF00"), true),
+      backgroundStyle = RdBackgroundStyle(RdColor("#FFFF00"), true, 3),
       animation = RdUnderlineTextAnimation()
     )
     val highlighter1 = RdTextHighlighter(
