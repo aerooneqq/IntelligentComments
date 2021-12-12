@@ -50,9 +50,11 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
       }
         
       var contentSegments = myStack.Pop();
+      var segments = contentSegments.Segments;
+
       void Normalize()
       {
-        foreach (var segment in contentSegments.Segments)
+        foreach (var segment in segments)
         {
           if (segment is ITextContentSegment textContentSegment)
           {
@@ -62,16 +64,16 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
       }
         
       int index = 0;
-      while (index != contentSegments.Segments.Count)
+      while (index != segments.Count)
       {
-        if (index + 1 >= contentSegments.Segments.Count)
+        if (index + 1 >= segments.Count)
         {
           Normalize();
           return;
         }
 
-        var currentSegment = contentSegments.Segments[index];
-        var nextSegment = contentSegments.Segments[index + 1];
+        var currentSegment = segments[index];
+        var nextSegment = segments[index + 1];
         if (currentSegment is not IMergeableContentSegment currentTextSegment ||
             nextSegment is not IMergeableContentSegment nextTextSegment)
         {
@@ -80,7 +82,7 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
         }
           
         currentTextSegment.MergeWith(nextTextSegment);
-        contentSegments.Segments.RemoveAt(index + 1);
+        segments.RemoveAt(index + 1);
       }
         
       Normalize();
@@ -89,7 +91,7 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
 
   private const string UndefinedParam = "???";
   private const string CRef = "cref";
-    
+  
   [NotNull] private static readonly ILogger ourLogger = Logger.GetLogger<DocCommentBuilder>();
   
   [NotNull] private readonly Stack<IContentSegments> myContentSegmentsStack;
@@ -162,18 +164,36 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
   public override void VisitC(XmlElement element)
   {
     myVisitedNodes.Add(element);
-    if (element.ChildNodes.Count == 1 && element.FirstChild is XmlText { Value: { } value })
+    if (ElementHasOneTextChild(element, out var value))
     {
       value = PreprocessText(value);
       var highlighter = myHighlightersProvider.GetCXmlElementHighlighter(0, value.Length);
-      var highlightedText = new HighlightedText(value, new[] { highlighter });
-      var textContentSegment = new MergeableTextContentSegment(highlightedText);
-      ExecuteWithTopmostContentSegments(segments => segments.Segments.Add(textContentSegment));
-
+      AddHighlightedText(value, highlighter);
+      
       return;
     }
       
     ExecuteActionOverChildren(element, Visit);
+  }
+
+  private static bool ElementHasOneTextChild([NotNull] XmlElement element, [NotNull] out string value)
+  {
+    bool hasOneTextChild = element.ChildNodes.Count == 1 && element.FirstChild is XmlText { Value: { } };
+
+    value = hasOneTextChild switch
+    {
+      true => element.FirstChild.Value,
+      false => string.Empty
+    };
+
+    return hasOneTextChild;
+  }
+
+  private void AddHighlightedText(string text, TextHighlighter highlighter)
+  {
+    var highlightedText = new HighlightedText(text, new[] { highlighter });
+    var textContentSegment = new MergeableTextContentSegment(highlightedText);
+    ExecuteWithTopmostContentSegments(segments => segments.Segments.Add(textContentSegment));
   }
 
   private static string PreprocessText([NotNull] string text) => text.Replace("\n ", "\n");
@@ -261,5 +281,16 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
       
     var exceptionSegment = new ExceptionContentSegment(exceptionName);
     ProcessEntityWithContentSegments(exceptionSegment, element);
+  }
+
+  public override void VisitParamRef(XmlElement element)
+  {
+    myVisitedNodes.Add(element);
+    var paramName = element.GetAttribute("name");
+    if (paramName == string.Empty) paramName = UndefinedParam;
+    paramName = PreprocessText(paramName);
+
+    var highlighter = myHighlightersProvider.GetParamRefElementHighlighter(0, paramName.Length);
+    AddHighlightedText(paramName, highlighter);
   }
 }

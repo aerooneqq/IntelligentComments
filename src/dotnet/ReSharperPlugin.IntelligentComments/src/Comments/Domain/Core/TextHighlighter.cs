@@ -1,6 +1,3 @@
-using JetBrains.TextControl.DocumentMarkup;
-using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
-
 namespace ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 
 public enum FontStyle
