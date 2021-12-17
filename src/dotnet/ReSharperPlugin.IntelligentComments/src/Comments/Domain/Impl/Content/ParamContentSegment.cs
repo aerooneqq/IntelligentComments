@@ -8,7 +8,7 @@ public class ParamContentSegment : EntityWithContentSegments, IParamContentSegme
   public string Name { get; }
 
 
-  public ParamContentSegment(string name) : base(Content.ContentSegments.GetEmpty())
+  public ParamContentSegment(string name) : base(Content.ContentSegments.CreateEmpty())
   {
     Name = name;
   }

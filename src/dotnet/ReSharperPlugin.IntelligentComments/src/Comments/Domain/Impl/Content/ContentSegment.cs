@@ -9,7 +9,7 @@ public class ContentSegment : IContentSegment
 
 public record ContentSegments(IList<IContentSegment> Segments) : IContentSegments
 {
-  public static ContentSegments GetEmpty() => new ContentSegments(new List<IContentSegment>());
+  public static ContentSegments CreateEmpty() => new ContentSegments(new List<IContentSegment>());
 }
   
 public class EntityWithContentSegments : IEntityWithContentSegments
@@ -35,7 +35,7 @@ public class ExceptionContentSegment : EntityWithContentSegments, IExceptionSegm
   public string ExceptionName { get; }
 
     
-  public ExceptionContentSegment(string name) : base(Content.ContentSegments.GetEmpty())
+  public ExceptionContentSegment(string name) : base(Content.ContentSegments.CreateEmpty())
   {
     ExceptionName = name;
   }

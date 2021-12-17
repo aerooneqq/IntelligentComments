@@ -28,7 +28,7 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
 
       
     public WithPushedToStackContentSegments([NotNull] Stack<IContentSegments> stack, [NotNull] ILogger logger)
-      : this(stack, ContentSegments.GetEmpty(), logger)
+      : this(stack, ContentSegments.CreateEmpty(), logger)
     {
     }
       
@@ -118,7 +118,7 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
         return null;
       }
 
-      var topmostContentSegments = ContentSegments.GetEmpty();
+      var topmostContentSegments = ContentSegments.CreateEmpty();
       using (new WithPushedToStackContentSegments(myContentSegmentsStack, topmostContentSegments, ourLogger))
       {
         Visit(xmlNode);
@@ -239,7 +239,7 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
 
   public override void VisitPara(XmlElement element)
   {
-    var paragraphContentSegment = new ParagraphContentSegment(ContentSegments.GetEmpty());
+    var paragraphContentSegment = new ParagraphContentSegment(ContentSegments.CreateEmpty());
     ProcessEntityWithContentSegments(paragraphContentSegment, element);
   }
 
@@ -258,14 +258,14 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
   public override void VisitReturns(XmlElement element)
   {
     myVisitedNodes.Add(element);
-    var returnSegment = new ReturnContentSegment(ContentSegments.GetEmpty());
+    var returnSegment = new ReturnContentSegment(ContentSegments.CreateEmpty());
     ProcessEntityWithContentSegments(returnSegment, element);
   }
 
   public override void VisitRemarks(XmlElement element)
   {
     myVisitedNodes.Add(element);
-    var remarksSegment = new RemarksContentSegment(ContentSegments.GetEmpty());
+    var remarksSegment = new RemarksContentSegment(ContentSegments.CreateEmpty());
     ProcessEntityWithContentSegments(remarksSegment, element);
   }
 

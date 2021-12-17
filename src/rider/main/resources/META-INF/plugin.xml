@@ -17,6 +17,10 @@
   <extensions defaultExtensionNs="com.intellij">
     <projectService serviceInterface="com.intelligentComments.ui.colors.ColorsProvider"
                     serviceImplementation="com.intelligentComments.ui.colors.ColorsProviderImpl" />
+    <projectService serviceImplementation="com.intelligentComments.core.settings.RiderIntelligentCommentsSettingsProviderImpl"
+                    serviceInterface="com.intelligentComments.core.settings.RiderIntelligentCommentsSettingsProvider"/>
+    <projectService serviceImplementation="com.intelligentComments.core.comments.RiderCommentsStateManager" />
+
     <rdclient.highlighterModelSupport implementation="com.intelligentComments.core.markup.DocCommentsFoldingHighlightersSupport" />
   </extensions>
 

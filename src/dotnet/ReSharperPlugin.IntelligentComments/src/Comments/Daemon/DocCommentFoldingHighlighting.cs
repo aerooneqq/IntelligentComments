@@ -9,7 +9,8 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Daemon;
 
 [StaticSeverityHighlighting(Severity.INFO, typeof(IntelligentCommentsHighlightings))]
 [RegisterHighlighter(
-  DocCommentAttributeId, 
+  DocCommentAttributeId,
+  NotRecyclable = true,
   EffectType = EffectType.FOLDING, 
   GroupId = IntelligentCommentsHighlightings.GroupId, 
   TransmitUpdates = true)]

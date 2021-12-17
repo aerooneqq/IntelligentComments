@@ -12,20 +12,20 @@ import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.impl.EditorImpl
 import com.intellij.openapi.project.Project
+import com.jetbrains.rd.platform.diagnostics.logAssertion
 import com.jetbrains.rd.platform.util.application
-import com.jetbrains.rd.platform.util.getComponent
 import com.jetbrains.rd.platform.util.getLogger
 import com.jetbrains.rd.util.reactive.ViewableMap
 import com.jetbrains.rdclient.util.idea.LifetimedProjectComponent
 import com.jetbrains.rider.document.RiderDocumentHost
 import java.util.*
-import javax.swing.SwingUtilities
 
 
 class RiderCommentsController(project: Project) : LifetimedProjectComponent(project) {
   private val comments = ViewableMap<Document, ViewableMap<UUID, CommentBase>>()
   private val foldings = ViewableMap<UUID, CustomFoldRegion>()
   private val logger = getLogger<RiderDocumentHost>()
+  private val commentsStateManager = project.getService(RiderCommentsStateManager::class.java)
 
 
   fun addComment(editor: EditorImpl, comment: CommentBase) {
@@ -42,20 +42,35 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
 
     val uuid = comment.id
     documentComments[uuid] = comment
-    toggleRenderMode(uuid, editor)
+
+    val state = commentsStateManager.getOrCreateCommentState(editor, comment.commentIdentifier)
+    updateRenderModeToMatchState(comment.id, editor, state)
   }
 
-  fun isInRenderMode(commentId: UUID): Boolean = foldings.containsKey(commentId)
-
   fun toggleModeChange(commentId: UUID, editor: EditorImpl) {
-    if (isInRenderMode(commentId)) {
+    application.assertIsDispatchThread()
+    val comment = getComment(commentId, editor) ?: return
+    val commentState = commentsStateManager.getExistingCommentState(editor, comment.commentIdentifier)
+    if (commentState == null) {
+      logger.logAssertion("Trying to change render mode for a not registered comment $commentId")
+      return
+    }
+
+    val changedState = commentsStateManager.changeRenderMode(editor, comment.commentIdentifier)
+    if (changedState != null) {
+      updateRenderModeToMatchState(commentId, editor, changedState)
+    }
+  }
+
+  private fun updateRenderModeToMatchState(commentId: UUID, editor: EditorImpl, state: CommentState) {
+    if (!state.isInRenderMode) {
       toggleEditMode(commentId, editor)
     } else {
       toggleRenderMode(commentId, editor)
     }
   }
 
-  fun toggleEditMode(commentId: UUID, editor: EditorImpl) {
+  private fun toggleEditMode(commentId: UUID, editor: EditorImpl) {
     application.assertIsDispatchThread()
 
     val correspondingComment = getComment(commentId, editor)
@@ -83,7 +98,7 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
     return comment
   }
 
-  fun toggleRenderMode(commentId: UUID, editor: EditorImpl) {
+  private fun toggleRenderMode(commentId: UUID, editor: EditorImpl) {
     application.assertIsDispatchThread()
 
     val correspondingComment = getComment(commentId, editor)
