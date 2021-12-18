@@ -17,6 +17,8 @@ import com.jetbrains.rd.platform.diagnostics.logAssertion
 import com.jetbrains.rd.platform.util.application
 import com.jetbrains.rd.util.getOrCreate
 import com.jetbrains.rdclient.editors.getPsiFile
+import java.util.*
+import kotlin.collections.HashMap
 
 data class CommentState(val isInRenderMode: Boolean) {
   companion object {
@@ -37,20 +39,34 @@ data class EditorId(val moniker: String, val tabOrder: Int = 0) {
   storages = [Storage("CommentsStates.xml")]
 )
 class RiderCommentsStateManager(project: Project) : PersistentStateComponent<SolutionCommentsState> {
-  private var states: MutableMap<EditorId, MutableMap<CommentIdentifier, CommentState>> = HashMap()
   private val logger = Logger.getInstance(RiderCommentsStateManager::class.java)
   private val settingsProvider = project.service<RiderIntelligentCommentsSettingsProvider>()
+  private val loadedStates: MutableMap<EditorId, MutableMap<LoadedCommentIdentifier, CommentState>> = HashMap()
+  private val states: MutableMap<EditorId, MutableMap<CommentIdentifier, CommentState>> = HashMap()
 
 
-  fun getOrCreateCommentState(editor: Editor, commentIdentifier: CommentIdentifier): CommentState {
+  fun restoreOrCreateCommentState(editor: Editor, commentIdentifier: CommentIdentifier): CommentState {
     application.assertIsDispatchThread()
     val editorId = editor.getEditorId() ?: return CommentState.defaultInstance
 
-    val editorCommentsStates = states.getOrCreate(editorId) { HashMap() }
+    val persistentState = getPersistentState(editorId, commentIdentifier)
+
+    val editorCommentsStates = states.getOrCreate(editorId) { TreeMap() }
     return editorCommentsStates.getOrCreate(commentIdentifier) {
-      val isInRenderMode = settingsProvider.commentsDisplayKind.value == CommentsDisplayKind.Render
-      CommentState(isInRenderMode)
+      if (persistentState != null) {
+        persistentState
+      } else {
+        val isInRenderMode = settingsProvider.commentsDisplayKind.value == CommentsDisplayKind.Render
+        CommentState(isInRenderMode)
+      }
     }
+  }
+
+  private fun getPersistentState(editorId: EditorId, commentIdentifier: CommentIdentifier): CommentState? {
+    val marker = commentIdentifier.rangeMarker
+    val id = LoadedCommentIdentifier(commentIdentifier.moniker, marker.startOffset, marker.endOffset)
+
+    return loadedStates[editorId]?.get(id)
   }
 
   fun getExistingCommentState(editor: Editor, commentIdentifier: CommentIdentifier): CommentState? {
@@ -120,12 +136,14 @@ class RiderCommentsStateManager(project: Project) : PersistentStateComponent<Sol
 
   override fun getState(): SolutionCommentsState {
     val snapshots = mutableListOf<CommentStateSnapshot>()
+
     for ((editorId, comments) in states) {
       for ((commentId, state) in comments) {
         snapshots.add(CommentStateSnapshot().apply {
           moniker = editorId.moniker
           tabOrder = editorId.tabOrder
-          rangeHash = commentId.commentIdentifier
+          startOffset = commentId.rangeMarker.startOffset
+          endOffset = commentId.rangeMarker.endOffset
           isInRenderMode = state.isInRenderMode
         })
       }
@@ -137,13 +155,16 @@ class RiderCommentsStateManager(project: Project) : PersistentStateComponent<Sol
   }
 
   override fun loadState(solutionCommentsState: SolutionCommentsState) {
-    states.clear()
+    loadedStates.clear()
     for (snapshot in solutionCommentsState.commentStateSnapshots) {
-      val editorsComments = states.getOrCreate(EditorId(snapshot.moniker, snapshot.tabOrder)) { HashMap() }
-      editorsComments[CommentIdentifier(snapshot.moniker, snapshot.rangeHash)] = CommentState(snapshot.isInRenderMode)
+      val editorsComments = loadedStates.getOrCreate(EditorId(snapshot.moniker, snapshot.tabOrder)) { HashMap() }
+      val id = LoadedCommentIdentifier(snapshot.moniker, snapshot.startOffset, snapshot.endOffset)
+      editorsComments[id] = CommentState(snapshot.isInRenderMode)
     }
   }
 }
+
+data class LoadedCommentIdentifier(val moniker: String, val startOffset: Int, val endOffset: Int)
 
 @Tag("solutionCommentsState")
 class SolutionCommentsState {
@@ -156,6 +177,7 @@ class SolutionCommentsState {
 class CommentStateSnapshot {
   @Attribute("moniker") var moniker: String = EditorId.emptyInstance.moniker
   @Attribute("tabOrder") var tabOrder: Int = EditorId.emptyInstance.tabOrder
-  @Attribute("rangeHash") var rangeHash: Int = 0
+  @Attribute("startOffset") var startOffset: Int = 0
+  @Attribute("endOffset") var endOffset: Int = 0
   @Tag("isInRenderMode") var isInRenderMode: Boolean = false
 }

@@ -2,11 +2,13 @@ package com.intelligentComments.core.markup
 
 import com.intelligentComments.core.comments.RiderCommentsController
 import com.intelligentComments.core.domain.rd.DocCommentFromRd
+import com.intelligentComments.core.utils.toGreedy
 import com.intelligentComments.ui.comments.renderers.DocCommentSwitchRenderModeGutterMark
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.ex.RangeHighlighterEx
 import com.intellij.openapi.editor.impl.EditorImpl
 import com.intellij.openapi.project.Project
+import com.intellij.psi.impl.source.tree.injected.changesHandler.range
 import com.jetbrains.rd.ide.model.RdDocCommentFoldingModel
 import com.jetbrains.rd.util.lifetime.Lifetime
 import com.jetbrains.rdclient.daemon.FrontendMarkupAdapterListener
@@ -59,9 +61,15 @@ class DocCommentsFoldingAdapter(private val editor: EditorImpl) : FrontendMarkup
       val controller = it.getComponent(RiderCommentsController::class.java) ?: return
 
       executeOverDocHighlighters(highlighters) { highlighter, model ->
-        val docComment = DocCommentFromRd(model.docComment, it, highlighter)
+        val marker = highlighter.document.createRangeMarker(highlighter.range)
+        marker.toGreedy()
+
+        val docComment = DocCommentFromRd(model.docComment, it, marker)
         controller.addComment(editor, docComment)
+
         highlighter.gutterIconRenderer = DocCommentSwitchRenderModeGutterMark(docComment, editor, it)
+        highlighter.isGreedyToLeft = true
+        highlighter.isGreedyToRight = true
       }
     }
   }

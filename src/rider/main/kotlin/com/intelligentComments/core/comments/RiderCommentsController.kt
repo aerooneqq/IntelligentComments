@@ -19,10 +19,12 @@ import com.jetbrains.rdclient.document.getDocumentId
 import com.jetbrains.rdclient.editors.FrontendTextControlHost
 import com.jetbrains.rdclient.util.idea.LifetimedProjectComponent
 import com.jetbrains.rider.document.RiderDocumentHost
+import java.util.*
+import kotlin.collections.HashMap
 
 
 class RiderCommentsController(project: Project) : LifetimedProjectComponent(project) {
-  private val comments = ViewableMap<Document, ViewableMap<CommentIdentifier, CommentBase>>()
+  private val comments = HashMap<Document, TreeMap<CommentIdentifier, CommentBase>>()
   private val foldings = ViewableMap<CommentIdentifier, ViewableMap<Editor, CustomFoldRegion>>()
   private val logger = getLogger<RiderDocumentHost>()
   private val commentsStateManager = project.getService(RiderCommentsStateManager::class.java)
@@ -34,7 +36,7 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
 
     val document = editor.document
     val documentComments = if (document !in comments) {
-      val map = ViewableMap<CommentIdentifier, CommentBase>()
+      val map = TreeMap<CommentIdentifier, CommentBase>()
       comments[document] = map
       map
     } else {
@@ -43,12 +45,13 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
 
     documentComments[comment.commentIdentifier] = comment
 
-    val state = commentsStateManager.getOrCreateCommentState(editor, comment.commentIdentifier)
+    val state = commentsStateManager.restoreOrCreateCommentState(editor, comment.commentIdentifier)
     updateRenderModeToMatchState(comment.commentIdentifier, editor.document, state)
   }
 
   fun toggleModeChange(commentIdentifier: CommentIdentifier, editor: EditorImpl) {
     application.assertIsDispatchThread()
+
     val comment = getComment(commentIdentifier, editor.document) ?: return
     val commentState = commentsStateManager.getExistingCommentState(editor, comment.commentIdentifier)
     if (commentState == null) {
@@ -114,8 +117,8 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
 
   private fun renderComment(comment: CommentBase, editor: EditorImpl) {
     val foldingModel = editor.foldingModel
-    val startOffset = comment.highlighter.startOffset
-    val endOffset = comment.highlighter.endOffset
+    val startOffset = comment.rangeMarker.startOffset
+    val endOffset = comment.rangeMarker.endOffset
     val document = editor.document
 
     val foldStartLine = document.getLineNumber(startOffset)

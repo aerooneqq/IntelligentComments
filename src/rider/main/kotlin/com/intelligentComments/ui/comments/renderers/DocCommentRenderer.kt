@@ -53,15 +53,7 @@ class DocCommentRenderer(val model: DocCommentUiModel) : RendererWithRectangleMo
 
   override fun doCalculateGutterIconRenderer(editorImpl: EditorImpl): GutterIconRenderer? {
     val project = editorImpl.project ?: return null
-    val highlighter = model.docComment.highlighter
-    var existingGutter = highlighter.gutterIconRenderer
-    if (existingGutter != null) {
-      return existingGutter
-    }
-
-    existingGutter = DocCommentSwitchRenderModeGutterMark(model.docComment, editorImpl, project)
-    highlighter.gutterIconRenderer = existingGutter
-    return existingGutter
+    return DocCommentSwitchRenderModeGutterMark(model.docComment, editorImpl, project)
   }
 }
 
