@@ -10,6 +10,7 @@ import com.intelligentComments.ui.comments.renderers.DocCommentRenderer
 import com.intellij.openapi.editor.*
 import com.intellij.openapi.editor.impl.EditorImpl
 import com.intellij.openapi.project.Project
+import com.intellij.psi.impl.source.tree.injected.changesHandler.range
 import com.jetbrains.rd.platform.diagnostics.logAssertion
 import com.jetbrains.rd.platform.util.application
 import com.jetbrains.rd.platform.util.getLogger
@@ -70,14 +71,14 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
     for (editor in textControlHost.getAllEditors(documentId)) {
       editor as? EditorImpl ?: continue
       if (!state.isInRenderMode) {
-        toggleEditMode(commentIdentifier, editor)
+        toggleEditMode(commentIdentifier, editor, state)
       } else {
-        toggleRenderMode(commentIdentifier, editor)
+        toggleRenderMode(commentIdentifier, editor, state)
       }
     }
   }
 
-  private fun toggleEditMode(commentIdentifier: CommentIdentifier, editor: EditorImpl) {
+  private fun toggleEditMode(commentIdentifier: CommentIdentifier, editor: EditorImpl, state: CommentState) {
     application.assertIsDispatchThread()
 
     val correspondingComment = getComment(commentIdentifier, editor.document)
@@ -85,7 +86,8 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
       val foldingModel = editor.foldingModel
       val folding = foldings[commentIdentifier]?.get(editor)
       if (folding != null) {
-        editor.caretModel.moveToOffset(folding.startOffset)
+        val startOffset = commentIdentifier.rangeMarker.startOffset
+        editor.caretModel.moveToOffset(state.lastRelativeCaretOffsetWithinComment + startOffset)
         foldingModel.runBatchFoldingOperation {
           foldingModel.removeFoldRegion(folding)
           foldings[commentIdentifier]?.remove(editor)
@@ -105,13 +107,23 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
     return comment
   }
 
-  private fun toggleRenderMode(commentId: CommentIdentifier, editor: EditorImpl) {
+  private fun toggleRenderMode(commentId: CommentIdentifier, editor: EditorImpl, state: CommentState) {
     application.assertIsDispatchThread()
 
     val correspondingComment = getComment(commentId, editor.document)
 
     if (correspondingComment != null) {
+      cacheCaretOffset(correspondingComment, state, editor)
       renderComment(correspondingComment, editor)
+    }
+  }
+
+  private fun cacheCaretOffset(comment: CommentBase, state: CommentState, editor: EditorImpl) {
+    val caretOffset = editor.caretModel.offset
+    state.lastRelativeCaretOffsetWithinComment = if (comment.rangeMarker.range.contains(caretOffset)) {
+      caretOffset - comment.rangeMarker.startOffset
+    } else {
+      0
     }
   }
 

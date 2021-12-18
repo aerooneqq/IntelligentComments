@@ -20,12 +20,33 @@ import com.jetbrains.rdclient.editors.getPsiFile
 import java.util.*
 import kotlin.collections.HashMap
 
-data class CommentState(val isInRenderMode: Boolean) {
+class CommentState {
   companion object {
-    val defaultInstance = CommentState(false)
+    val defaultInstance = CommentState()
   }
 
-  fun changeRenderMode() = CommentState(!isInRenderMode)
+
+  constructor()
+
+  constructor(isInRenderMode: Boolean) {
+    this.isInRenderMode = isInRenderMode
+  }
+
+  constructor(snapshot: CommentStateSnapshot) {
+    isInRenderMode = snapshot.isInRenderMode
+    lastRelativeCaretOffsetWithinComment = snapshot.lastRelativeCaretPositionWithinComment
+  }
+
+
+  var isInRenderMode = false
+    private set
+
+  var lastRelativeCaretOffsetWithinComment = 0
+
+
+  fun changeRenderMode() {
+    isInRenderMode = !isInRenderMode
+  }
 }
 
 data class EditorId(val moniker: String, val tabOrder: Int = 0) {
@@ -98,30 +119,8 @@ class RiderCommentsStateManager(project: Project) : PersistentStateComponent<Sol
       return null
     }
 
-    val newState = existingState.changeRenderMode()
-    if (tryUpdateState(editor, commentIdentifier, newState)) {
-      return newState
-    }
-
-    return null
-  }
-
-  private fun tryUpdateState(editor: Editor, commentIdentifier: CommentIdentifier, newState: CommentState): Boolean {
-    val editorId = editor.getEditorId()
-    val editorsCommentStates = states[editorId]
-    if (editorsCommentStates == null) {
-      logger.logAssertion("Trying to update state of a comment with not registered document $editorId")
-      return false
-    }
-
-    val existingState = editorsCommentStates[commentIdentifier]
-    if (existingState == null) {
-      logger.logAssertion("Trying to update state for a not registered comment $editorId $commentIdentifier")
-      return false
-    }
-
-    editorsCommentStates[commentIdentifier] = newState
-    return true
+    existingState.changeRenderMode()
+    return existingState
   }
 
   fun isInRenderMode(editor: Editor, commentIdentifier: CommentIdentifier): Boolean? {
@@ -159,7 +158,7 @@ class RiderCommentsStateManager(project: Project) : PersistentStateComponent<Sol
     for (snapshot in solutionCommentsState.commentStateSnapshots) {
       val editorsComments = loadedStates.getOrCreate(EditorId(snapshot.moniker, snapshot.tabOrder)) { HashMap() }
       val id = LoadedCommentIdentifier(snapshot.moniker, snapshot.startOffset, snapshot.endOffset)
-      editorsComments[id] = CommentState(snapshot.isInRenderMode)
+      editorsComments[id] = CommentState(snapshot)
     }
   }
 }
@@ -179,5 +178,6 @@ class CommentStateSnapshot {
   @Attribute("tabOrder") var tabOrder: Int = EditorId.emptyInstance.tabOrder
   @Attribute("startOffset") var startOffset: Int = 0
   @Attribute("endOffset") var endOffset: Int = 0
-  @Tag("isInRenderMode") var isInRenderMode: Boolean = false
+  @Attribute("isInRenderMode") var isInRenderMode: Boolean = false
+  @Attribute("lastRelativeCaretPositionWithinComment") var lastRelativeCaretPositionWithinComment: Int = 0
 }
