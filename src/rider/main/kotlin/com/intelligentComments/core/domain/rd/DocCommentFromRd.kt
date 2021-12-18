@@ -10,6 +10,6 @@ class DocCommentFromRd(
   rdDocComment: RdDocComment,
   project: Project,
   range: RangeHighlighter
-) : CommentFromRd(rdDocComment, range), DocComment {
+) : CommentFromRd(rdDocComment, project, range), DocComment {
   override val content: IntelligentCommentContent = IntelligentCommentContentFromRd(rdDocComment.content, project)
 }

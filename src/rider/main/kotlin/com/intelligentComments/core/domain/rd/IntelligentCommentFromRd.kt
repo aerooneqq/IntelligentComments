@@ -12,7 +12,8 @@ class IntelligentCommentFromRd(
   private val rdComment: RdIntelligentComment,
   private val project: Project,
   highlighter: RangeHighlighter
-) : CommentFromRd(rdComment, highlighter), IntelligentComment {
+) : CommentFromRd(rdComment, project, highlighter), IntelligentComment {
+
   override val allAuthors: Collection<CommentAuthor> = createAuthors()
   override val content: IntelligentCommentContent = createContent(project)
   override val references: Collection<Reference> = createReferences()

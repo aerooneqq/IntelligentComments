@@ -49,7 +49,7 @@ class DocCommentSwitchRenderModeGutterMark(
   override fun getClickAction(): AnAction = object : AnAction() {
     override fun actionPerformed(e: AnActionEvent) {
       e.dataContext.Editor?.let { editor ->
-        controller.toggleModeChange(docComment.id, editor as EditorImpl)
+        controller.toggleModeChange(docComment.commentIdentifier, editor as EditorImpl)
       }
     }
   }

@@ -1,31 +1,32 @@
 package com.intelligentComments.core.comments
 
 import com.intelligentComments.core.domain.core.CommentBase
+import com.intelligentComments.core.domain.core.CommentIdentifier
 import com.intelligentComments.core.domain.core.DocComment
 import com.intelligentComments.core.domain.core.IntelligentComment
 import com.intelligentComments.ui.comments.model.DocCommentUiModel
 import com.intelligentComments.ui.comments.model.IntelligentCommentUiModel
 import com.intelligentComments.ui.comments.renderers.DocCommentRenderer
-import com.intellij.openapi.editor.CustomFoldRegion
-import com.intellij.openapi.editor.CustomFoldRegionRenderer
-import com.intellij.openapi.editor.Document
-import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.editor.*
 import com.intellij.openapi.editor.impl.EditorImpl
 import com.intellij.openapi.project.Project
 import com.jetbrains.rd.platform.diagnostics.logAssertion
 import com.jetbrains.rd.platform.util.application
 import com.jetbrains.rd.platform.util.getLogger
+import com.jetbrains.rd.util.getOrCreate
 import com.jetbrains.rd.util.reactive.ViewableMap
+import com.jetbrains.rdclient.document.getDocumentId
+import com.jetbrains.rdclient.editors.FrontendTextControlHost
 import com.jetbrains.rdclient.util.idea.LifetimedProjectComponent
 import com.jetbrains.rider.document.RiderDocumentHost
-import java.util.*
 
 
 class RiderCommentsController(project: Project) : LifetimedProjectComponent(project) {
-  private val comments = ViewableMap<Document, ViewableMap<UUID, CommentBase>>()
-  private val foldings = ViewableMap<UUID, CustomFoldRegion>()
+  private val comments = ViewableMap<Document, ViewableMap<CommentIdentifier, CommentBase>>()
+  private val foldings = ViewableMap<CommentIdentifier, ViewableMap<Editor, CustomFoldRegion>>()
   private val logger = getLogger<RiderDocumentHost>()
   private val commentsStateManager = project.getService(RiderCommentsStateManager::class.java)
+  private val textControlHost = FrontendTextControlHost.getInstance(project)
 
 
   fun addComment(editor: EditorImpl, comment: CommentBase) {
@@ -33,75 +34,78 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
 
     val document = editor.document
     val documentComments = if (document !in comments) {
-      val map = ViewableMap<UUID, CommentBase>()
+      val map = ViewableMap<CommentIdentifier, CommentBase>()
       comments[document] = map
       map
     } else {
       comments[document] ?: return
     }
 
-    val uuid = comment.id
-    documentComments[uuid] = comment
+    documentComments[comment.commentIdentifier] = comment
 
     val state = commentsStateManager.getOrCreateCommentState(editor, comment.commentIdentifier)
-    updateRenderModeToMatchState(comment.id, editor, state)
+    updateRenderModeToMatchState(comment.commentIdentifier, editor.document, state)
   }
 
-  fun toggleModeChange(commentId: UUID, editor: EditorImpl) {
+  fun toggleModeChange(commentIdentifier: CommentIdentifier, editor: EditorImpl) {
     application.assertIsDispatchThread()
-    val comment = getComment(commentId, editor) ?: return
+    val comment = getComment(commentIdentifier, editor.document) ?: return
     val commentState = commentsStateManager.getExistingCommentState(editor, comment.commentIdentifier)
     if (commentState == null) {
-      logger.logAssertion("Trying to change render mode for a not registered comment $commentId")
+      logger.logAssertion("Trying to change render mode for a not registered comment ${comment.commentIdentifier}")
       return
     }
 
     val changedState = commentsStateManager.changeRenderMode(editor, comment.commentIdentifier)
     if (changedState != null) {
-      updateRenderModeToMatchState(commentId, editor, changedState)
+      updateRenderModeToMatchState(commentIdentifier, editor.document, changedState)
     }
   }
 
-  private fun updateRenderModeToMatchState(commentId: UUID, editor: EditorImpl, state: CommentState) {
-    if (!state.isInRenderMode) {
-      toggleEditMode(commentId, editor)
-    } else {
-      toggleRenderMode(commentId, editor)
+  private fun updateRenderModeToMatchState(commentIdentifier: CommentIdentifier, document: Document, state: CommentState) {
+    val documentId = document.getDocumentId(project) ?: return
+    for (editor in textControlHost.getAllEditors(documentId)) {
+      editor as? EditorImpl ?: continue
+      if (!state.isInRenderMode) {
+        toggleEditMode(commentIdentifier, editor)
+      } else {
+        toggleRenderMode(commentIdentifier, editor)
+      }
     }
   }
 
-  private fun toggleEditMode(commentId: UUID, editor: EditorImpl) {
+  private fun toggleEditMode(commentIdentifier: CommentIdentifier, editor: EditorImpl) {
     application.assertIsDispatchThread()
 
-    val correspondingComment = getComment(commentId, editor)
+    val correspondingComment = getComment(commentIdentifier, editor.document)
     if (correspondingComment != null) {
       val foldingModel = editor.foldingModel
-      val folding = foldings[commentId]
+      val folding = foldings[commentIdentifier]?.get(editor)
       if (folding != null) {
+        editor.caretModel.moveToOffset(folding.startOffset)
         foldingModel.runBatchFoldingOperation {
           foldingModel.removeFoldRegion(folding)
-          foldings.remove(commentId)
+          foldings[commentIdentifier]?.remove(editor)
         }
       }
     }
   }
 
-  private fun getComment(commentId: UUID, editor: EditorImpl): CommentBase? {
-    val document = editor.document
+  private fun getComment(commentIdentifier: CommentIdentifier, document: Document): CommentBase? {
     val documentComments = comments[document]
-    val comment = documentComments?.get(commentId)
+    val comment = documentComments?.get(commentIdentifier)
 
     if (comment == null){
-      logger.error("Comment for giver ID $commentId does not exist")
+      logger.error("Comment for given ID $commentIdentifier does not exist")
     }
 
     return comment
   }
 
-  private fun toggleRenderMode(commentId: UUID, editor: EditorImpl) {
+  private fun toggleRenderMode(commentId: CommentIdentifier, editor: EditorImpl) {
     application.assertIsDispatchThread()
 
-    val correspondingComment = getComment(commentId, editor)
+    val correspondingComment = getComment(commentId, editor.document)
 
     if (correspondingComment != null) {
       renderComment(correspondingComment, editor)
@@ -125,7 +129,7 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
         val oldFoldingRenderer = oldFolding.renderer
         if (oldFoldingRenderer is DocCommentRenderer) {
           val oldComment = oldFoldingRenderer.model.docComment
-          foldings.remove(oldComment.id)
+          foldings[oldComment.commentIdentifier]?.remove(editor)
           foldingModel.removeFoldRegion(oldFolding)
         }
       }
@@ -138,7 +142,8 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
       if (folding == null) {
         logger.error("Failed to create folding region for ${comment.id}")
       } else {
-        foldings[comment.id] = folding
+        val editorsFoldings = foldings.getOrCreate(comment.commentIdentifier) { ViewableMap() }
+        editorsFoldings[editor] = folding
       }
     }
   }
