@@ -1,15 +1,20 @@
 package com.intelligentComments.ui.comments.renderers.segments
 
+import com.intelligentComments.ui.comments.model.content.ContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.ContentSegmentsUiModel
 import com.intelligentComments.ui.core.RectangleModelBuildContext
 import com.intelligentComments.ui.core.RectanglesModel
 import com.intelligentComments.ui.util.ContentSegmentsUtil
+import com.intelligentComments.ui.util.UpdatedRectCookie
 import com.intellij.openapi.editor.impl.EditorImpl
+import com.intellij.openapi.util.use
 import java.awt.Graphics
 import java.awt.Rectangle
 import kotlin.math.max
 
-abstract class LeftHeaderRightContentRenderer(private val content: ContentSegmentsUiModel) : SegmentRenderer {
+abstract class LeftHeaderRightContentRenderer(
+  private val content: Collection<ContentSegmentUiModel>
+) : SegmentRenderer {
   companion object {
     private const val deltaBetweenNameAndDescription = 10
   }
@@ -21,15 +26,18 @@ abstract class LeftHeaderRightContentRenderer(private val content: ContentSegmen
     editorImpl: EditorImpl,
     rectanglesModel: RectanglesModel
   ): Rectangle {
-    renderHeader(g, rect, editorImpl, rectanglesModel)
+    UpdatedRectCookie(rect, yDelta = -2).use {
+      renderHeader(g, rect, editorImpl, rectanglesModel)
+    }
+
     val nameWidth = calculateHeaderWidth(editorImpl)
     val xDelta = nameWidth + deltaBetweenNameAndDescription
     val adjustedRect = Rectangle(rect).apply {
       x += xDelta
-      y = rect.y + calculateHeaderHeight(editorImpl) / 8
+      y = rect.y
     }
 
-    return ContentSegmentsUtil.renderSegments(content.content, g, adjustedRect, editorImpl, rectanglesModel).apply {
+    return ContentSegmentsUtil.renderSegments(content, g, adjustedRect, editorImpl, rectanglesModel).apply {
       x -= xDelta
       y += ContentSegmentsUtil.deltaBetweenSegments
     }
@@ -46,14 +54,14 @@ abstract class LeftHeaderRightContentRenderer(private val content: ContentSegmen
 
   override fun calculateExpectedHeightInPixels(editorImpl: EditorImpl): Int {
     val nameHeight = calculateHeaderHeight(editorImpl)
-    val contentHeight = ContentSegmentsUtil.calculateContentHeight(content.content, editorImpl)
-    return max(nameHeight, contentHeight) + nameHeight / 8
+    val contentHeight = ContentSegmentsUtil.calculateContentHeight(content, editorImpl) + ContentSegmentsUtil.deltaBetweenSegments
+    return max(nameHeight, contentHeight)
   }
 
   override fun calculateExpectedWidthInPixels(editorImpl: EditorImpl): Int {
     var width = calculateHeaderWidth(editorImpl)
     width += deltaBetweenNameAndDescription
-    width += ContentSegmentsUtil.calculateContentWidth(content.content, editorImpl)
+    width += ContentSegmentsUtil.calculateContentWidth(content, editorImpl)
     return width
   }
 

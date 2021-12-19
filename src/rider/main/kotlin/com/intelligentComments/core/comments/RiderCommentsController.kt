@@ -1,5 +1,7 @@
 package com.intelligentComments.core.comments
 
+import com.intelligentComments.core.comments.states.CommentState
+import com.intelligentComments.core.comments.states.RiderCommentsStateManager
 import com.intelligentComments.core.domain.core.CommentBase
 import com.intelligentComments.core.domain.core.CommentIdentifier
 import com.intelligentComments.core.domain.core.DocComment
@@ -34,6 +36,11 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
 
   fun addComment(editor: EditorImpl, comment: CommentBase) {
     application.assertIsDispatchThread()
+
+    if (!comment.isValid()) {
+      logger.warn("Comment ${comment.commentIdentifier} is invalid")
+      return
+    }
 
     val document = editor.document
     val documentComments = if (document !in comments) {

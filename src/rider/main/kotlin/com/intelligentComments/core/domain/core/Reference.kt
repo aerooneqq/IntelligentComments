@@ -2,14 +2,16 @@ package com.intelligentComments.core.domain.core
 
 import java.nio.file.Path
 
-interface Reference : UniqueEntity {
-  val referenceName: String
+interface Reference : UniqueEntity
+
+interface CodeEntityReference : Reference {
+  val rawMemberName: String
 }
 
-interface FileBasedReference : Reference {
-  val filePath: Path
+interface ExternalReference : Reference {
+
 }
 
-interface DependencyReference : FileBasedReference {
-  val dependencyDescription: String
+interface HttpLinkReference : ExternalReference {
+  val rawLink: String
 }

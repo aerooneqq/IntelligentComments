@@ -39,4 +39,8 @@ class IntelligentCommentFromRd(
   fun getRenderer(project: Project): EditorCustomElementRenderer {
     return IntelligentCommentsRenderer(IntelligentCommentUiModel(project, this))
   }
+
+  override fun isValid(): Boolean {
+    return super.isValid()
+  }
 }

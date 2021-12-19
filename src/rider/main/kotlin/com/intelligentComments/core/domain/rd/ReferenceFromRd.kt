@@ -1,30 +1,32 @@
 package com.intelligentComments.core.domain.rd
 
-import com.intelligentComments.core.domain.core.FileBasedReference
-import com.intelligentComments.core.domain.core.Reference
-import com.intelligentComments.core.domain.core.UniqueEntityImpl
-import com.jetbrains.rd.ide.model.RdDependencyReference
-import com.jetbrains.rd.ide.model.RdFileBasedReference
+import com.intelligentComments.core.domain.core.*
+import com.intellij.psi.impl.source.resolve.reference.impl.providers.IdRefReference
+import com.jetbrains.rd.ide.model.RdCodeEntityReference
+import com.jetbrains.rd.ide.model.RdExternalReference
+import com.jetbrains.rd.ide.model.RdHttpLinkReference
 import com.jetbrains.rd.ide.model.RdReference
-import java.nio.file.Path
-import java.nio.file.Paths
 
 open class ReferenceFromRd(private val reference: RdReference) : UniqueEntityImpl(), Reference {
   companion object {
     fun getFrom(reference: RdReference): ReferenceFromRd {
       return when (reference) {
-        is RdDependencyReference -> DependencyReferenceFromRd(reference)
+        is RdCodeEntityReference -> CodeEntityReferenceFromRd(reference)
+        is RdHttpLinkReference -> HttpLinkReferenceFromRd(reference)
         else -> throw IllegalArgumentException(reference.toString())
       }
     }
   }
-
-  override val referenceName: String = reference.referenceName
 }
 
-open class FileBasedReferenceFromRd(private val reference: RdFileBasedReference) : ReferenceFromRd(reference),
-  FileBasedReference {
-  private val myCachedPath = Paths.get(reference.filePath)
+open class CodeEntityReferenceFromRd(reference: RdCodeEntityReference) : ReferenceFromRd(reference), CodeEntityReference {
+  override val rawMemberName: String
+    get() = TODO("Not yet implemented")
+}
 
-  override val filePath: Path = myCachedPath
+open class ExternalReferenceFromRd(reference: RdExternalReference) : ReferenceFromRd(reference), ExternalReference
+
+open class HttpLinkReferenceFromRd(reference: RdHttpLinkReference) : ExternalReferenceFromRd(reference), HttpLinkReference {
+  override val rawLink: String
+    get() = TODO("Not yet implemented")
 }

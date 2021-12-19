@@ -37,6 +37,7 @@ object Colors {
   val ParamNameBackgroundColor = ColorName("param.name.background.color")
   val ReturnBackgroundColor = ColorName("return.background.color")
   val ExceptionBackgroundColor = ColorName("exception.background.color")
+  val SeeAlsoBackgroundColor = ColorName("see.also.background.color")
 
   val ListItemBulletBackgroundColor = ColorName("list.item.bullet.background.color")
 
@@ -62,7 +63,7 @@ class ColorsProviderImpl(project: Project) : ColorsProvider {
     loadColorsIfNeeded()
     val hexString = properties.getProperty(colorName.name)
     if (hexString == null) {
-      logger.logAssertion("Color hex string was null")
+      logger.logAssertion("Color hex string was null for $colorName")
       return fallbackColor
     }
 

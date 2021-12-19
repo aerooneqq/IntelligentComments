@@ -11,6 +11,7 @@ using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.Content;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.Content;
+using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.References;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Calculations;
 
@@ -91,6 +92,7 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
 
   private const string UndefinedParam = "???";
   private const string CRef = "cref";
+  private const string Href = "href";
   
   [NotNull] private static readonly ILogger ourLogger = Logger.GetLogger<DocCommentBuilder>();
   
@@ -189,7 +191,7 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
     return hasOneTextChild;
   }
 
-  private void AddHighlightedText(string text, TextHighlighter highlighter)
+  private void AddHighlightedText([NotNull] string text, [NotNull] TextHighlighter highlighter)
   {
     var highlightedText = new HighlightedText(text, new[] { highlighter });
     var textContentSegment = new MergeableTextContentSegment(highlightedText);
@@ -292,5 +294,54 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
 
     var highlighter = myHighlightersProvider.GetParamRefElementHighlighter(0, paramName.Length);
     AddHighlightedText(paramName, highlighter);
+  }
+
+  public override void VisitSeeAlso(XmlElement element)
+  {
+    myVisitedNodes.Add(element);
+    var href = element.GetAttribute(Href);
+    if (href != string.Empty)
+    {
+      VisitSeeAlsoLink(element);
+      return;
+    }
+    
+    VisitSeeAlsoMember(element);
+  }
+
+  private void VisitSeeAlsoLink(XmlElement element)
+  {
+    ProcessSeeAlso(element, Href, (referenceRawText, description) =>
+    {
+      var highlighter = myHighlightersProvider.GetSeeAlsoLinkHighlighter(0, description.Length);
+      var highlightedText = new HighlightedText(description, new[] { highlighter });
+      return new SeeAlsoLinkContentSegment(highlightedText, new HttpReference(referenceRawText));
+    });
+  }
+
+  private void ProcessSeeAlso(
+    [NotNull] XmlElement element,
+    [NotNull] string attributeName,
+    [NotNull] Func<string, string, ISeeAlsoContentSegment> factory)
+  {
+    var attributeValue = element.GetAttribute(attributeName);
+    var innerText = attributeValue;
+    if (ElementHasOneTextChild(element, out var text))
+    {
+      innerText = text;
+    }
+
+    var seeAlso = factory.Invoke(attributeValue, innerText);
+    ExecuteWithTopmostContentSegments(segments => segments.Segments.Add(seeAlso));
+  }
+
+  private void VisitSeeAlsoMember(XmlElement element)
+  {
+    ProcessSeeAlso(element, CRef, (referenceRawText, description) =>
+    {
+      var highlighter = myHighlightersProvider.GetSeeAlsoMemberHighlighter(0, description.Length);
+      var highlightedText = new HighlightedText(description, new[] { highlighter });
+      return new SeeAlsoMemberContentSegment(highlightedText, new CodeEntityReference(referenceRawText));
+    });
   }
 }

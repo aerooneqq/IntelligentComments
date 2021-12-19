@@ -1,7 +1,7 @@
 package com.intelligentComments.ui.comments.renderers
 
 import com.intelligentComments.core.comments.RiderCommentsController
-import com.intelligentComments.core.comments.RiderCommentsStateManager
+import com.intelligentComments.core.comments.states.RiderCommentsStateManager
 import com.intelligentComments.core.domain.core.DocComment
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.actionSystem.AnAction

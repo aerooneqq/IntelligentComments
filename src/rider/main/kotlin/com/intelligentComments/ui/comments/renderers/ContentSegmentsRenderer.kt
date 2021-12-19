@@ -10,8 +10,9 @@ import com.intellij.openapi.editor.impl.EditorImpl
 import java.awt.Graphics
 import java.awt.Rectangle
 
-open class ContentSegmentsRenderer(private val segments: Collection<ContentSegmentUiModel>) : Renderer,
-  RectangleModelBuildContributor {
+open class ContentSegmentsRenderer(
+  private val segments: Collection<ContentSegmentUiModel>
+) : Renderer, RectangleModelBuildContributor {
   override fun render(
     g: Graphics,
     rect: Rectangle,

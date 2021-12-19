@@ -33,14 +33,8 @@ class SectionHeaderUiModel(
     val defaultColor = colorsProvider.getColorFor(Colors.TextDefaultColor)
     val hoveredColor = colorsProvider.getColorFor(Colors.TextDefaultHoveredColor)
 
-    return object : TextHighlighter {
-      override val startOffset: Int = 0
-      override val endOffset: Int = text.length
-      override val attributes: TextAttributes = TextAttributesImpl.defaultAttributes
-      override val textColor: Color = defaultColor
-      override val backgroundStyle: BackgroundStyle? = null
+    return object : DefaultTextHighlighter(0, text.length, defaultColor) {
       override val mouseInOutAnimation: MouseInOutAnimation = ForegroundTextAnimation(hoveredColor, defaultColor)
-      override val id: UUID = UUID.randomUUID()
     }
   }
 

@@ -9,6 +9,7 @@ import com.intelligentComments.ui.comments.model.content.list.ListContentSegment
 import com.intelligentComments.ui.comments.model.content.paragraphs.ParagraphUiModel
 import com.intelligentComments.ui.comments.model.content.params.ParameterUiModel
 import com.intelligentComments.ui.comments.model.content.remarks.RemarksUiModel
+import com.intelligentComments.ui.comments.model.content.seeAlso.SeeAlsoUiModel
 import com.intelligentComments.ui.comments.model.content.table.TableContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.text.TextContentSegmentUiModel
 import com.intelligentComments.ui.util.HashUtil
@@ -30,7 +31,8 @@ abstract class ContentSegmentUiModel(
         is ReturnSegment -> ReturnUiModel(project, segment)
         is RemarksSegment -> RemarksUiModel(project, segment)
         is ExceptionSegment -> ExceptionUiModel(project, segment)
-        else -> throw IllegalArgumentException(segment.toString())
+        is SeeAlsoSegment -> SeeAlsoUiModel.getFor(project, segment)
+        else -> throw IllegalArgumentException(segment.javaClass.name)
       }
     }
   }

@@ -1,4 +1,4 @@
-package com.intelligentComments.core.comments
+package com.intelligentComments.core.comments.states
 
 import com.intelligentComments.core.domain.core.CommentIdentifier
 import com.intelligentComments.core.settings.CommentsDisplayKind
@@ -18,42 +18,6 @@ import com.jetbrains.rd.platform.util.application
 import com.jetbrains.rd.util.getOrCreate
 import com.jetbrains.rdclient.editors.getPsiFile
 import java.util.*
-import kotlin.collections.HashMap
-
-class CommentState {
-  companion object {
-    val defaultInstance = CommentState()
-  }
-
-
-  constructor()
-
-  constructor(isInRenderMode: Boolean) {
-    this.isInRenderMode = isInRenderMode
-  }
-
-  constructor(snapshot: CommentStateSnapshot) {
-    isInRenderMode = snapshot.isInRenderMode
-    lastRelativeCaretOffsetWithinComment = snapshot.lastRelativeCaretPositionWithinComment
-  }
-
-
-  var isInRenderMode = false
-    private set
-
-  var lastRelativeCaretOffsetWithinComment = 0
-
-
-  fun changeRenderMode() {
-    isInRenderMode = !isInRenderMode
-  }
-}
-
-data class EditorId(val moniker: String, val tabOrder: Int = 0) {
-  companion object {
-    val emptyInstance = EditorId("", 0)
-  }
-}
 
 @State(
   name = "SolutionCommentsState",

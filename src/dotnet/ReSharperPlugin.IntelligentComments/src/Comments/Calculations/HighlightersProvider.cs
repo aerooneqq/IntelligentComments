@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using JetBrains.ProjectModel;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 
@@ -5,18 +6,23 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Calculations;
 
 public interface IHighlightersProvider
 {
-  TextHighlighter GetCXmlElementHighlighter(int startOffset, int endOffset);
-  TextHighlighter GetParamRefElementHighlighter(int startOffset, int endOffset);
+  [NotNull] TextHighlighter GetCXmlElementHighlighter(int startOffset, int endOffset);
+  [NotNull] TextHighlighter GetParamRefElementHighlighter(int startOffset, int endOffset);
+  [NotNull] TextHighlighter GetSeeAlsoLinkHighlighter(int startOffset, int endOffset);
+  [NotNull] TextHighlighter GetSeeAlsoMemberHighlighter(int startOffset, int endOffset);
 }
   
   
 [SolutionComponent]
 public class HighlightersProvider : IHighlightersProvider
 {
-  private static readonly TextHighlighterAttributes ourDefaultAttributes = new(FontStyle.Regular, true, 400);
-
-  private const string CElementKey = "doc.comment.c.element.text";
-  private const string ParamRefKey = "doc.comment.param.ref.text";
+  [NotNull] private static readonly TextHighlighterAttributes ourDefaultAttributes = new(FontStyle.Regular, true, 400);
+  
+  
+  [NotNull] private const string CElementKey = "doc.comment.c.element.text";
+  [NotNull] private const string ParamRefKey = "doc.comment.param.ref.text";
+  [NotNull] private const string SeeAlsoLinkKey = "see.also.link.text";
+  [NotNull] private const string SeeAlsoMemberKey = "see.also.member.text";
 
 
   public TextHighlighter GetCXmlElementHighlighter(int startOffset, int endOffset) =>
@@ -24,4 +30,10 @@ public class HighlightersProvider : IHighlightersProvider
 
   public TextHighlighter GetParamRefElementHighlighter(int startOffset, int endOffset) =>
     new(ParamRefKey, startOffset, endOffset, ourDefaultAttributes);
+
+  public TextHighlighter GetSeeAlsoLinkHighlighter(int startOffset, int endOffset) =>
+    new(SeeAlsoLinkKey, startOffset, endOffset, ourDefaultAttributes);
+
+  public TextHighlighter GetSeeAlsoMemberHighlighter(int startOffset, int endOffset) =>
+    new(SeeAlsoMemberKey, startOffset, endOffset, ourDefaultAttributes);
 }

@@ -13,8 +13,9 @@ import java.awt.Graphics
 import java.awt.Rectangle
 import java.lang.Integer.max
 
-abstract class ExpandableContentWithHeader(private val headerUiModel: HeaderUiModel) : Renderer,
-  RectangleModelBuildContributor {
+abstract class ExpandableContentWithHeader(
+  private val headerUiModel: HeaderUiModel
+) : Renderer, RectangleModelBuildContributor {
   final override fun render(
     g: Graphics,
     rect: Rectangle,

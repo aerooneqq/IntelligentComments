@@ -25,11 +25,7 @@ class CommentIdentifier(val moniker: String, val rangeMarker: RangeMarker) : Com
 
     other as CommentIdentifier
 
-    if (moniker != other.moniker || other.rangeMarker.startOffset != rangeMarker.startOffset || other.rangeMarker.endOffset != rangeMarker.endOffset) {
-      return false
-    }
-
-    return true
+    return hashCode() == other.hashCode()
   }
 
   override fun compareTo(other: CommentIdentifier): Int {
@@ -40,4 +36,8 @@ class CommentIdentifier(val moniker: String, val rangeMarker: RangeMarker) : Com
 interface CommentBase : UniqueEntity {
   val rangeMarker: RangeMarker
   val commentIdentifier: CommentIdentifier
+
+  fun isValid(): Boolean {
+    return rangeMarker.isValid
+  }
 }

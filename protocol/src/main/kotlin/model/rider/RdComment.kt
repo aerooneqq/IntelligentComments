@@ -58,13 +58,22 @@ object RdCommentsModel : Ext(SolutionModel.RdDocumentModel) {
     field("Name", PredefinedType.string)
   }
 
-  val RdRemarksSegment = structdef extends RdSegmentWithContent {
+  val RdRemarksSegment = structdef extends RdSegmentWithContent { }
+
+  val RdParagraphSegment = structdef extends RdSegmentWithContent { }
+
+  val RdReturnSegment = structdef extends RdSegmentWithContent { }
+
+  val RdSeeAlsoContentSegment = basestruct extends RdContentSegment {
+    field("Description", RdHighlightedText)
   }
 
-  val RdParagraphSegment = structdef extends RdSegmentWithContent {
+  val RdSeeAlsoMemberContentSegment = structdef extends RdSeeAlsoContentSegment {
+    field("Reference", RdCodeEntityReference)
   }
 
-  val RdReturnSegment = structdef extends RdSegmentWithContent {
+  val RdSeeAlsoLinkContentSegment = structdef extends RdSeeAlsoContentSegment {
+    field("Reference", RdExternalReference)
   }
 
   val RdExceptionsSegment = structdef extends RdSegmentWithContent {
@@ -129,16 +138,13 @@ object RdCommentsModel : Ext(SolutionModel.RdDocumentModel) {
   }
 
   val RdReference = basestruct {
-    field("ReferenceName", PredefinedType.string)
   }
 
-  val RdFileBasedReference = basestruct extends RdReference {
-    field("FilePath", PredefinedType.string)
-  }
+  val RdExternalReference = basestruct extends RdReference { }
 
-  val RdDependencyReference = structdef extends RdFileBasedReference {
-    field("DependencyDescription", PredefinedType.string)
-  }
+  val RdHttpLinkReference = structdef extends RdExternalReference { }
+
+  val RdCodeEntityReference = structdef extends RdReference { }
 
   val RdHighlightedText = structdef {
     field("Text", PredefinedType.string)

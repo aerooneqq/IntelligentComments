@@ -4,6 +4,7 @@ import com.intelligentComments.core.domain.core.*
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intellij.openapi.project.Project
 import com.jetbrains.rd.ide.model.*
+import com.jetbrains.rd.util.string.printToString
 import java.awt.Image
 import java.io.File
 import javax.imageio.ImageIO
@@ -21,6 +22,7 @@ open class ContentSegmentFromRd(private val contentSegment: RdContentSegment) : 
         is RdReturnSegment -> ReturnFromRd(contentSegment, project)
         is RdRemarksSegment -> RemarksSegmentFromRd(contentSegment, project)
         is RdExceptionsSegment -> ExceptionSegmentFromRd(contentSegment, project)
+        is RdSeeAlsoContentSegment -> SeeAlsoSegmentFromRd.getFor(contentSegment, project)
         else -> throw IllegalArgumentException(contentSegment.toString())
       }
     }
@@ -156,4 +158,37 @@ class ExceptionSegmentFromRd(
 ) : ContentSegmentFromRd(rdExceptionSegment), ExceptionSegment {
   override val name: String = rdExceptionSegment.name
   override val content: ContentSegments = ContentSegmentsFromRd(rdExceptionSegment.content, project)
+}
+
+open class SeeAlsoSegmentFromRd(
+  rdSeeAlso: RdSeeAlsoContentSegment,
+  project: Project
+) : ContentSegmentFromRd(rdSeeAlso), SeeAlsoSegment {
+  companion object {
+    fun getFor(rdSeeAlso: RdSeeAlsoContentSegment, project: Project): SeeAlsoSegmentFromRd {
+      return when(rdSeeAlso) {
+        is RdSeeAlsoLinkContentSegment -> SeeAlsoLinkSegmentFromRd(rdSeeAlso, project)
+        is RdSeeAlsoMemberContentSegment -> SeeAlsoMemberSegmentFromRd(rdSeeAlso, project)
+        else -> throw IllegalArgumentException(rdSeeAlso.printToString())
+      }
+    }
+  }
+
+  override val description: HighlightedText = HighlightedTextFromRd(rdSeeAlso.description, project)
+}
+
+class SeeAlsoLinkSegmentFromRd(
+  rdSeeAlsoLink: RdSeeAlsoLinkContentSegment,
+  project: Project
+) : SeeAlsoSegmentFromRd(rdSeeAlsoLink, project), SeeAlsoLinkSegment {
+  override val reference: ExternalReference
+    get() = TODO("Not yet implemented")
+}
+
+class SeeAlsoMemberSegmentFromRd(
+  rdSeeAlsoLink: RdSeeAlsoMemberContentSegment,
+  project: Project
+) : SeeAlsoSegmentFromRd(rdSeeAlsoLink, project), SeeAlsoMemberSegment {
+  override val reference: CodeEntityReference
+    get() = TODO("Not yet implemented")
 }

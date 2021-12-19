@@ -15,6 +15,16 @@ interface TextHighlighter : UniqueEntity {
   val mouseInOutAnimation: MouseInOutAnimation?
 }
 
+open class DefaultTextHighlighter(
+  override val startOffset: Int,
+  override val endOffset: Int,
+  override val textColor: Color
+) : UniqueEntityImpl(), TextHighlighter {
+  override val attributes: TextAttributes = TextAttributesImpl.defaultAttributes
+  override val backgroundStyle: BackgroundStyle? = null
+  override val mouseInOutAnimation: MouseInOutAnimation? = null
+}
+
 interface BackgroundStyle {
   val backgroundColor: Color
   val roundedRect: Boolean
@@ -24,7 +34,8 @@ interface BackgroundStyle {
 class BackgroundStyleImpl(
   override val backgroundColor: Color,
   override val roundedRect: Boolean,
-  override val leftRightPadding: Int) : BackgroundStyle
+  override val leftRightPadding: Int
+) : BackgroundStyle
 
 interface MouseInOutAnimation {
   fun applyTo(uiModel: HighlighterUiModel, mouseIn: Boolean): Boolean

@@ -10,7 +10,7 @@ import com.jetbrains.rd.ide.model.RdComment
 import com.jetbrains.rd.ide.model.RdDocComment
 import com.jetbrains.rd.ide.model.RdIntelligentComment
 
-open class CommentFromRd(
+abstract class CommentFromRd(
   rdComment: RdComment,
   project: Project,
   final override val rangeMarker: RangeMarker
@@ -27,4 +27,6 @@ open class CommentFromRd(
 
   final override val commentIdentifier: CommentIdentifier =
     CommentIdentifier.create(rangeMarker.document, project, rangeMarker)
+
+  abstract override fun isValid(): Boolean
 }

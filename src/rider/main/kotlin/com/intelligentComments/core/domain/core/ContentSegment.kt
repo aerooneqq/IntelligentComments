@@ -75,3 +75,15 @@ interface RemarksSegment : EntityWithContentSegments
 interface ExceptionSegment : EntityWithContentSegments {
   val name: String
 }
+
+interface SeeAlsoSegment : ContentSegment {
+  val description: HighlightedText
+}
+
+interface SeeAlsoLinkSegment : SeeAlsoSegment {
+  val reference: ExternalReference
+}
+
+interface SeeAlsoMemberSegment : SeeAlsoSegment {
+  val reference: CodeEntityReference
+}

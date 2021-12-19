@@ -8,6 +8,7 @@ import com.intelligentComments.ui.comments.model.content.exceptions.ExceptionUiM
 import com.intelligentComments.ui.comments.model.content.image.ImageContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.list.ListContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.remarks.RemarksUiModel
+import com.intelligentComments.ui.comments.model.content.seeAlso.SeeAlsoUiModel
 import com.intelligentComments.ui.comments.model.content.table.TableContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.text.TextContentSegmentUiModel
 import com.intelligentComments.ui.core.RectangleModelBuildContributor
@@ -26,6 +27,7 @@ interface SegmentRenderer : Renderer, RectangleModelBuildContributor {
         is ReturnUiModel -> ReturnSegmentRenderer(segment)
         is RemarksUiModel -> RemarksSegmentRenderer(segment)
         is ExceptionUiModel -> ExceptionSegmentRenderer(segment)
+        is SeeAlsoUiModel -> SeeAlsoSegmentRenderer.getFor(segment)
         else -> throw IllegalArgumentException(segment.toString())
       }
     }

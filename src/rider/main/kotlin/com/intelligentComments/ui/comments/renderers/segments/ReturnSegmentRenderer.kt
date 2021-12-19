@@ -7,13 +7,13 @@ import com.intellij.openapi.editor.impl.EditorImpl
 import java.awt.Graphics
 import java.awt.Rectangle
 
-class ReturnSegmentRenderer(private val model: ReturnUiModel) : LeftHeaderRightContentRenderer(model.content) {
+class ReturnSegmentRenderer(private val model: ReturnUiModel) : LeftHeaderRightContentRenderer(model.content.content) {
   override fun calculateHeaderWidth(editorImpl: EditorImpl): Int {
     return TextUtil.getTextWidthWithHighlighters(editorImpl, model.headerText)
   }
 
   override fun calculateHeaderHeight(editorImpl: EditorImpl): Int {
-    return TextUtil.getLineHeightWithHighlighters(editorImpl, model.headerText.highlighters) + 2
+    return TextUtil.getLineHeightWithHighlighters(editorImpl, model.headerText.highlighters)
   }
 
   override fun renderHeader(g: Graphics, rect: Rectangle, editorImpl: EditorImpl, rectanglesModel: RectanglesModel) {

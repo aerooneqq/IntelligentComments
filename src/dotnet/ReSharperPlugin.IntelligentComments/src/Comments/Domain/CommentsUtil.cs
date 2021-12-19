@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 using JetBrains.Diagnostics;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Rider.Model;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.Content;
 using FontStyle = ReSharperPlugin.IntelligentComments.Comments.Domain.Core.FontStyle;
+using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Domain;
 
@@ -73,42 +75,106 @@ public static class CommentsUtil
       IReturnContentSegment @return => @return.ToRdReturn(),
       IRemarksSegment remarks => remarks.ToRdRemarks(),
       IExceptionSegment exceptionSegment => exceptionSegment.ToRdExceptionSegment(),
+      ISeeAlsoContentSegment seeAlsoSegment => seeAlsoSegment.ToRdSeeAlso(),
       _ => throw new ArgumentOutOfRangeException(segment.GetType().Name)
     };
   }
 
-  private static RdExceptionsSegment ToRdExceptionSegment(this IExceptionSegment segment)
+  [NotNull]
+  private static RdSeeAlsoContentSegment ToRdSeeAlso([NotNull] this ISeeAlsoContentSegment seeAlsoContentSegment)
+  {
+    return seeAlsoContentSegment switch
+    {
+      ISeeAlsoLinkContentSegment seeAlso => seeAlso.ToRdSeeAlso(),
+      ISeeAlsoMemberContentSegment seeAlso => seeAlso.ToRdSeeAlso(),
+      _ => throw new ArgumentOutOfRangeException(seeAlsoContentSegment.GetType().Name)
+    };
+  }
+
+  [NotNull]
+  private static RdSeeAlsoLinkContentSegment ToRdSeeAlso([NotNull] this ISeeAlsoLinkContentSegment seeAlso)
+  {
+    return new RdSeeAlsoLinkContentSegment(seeAlso.Reference.ToRdReference(), seeAlso.HighlightedText.ToRdHighlightedText());
+  }
+
+  private static RdSeeAlsoMemberContentSegment ToRdSeeAlso([NotNull] this ISeeAlsoMemberContentSegment seeAlso)
+  {
+    return new RdSeeAlsoMemberContentSegment(seeAlso.Reference.ToRdReference(), seeAlso.HighlightedText.ToRdHighlightedText());
+  }
+
+  [NotNull]
+  private static RdReference ToRdReference([NotNull] this IReference reference)
+  {
+    return reference switch
+    {
+      ICodeEntityReference codeEntityReference => codeEntityReference.ToRdReference(),
+      IExternalReference externalReference => externalReference.ToRdReference(),
+      _ => throw new ArgumentOutOfRangeException(reference.GetType().Name),
+    };
+  }
+
+  [NotNull]
+  private static RdCodeEntityReference ToRdReference([NotNull] this ICodeEntityReference codeEntityReference)
+  {
+    return new RdCodeEntityReference();
+  }
+
+  [NotNull]
+  private static RdExternalReference ToRdReference([NotNull] this IExternalReference externalReference)
+  {
+    return externalReference switch
+    {
+      IHttpReference httpReference => httpReference.ToRdReference(),
+      _ => throw new ArgumentOutOfRangeException(externalReference.GetType().Name)
+    };
+  }
+
+  [NotNull]
+  private static RdHttpLinkReference ToRdReference([NotNull] this IHttpReference reference)
+  {
+    return new RdHttpLinkReference();
+  }
+  
+  [NotNull]
+  private static RdExceptionsSegment ToRdExceptionSegment([NotNull] this IExceptionSegment segment)
   {
     return new RdExceptionsSegment(segment.ExceptionName, null, segment.ContentSegments.ToRdContentSegments());
   }
     
-  private static RdRemarksSegment ToRdRemarks(this IRemarksSegment remarksSegment)
+  [NotNull]
+  private static RdRemarksSegment ToRdRemarks([NotNull] this IRemarksSegment remarksSegment)
   {
     return new RdRemarksSegment(remarksSegment.ContentSegments.ToRdContentSegments());
   }
     
-  private static RdReturnSegment ToRdReturn(this IReturnContentSegment returnContentSegment)
+  [NotNull]
+  private static RdReturnSegment ToRdReturn([NotNull] this IReturnContentSegment returnContentSegment)
   {
     return new RdReturnSegment(returnContentSegment.ContentSegments.ToRdContentSegments());
   }
     
-  private static RdParam ToRdParam(this IParamContentSegment param)
+  [NotNull]
+  private static RdParam ToRdParam([NotNull] this IParamContentSegment param)
   {
+    if (param == null) throw new ArgumentNullException(nameof(param));
     return new RdParam(param.Name, param.ContentSegments.ToRdContentSegments());
   }
 
-  private static RdTextSegment ToRdTextSegment(this ITextContentSegment textContentSegment)
+  [NotNull]
+  private static RdTextSegment ToRdTextSegment([NotNull] this ITextContentSegment textContentSegment)
   {
     return new RdTextSegment(textContentSegment.Text.ToRdHighlightedText());
   }
 
-  private static RdHighlightedText ToRdHighlightedText(this IHighlightedText text)
+  [NotNull]
+  private static RdHighlightedText ToRdHighlightedText([NotNull] this IHighlightedText text)
   {
     var rdHighlighters = text.Highlighters.Select(highlighter => highlighter.ToRdHighlighter()).ToList();
     return new RdHighlightedText(text.Text, rdHighlighters);
   }
 
-  private static RdTextHighlighter ToRdHighlighter(this TextHighlighter highlighter)
+  [NotNull]
+  private static RdTextHighlighter ToRdHighlighter([NotNull] this TextHighlighter highlighter)
   {
     var attributes = highlighter.Attributes.ToRdTextAttributes();
     return new RdTextHighlighter(
@@ -118,7 +184,8 @@ public static class CommentsUtil
       attributes);
   }
 
-  private static RdTextAttributes ToRdTextAttributes(this TextHighlighterAttributes attributes)
+  [NotNull]
+  private static RdTextAttributes ToRdTextAttributes([NotNull] this TextHighlighterAttributes attributes)
   {
     var rdAttributes = attributes.FontStyle.ToRdFontStyle();
     return new RdTextAttributes(rdAttributes, attributes.Underline, (float)attributes.FontWeight);
@@ -132,7 +199,8 @@ public static class CommentsUtil
       _ => throw new ArgumentOutOfRangeException(nameof(fontStyle))
     };
 
-  private static RdParagraphSegment ToRdParagraph(this IParagraphContentSegment paragraph)
+  [NotNull]
+  private static RdParagraphSegment ToRdParagraph([NotNull] this IParagraphContentSegment paragraph)
   {
     return new RdParagraphSegment(paragraph.ContentSegments.ToRdContentSegments());
   }
