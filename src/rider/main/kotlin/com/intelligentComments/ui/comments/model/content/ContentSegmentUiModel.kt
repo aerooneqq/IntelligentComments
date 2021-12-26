@@ -9,6 +9,7 @@ import com.intelligentComments.ui.comments.model.content.list.ListContentSegment
 import com.intelligentComments.ui.comments.model.content.paragraphs.ParagraphUiModel
 import com.intelligentComments.ui.comments.model.content.params.ParameterUiModel
 import com.intelligentComments.ui.comments.model.content.remarks.RemarksUiModel
+import com.intelligentComments.ui.comments.model.content.seeAlso.GroupedSeeAlsoUiModel
 import com.intelligentComments.ui.comments.model.content.seeAlso.SeeAlsoUiModel
 import com.intelligentComments.ui.comments.model.content.table.TableContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.text.TextContentSegmentUiModel
@@ -32,11 +33,12 @@ abstract class ContentSegmentUiModel(
         is RemarksSegment -> RemarksUiModel(project, segment)
         is ExceptionSegment -> ExceptionUiModel(project, segment)
         is SeeAlsoSegment -> SeeAlsoUiModel.getFor(project, segment)
+        is GroupedSeeAlsoContentSegment -> GroupedSeeAlsoUiModel(project, segment)
         else -> throw IllegalArgumentException(segment.javaClass.name)
       }
     }
   }
 
-  override fun hashCode(): Int = segment.hashCode() % HashUtil.mod
+  override fun hashCode(): Int = HashUtil.hashCode(segment.hashCode())
   override fun equals(other: Any?): Boolean = other is ContentSegmentUiModel && other.hashCode() == hashCode()
 }

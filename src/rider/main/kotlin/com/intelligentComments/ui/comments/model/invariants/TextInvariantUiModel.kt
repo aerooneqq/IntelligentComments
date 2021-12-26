@@ -15,6 +15,6 @@ class TextInvariantUiModel(
 
   val text = textInvariant.text
 
-  override fun hashCode(): Int = text.hashCode() % HashUtil.mod
+  override fun hashCode(): Int = HashUtil.hashCode(text.hashCode())
   override fun equals(other: Any?): Boolean = other is TextInvariantUiModel && other.hashCode() == hashCode()
 }

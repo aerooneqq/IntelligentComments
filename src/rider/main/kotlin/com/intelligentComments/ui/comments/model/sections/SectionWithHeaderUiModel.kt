@@ -16,6 +16,6 @@ class SectionWithHeaderUiModel<T : UiInteractionModelBase>(
 
   val headerUiModel = SectionHeaderUiModel(project, icon, headerText, this)
 
-  override fun hashCode(): Int = (isExpanded.hashCode() * super.hashCode()) % HashUtil.mod
+  override fun hashCode(): Int = HashUtil.hashCode (isExpanded.hashCode(), super.hashCode())
   override fun equals(other: Any?): Boolean = other is SectionWithHeaderUiModel<*> && other.hashCode() == hashCode()
 }

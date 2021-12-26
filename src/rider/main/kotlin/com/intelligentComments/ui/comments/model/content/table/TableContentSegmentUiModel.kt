@@ -12,6 +12,6 @@ class TableContentSegmentUiModel(
   val rows = segment.rows.map { TableRowSegmentUiModel(it, project) }
   val header = TableNameUiModel(segment.header, project)
 
-  override fun hashCode(): Int = (header.hashCode() * HashUtil.calculateHashFor(rows)) % HashUtil.mod
+  override fun hashCode(): Int = HashUtil.hashCode(header.hashCode(), HashUtil.calculateHashFor(rows))
   override fun equals(other: Any?): Boolean = other is TableContentSegmentUiModel && other.hashCode() == hashCode()
 }

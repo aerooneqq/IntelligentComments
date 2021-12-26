@@ -5,6 +5,7 @@ import com.intelligentComments.ui.colors.Colors
 import com.intelligentComments.ui.comments.model.ExpandableUiModel
 import com.intelligentComments.ui.comments.model.HeaderUiModel
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
+import com.intelligentComments.ui.util.HashUtil
 import com.intellij.openapi.project.Project
 
 open class ReferenceUiModel(
@@ -28,6 +29,6 @@ open class ReferenceUiModel(
   )
   override var isExpanded: Boolean = true
 
-  override fun hashCode(): Int = headerUiModel.hashCode() * isExpanded.hashCode()
+  override fun hashCode(): Int = HashUtil.hashCode(headerUiModel.hashCode(), isExpanded.hashCode())
   override fun equals(other: Any?): Boolean = other is ReferenceUiModel && other.hashCode() == hashCode()
 }

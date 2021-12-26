@@ -5,7 +5,7 @@ using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.Content;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.Content;
 
-public class TextContentSegment : ContentSegment, ITextContentSegment
+public class TextContentSegment : ITextContentSegment
 {
   public IHighlightedText Text { get; }
 

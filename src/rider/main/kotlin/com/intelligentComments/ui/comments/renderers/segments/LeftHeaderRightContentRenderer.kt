@@ -2,9 +2,11 @@ package com.intelligentComments.ui.comments.renderers.segments
 
 import com.intelligentComments.ui.comments.model.content.ContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.ContentSegmentsUiModel
+import com.intelligentComments.ui.comments.model.highlighters.HighlightedTextUiWrapper
 import com.intelligentComments.ui.core.RectangleModelBuildContext
 import com.intelligentComments.ui.core.RectanglesModel
 import com.intelligentComments.ui.util.ContentSegmentsUtil
+import com.intelligentComments.ui.util.TextUtil
 import com.intelligentComments.ui.util.UpdatedRectCookie
 import com.intellij.openapi.editor.impl.EditorImpl
 import com.intellij.openapi.util.use
@@ -66,5 +68,27 @@ abstract class LeftHeaderRightContentRenderer(
   }
 
   override fun accept(context: RectangleModelBuildContext) {
+  }
+}
+
+open class LeftTextHeaderAndRightContentRenderer(
+  private val header: HighlightedTextUiWrapper,
+  content: Collection<ContentSegmentUiModel>
+) : LeftHeaderRightContentRenderer(content) {
+  override fun calculateHeaderWidth(editorImpl: EditorImpl): Int {
+    return TextUtil.getTextWidthWithHighlighters(editorImpl, header)
+  }
+
+  override fun calculateHeaderHeight(editorImpl: EditorImpl): Int {
+    return TextUtil.getLineHeightWithHighlighters(editorImpl, header.highlighters)
+  }
+
+  override fun renderHeader(
+    g: Graphics,
+    rect: Rectangle,
+    editorImpl: EditorImpl,
+    rectanglesModel: RectanglesModel
+  ) {
+    TextUtil.renderLine(g, rect, editorImpl, header, 0)
   }
 }

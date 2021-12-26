@@ -19,6 +19,6 @@ class ListContentSegmentHeaderUiModel(
     return true
   }
 
-  override fun hashCode(): Int = textWrapper.hashCode() % HashUtil.mod
+  override fun hashCode(): Int = HashUtil.hashCode(textWrapper.hashCode())
   override fun equals(other: Any?): Boolean = other is ListContentSegmentHeaderUiModel && other.hashCode() == hashCode()
 }

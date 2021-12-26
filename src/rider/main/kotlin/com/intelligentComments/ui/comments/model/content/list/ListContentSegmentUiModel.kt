@@ -17,7 +17,7 @@ class ListContentSegmentUiModel(
   override var isExpanded = true
 
   override fun hashCode(): Int =
-    (header.hashCode() * HashUtil.calculateHashFor(contentSegments) * isExpanded.hashCode()) % HashUtil.mod
+    HashUtil.hashCode(header.hashCode(), HashUtil.calculateHashFor(contentSegments), isExpanded.hashCode())
 
   override fun equals(other: Any?): Boolean = other is ListContentSegmentUiModel && other.hashCode() == hashCode()
 }

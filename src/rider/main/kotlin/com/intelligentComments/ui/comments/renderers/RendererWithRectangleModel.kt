@@ -23,7 +23,8 @@ import java.awt.Graphics
 import java.awt.Rectangle
 
 abstract class RendererWithRectangleModel(
-  model: UiInteractionModelBase) : EditorCustomElementRenderer, CustomFoldRegionRenderer {
+  model: UiInteractionModelBase
+) : EditorCustomElementRenderer, CustomFoldRegionRenderer {
   private val rectangleModelHolder = RectanglesModelHolder(model)
 
   val rectanglesModel
@@ -99,7 +100,7 @@ abstract class RendererWithRectangleModel(
 
     UpdatedGraphicsCookie(g, defaultTextColor, TextUtil.font).use {
       for (rectangle in rectanglesModel!!.allRectangles) {
-        g.drawRect(rectangle.x + targetRegion.x, rectangle.y + targetRegion.y, rectangle.width, rectangle.height)
+        //g.drawRect(rectangle.x + targetRegion.x, rectangle.y + targetRegion.y, rectangle.width, rectangle.height)
       }
     }
   }

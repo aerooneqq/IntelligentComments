@@ -40,7 +40,7 @@ class HighlighterUiModel(
   override fun handleMouseOut(e: EditorMouseEvent): Boolean = applyMouseInOutAnimation(false)
   override fun hashCode(): Int {
     val bsHashCode = if (backgroundStyle == null) 1 else backgroundStyle.hashCode()
-    return (highlighter.hashCode() * textColor.hashCode() * bsHashCode * underline.hashCode()) % HashUtil.mod
+    return HashUtil.hashCode(highlighter.hashCode(), textColor.hashCode(), bsHashCode, underline.hashCode())
   }
 
   override fun equals(other: Any?): Boolean = other is HighlighterUiModel && other.hashCode() == hashCode()

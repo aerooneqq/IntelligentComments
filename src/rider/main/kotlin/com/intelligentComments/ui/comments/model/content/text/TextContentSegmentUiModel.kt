@@ -14,6 +14,6 @@ class TextContentSegmentUiModel(
   val text = highlightedTextWrapper.text
   val highlighters = highlightedTextWrapper.highlighters
 
-  override fun hashCode(): Int = highlightedTextWrapper.hashCode() % HashUtil.mod
+  override fun hashCode(): Int = HashUtil.hashCode(highlightedTextWrapper.hashCode())
   override fun equals(other: Any?): Boolean = other is TextContentSegmentUiModel && other.hashCode() == hashCode()
 }

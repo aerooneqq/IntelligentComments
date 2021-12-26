@@ -4,6 +4,12 @@ import java.awt.Image
 
 interface IntelligentCommentContent : UniqueEntity {
   val segments: Collection<ContentSegment>
+
+  fun processSegments(strategy: ContentProcessingStrategy)
+}
+
+interface ContentProcessingStrategy {
+  fun process(segments: MutableList<ContentSegment>)
 }
 
 interface ContentSegment : UniqueEntity
@@ -86,4 +92,8 @@ interface SeeAlsoLinkSegment : SeeAlsoSegment {
 
 interface SeeAlsoMemberSegment : SeeAlsoSegment {
   val reference: CodeEntityReference
+}
+
+interface GroupedSeeAlsoContentSegment : ContentSegment {
+  val segments: List<SeeAlsoSegment>
 }

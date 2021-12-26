@@ -1,9 +1,12 @@
 package com.intelligentComments.core.markup
 
 import com.intelligentComments.core.comments.RiderCommentsController
+import com.intelligentComments.core.comments.RiderCommentsCreator
 import com.intelligentComments.core.domain.rd.DocCommentFromRd
 import com.intelligentComments.core.utils.toGreedy
 import com.intelligentComments.ui.comments.renderers.DocCommentSwitchRenderModeGutterMark
+import com.intellij.openapi.components.service
+import com.intellij.openapi.components.serviceIfCreated
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.ex.RangeHighlighterEx
 import com.intellij.openapi.editor.impl.EditorImpl
@@ -59,12 +62,13 @@ class DocCommentsFoldingAdapter(private val editor: EditorImpl) : FrontendMarkup
   override fun afterBulkAdd(highlighters: List<RangeHighlighterEx>) {
     editor.project?.let {
       val controller = it.getComponent(RiderCommentsController::class.java) ?: return
+      val commentsCreator = it.service<RiderCommentsCreator>()
 
       executeOverDocHighlighters(highlighters) { highlighter, model ->
         val marker = highlighter.document.createRangeMarker(highlighter.range)
         marker.toGreedy()
 
-        val docComment = DocCommentFromRd(model.docComment, it, marker)
+        val docComment = commentsCreator.tryCreateDocComment(model.docComment, editor, marker) ?: return@executeOverDocHighlighters
         controller.addComment(editor, docComment)
 
         highlighter.gutterIconRenderer = DocCommentSwitchRenderModeGutterMark(docComment, editor, it)

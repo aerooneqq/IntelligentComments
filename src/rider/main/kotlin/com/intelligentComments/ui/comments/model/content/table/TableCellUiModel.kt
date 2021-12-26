@@ -15,6 +15,6 @@ class TableCellUiModel(cell: TableCell, project: Project) : UiInteractionModelBa
   override val backgroundColorKey: ColorName
     get() = if (properties.isHeader) Colors.TableHeaderCellBackgroundColor else Colors.EmptyColor
 
-  override fun hashCode(): Int = (contentSegments.hashCode() * properties.hashCode()) % HashUtil.mod
+  override fun hashCode(): Int = HashUtil.hashCode(contentSegments.hashCode(), properties.hashCode())
   override fun equals(other: Any?): Boolean = other is TableCellUiModel && other.hashCode() == hashCode()
 }

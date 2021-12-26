@@ -89,12 +89,14 @@ class IntelligentCommentUiModel(
   }
 
   override fun hashCode(): Int {
-    val hashCode = authorsSection.hashCode() % HashUtil.mod *
-      todosSection.hashCode() % HashUtil.mod *
-      hacksSection.hashCode() % HashUtil.mod *
-      referencesSection.hashCode() % HashUtil.mod *
-      invariantsSection.hashCode() % HashUtil.mod *
-      contentSection.hashCode() % HashUtil.mod
+    val hashCode = HashUtil.hashCode(
+      authorsSection.hashCode(),
+      todosSection.hashCode(),
+      hacksSection.hashCode(),
+      referencesSection.hashCode(),
+      invariantsSection.hashCode(),
+      contentSection.hashCode()
+    )
 
     assert(hashCode != 0)
     return hashCode

@@ -10,8 +10,12 @@ enum class CommentsDisplayKind {
 
 interface RiderIntelligentCommentsSettingsProvider {
   val commentsDisplayKind: Property<CommentsDisplayKind>
+  val groupingDelimiter: Property<String>
+  val groupSeeAlso: Property<Boolean>
 }
 
 class RiderIntelligentCommentsSettingsProviderImpl : LifetimedService(), RiderIntelligentCommentsSettingsProvider {
   override val commentsDisplayKind: Property<CommentsDisplayKind> = Property(CommentsDisplayKind.Render)
+  override val groupingDelimiter: Property<String> = Property("\n")
+  override val groupSeeAlso: Property<Boolean> = Property(true)
 }

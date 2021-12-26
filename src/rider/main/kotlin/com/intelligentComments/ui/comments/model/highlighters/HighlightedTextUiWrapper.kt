@@ -14,7 +14,7 @@ class HighlightedTextUiWrapper(project: Project, highlightedText: HighlightedTex
       textHashCode = 1
     }
 
-    return (textHashCode * HashUtil.calculateHashFor(highlighters)) % HashUtil.mod
+    return HashUtil.hashCode(textHashCode, HashUtil.calculateHashFor(highlighters))
   }
 
   override fun equals(other: Any?): Boolean = other is HighlightedTextUiWrapper && other.hashCode() == hashCode()

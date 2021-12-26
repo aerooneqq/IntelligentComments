@@ -5,6 +5,7 @@ import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intellij.openapi.project.Project
 import com.jetbrains.rd.ide.model.*
 import com.jetbrains.rd.util.string.printToString
+import com.jetbrains.rider.test.scriptingApi.setUpToolsetFromCoreSDK
 import java.awt.Image
 import java.io.File
 import javax.imageio.ImageIO
@@ -48,31 +49,27 @@ class TextContentSegmentFromRd(
   segment: RdTextSegment,
   project: Project
 ) : ContentSegmentFromRd(segment), TextContentSegment {
-  override val highlightedText: HighlightedText = HighlightedTextFromRd(segment.text, project)
+  override val highlightedText: HighlightedText = segment.text.toIdeaHighlightedText(project)
 }
 
-class HighlightedTextFromRd(
-  highlightedText: RdHighlightedText,
-  project: Project
-) : HighlightedText {
-  override val highlighters: Collection<TextHighlighter>
-  override val text: String = highlightedText.text
 
-  init {
-    highlighters = highlightedText.highlighters?.map { TextHighlighterFromRd(project, it) } ?: listOf()
-  }
+fun RdHighlightedText.toIdeaHighlightedText(project: Project): HighlightedText {
+  return HighlightedTextImpl(
+    text,
+    highlighters?.map { it.toIdeaHighlighter(project) } ?: listOf()
+  )
 }
 
 class ListSegmentFromRd(segment: RdListSegment, project: Project) : ContentSegmentFromRd(segment), ListContentSegment {
   override val content: Collection<ContentSegments> = segment.listContent.map { ContentSegmentsFromRd(it, project) }
-  override val header: HighlightedText = HighlightedTextFromRd(segment.header, project)
+  override val header: HighlightedText = segment.header.toIdeaHighlightedText(project)
 }
 
 class FileBasedImageSegmentFromRd(
   private val segment: RdFileBasedImageSegment,
   project: Project
 ) : ContentSegmentFromRd(segment), ImageContentSegment {
-  override val description: HighlightedText = HighlightedTextFromRd(segment.description, project)
+  override val description: HighlightedText = segment.description.toIdeaHighlightedText(project)
 
   private var cachedImage: Image? = null
   override val image: Image
@@ -92,7 +89,7 @@ class TableSegmentFromRd(
   segment: RdTableSegment,
   project: Project
 ) : ContentSegmentFromRd(segment), TableContentSegment {
-  override val header: HighlightedText = HighlightedTextFromRd(segment.header, project)
+  override val header: HighlightedText = segment.header.toIdeaHighlightedText(project)
   override val rows: Collection<TableRow> = segment.rows.map { TableRowFromRd(it, project) }
 }
 
@@ -174,7 +171,7 @@ open class SeeAlsoSegmentFromRd(
     }
   }
 
-  override val description: HighlightedText = HighlightedTextFromRd(rdSeeAlso.description, project)
+  override val description: HighlightedText = rdSeeAlso.description.toIdeaHighlightedText(project)
 }
 
 class SeeAlsoLinkSegmentFromRd(

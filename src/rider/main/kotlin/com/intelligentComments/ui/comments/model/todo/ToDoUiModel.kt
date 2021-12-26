@@ -29,9 +29,12 @@ open class ToDoUiModel(todo: ToDo, project: Project) : UiInteractionModelBase(pr
   val blockingReferences = todo.blockingReferences.map { ReferenceUiModel(project, it) }
 
   override fun hashCode(): Int {
-    var hash = isExpanded.hashCode() * description.hashCode() % HashUtil.mod
-    hash *= (headerUiModel.hashCode() * HashUtil.calculateHashFor(blockingReferences)) % HashUtil.mod
-    return hash
+    return HashUtil.hashCode(
+      isExpanded.hashCode(),
+      description.hashCode(),
+      headerUiModel.hashCode(),
+      HashUtil.calculateHashFor(blockingReferences)
+    )
   }
 
   override fun equals(other: Any?): Boolean = other is ToDoUiModel && other.hashCode() == hashCode()

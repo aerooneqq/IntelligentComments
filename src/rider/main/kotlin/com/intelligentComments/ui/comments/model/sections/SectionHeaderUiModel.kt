@@ -8,7 +8,6 @@ import com.intelligentComments.ui.comments.model.highlighters.HighlightedTextUiW
 import com.intellij.openapi.editor.event.EditorMouseEvent
 import com.intellij.openapi.project.Project
 import java.awt.Color
-import java.util.*
 import javax.swing.Icon
 
 class SectionHeaderUiModel(
@@ -33,9 +32,12 @@ class SectionHeaderUiModel(
     val defaultColor = colorsProvider.getColorFor(Colors.TextDefaultColor)
     val hoveredColor = colorsProvider.getColorFor(Colors.TextDefaultHoveredColor)
 
-    return object : DefaultTextHighlighter(0, text.length, defaultColor) {
-      override val mouseInOutAnimation: MouseInOutAnimation = ForegroundTextAnimation(hoveredColor, defaultColor)
-    }
+    return TextHighlighterImpl(
+      0,
+      text.length,
+      defaultColor,
+      mouseInOutAnimation = ForegroundTextAnimation(hoveredColor, defaultColor)
+    )
   }
 
   override fun handleClick(e: EditorMouseEvent): Boolean {

@@ -28,8 +28,7 @@ open class HackUiModel(private val hack: Hack, project: Project) : UiInteraction
   override var isExpanded: Boolean = true
 
   override fun hashCode(): Int {
-    val hash = (description.hashCode() * HashUtil.calculateHashFor(blockingReferences) * headerUiModel.hashCode())
-    return hash % HashUtil.mod
+    return HashUtil.hashCode(description.hashCode(), HashUtil.calculateHashFor(blockingReferences), headerUiModel.hashCode())
   }
 
   override fun equals(other: Any?): Boolean = other is HackUiModel && other.hashCode() == hashCode()

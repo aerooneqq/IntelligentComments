@@ -11,32 +11,16 @@ import java.awt.Rectangle
 
 abstract class SeeAlsoSegmentRenderer(
   private val seeAlsoUiModel: SeeAlsoUiModel
-) : LeftHeaderRightContentRenderer(listOf(seeAlsoUiModel.description)) {
+) : LeftTextHeaderAndRightContentRenderer(seeAlsoUiModel.header, listOf(seeAlsoUiModel.description)) {
   companion object {
     fun getFor(seeAlsoUiModel: SeeAlsoUiModel): SeeAlsoSegmentRenderer {
+      //ToDo: seems useless
       return when(seeAlsoUiModel) {
         is SeeAlsoLinkUiModel -> SeeAlsoLinkSegmentRenderer(seeAlsoUiModel)
         is SeeAlsoMemberUiModel -> SeeAlsoMemberSegmentRenderer(seeAlsoUiModel)
         else -> throw IllegalArgumentException(seeAlsoUiModel.javaClass.name)
       }
     }
-  }
-
-  open override fun calculateHeaderWidth(editorImpl: EditorImpl): Int {
-    return TextUtil.getTextWidthWithHighlighters(editorImpl, seeAlsoUiModel.header)
-  }
-
-  open override fun calculateHeaderHeight(editorImpl: EditorImpl): Int {
-    return TextUtil.getLineHeightWithHighlighters(editorImpl, seeAlsoUiModel.header.highlighters)
-  }
-
-  open override fun renderHeader(
-    g: Graphics,
-    rect: Rectangle,
-    editorImpl: EditorImpl,
-    rectanglesModel: RectanglesModel
-  ) {
-    TextUtil.renderLine(g, rect, editorImpl, seeAlsoUiModel.header, 0)
   }
 }
 

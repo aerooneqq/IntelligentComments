@@ -7,6 +7,7 @@ import com.intelligentComments.ui.colors.Colors
 import com.intelligentComments.ui.comments.model.content.ContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.ContentSegmentsUiModel
 import com.intelligentComments.ui.comments.model.highlighters.HighlightedTextUiWrapper
+import com.intelligentComments.ui.util.HashUtil
 import com.intellij.openapi.project.Project
 
 class ReturnUiModel(project: Project, ret: ReturnSegment) : ContentSegmentUiModel(project, ret) {
@@ -27,6 +28,6 @@ class ReturnUiModel(project: Project, ret: ReturnSegment) : ContentSegmentUiMode
     return HighlightedTextImpl(returnSectionName, listOf(highlighter))
   }
 
-  override fun hashCode(): Int = content.hashCode()
+  override fun hashCode(): Int = HashUtil.hashCode(content.hashCode())
   override fun equals(other: Any?): Boolean = other is ReturnUiModel && other.hashCode() == hashCode()
 }

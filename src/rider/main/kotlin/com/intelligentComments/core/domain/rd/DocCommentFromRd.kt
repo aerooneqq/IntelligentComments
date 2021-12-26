@@ -15,6 +15,6 @@ class DocCommentFromRd(
   override val content: IntelligentCommentContent = IntelligentCommentContentFromRd(rdDocComment.content, project)
 
   override fun isValid(): Boolean {
-    return content.segments.size > 0 && super.isValid()
+    return content.segments.isNotEmpty() && super.isValid()
   }
 }

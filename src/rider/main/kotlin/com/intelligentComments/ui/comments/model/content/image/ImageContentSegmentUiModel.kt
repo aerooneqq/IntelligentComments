@@ -22,6 +22,6 @@ class ImageContentSegmentUiModel(
     }
   }
 
-  override fun hashCode(): Int = (description.hashCode() * imageHolder.hashCode()) % HashUtil.mod
+  override fun hashCode(): Int = HashUtil.hashCode(description.hashCode(), imageHolder.hashCode())
   override fun equals(other: Any?): Boolean = other is ImageContentSegmentUiModel && other.hashCode() == hashCode()
 }

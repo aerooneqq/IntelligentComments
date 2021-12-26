@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Xml;
 using JetBrains.Annotations;
+using JetBrains.ReSharper.Features.Inspections.Resources;
 using JetBrains.ReSharper.I18n.Services;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.ReSharper.Psi.Util;
@@ -22,25 +24,32 @@ public interface IDocCommentBuilder
 
 public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
 {
+  private record struct ContentSegmentsMetadata(
+    [CanBeNull] IEntityWithContentSegments CorrespondingEntity,
+    [NotNull] IContentSegments ContentSegments)
+  {
+    public static ContentSegmentsMetadata CreateEmpty() => new(null, Domain.Impl.Content.ContentSegments.CreateEmpty());
+  }
+
   private readonly struct WithPushedToStackContentSegments : IDisposable
   {
-    [NotNull] private readonly Stack<IContentSegments> myStack;
+    [NotNull] private readonly Stack<ContentSegmentsMetadata> myStack;
     [NotNull] private readonly ILogger myLogger;
 
-      
-    public WithPushedToStackContentSegments([NotNull] Stack<IContentSegments> stack, [NotNull] ILogger logger)
-      : this(stack, ContentSegments.CreateEmpty(), logger)
+    
+    public WithPushedToStackContentSegments([NotNull] Stack<ContentSegmentsMetadata> stack, [NotNull] ILogger logger)
+      : this(stack, ContentSegmentsMetadata.CreateEmpty(), logger)
     {
     }
       
     public WithPushedToStackContentSegments(
-      [NotNull] Stack<IContentSegments> stack, [NotNull] IContentSegments segmentsToPush, ILogger logger)
+      [NotNull] Stack<ContentSegmentsMetadata> stack, ContentSegmentsMetadata metadata, ILogger logger)
     {
       myStack = stack;
       myLogger = logger;
-      myStack.Push(segmentsToPush);
+      myStack.Push(metadata);
     }
-      
+    
       
     public void Dispose()
     {
@@ -51,7 +60,7 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
       }
         
       var contentSegments = myStack.Pop();
-      var segments = contentSegments.Segments;
+      var segments = contentSegments.ContentSegments.Segments;
 
       void Normalize()
       {
@@ -96,7 +105,7 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
   
   [NotNull] private static readonly ILogger ourLogger = Logger.GetLogger<DocCommentBuilder>();
   
-  [NotNull] private readonly Stack<IContentSegments> myContentSegmentsStack;
+  [NotNull] private readonly Stack<ContentSegmentsMetadata> myContentSegmentsStack;
   [NotNull] private readonly ISet<XmlNode> myVisitedNodes;
   [NotNull] private readonly IHighlightersProvider myHighlightersProvider;
 
@@ -104,8 +113,7 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
   public DocCommentBuilder([NotNull] IHighlightersProvider highlightersProvider)
   {
     myHighlightersProvider = highlightersProvider;
-    myContentSegmentsStack = new Stack<IContentSegments>();
-    myContentSegmentsStack.Push(new ContentSegments(new List<IContentSegment>()));
+    myContentSegmentsStack = new Stack<ContentSegmentsMetadata>();
       
     myVisitedNodes = new HashSet<XmlNode>();
   }
@@ -120,13 +128,13 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
         return null;
       }
 
-      var topmostContentSegments = ContentSegments.CreateEmpty();
+      var topmostContentSegments = ContentSegmentsMetadata.CreateEmpty();
       using (new WithPushedToStackContentSegments(myContentSegmentsStack, topmostContentSegments, ourLogger))
       {
         Visit(xmlNode);
       }
-        
-      var content = new IntelligentCommentContent(topmostContentSegments);
+      
+      var content = new IntelligentCommentContent(topmostContentSegments.ContentSegments);
       return new DocComment(content, owner.FirstChild.CreatePointer());
     }
     catch (Exception ex)
@@ -180,7 +188,7 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
 
   private static bool ElementHasOneTextChild([NotNull] XmlElement element, [NotNull] out string value)
   {
-    bool hasOneTextChild = element.ChildNodes.Count == 1 && element.FirstChild is XmlText { Value: { } };
+    var hasOneTextChild = element.ChildNodes.Count == 1 && element.FirstChild is XmlText { Value: { } };
 
     value = hasOneTextChild switch
     {
@@ -195,7 +203,7 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
   {
     var highlightedText = new HighlightedText(text, new[] { highlighter });
     var textContentSegment = new MergeableTextContentSegment(highlightedText);
-    ExecuteWithTopmostContentSegments(segments => segments.Segments.Add(textContentSegment));
+    ExecuteWithTopmostContentSegments(metadata => metadata.ContentSegments.Segments.Add(textContentSegment));
   }
 
   private static string PreprocessText([NotNull] string text) => text.Replace("\n ", "\n");
@@ -210,15 +218,16 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
     }
 
     var paramSegment = new ParamContentSegment(paramName);
-    using (new WithPushedToStackContentSegments(myContentSegmentsStack, paramSegment.ContentSegments, ourLogger))
+    var metadata = new ContentSegmentsMetadata(paramSegment, paramSegment.ContentSegments);
+    using (new WithPushedToStackContentSegments(myContentSegmentsStack, metadata, ourLogger))
     {
       ExecuteActionOverChildren(element, Visit);
     }
       
-    ExecuteWithTopmostContentSegments(segments => segments.Segments.Add(paramSegment));
+    ExecuteWithTopmostContentSegments(metadata => metadata.ContentSegments.Segments.Add(paramSegment));
   }
     
-  private void ExecuteWithTopmostContentSegments([NotNull] Action<IContentSegments> action)
+  private void ExecuteWithTopmostContentSegments([NotNull] Action<ContentSegmentsMetadata> action)
   {
     if (myContentSegmentsStack.Count == 0)
     {
@@ -236,7 +245,7 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
   {
     myVisitedNodes.Add(text);
     var textContentSegment = new MergeableTextContentSegment(new HighlightedText(PreprocessText(text.Value)));
-    ExecuteWithTopmostContentSegments(segments => segments.Segments.Add(textContentSegment));
+    ExecuteWithTopmostContentSegments(metadata => metadata.ContentSegments.Segments.Add(textContentSegment));
   }
 
   public override void VisitPara(XmlElement element)
@@ -246,15 +255,16 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
   }
 
   private void ProcessEntityWithContentSegments(
-    [NotNull] IEntityWithContentSegments entityWithContentSegments, [NotNull] XmlElement element)
+    [NotNull] IEntityWithContentSegments entityWithContentSegments, 
+    [NotNull] XmlElement element)
   {
-    var contentSegments = entityWithContentSegments.ContentSegments;
-    using (new WithPushedToStackContentSegments(myContentSegmentsStack, contentSegments, ourLogger))
+    var metadata = new ContentSegmentsMetadata(entityWithContentSegments, entityWithContentSegments.ContentSegments);
+    using (new WithPushedToStackContentSegments(myContentSegmentsStack, metadata, ourLogger))
     {
       ExecuteActionOverChildren(element, Visit);
     }
       
-    ExecuteWithTopmostContentSegments(segments => segments.Segments.Add(entityWithContentSegments));
+    ExecuteWithTopmostContentSegments(metadata => metadata.ContentSegments.Segments.Add(entityWithContentSegments));
   }
 
   public override void VisitReturns(XmlElement element)
@@ -332,9 +342,18 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
     }
 
     var seeAlso = factory.Invoke(attributeValue, innerText);
-    ExecuteWithTopmostContentSegments(segments => segments.Segments.Add(seeAlso));
+    if (IsTopmostContext())
+    {
+      ExecuteWithTopmostContentSegments(metadata => metadata.ContentSegments.Segments.Add(seeAlso)); 
+    }
+    else
+    {
+      AddHighlightedText(seeAlso.HighlightedText.Text, seeAlso.HighlightedText.Highlighters.First());
+    }
   }
 
+  private bool IsTopmostContext() => myContentSegmentsStack.Peek().CorrespondingEntity is null;
+  
   private void VisitSeeAlsoMember(XmlElement element)
   {
     ProcessSeeAlso(element, CRef, (referenceRawText, description) =>

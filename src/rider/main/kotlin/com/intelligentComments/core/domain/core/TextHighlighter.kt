@@ -13,16 +13,29 @@ interface TextHighlighter : UniqueEntity {
   val textColor: Color
   val backgroundStyle: BackgroundStyle?
   val mouseInOutAnimation: MouseInOutAnimation?
+
+  fun shift(delta: Int): TextHighlighter
 }
 
-open class DefaultTextHighlighter(
+class TextHighlighterImpl(
   override val startOffset: Int,
   override val endOffset: Int,
-  override val textColor: Color
+  override val textColor: Color,
+  override val attributes: TextAttributes = TextAttributesImpl.defaultAttributes,
+  override val backgroundStyle: BackgroundStyle? = null,
+  override val mouseInOutAnimation: MouseInOutAnimation? = null,
 ) : UniqueEntityImpl(), TextHighlighter {
-  override val attributes: TextAttributes = TextAttributesImpl.defaultAttributes
-  override val backgroundStyle: BackgroundStyle? = null
-  override val mouseInOutAnimation: MouseInOutAnimation? = null
+
+  override fun shift(delta: Int): TextHighlighter {
+    return TextHighlighterImpl(
+      startOffset + delta,
+      endOffset + delta,
+      textColor,
+      attributes,
+      backgroundStyle,
+      mouseInOutAnimation,
+    )
+  }
 }
 
 interface BackgroundStyle {

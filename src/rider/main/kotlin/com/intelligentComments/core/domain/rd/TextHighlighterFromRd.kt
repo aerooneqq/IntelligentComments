@@ -10,35 +10,18 @@ import java.awt.Color
 import java.awt.Font
 import java.awt.font.TextAttribute
 
-class TextHighlighterFromRd(
-  val project: Project,
-  private val highlighter: RdTextHighlighter
-) : UniqueEntityImpl(), TextHighlighter {
-  override val startOffset: Int = highlighter.startOffset
-  override val endOffset: Int = highlighter.endOffset
-  override val textColor: Color
-    get() = project.service<ColorsProvider>().getColorFor(ColorName(highlighter.key))
 
-  private var cachedAttributes: TextAttributes? = null
-  override val attributes: TextAttributes
-    get() {
-      var attributes = cachedAttributes
-      if (attributes == null) {
-        attributes = highlighter.attributes.toIntelligentCommentsAttributes()
-        cachedAttributes = attributes
-        return attributes
-      }
-
-      return attributes
-    }
-
-  override val backgroundStyle: BackgroundStyle? = if (highlighter.backgroundStyle != null) {
-    BackgroundStyleFromRd(highlighter.backgroundStyle)
+fun RdTextHighlighter.toIdeaHighlighter(project: Project): TextHighlighter {
+  val textColor = project.service<ColorsProvider>().getColorFor(ColorName(key))
+  val attributes = attributes.toIntelligentCommentsAttributes()
+  val mouseInOutAnimation = animation?.toTextAnimation(textColor, project)
+  val backgroundStyle = if (backgroundStyle != null) {
+    BackgroundStyleFromRd(backgroundStyle)
   } else {
     null
   }
 
-  override val mouseInOutAnimation: MouseInOutAnimation? = highlighter.animation?.toTextAnimation(this, project)
+  return TextHighlighterImpl(startOffset, endOffset, textColor, attributes, backgroundStyle, mouseInOutAnimation)
 }
 
 class BackgroundStyleFromRd(rdBackgroundStyle: RdBackgroundStyle) : BackgroundStyle {
@@ -47,16 +30,16 @@ class BackgroundStyleFromRd(rdBackgroundStyle: RdBackgroundStyle) : BackgroundSt
   override val leftRightPadding: Int = rdBackgroundStyle.leftRightMargin
 }
 
-fun RdTextAnimation.toTextAnimation(highlighter: TextHighlighter, project: Project): MouseInOutAnimation {
+fun RdTextAnimation.toTextAnimation(textColor: Color , project: Project): MouseInOutAnimation {
   val colorsProvider = project.service<ColorsProvider>()
   return when (this) {
     is RdUnderlineTextAnimation -> UnderlineTextAnimation()
-    is RdForegroundColorAnimation -> ForegroundTextAnimation(Color.decode(this.hoveredColor.hex), highlighter.textColor)
+    is RdForegroundColorAnimation -> ForegroundTextAnimation(Color.decode(this.hoveredColor.hex), textColor)
     is RdPredefinedForegroundColorAnimation -> ForegroundTextAnimation(
       colorsProvider.getColorFor(ColorName(this.key)),
-      highlighter.textColor
+      textColor
     )
-    else -> throw IllegalArgumentException()
+    else -> throw IllegalArgumentException(this.javaClass.name)
   }
 }
 

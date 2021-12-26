@@ -16,6 +16,6 @@ open class AuthorUiModel(
   val name = author.name
   val date = author.date
 
-  override fun hashCode(): Int = author.hashCode() % HashUtil.mod
+  override fun hashCode(): Int = HashUtil.hashCode(author.hashCode())
   override fun equals(other: Any?): Boolean = other is AuthorUiModel && other.hashCode() == hashCode()
 }

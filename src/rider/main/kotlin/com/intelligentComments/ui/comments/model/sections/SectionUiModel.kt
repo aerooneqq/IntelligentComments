@@ -8,6 +8,6 @@ open class SectionUiModel<T : UiInteractionModelBase>(
   project: Project,
   val content: Collection<T>
 ) : UiInteractionModelBase(project) {
-  override fun hashCode(): Int = HashUtil.calculateHashFor(content) % HashUtil.mod
+  override fun hashCode(): Int = HashUtil.calculateHashFor(content)
   override fun equals(other: Any?): Boolean = other is SectionUiModel<*> && other.hashCode() == hashCode()
 }

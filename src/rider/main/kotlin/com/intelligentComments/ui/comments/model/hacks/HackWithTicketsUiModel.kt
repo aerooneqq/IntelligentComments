@@ -11,6 +11,6 @@ class HackWithTicketsUiModel(
 ) : HackUiModel(hackWithTickets, project) {
   val tickets = hackWithTickets.tickets.map { TicketUiModel(it, project) }
 
-  override fun hashCode(): Int = (super.hashCode() * HashUtil.calculateHashFor(tickets)) % HashUtil.mod
+  override fun hashCode(): Int = HashUtil.hashCode(super.hashCode(), HashUtil.calculateHashFor(tickets))
   override fun equals(other: Any?): Boolean = other is HackWithTicketsUiModel && other.hashCode() == hashCode()
 }
