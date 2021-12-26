@@ -1,7 +1,6 @@
 package com.intelligentComments.ui.comments.model.content.seeAlso
 
 import com.intelligentComments.core.domain.core.*
-import com.intelligentComments.ui.colors.ColorName
 import com.intelligentComments.ui.colors.Colors
 import com.intelligentComments.ui.colors.ColorsProvider
 import com.intelligentComments.ui.comments.model.content.ContentSegmentUiModel
@@ -10,7 +9,6 @@ import com.intelligentComments.ui.comments.model.highlighters.HighlightedTextUiW
 import com.intelligentComments.ui.util.HashUtil
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
-import java.awt.Color
 import java.util.*
 
 open class SeeAlsoUiModel(
@@ -42,7 +40,7 @@ open class SeeAlsoUiModel(
 private const val seeAlsoText = "See also:"
 
 fun getSeeAlsoHeaderText(project: Project): HighlightedText {
-  val color = project.service<ColorsProvider>().getColorFor(Colors.TextDefaultColor)
+  val color = project.service<ColorsProvider>().getColorFor(Colors.TextInSectionsRectanglesHeadersColor)
   val backgroundColor = project.service<ColorsProvider>().getColorFor(Colors.SeeAlsoBackgroundColor)
   val highlighter = CommonsHighlightersFactory.getWithRoundedBackgroundRect(color, backgroundColor, seeAlsoText.length)
   return HighlightedTextImpl(seeAlsoText, listOf(highlighter))

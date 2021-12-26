@@ -24,6 +24,8 @@ interface EntityWithContentSegments : ContentSegment {
 
 interface ParagraphContentSegment : EntityWithContentSegments
 
+interface ExampleContentSegment : EntityWithContentSegments
+
 interface TextContentSegment : ContentSegment {
   val highlightedText: HighlightedText
 }
@@ -70,9 +72,13 @@ interface TableCellProperties {
   val isHeader: Boolean
 }
 
-interface ParameterSegment : EntityWithContentSegments {
+interface ArbitraryParamSegment : EntityWithContentSegments {
   val name: String
 }
+
+interface ParameterSegment : ArbitraryParamSegment
+interface TypeParamSegment : ArbitraryParamSegment
+
 
 interface ReturnSegment : EntityWithContentSegments
 
@@ -94,6 +100,6 @@ interface SeeAlsoMemberSegment : SeeAlsoSegment {
   val reference: CodeEntityReference
 }
 
-interface GroupedSeeAlsoContentSegment : ContentSegment {
-  val segments: List<SeeAlsoSegment>
+interface GroupedContentSegment<out T : ContentSegment> : ContentSegment {
+  val segments: List<T>
 }

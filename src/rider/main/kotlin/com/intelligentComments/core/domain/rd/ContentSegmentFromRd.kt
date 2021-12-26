@@ -5,7 +5,6 @@ import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intellij.openapi.project.Project
 import com.jetbrains.rd.ide.model.*
 import com.jetbrains.rd.util.string.printToString
-import com.jetbrains.rider.test.scriptingApi.setUpToolsetFromCoreSDK
 import java.awt.Image
 import java.io.File
 import javax.imageio.ImageIO
@@ -19,11 +18,13 @@ open class ContentSegmentFromRd(private val contentSegment: RdContentSegment) : 
         is RdFileBasedImageSegment -> FileBasedImageSegmentFromRd(contentSegment, project)
         is RdTableSegment -> TableSegmentFromRd(contentSegment, project)
         is RdParagraphSegment -> ParagraphContentSegmentFromRd(contentSegment, project)
+        is RdTypeParam -> TypeParamFromRd(contentSegment, project)
         is RdParam -> ParameterFromRd(contentSegment, project)
         is RdReturnSegment -> ReturnFromRd(contentSegment, project)
         is RdRemarksSegment -> RemarksSegmentFromRd(contentSegment, project)
         is RdExceptionsSegment -> ExceptionSegmentFromRd(contentSegment, project)
         is RdSeeAlsoContentSegment -> SeeAlsoSegmentFromRd.getFor(contentSegment, project)
+        is RdExampleSegment -> ExampleFromRd(contentSegment, project)
         else -> throw IllegalArgumentException(contentSegment.toString())
       }
     }
@@ -34,8 +35,7 @@ class ContentSegmentsFromRd(
   contentSegments: RdContentSegments,
   project: Project
 ) : ContentSegments {
-  override val segments: Collection<ContentSegment> =
-    contentSegments.content.map { ContentSegmentFromRd.getFrom(it, project) }
+  override val segments = contentSegments.content.map { ContentSegmentFromRd.getFrom(it, project) }
 }
 
 class ParagraphContentSegmentFromRd(
@@ -93,7 +93,7 @@ class TableSegmentFromRd(
   override val rows: Collection<TableRow> = segment.rows.map { TableRowFromRd(it, project) }
 }
 
-class TableRowFromRd(private val row: RdTableRow, project: Project) : TableRow {
+class TableRowFromRd(row: RdTableRow, project: Project) : TableRow {
   override val cells: Collection<TableCell> = row.cells.map { TableCellFromRd(it, project) }
 }
 
@@ -138,8 +138,17 @@ class ParameterFromRd(rdParam: RdParam, project: Project) : ContentSegmentFromRd
   override val content: ContentSegments = ContentSegmentsFromRd(rdParam.content, project)
 }
 
+class TypeParamFromRd(rdTypeParam: RdTypeParam, project: Project) : ContentSegmentFromRd(rdTypeParam), TypeParamSegment {
+  override val name: String = rdTypeParam.name
+  override val content: ContentSegments = ContentSegmentsFromRd(rdTypeParam.content, project)
+}
+
 class ReturnFromRd(rdReturn: RdReturnSegment, project: Project) : ContentSegmentFromRd(rdReturn), ReturnSegment {
   override val content: ContentSegments = ContentSegmentsFromRd(rdReturn.content, project)
+}
+
+class ExampleFromRd(rdExample: RdExampleSegment, project: Project) : ContentSegmentFromRd(rdExample), ExampleContentSegment {
+  override val content: ContentSegments = ContentSegmentsFromRd(rdExample.content, project)
 }
 
 class RemarksSegmentFromRd(

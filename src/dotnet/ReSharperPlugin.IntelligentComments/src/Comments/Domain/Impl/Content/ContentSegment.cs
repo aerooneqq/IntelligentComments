@@ -87,3 +87,10 @@ public class SeeAlsoLinkContentSegment : SeeAlsoContentSegment, ISeeAlsoLinkCont
     myReference = reference;
   }
 }
+
+public class ExampleContentSegment : EntityWithContentSegments, IExampleSegment
+{
+  public ExampleContentSegment(IContentSegments contentSegments) : base(contentSegments)
+  {
+  }
+}

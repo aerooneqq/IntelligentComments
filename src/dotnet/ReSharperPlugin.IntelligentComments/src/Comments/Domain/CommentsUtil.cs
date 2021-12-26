@@ -76,8 +76,14 @@ public static class CommentsUtil
       IRemarksSegment remarks => remarks.ToRdRemarks(),
       IExceptionSegment exceptionSegment => exceptionSegment.ToRdExceptionSegment(),
       ISeeAlsoContentSegment seeAlsoSegment => seeAlsoSegment.ToRdSeeAlso(),
+      IExampleSegment exampleSegment => exampleSegment.ToRdExample(),
       _ => throw new ArgumentOutOfRangeException(segment.GetType().Name)
     };
+  }
+
+  private static RdExampleSegment ToRdExample([NotNull] this IExampleSegment exampleSegment)
+  {
+    return new RdExampleSegment(exampleSegment.ContentSegments.ToRdContentSegments());
   }
 
   [NotNull]
@@ -97,6 +103,7 @@ public static class CommentsUtil
     return new RdSeeAlsoLinkContentSegment(seeAlso.Reference.ToRdReference(), seeAlso.HighlightedText.ToRdHighlightedText());
   }
 
+  [NotNull]
   private static RdSeeAlsoMemberContentSegment ToRdSeeAlso([NotNull] this ISeeAlsoMemberContentSegment seeAlso)
   {
     return new RdSeeAlsoMemberContentSegment(seeAlso.Reference.ToRdReference(), seeAlso.HighlightedText.ToRdHighlightedText());
@@ -109,6 +116,7 @@ public static class CommentsUtil
     {
       ICodeEntityReference codeEntityReference => codeEntityReference.ToRdReference(),
       IExternalReference externalReference => externalReference.ToRdReference(),
+      ILangWordReference langWordReference => langWordReference.ToRdReference(),
       _ => throw new ArgumentOutOfRangeException(reference.GetType().Name),
     };
   }
@@ -116,7 +124,7 @@ public static class CommentsUtil
   [NotNull]
   private static RdCodeEntityReference ToRdReference([NotNull] this ICodeEntityReference codeEntityReference)
   {
-    return new RdCodeEntityReference();
+    return new RdCodeEntityReference(codeEntityReference.RawValue);
   }
 
   [NotNull]
@@ -129,10 +137,15 @@ public static class CommentsUtil
     };
   }
 
+  private static RdLangWordReference ToRdReference([NotNull] this ILangWordReference langWordReference)
+  {
+    return new RdLangWordReference(langWordReference.RawValue);
+  }
+
   [NotNull]
   private static RdHttpLinkReference ToRdReference([NotNull] this IHttpReference reference)
   {
-    return new RdHttpLinkReference();
+    return new RdHttpLinkReference(reference.RawValue);
   }
   
   [NotNull]
@@ -146,7 +159,7 @@ public static class CommentsUtil
   {
     return new RdRemarksSegment(remarksSegment.ContentSegments.ToRdContentSegments());
   }
-    
+  
   [NotNull]
   private static RdReturnSegment ToRdReturn([NotNull] this IReturnContentSegment returnContentSegment)
   {
@@ -156,8 +169,11 @@ public static class CommentsUtil
   [NotNull]
   private static RdParam ToRdParam([NotNull] this IParamContentSegment param)
   {
-    if (param == null) throw new ArgumentNullException(nameof(param));
-    return new RdParam(param.Name, param.ContentSegments.ToRdContentSegments());
+    return param switch
+    {
+      ITypeParamSegment paramSegment => paramSegment.ToRdParam(),
+      { } => new RdParam(param.Name, param.ContentSegments.ToRdContentSegments()),
+    };
   }
 
   [NotNull]
@@ -181,7 +197,8 @@ public static class CommentsUtil
       highlighter.Key,
       highlighter.StartOffset,
       highlighter.EndOffset,
-      attributes);
+      attributes,
+      animation: highlighter.TextAnimation?.ToRdAnimation());
   }
 
   [NotNull]
@@ -199,9 +216,23 @@ public static class CommentsUtil
       _ => throw new ArgumentOutOfRangeException(nameof(fontStyle))
     };
 
+  private static RdTextAnimation ToRdAnimation([NotNull] this TextAnimation textAnimation)
+  {
+    return textAnimation switch
+    {
+      UnderlineTextAnimation => new RdUnderlineTextAnimation(),
+      _ => throw new ArgumentOutOfRangeException(textAnimation.GetType().Name)
+    };
+  }
+
   [NotNull]
   private static RdParagraphSegment ToRdParagraph([NotNull] this IParagraphContentSegment paragraph)
   {
     return new RdParagraphSegment(paragraph.ContentSegments.ToRdContentSegments());
+  }
+
+  private static RdTypeParam ToRdParam([NotNull] this ITypeParamSegment typeParamSegment)
+  {
+    return new RdTypeParam(typeParamSegment.Name, typeParamSegment.ContentSegments.ToRdContentSegments());
   }
 }

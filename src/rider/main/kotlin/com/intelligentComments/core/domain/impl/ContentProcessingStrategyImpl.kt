@@ -14,6 +14,10 @@ class ContentProcessingStrategyImpl(private val project: Project) : ContentProce
   private fun preprocessSegments(segments: MutableList<ContentSegment>) {
     val settings = project.service<RiderIntelligentCommentsSettingsProvider>()
     groupSeeAlsoIfNeeded(settings, segments)
+    groupReturnsIfNeeded(settings, segments)
+    groupParamsIfNeeded(settings, segments)
+    groupTypeParamsIfNeeded(settings, segments)
+    groupExceptionsIfNeeded(settings, segments)
   }
 
   private fun groupSeeAlsoIfNeeded(
@@ -21,14 +25,52 @@ class ContentProcessingStrategyImpl(private val project: Project) : ContentProce
     segments: MutableList<ContentSegment>
   ) {
     if (!settings.groupSeeAlso.value) return
+    groupSegmentsOfType<SeeAlsoSegment>(segments) { GroupedSeeAlsoSegments(it) }
+  }
 
-    val topLevelSeeAlsoSegments = segments.filterIsInstance<SeeAlsoSegment>()
-    val groupedSeeAlso = object : UniqueEntityImpl(), GroupedSeeAlsoContentSegment {
-      override val segments: List<SeeAlsoSegment> = topLevelSeeAlsoSegments
-    }
+  private inline fun <reified T : ContentSegment> groupSegmentsOfType(
+    segments: MutableList<ContentSegment>,
+    groupedSegmentFactory: (List<T>) -> GroupedContentSegment<T>
+  ) {
+    val topLevelSegments = segments.filterIsInstance<T>()
+    if (topLevelSegments.isEmpty()) return
 
-    val indexOfLastSeeAlso = segments.indexOf(topLevelSeeAlsoSegments.last())
-    segments[indexOfLastSeeAlso] = groupedSeeAlso
-    segments.removeAll(topLevelSeeAlsoSegments)
+    val groupedSegment = groupedSegmentFactory(topLevelSegments.toList())
+
+    val indexOfLastElement = segments.indexOf(topLevelSegments.last())
+    segments[indexOfLastElement] = groupedSegment
+    segments.removeAll(topLevelSegments)
+  }
+
+  private fun groupReturnsIfNeeded(
+    settings: RiderIntelligentCommentsSettingsProvider,
+    segments: MutableList<ContentSegment>
+  ) {
+    if (!settings.groupReturns.value) return
+    groupSegmentsOfType<ReturnSegment>(segments) { GroupedReturnSegments(it) }
+  }
+
+  private fun groupParamsIfNeeded(
+    settings: RiderIntelligentCommentsSettingsProvider,
+    segments: MutableList<ContentSegment>
+  ) {
+    if (!settings.groupParams.value) return
+    groupSegmentsOfType<ParameterSegment>(segments) { GroupedParamSegments(it) }
+  }
+
+  private fun groupTypeParamsIfNeeded(
+    settings: RiderIntelligentCommentsSettingsProvider,
+    segments: MutableList<ContentSegment>
+  ) {
+    if (!settings.groupParams.value) return
+    groupSegmentsOfType<TypeParamSegment>(segments) { GroupedTypeParamSegments(it) }
+  }
+
+  private fun groupExceptionsIfNeeded(
+    settings: RiderIntelligentCommentsSettingsProvider,
+    segments: MutableList<ContentSegment>
+  ) {
+    if (!settings.groupExceptions.value) return
+    groupSegmentsOfType<ExceptionSegment>(segments) { GroupedExceptionsSegments(it) }
   }
 }

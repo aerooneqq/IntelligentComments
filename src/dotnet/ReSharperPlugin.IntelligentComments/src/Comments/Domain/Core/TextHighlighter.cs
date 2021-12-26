@@ -1,3 +1,5 @@
+using JetBrains.Annotations;
+
 namespace ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 
 public enum FontStyle
@@ -12,7 +14,16 @@ public record TextHighlighter(
   string Key,
   int StartOffset,
   int EndOffset,
-  TextHighlighterAttributes Attributes)
+  TextHighlighterAttributes Attributes,
+  [CanBeNull] TextAnimation TextAnimation = null)
 {
   public bool IsValid() => StartOffset >= 0 && StartOffset < EndOffset;
+}
+
+public abstract class TextAnimation
+{
+}
+
+public class UnderlineTextAnimation : TextAnimation
+{
 }

@@ -9,5 +9,4 @@ public interface IExternalReference : IReference
 
 public interface IHttpReference : IExternalReference
 {
-  [NotNull] public string RawLink { get; }
 }

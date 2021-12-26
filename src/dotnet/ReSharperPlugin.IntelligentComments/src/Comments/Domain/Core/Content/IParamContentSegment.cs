@@ -6,3 +6,7 @@ public interface IParamContentSegment : IEntityWithContentSegments
 {
   [NotNull] string Name { get; }
 }
+
+public interface ITypeParamSegment : IParamContentSegment
+{
+}

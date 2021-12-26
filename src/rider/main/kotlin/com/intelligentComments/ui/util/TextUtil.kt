@@ -19,7 +19,7 @@ import kotlin.test.assertNotNull
 
 class TextUtil {
   companion object {
-    val font: Font = UIUtil.getLabelFont().deriveFont(12f)
+    val font: Font = UIUtil.getLabelFont().deriveFont(13f)
     val boldFont: Font = font.deriveFont(Font.BOLD).deriveFont(14f)
 
     const val deltaBetweenIconAndTextInHeader = 2

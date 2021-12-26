@@ -21,6 +21,10 @@ data class RectangleModelBuildContext(
   fun withRectangle(newRectangle: Rectangle): RectangleModelBuildContext {
     return RectangleModelBuildContext(rectanglesModel, widthAndHeight, newRectangle, editorImpl)
   }
+
+  fun copyWithNewRect(newRectangle: Rectangle): RectangleModelBuildContext {
+    return RectangleModelBuildContext(rectanglesModel, WidthAndHeight(widthAndHeight), newRectangle, editorImpl)
+  }
 }
 
 interface RectangleModelBuildContributor {

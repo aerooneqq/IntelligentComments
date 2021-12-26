@@ -13,6 +13,14 @@ class WidthAndHeight {
   val height
     get() = myHeight
 
+  constructor()
+
+  constructor(other: WidthAndHeight) {
+    myWidth = other.myWidth
+    myHeight = other.myHeight
+    myAdditionalWidth = other.myAdditionalWidth
+  }
+
 
   fun updateWidthMax(newWidth: Int) {
     myWidth = max(myWidth, newWidth + myAdditionalWidth)

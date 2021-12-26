@@ -13,6 +13,7 @@
     <projectService serviceImplementation="com.intelligentComments.core.comments.states.RiderCommentsStateManager" />
     <projectService serviceImplementation="com.intelligentComments.core.domain.impl.ContentProcessingStrategyImpl" />
     <projectService serviceImplementation="com.intelligentComments.core.comments.RiderCommentsCreator" />
+    <projectService serviceImplementation="com.intelligentComments.core.comments.listeners.CommentsEditorsListenersManager" />
     <rdclient.highlighterModelSupport implementation="com.intelligentComments.core.markup.DocCommentsFoldingHighlightersSupport" />
   </extensions>
 

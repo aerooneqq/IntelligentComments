@@ -1,6 +1,6 @@
 package com.intelligentComments.ui.comments.renderers.segments
 
-import com.intelligentComments.ui.comments.model.content.params.ParameterUiModel
+import com.intelligentComments.ui.comments.model.content.params.AbstractParameterUiModel
 import com.intelligentComments.ui.core.RectanglesModel
 import com.intelligentComments.ui.util.TextUtil
 import com.intellij.openapi.editor.impl.EditorImpl
@@ -8,7 +8,7 @@ import java.awt.Graphics
 import java.awt.Rectangle
 
 class ParameterRenderer(
-  private val model: ParameterUiModel
+  private val model: AbstractParameterUiModel
 ) : LeftHeaderRightContentRenderer(model.description.content) {
   override fun calculateHeaderWidth(editorImpl: EditorImpl): Int {
     return TextUtil.getTextWidthWithHighlighters(editorImpl, model.name)

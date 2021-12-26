@@ -25,3 +25,7 @@ public interface IExceptionSegment : IEntityWithContentSegments
 {
   string ExceptionName { get; }
 }
+
+public interface IExampleSegment : IEntityWithContentSegments
+{
+}

@@ -1,7 +1,6 @@
 package com.intelligentComments.ui.comments.renderers.segments
 
 import com.intelligentComments.ui.comments.model.content.ContentSegmentUiModel
-import com.intelligentComments.ui.comments.model.content.ContentSegmentsUiModel
 import com.intelligentComments.ui.comments.model.highlighters.HighlightedTextUiWrapper
 import com.intelligentComments.ui.core.RectangleModelBuildContext
 import com.intelligentComments.ui.core.RectanglesModel
@@ -68,6 +67,9 @@ abstract class LeftHeaderRightContentRenderer(
   }
 
   override fun accept(context: RectangleModelBuildContext) {
+    ContentSegmentsUtil.accept(context.copyWithNewRect(Rectangle(context.rect).apply {
+      x += deltaBetweenNameAndDescription + calculateHeaderWidth(context.editorImpl)
+    }), content)
   }
 }
 

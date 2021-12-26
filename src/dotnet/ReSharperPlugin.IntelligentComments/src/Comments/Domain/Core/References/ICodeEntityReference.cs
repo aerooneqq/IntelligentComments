@@ -4,5 +4,8 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
 
 public interface ICodeEntityReference : IReference
 {
-  [NotNull] string RawMemberName { get; }
+}
+
+public interface ILangWordReference : IReference
+{
 }

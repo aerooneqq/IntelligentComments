@@ -1,5 +1,6 @@
 package com.intelligentComments.core.comments
 
+import com.intelligentComments.core.comments.listeners.CommentsEditorsListenersManager
 import com.intelligentComments.core.comments.states.CommentState
 import com.intelligentComments.core.comments.states.RiderCommentsStateManager
 import com.intelligentComments.core.domain.core.CommentBase
@@ -9,7 +10,11 @@ import com.intelligentComments.core.domain.core.IntelligentComment
 import com.intelligentComments.ui.comments.model.DocCommentUiModel
 import com.intelligentComments.ui.comments.model.IntelligentCommentUiModel
 import com.intelligentComments.ui.comments.renderers.DocCommentRenderer
-import com.intellij.openapi.editor.*
+import com.intellij.openapi.components.service
+import com.intellij.openapi.editor.CustomFoldRegion
+import com.intellij.openapi.editor.CustomFoldRegionRenderer
+import com.intellij.openapi.editor.Document
+import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.impl.EditorImpl
 import com.intellij.openapi.project.Project
 import com.intellij.psi.impl.source.tree.injected.changesHandler.range
@@ -23,7 +28,6 @@ import com.jetbrains.rdclient.editors.FrontendTextControlHost
 import com.jetbrains.rdclient.util.idea.LifetimedProjectComponent
 import com.jetbrains.rider.document.RiderDocumentHost
 import java.util.*
-import kotlin.collections.HashMap
 
 
 class RiderCommentsController(project: Project) : LifetimedProjectComponent(project) {
@@ -32,6 +36,7 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
   private val logger = getLogger<RiderDocumentHost>()
   private val commentsStateManager = project.getService(RiderCommentsStateManager::class.java)
   private val textControlHost = FrontendTextControlHost.getInstance(project)
+  private val listenersManager = project.service<CommentsEditorsListenersManager>()
 
 
   fun addComment(editor: EditorImpl, comment: CommentBase) {
@@ -166,6 +171,7 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
       } else {
         val editorsFoldings = foldings.getOrCreate(comment.commentIdentifier) { ViewableMap() }
         editorsFoldings[editor] = folding
+        listenersManager.attachListenersIfNeeded(folding)
       }
     }
   }

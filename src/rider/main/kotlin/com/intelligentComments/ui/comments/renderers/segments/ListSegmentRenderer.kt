@@ -138,12 +138,12 @@ class ListSegmentRenderer(private val model: ListContentSegmentUiModel) : Segmen
   }
 
   override fun accept(context: RectangleModelBuildContext) {
-    aacceptHeaderModel(context)
+    acceptHeaderModel(context)
     acceptHeaderTextHighlighters(context)
     acceptListItemsIfExpanded(context)
   }
 
-  private fun aacceptHeaderModel(context: RectangleModelBuildContext) {
+  private fun acceptHeaderModel(context: RectangleModelBuildContext) {
     val editorImpl = context.editorImpl
     val rect = context.rect
     val headerRect = Rectangle(rect.x, rect.y, getHeaderWidth(editorImpl), getHeaderHeight(editorImpl))

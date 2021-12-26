@@ -8,7 +8,6 @@ import com.intelligentComments.ui.core.RectanglesModelHolder
 import com.intelligentComments.ui.util.TextUtil
 import com.intelligentComments.ui.util.UpdatedGraphicsCookie
 import com.intelligentComments.ui.util.UpdatedRectCookie
-import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.CustomFoldRegion
 import com.intellij.openapi.editor.CustomFoldRegionRenderer

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 using JetBrains.Annotations;
-using JetBrains.ReSharper.Features.Inspections.Resources;
 using JetBrains.ReSharper.I18n.Services;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.ReSharper.Psi.Util;
@@ -11,9 +10,11 @@ using JetBrains.Util;
 using JetBrains.Util.Logging;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.Content;
+using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.Content;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.References;
+using IReference = ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References.IReference;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Calculations;
 
@@ -99,11 +100,14 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
     }
   }
 
-  private const string UndefinedParam = "???";
-  private const string CRef = "cref";
-  private const string Href = "href";
+  [NotNull] private const string UndefinedParam = "???";
+  [NotNull] private const string CRef = "cref";
+  [NotNull] private const string Href = "href";
+  [NotNull] private const string LangWord = "langword";
   
   [NotNull] private static readonly ILogger ourLogger = Logger.GetLogger<DocCommentBuilder>();
+  [NotNull] private static readonly Func<string, IParamContentSegment> ourParamFactory = name => new ParamContentSegment(name);
+  [NotNull] private static readonly Func<string, ITypeParamSegment> ourTypeParamFactory = name => new TypeParamSegment(name);
   
   [NotNull] private readonly Stack<ContentSegmentsMetadata> myContentSegmentsStack;
   [NotNull] private readonly ISet<XmlNode> myVisitedNodes;
@@ -210,14 +214,19 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
 
   public override void VisitParam(XmlElement element)
   {
+    ProcessParam(element, "name", ourParamFactory);
+  }
+
+  private void ProcessParam(XmlElement element, string nameAttrName, Func<string, IParamContentSegment> factory)
+  {
     myVisitedNodes.Add(element);
-    var paramName = element.GetAttribute("name");
+    var paramName = element.GetAttribute(nameAttrName);
     if (paramName == string.Empty)
     {
       paramName = UndefinedParam;
     }
 
-    var paramSegment = new ParamContentSegment(paramName);
+    var paramSegment = factory.Invoke(paramName);
     var metadata = new ContentSegmentsMetadata(paramSegment, paramSegment.ContentSegments);
     using (new WithPushedToStackContentSegments(myContentSegmentsStack, metadata, ourLogger))
     {
@@ -297,12 +306,20 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
 
   public override void VisitParamRef(XmlElement element)
   {
+    ProcessArbitraryParamRef(element, "name", length => myHighlightersProvider.GetParamRefElementHighlighter(0, length));
+  }
+
+  private void ProcessArbitraryParamRef(
+    [NotNull] XmlElement element,
+    [NotNull] string nameAttrName, 
+    [NotNull] Func<int, TextHighlighter> highlighterFactory)
+  {
     myVisitedNodes.Add(element);
-    var paramName = element.GetAttribute("name");
+    var paramName = element.GetAttribute(nameAttrName);
     if (paramName == string.Empty) paramName = UndefinedParam;
     paramName = PreprocessText(paramName);
 
-    var highlighter = myHighlightersProvider.GetParamRefElementHighlighter(0, paramName.Length);
+    var highlighter = highlighterFactory.Invoke(paramName.Length);
     AddHighlightedText(paramName, highlighter);
   }
 
@@ -352,8 +369,9 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
     }
   }
 
-  private bool IsTopmostContext() => myContentSegmentsStack.Peek().CorrespondingEntity is null;
-  
+  private bool IsTopmostContext() => myContentSegmentsStack.Count == 0 || 
+                                     myContentSegmentsStack.Peek().CorrespondingEntity is null;
+
   private void VisitSeeAlsoMember(XmlElement element)
   {
     ProcessSeeAlso(element, CRef, (referenceRawText, description) =>
@@ -362,5 +380,65 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
       var highlightedText = new HighlightedText(description, new[] { highlighter });
       return new SeeAlsoMemberContentSegment(highlightedText, new CodeEntityReference(referenceRawText));
     });
+  }
+
+  public override void VisitTypeParam(XmlElement element)
+  {
+    ProcessParam(element, "name", ourTypeParamFactory);
+  }
+
+  public override void VisitTypeParamRef(XmlElement element)
+  {
+    ProcessArbitraryParamRef(element, "name", length => myHighlightersProvider.GetParamRefElementHighlighter(0, length));
+  }
+
+  public override void VisitExample(XmlElement element)
+  {
+    myVisitedNodes.Add(element);
+    var exampleSegment = new ExampleContentSegment(ContentSegments.CreateEmpty());
+    ProcessEntityWithContentSegments(exampleSegment, element);
+  }
+
+  public override void VisitSee(XmlElement element)
+  {
+    myVisitedNodes.Add(element);
+    if (IsTopmostContext()) return;
+
+    IReference reference = null;
+    if (element.GetAttribute(CRef) is { } cRefAttrValue && !cRefAttrValue.IsEmpty())
+    {
+      reference = new CodeEntityReference(cRefAttrValue);
+    }
+    else if (element.GetAttribute(Href) is { } hrefAttrValue && !hrefAttrValue.IsEmpty())
+    {
+      reference = new HttpReference(hrefAttrValue);
+    }
+    else if (element.GetAttribute(LangWord) is { } langWordAttrValue && !langWordAttrValue.IsEmpty())
+    {
+      reference = new LangWordReference(langWordAttrValue);
+    }
+
+    if (reference is null) return;
+
+    var content = reference.RawValue;
+    if (ElementHasOneTextChild(element, out var text))
+    {
+      content = PreprocessText(text);
+    }
+    
+    ProcessSee(content, reference);
+  }
+
+  private void ProcessSee([NotNull] string content, [NotNull] IReference reference)
+  {
+    var highlighter = reference switch
+    {
+      ICodeEntityReference => myHighlightersProvider.GetSeeCodeEntityHighlighter(0, content.Length),
+      IHttpReference => myHighlightersProvider.GetSeeHttpLinkHighlighter(0, content.Length),
+      ILangWordReference => myHighlightersProvider.GetSeeLangWordHighlighter(0, content.Length),
+      _ => throw new ArgumentOutOfRangeException(reference.GetType().Name)
+    };
+    
+    AddHighlightedText(content, highlighter);
   }
 }

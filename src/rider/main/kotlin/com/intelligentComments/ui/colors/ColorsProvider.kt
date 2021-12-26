@@ -30,11 +30,14 @@ object Colors {
 
   val TextDefaultColor = ColorName("text.default.color")
   val TextDefaultHoveredColor = ColorName("text.default.color.hovered")
+  val TextInSectionsRectanglesHeadersColor = ColorName("text.in.sections.rectangles.headers.color")
   val TextInSectionsHeadersColor = ColorName("text.in.sections.headers.color")
   val TextUrlColor = ColorName("text.url.color")
   val TextUrlColorHovered = ColorName("text.url.color.hovered")
 
-  val ParamNameBackgroundColor = ColorName("param.name.background.color")
+  val ParamsSectionHeaderBackgroundColor = ColorName("params.section.header.background.color")
+  val TypeParamNameBackgroundColor = ColorName("type.param.name.background.color")
+
   val ReturnBackgroundColor = ColorName("return.background.color")
   val ExceptionBackgroundColor = ColorName("exception.background.color")
   val SeeAlsoBackgroundColor = ColorName("see.also.background.color")

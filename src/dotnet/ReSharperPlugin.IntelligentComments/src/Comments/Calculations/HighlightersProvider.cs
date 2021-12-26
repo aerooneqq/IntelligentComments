@@ -10,30 +10,46 @@ public interface IHighlightersProvider
   [NotNull] TextHighlighter GetParamRefElementHighlighter(int startOffset, int endOffset);
   [NotNull] TextHighlighter GetSeeAlsoLinkHighlighter(int startOffset, int endOffset);
   [NotNull] TextHighlighter GetSeeAlsoMemberHighlighter(int startOffset, int endOffset);
+  [NotNull] TextHighlighter GetSeeCodeEntityHighlighter(int startOffset, int endOffset);
+  [NotNull] TextHighlighter GetSeeHttpLinkHighlighter(int startOffset, int endOffset);
+  [NotNull] TextHighlighter GetSeeLangWordHighlighter(int startOffset, int endOffset);
 }
   
   
 [SolutionComponent]
 public class HighlightersProvider : IHighlightersProvider
 {
-  [NotNull] private static readonly TextHighlighterAttributes ourDefaultAttributes = new(FontStyle.Regular, true, 400);
+  [NotNull] private static readonly TextHighlighterAttributes ourDefaultAttributes = new(FontStyle.Regular, false, 400);
+  [NotNull] private static readonly UnderlineTextAnimation ourUnderlineTextAnimation = new();
   
   
   [NotNull] private const string CElementKey = "doc.comment.c.element.text";
   [NotNull] private const string ParamRefKey = "doc.comment.param.ref.text";
   [NotNull] private const string SeeAlsoLinkKey = "see.also.link.text";
   [NotNull] private const string SeeAlsoMemberKey = "see.also.member.text";
+  [NotNull] private const string SeeCodeEntityKey = "see.text";
+  [NotNull] private const string SeeHttpKey = "see.http";
+  [NotNull] private const string SeeLangWord = "see.langword";
 
 
   public TextHighlighter GetCXmlElementHighlighter(int startOffset, int endOffset) =>
-    new(CElementKey, startOffset, endOffset, ourDefaultAttributes);
+    new(CElementKey, startOffset, endOffset, ourDefaultAttributes, ourUnderlineTextAnimation);
 
   public TextHighlighter GetParamRefElementHighlighter(int startOffset, int endOffset) =>
-    new(ParamRefKey, startOffset, endOffset, ourDefaultAttributes);
+    new(ParamRefKey, startOffset, endOffset, ourDefaultAttributes, ourUnderlineTextAnimation);
 
   public TextHighlighter GetSeeAlsoLinkHighlighter(int startOffset, int endOffset) =>
-    new(SeeAlsoLinkKey, startOffset, endOffset, ourDefaultAttributes);
+    new(SeeAlsoLinkKey, startOffset, endOffset, ourDefaultAttributes, ourUnderlineTextAnimation);
 
   public TextHighlighter GetSeeAlsoMemberHighlighter(int startOffset, int endOffset) =>
-    new(SeeAlsoMemberKey, startOffset, endOffset, ourDefaultAttributes);
+    new(SeeAlsoMemberKey, startOffset, endOffset, ourDefaultAttributes, ourUnderlineTextAnimation);
+
+  public TextHighlighter GetSeeCodeEntityHighlighter(int startOffset, int endOffset) => 
+    new(SeeCodeEntityKey, startOffset, endOffset, ourDefaultAttributes, ourUnderlineTextAnimation);
+
+  public TextHighlighter GetSeeHttpLinkHighlighter(int startOffset, int endOffset) =>
+    new(SeeHttpKey, startOffset, endOffset, ourDefaultAttributes, ourUnderlineTextAnimation);
+
+  public TextHighlighter GetSeeLangWordHighlighter(int startOffset, int endOffset) =>
+    new(SeeLangWord, startOffset, endOffset, ourDefaultAttributes, ourUnderlineTextAnimation);
 }

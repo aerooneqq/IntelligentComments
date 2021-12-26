@@ -1,7 +1,6 @@
 package model.rider
 
 import com.jetbrains.rd.generator.nova.*
-import com.jetbrains.rider.model.nova.ide.IdeRoot
 import com.jetbrains.rider.model.nova.ide.SolutionModel
 
 
@@ -54,15 +53,19 @@ object RdCommentsModel : Ext(SolutionModel.RdDocumentModel) {
     field("Content", immutableList(RdContentSegment))
   }
 
-  val RdParam = structdef extends RdSegmentWithContent {
+  val RdParam = openstruct extends RdSegmentWithContent {
     field("Name", PredefinedType.string)
   }
+
+  val RdTypeParam = structdef extends RdParam { }
 
   val RdRemarksSegment = structdef extends RdSegmentWithContent { }
 
   val RdParagraphSegment = structdef extends RdSegmentWithContent { }
 
   val RdReturnSegment = structdef extends RdSegmentWithContent { }
+
+  val RdExampleSegment = structdef extends RdSegmentWithContent { }
 
   val RdSeeAlsoContentSegment = basestruct extends RdContentSegment {
     field("Description", RdHighlightedText)
@@ -138,6 +141,7 @@ object RdCommentsModel : Ext(SolutionModel.RdDocumentModel) {
   }
 
   val RdReference = basestruct {
+    field("RawValue", PredefinedType.string)
   }
 
   val RdExternalReference = basestruct extends RdReference { }
@@ -145,6 +149,8 @@ object RdCommentsModel : Ext(SolutionModel.RdDocumentModel) {
   val RdHttpLinkReference = structdef extends RdExternalReference { }
 
   val RdCodeEntityReference = structdef extends RdReference { }
+
+  val RdLangWordReference = structdef extends RdReference { }
 
   val RdHighlightedText = structdef {
     field("Text", PredefinedType.string)
