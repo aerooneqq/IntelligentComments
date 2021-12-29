@@ -6,7 +6,6 @@ import com.intelligentComments.core.domain.rd.DocCommentFromRd
 import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.RangeMarker
 import com.intellij.openapi.editor.impl.EditorImpl
-import com.intellij.openapi.project.Project
 import com.jetbrains.rd.ide.model.RdDocComment
 import com.jetbrains.rd.platform.diagnostics.logAssertion
 import com.jetbrains.rd.platform.util.getLogger
@@ -19,8 +18,8 @@ class RiderCommentsCreator {
   fun tryCreateDocComment(
     rdDocComment: RdDocComment,
     editor: EditorImpl,
-    commentRange: RangeMarker)
-  : DocComment? {
+    commentRange: RangeMarker
+  ) : DocComment? {
     val project = editor.project
     if (project == null) {
       logger.logAssertion("Project was null for $editor")

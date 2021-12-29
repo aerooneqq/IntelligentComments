@@ -1,5 +1,6 @@
 package com.intelligentComments.core.comments.states
 
+import com.intelligentComments.core.comments.CommentsIdentifierStorage
 import com.intelligentComments.core.domain.core.CommentIdentifier
 import com.intelligentComments.core.settings.CommentsDisplayKind
 import com.intelligentComments.core.settings.RiderIntelligentCommentsSettingsProvider
@@ -17,7 +18,6 @@ import com.jetbrains.rd.platform.diagnostics.logAssertion
 import com.jetbrains.rd.platform.util.application
 import com.jetbrains.rd.util.getOrCreate
 import com.jetbrains.rdclient.editors.getPsiFile
-import java.util.*
 
 @State(
   name = "SolutionCommentsState",
@@ -27,7 +27,7 @@ class RiderCommentsStateManager(project: Project) : PersistentStateComponent<Sol
   private val logger = Logger.getInstance(RiderCommentsStateManager::class.java)
   private val settingsProvider = project.service<RiderIntelligentCommentsSettingsProvider>()
   private val loadedStates: MutableMap<EditorId, MutableMap<LoadedCommentIdentifier, CommentState>> = HashMap()
-  private val states: MutableMap<EditorId, MutableMap<CommentIdentifier, CommentState>> = HashMap()
+  private val states: MutableMap<EditorId, CommentsIdentifierStorage<CommentState>> = HashMap()
 
 
   fun restoreOrCreateCommentState(editor: Editor, commentIdentifier: CommentIdentifier): CommentState {
@@ -36,7 +36,10 @@ class RiderCommentsStateManager(project: Project) : PersistentStateComponent<Sol
 
     val persistentState = getPersistentState(editorId, commentIdentifier)
 
-    val editorCommentsStates = states.getOrCreate(editorId) { TreeMap() }
+    val editorCommentsStates = states.getOrCreate(editorId) { CommentsIdentifierStorage() }
+    val existingState = editorCommentsStates.getWithAdditionalSearch(commentIdentifier)
+    if (existingState != null) return existingState
+
     return editorCommentsStates.getOrCreate(commentIdentifier) {
       if (persistentState != null) {
         persistentState
@@ -61,7 +64,7 @@ class RiderCommentsStateManager(project: Project) : PersistentStateComponent<Sol
   private fun tryGetCommentState(editor: Editor, commentIdentifier: CommentIdentifier): CommentState? {
     val editorId = editor.getEditorId()
     val editorCommentsStates = states[editorId] ?: return null
-    return editorCommentsStates[commentIdentifier]
+    return editorCommentsStates.getWithAdditionalSearch(commentIdentifier)
   }
 
   private fun Editor.getEditorId(): EditorId? {
@@ -101,7 +104,7 @@ class RiderCommentsStateManager(project: Project) : PersistentStateComponent<Sol
     val snapshots = mutableListOf<CommentStateSnapshot>()
 
     for ((editorId, comments) in states) {
-      for ((commentId, state) in comments) {
+      for ((commentId, state) in comments.getAllKeysAndValues()) {
         snapshots.add(CommentStateSnapshot().apply {
           moniker = editorId.moniker
           tabOrder = editorId.tabOrder

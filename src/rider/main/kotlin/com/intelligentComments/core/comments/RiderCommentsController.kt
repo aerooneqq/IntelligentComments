@@ -21,18 +21,14 @@ import com.intellij.psi.impl.source.tree.injected.changesHandler.range
 import com.jetbrains.rd.platform.diagnostics.logAssertion
 import com.jetbrains.rd.platform.util.application
 import com.jetbrains.rd.platform.util.getLogger
-import com.jetbrains.rd.util.getOrCreate
-import com.jetbrains.rd.util.reactive.ViewableMap
 import com.jetbrains.rdclient.document.getDocumentId
 import com.jetbrains.rdclient.editors.FrontendTextControlHost
 import com.jetbrains.rdclient.util.idea.LifetimedProjectComponent
 import com.jetbrains.rider.document.RiderDocumentHost
-import java.util.*
 
 
 class RiderCommentsController(project: Project) : LifetimedProjectComponent(project) {
-  private val comments = HashMap<Document, TreeMap<CommentIdentifier, CommentBase>>()
-  private val foldings = ViewableMap<CommentIdentifier, ViewableMap<Editor, CustomFoldRegion>>()
+  private val commentsStorage: DocumentCommentsWithFoldingsStorage = DocumentCommentsWithFoldingsStorage()
   private val logger = getLogger<RiderDocumentHost>()
   private val commentsStateManager = project.getService(RiderCommentsStateManager::class.java)
   private val textControlHost = FrontendTextControlHost.getInstance(project)
@@ -47,17 +43,7 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
       return
     }
 
-    val document = editor.document
-    val documentComments = if (document !in comments) {
-      val map = TreeMap<CommentIdentifier, CommentBase>()
-      comments[document] = map
-      map
-    } else {
-      comments[document] ?: return
-    }
-
-    documentComments[comment.commentIdentifier] = comment
-
+    commentsStorage.addNewComment(comment, editor)
     val state = commentsStateManager.restoreOrCreateCommentState(editor, comment.commentIdentifier)
     updateRenderModeToMatchState(comment.commentIdentifier, editor.document, state)
   }
@@ -96,27 +82,20 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
     val correspondingComment = getComment(commentIdentifier, editor.document)
     if (correspondingComment != null) {
       val foldingModel = editor.foldingModel
-      val folding = foldings[commentIdentifier]?.get(editor)
+      val folding = commentsStorage.getFolding(commentIdentifier, editor)
       if (folding != null) {
         val startOffset = commentIdentifier.rangeMarker.startOffset
         editor.caretModel.moveToOffset(state.lastRelativeCaretOffsetWithinComment + startOffset)
         foldingModel.runBatchFoldingOperation {
           foldingModel.removeFoldRegion(folding)
-          foldings[commentIdentifier]?.remove(editor)
+          commentsStorage.removeFolding(commentIdentifier, editor)
         }
       }
     }
   }
 
   private fun getComment(commentIdentifier: CommentIdentifier, document: Document): CommentBase? {
-    val documentComments = comments[document]
-    val comment = documentComments?.get(commentIdentifier)
-
-    if (comment == null){
-      logger.error("Comment for given ID $commentIdentifier does not exist")
-    }
-
-    return comment
+    return commentsStorage.getComment(commentIdentifier, document)
   }
 
   private fun toggleRenderMode(commentId: CommentIdentifier, editor: EditorImpl, state: CommentState) {
@@ -156,7 +135,7 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
         val oldFoldingRenderer = oldFolding.renderer
         if (oldFoldingRenderer is DocCommentRenderer) {
           val oldComment = oldFoldingRenderer.model.docComment
-          foldings[oldComment.commentIdentifier]?.remove(editor)
+          commentsStorage.removeFolding(oldComment.commentIdentifier, editor)
           foldingModel.removeFoldRegion(oldFolding)
         }
       }
@@ -169,8 +148,7 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
       if (folding == null) {
         logger.error("Failed to create folding region for ${comment.id}")
       } else {
-        val editorsFoldings = foldings.getOrCreate(comment.commentIdentifier) { ViewableMap() }
-        editorsFoldings[editor] = folding
+        commentsStorage.addFoldingToComment(comment, folding, editor)
         listenersManager.attachListenersIfNeeded(folding)
       }
     }
