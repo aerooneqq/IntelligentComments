@@ -10,6 +10,7 @@ import com.intelligentComments.ui.core.RectangleModelBuildContributor
 import com.intelligentComments.ui.core.RectanglesModel
 import com.intelligentComments.ui.core.Renderer
 import com.intelligentComments.ui.util.ContentSegmentsUtil
+import com.intelligentComments.ui.util.RenderAdditionalInfo
 import com.intellij.openapi.editor.impl.EditorImpl
 import java.awt.Graphics
 import java.awt.Rectangle
@@ -35,17 +36,24 @@ class SegmentsRendererWithHeader(private val segmentsSection: SectionWithHeaderU
     g: Graphics,
     rect: Rectangle,
     editorImpl: EditorImpl,
-    rectanglesModel: RectanglesModel
+    rectanglesModel: RectanglesModel,
+    additionalRenderInfo: RenderAdditionalInfo
   ): Rectangle {
     return ContentSegmentsUtil.renderSegments(segmentsSection.content, g, rect, editorImpl, rectanglesModel)
   }
 
-  override fun calculateContentHeight(editorImpl: EditorImpl): Int {
-    return ContentSegmentsUtil.calculateContentHeight(segmentsSection.content, editorImpl)
+  override fun calculateContentHeight(
+    editorImpl: EditorImpl,
+    additionalRenderInfo: RenderAdditionalInfo
+  ): Int {
+    return ContentSegmentsUtil.calculateContentHeight(segmentsSection.content, editorImpl, additionalRenderInfo)
   }
 
-  override fun calculateContentWidth(editorImpl: EditorImpl): Int {
-    return ContentSegmentsUtil.calculateContentWidth(segmentsSection.content, editorImpl)
+  override fun calculateContentWidth(
+    editorImpl: EditorImpl,
+    additionalRenderInfo: RenderAdditionalInfo
+  ): Int {
+    return ContentSegmentsUtil.calculateContentWidth(segmentsSection.content, editorImpl, additionalRenderInfo)
   }
 
   override fun acceptContent(context: RectangleModelBuildContext) {

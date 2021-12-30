@@ -6,6 +6,7 @@ import com.intelligentComments.ui.comments.model.content.table.TableCellUiModel
 import com.intelligentComments.ui.comments.model.content.table.TableContentSegmentUiModel
 import com.intelligentComments.ui.core.RectangleModelBuildContext
 import com.intelligentComments.ui.core.RectanglesModel
+import com.intelligentComments.ui.util.RenderAdditionalInfo
 import com.intelligentComments.ui.util.TextUtil
 import com.intelligentComments.ui.util.UpdatedGraphicsCookie
 import com.intellij.openapi.components.service
@@ -25,10 +26,11 @@ class TableSegmentRenderer(private val table: TableContentSegmentUiModel) : Segm
     g: Graphics,
     rect: Rectangle,
     editorImpl: EditorImpl,
-    rectanglesModel: RectanglesModel
+    rectanglesModel: RectanglesModel,
+    additionalRenderInfo: RenderAdditionalInfo
   ): Rectangle {
-    val rowsHeights = calculateRowsHeights(editorImpl).toList()
-    val colsWidths = calculateColsWidths(editorImpl).toList()
+    val rowsHeights = calculateRowsHeights(editorImpl, additionalRenderInfo).toList()
+    val colsWidths = calculateColsWidths(editorImpl, additionalRenderInfo).toList()
     val cellsHeight = rowsHeights.sum()
     val cellsWidth = colsWidths.sum()
     val nameWidth = calculateNameWidth(editorImpl)
@@ -48,7 +50,7 @@ class TableSegmentRenderer(private val table: TableContentSegmentUiModel) : Segm
     drawTableName(g, rectForName, editorImpl)
 
     return Rectangle(rect).apply {
-      y += calculateExpectedHeightInPixels(editorImpl)
+      y += calculateExpectedHeightInPixels(editorImpl, additionalRenderInfo)
     }
   }
 
@@ -77,7 +79,7 @@ class TableSegmentRenderer(private val table: TableContentSegmentUiModel) : Segm
     colsWidths: List<Int>
   ) {
     executeActionOverCellsAndRectangles(rowsHeights, colsWidths, rect) { cell, cellRect ->
-      TableCellRenderer(cell).render(g, cellRect, editorImpl, rectanglesModel)
+      TableCellRenderer(cell).render(g, cellRect, editorImpl, rectanglesModel, RenderAdditionalInfo.emptyInstance)
     }
   }
 
@@ -148,12 +150,15 @@ class TableSegmentRenderer(private val table: TableContentSegmentUiModel) : Segm
     g.drawLine(rect.x, rect.y + yDelta, rect.x + width, rect.y + yDelta)
   }
 
-  private fun calculateRowsHeights(editorImpl: EditorImpl): Collection<Int> {
+  private fun calculateRowsHeights(
+    editorImpl: EditorImpl,
+    additionalRenderInfo: RenderAdditionalInfo
+  ): Collection<Int> {
     val cellsHeights = mutableListOf<Int>()
     for (row in table.rows) {
       var maxCellHeightInRow = 0
       for (cell in row.cells) {
-        val cellHeight = TableCellRenderer(cell).calculateExpectedHeightInPixels(editorImpl)
+        val cellHeight = TableCellRenderer(cell).calculateExpectedHeightInPixels(editorImpl, additionalRenderInfo)
         maxCellHeightInRow = max(maxCellHeightInRow, cellHeight)
       }
 
@@ -163,7 +168,10 @@ class TableSegmentRenderer(private val table: TableContentSegmentUiModel) : Segm
     return cellsHeights
   }
 
-  private fun calculateColsWidths(editorImpl: EditorImpl): Collection<Int> {
+  private fun calculateColsWidths(
+    editorImpl: EditorImpl,
+    additionalRenderInfo: RenderAdditionalInfo
+  ): Collection<Int> {
     if (table.rows.isEmpty()) return listOf()
 
     val cellsCountInRow = table.rows[0].cells.size
@@ -173,7 +181,7 @@ class TableSegmentRenderer(private val table: TableContentSegmentUiModel) : Segm
       var maxCellWidthInCol = 0
       for (rowIndex in 0 until table.rows.size) {
         val cell = table.rows[rowIndex].cells[cellIndex]
-        val cellWidth = TableCellRenderer(cell).calculateExpectedWidthInPixels(editorImpl)
+        val cellWidth = TableCellRenderer(cell).calculateExpectedWidthInPixels(editorImpl, additionalRenderInfo)
         maxCellWidthInCol = max(maxCellWidthInCol, cellWidth)
       }
 
@@ -183,13 +191,20 @@ class TableSegmentRenderer(private val table: TableContentSegmentUiModel) : Segm
     return cellWidths
   }
 
-  override fun calculateExpectedHeightInPixels(editorImpl: EditorImpl): Int {
-    var tableHeight = calculateCellsHeight(editorImpl)
+  override fun calculateExpectedHeightInPixels(
+    editorImpl: EditorImpl,
+    additionalRenderInfo: RenderAdditionalInfo
+  ): Int {
+    var tableHeight = calculateCellsHeight(editorImpl, additionalRenderInfo)
     tableHeight += calculateNameHeight(editorImpl) + deltaBetweenCellsAndTableName
     return tableHeight
   }
 
-  private fun calculateCellsHeight(editorImpl: EditorImpl) = calculateRowsHeights(editorImpl).sum()
+  private fun calculateCellsHeight(
+    editorImpl: EditorImpl,
+    additionalRenderInfo: RenderAdditionalInfo
+  ) = calculateRowsHeights(editorImpl, additionalRenderInfo).sum()
+
   private fun calculateNameHeight(editorImpl: EditorImpl): Int {
     val headerText = table.headerUiModel?.highlightedTextUiWrapper ?: return 0
 
@@ -197,21 +212,27 @@ class TableSegmentRenderer(private val table: TableContentSegmentUiModel) : Segm
     return TextUtil.getLineHeightWithHighlighters(editorImpl, highlighters)
   }
 
-  override fun calculateExpectedWidthInPixels(editorImpl: EditorImpl): Int {
-    val tableCellsWidth = calculateCellsWidth(editorImpl)
+  override fun calculateExpectedWidthInPixels(
+    editorImpl: EditorImpl,
+    additionalRenderInfo: RenderAdditionalInfo
+  ): Int {
+    val tableCellsWidth = calculateCellsWidth(editorImpl, additionalRenderInfo)
     val tableNameWidth = calculateNameWidth(editorImpl)
     return max(tableCellsWidth, tableNameWidth)
   }
 
-  private fun calculateCellsWidth(editorImpl: EditorImpl) = calculateColsWidths(editorImpl).sum()
+  private fun calculateCellsWidth(
+    editorImpl: EditorImpl,
+    additionalRenderInfo: RenderAdditionalInfo) = calculateColsWidths(editorImpl, additionalRenderInfo).sum()
+
   private fun calculateNameWidth(editorImpl: EditorImpl): Int {
     val headerText = table.headerUiModel?.highlightedTextUiWrapper ?: return 0
     return TextUtil.getTextWidthWithHighlighters(editorImpl, headerText)
   }
 
   override fun accept(context: RectangleModelBuildContext) {
-    val rowsHeights = calculateRowsHeights(context.editorImpl).toList()
-    val colsWidths = calculateColsWidths(context.editorImpl).toList()
+    val rowsHeights = calculateRowsHeights(context.editorImpl, context.additionalRenderInfo).toList()
+    val colsWidths = calculateColsWidths(context.editorImpl, context.additionalRenderInfo).toList()
 
     executeActionOverCellsAndRectangles(rowsHeights, colsWidths, context.rect) { cell, cellRect ->
       TableCellRenderer(cell).accept(context.withRectangle(cellRect))

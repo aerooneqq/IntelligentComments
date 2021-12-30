@@ -8,6 +8,7 @@ import com.intelligentComments.ui.comments.renderers.invariants.InvariantsRender
 import com.intelligentComments.ui.comments.renderers.references.ReferencesRenderer
 import com.intelligentComments.ui.comments.renderers.segments.SegmentsRenderer
 import com.intelligentComments.ui.comments.renderers.todos.ToDosRenderer
+import com.intelligentComments.ui.util.RenderAdditionalInfo
 import com.intelligentComments.ui.util.UpdatedGraphicsCookie
 import com.intellij.openapi.editor.impl.EditorImpl
 import com.intellij.openapi.editor.markup.GutterIconRenderer
@@ -69,31 +70,31 @@ class IntelligentCommentsRenderer(private val model: IntelligentCommentUiModel) 
   private fun drawCommentAuthors(g: Graphics, rect: Rectangle, editorImpl: EditorImpl): Rectangle {
     val renderer = CommentAuthorsRenderer.getRendererFor(model.authorsSection.content)
     val model = getOrCreateRectanglesModel(editorImpl)
-    return renderer.render(g, rect, editorImpl, model)
+    return renderer.render(g, rect, editorImpl, model, RenderAdditionalInfo.emptyInstance)
   }
 
   private fun drawCommentContent(g: Graphics, rect: Rectangle, editorImpl: EditorImpl): Rectangle {
     val model = getOrCreateRectanglesModel(editorImpl)
     val renderer = SegmentsRenderer.getRendererFor(this.model.contentSection)
-    return renderer.render(g, rect, editorImpl, model)
+    return renderer.render(g, rect, editorImpl, model, RenderAdditionalInfo.emptyInstance)
   }
 
   private fun drawReferences(g: Graphics, rect: Rectangle, editorImpl: EditorImpl): Rectangle {
     val renderer = ReferencesRenderer.getRendererFor(model.referencesSection)
     val model = getOrCreateRectanglesModel(editorImpl)
-    return renderer.render(g, rect, editorImpl, model)
+    return renderer.render(g, rect, editorImpl, model, RenderAdditionalInfo.emptyInstance)
   }
 
   private fun drawInvariants(g: Graphics, rect: Rectangle, editorImpl: EditorImpl): Rectangle {
     val renderer = InvariantsRenderer.getRendererFor(model.invariantsSection)
     val model = getOrCreateRectanglesModel(editorImpl)
-    return renderer.render(g, rect, editorImpl, model)
+    return renderer.render(g, rect, editorImpl, model, RenderAdditionalInfo.emptyInstance)
   }
 
   private fun drawToDos(g: Graphics, rect: Rectangle, editorImpl: EditorImpl): Rectangle {
     val renderer = ToDosRenderer.getRendererFor(model.todosSection)
     val model = getOrCreateRectanglesModel(editorImpl)
-    return renderer.render(g, rect, editorImpl, model)
+    return renderer.render(g, rect, editorImpl, model, RenderAdditionalInfo.emptyInstance)
   }
 
   override fun doCalculateGutterIconRenderer(editorImpl: EditorImpl): GutterIconRenderer? {

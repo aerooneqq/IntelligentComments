@@ -5,6 +5,7 @@ import com.intelligentComments.ui.comments.model.content.image.ImageContentSegme
 import com.intelligentComments.ui.core.RectangleModelBuildContext
 import com.intelligentComments.ui.core.RectanglesModel
 import com.intelligentComments.ui.util.RectanglesModelUtil
+import com.intelligentComments.ui.util.RenderAdditionalInfo
 import com.intelligentComments.ui.util.TextUtil
 import com.intellij.openapi.editor.impl.EditorImpl
 import java.awt.Graphics
@@ -24,7 +25,8 @@ class ImageSegmentRenderer(private val model: ImageContentSegmentUiModel) : Segm
     g: Graphics,
     rect: Rectangle,
     editorImpl: EditorImpl,
-    rectanglesModel: RectanglesModel
+    rectanglesModel: RectanglesModel,
+    additionalRenderInfo: RenderAdditionalInfo
   ): Rectangle {
     rect.y += upperDelta
     val adjustedRect = renderImage(g, rect, editorImpl)
@@ -91,7 +93,7 @@ class ImageSegmentRenderer(private val model: ImageContentSegmentUiModel) : Segm
     return TextUtil.getTextWidthWithHighlighters(editorImpl, description)
   }
 
-  override fun calculateExpectedHeightInPixels(editorImpl: EditorImpl): Int {
+  override fun calculateExpectedHeightInPixels(editorImpl: EditorImpl, additionalRenderInfo: RenderAdditionalInfo): Int {
     val imageHeight = imageHolder.height + deltaBetweenImageAndDescription
     val descriptionHeight = getDescriptionHeight(editorImpl)
     return upperDelta + imageHeight + descriptionHeight
@@ -115,15 +117,15 @@ class ImageSegmentRenderer(private val model: ImageContentSegmentUiModel) : Segm
     }
   }
 
-  override fun calculateExpectedWidthInPixels(editorImpl: EditorImpl): Int {
+  override fun calculateExpectedWidthInPixels(editorImpl: EditorImpl, additionalRenderInfo: RenderAdditionalInfo): Int {
     return max(imageHolder.width, getDescriptionWidth(editorImpl))
   }
 
   override fun accept(context: RectangleModelBuildContext) {
     context.rectanglesModel.addElement(model, Rectangle(context.rect).apply {
       y += upperDelta
-      width = calculateExpectedWidthInPixels(context.editorImpl)
-      height = calculateExpectedHeightInPixels(context.editorImpl)
+      width = calculateExpectedWidthInPixels(context.editorImpl, context.additionalRenderInfo)
+      height = calculateExpectedHeightInPixels(context.editorImpl, context.additionalRenderInfo)
     })
   }
 }

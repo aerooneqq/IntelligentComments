@@ -3,6 +3,7 @@ package com.intelligentComments.ui.comments.renderers.segments
 import com.intelligentComments.ui.comments.model.content.text.TextContentSegmentUiModel
 import com.intelligentComments.ui.core.RectangleModelBuildContext
 import com.intelligentComments.ui.core.RectanglesModel
+import com.intelligentComments.ui.util.RenderAdditionalInfo
 import com.intelligentComments.ui.util.TextUtil
 import com.intellij.openapi.editor.impl.EditorImpl
 import java.awt.Graphics
@@ -19,12 +20,16 @@ class TextSegmentRenderer(private val textSegment: TextContentSegmentUiModel) : 
     g: Graphics,
     rect: Rectangle,
     editorImpl: EditorImpl,
-    rectanglesModel: RectanglesModel
+    rectanglesModel: RectanglesModel,
+    additionalRenderInfo: RenderAdditionalInfo
   ): Rectangle {
     return TextUtil.renderLines(g, Rectangle(rect), editorImpl, cachedLines, textSegment.highlighters, 0)
   }
 
-  override fun calculateExpectedHeightInPixels(editorImpl: EditorImpl): Int {
+  override fun calculateExpectedHeightInPixels(
+    editorImpl: EditorImpl,
+    additionalRenderInfo: RenderAdditionalInfo
+  ): Int {
     var height = 0
     for (i in cachedLines.indices) {
       val lineHighlighters = cachedLinesHighlighters[i]
@@ -35,7 +40,10 @@ class TextSegmentRenderer(private val textSegment: TextContentSegmentUiModel) : 
     return height
   }
 
-  override fun calculateExpectedWidthInPixels(editorImpl: EditorImpl): Int {
+  override fun calculateExpectedWidthInPixels(
+    editorImpl: EditorImpl,
+    additionalRenderInfo: RenderAdditionalInfo
+  ): Int {
     val fontMetrics = TextUtil.getFontMetrics(editorImpl, null)
     var maxWidth = 0
 

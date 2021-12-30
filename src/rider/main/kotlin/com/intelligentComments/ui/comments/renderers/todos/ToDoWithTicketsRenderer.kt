@@ -10,6 +10,7 @@ import com.intelligentComments.ui.core.RectangleModelBuildContributor
 import com.intelligentComments.ui.core.RectanglesModel
 import com.intelligentComments.ui.core.Renderer
 import com.intelligentComments.ui.util.ContentSegmentsUtil
+import com.intelligentComments.ui.util.RenderAdditionalInfo
 import com.intelligentComments.ui.util.TextUtil
 import com.intellij.openapi.editor.impl.EditorImpl
 import java.awt.Graphics
@@ -102,9 +103,9 @@ class ToDoWithTicketsRenderer(private val todo: ToDoWithTicketsUiModel) :
     return ContentSegmentsUtil.renderSegments(todo.description.content, g, rect, editorImpl, rectanglesModel)
   }
 
-  override fun calculateContentHeight(editorImpl: EditorImpl): Int {
+  override fun calculateContentHeight(editorImpl: EditorImpl, additionalRenderInfo: RenderAdditionalInfo): Int {
     val ticketsHeaderHeight = calculateTicketsHeight(editorImpl) + heightDelta
-    val contentHeight = ContentSegmentsUtil.calculateContentHeight(todo.description.content, editorImpl) + heightDelta
+    val contentHeight = ContentSegmentsUtil.calculateContentHeight(todo.description.content, editorImpl, additionalRenderInfo) + heightDelta
     return ticketsHeaderHeight + contentHeight
   }
 
@@ -112,8 +113,8 @@ class ToDoWithTicketsRenderer(private val todo: ToDoWithTicketsUiModel) :
     return TextUtil.getTextHeight(editorImpl, null)
   }
 
-  override fun calculateContentWidth(editorImpl: EditorImpl): Int {
-    return ContentSegmentsUtil.calculateContentWidth(todo.description.content, editorImpl)
+  override fun calculateContentWidth(editorImpl: EditorImpl, additionalRenderInfo: RenderAdditionalInfo): Int {
+    return ContentSegmentsUtil.calculateContentWidth(todo.description.content, editorImpl, additionalRenderInfo)
   }
 
   override fun acceptContent(context: RectangleModelBuildContext) {
@@ -122,8 +123,8 @@ class ToDoWithTicketsRenderer(private val todo: ToDoWithTicketsUiModel) :
     for (segment in todo.description.content) {
       val renderer = SegmentRenderer.getRendererFor(segment)
       val rect = Rectangle(currentRect).apply {
-        width = renderer.calculateExpectedWidthInPixels(context.editorImpl)
-        height = renderer.calculateExpectedHeightInPixels(context.editorImpl)
+        width = renderer.calculateExpectedWidthInPixels(context.editorImpl, context.additionalRenderInfo)
+        height = renderer.calculateExpectedHeightInPixels(context.editorImpl, context.additionalRenderInfo)
       }
 
       context.rectanglesModel.addElement(segment, rect)

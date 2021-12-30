@@ -9,10 +9,7 @@ import com.intelligentComments.ui.comments.model.content.list.ListItemUiModel
 import com.intelligentComments.ui.comments.model.content.text.TextContentSegmentUiModel
 import com.intelligentComments.ui.core.RectangleModelBuildContext
 import com.intelligentComments.ui.core.RectanglesModel
-import com.intelligentComments.ui.util.ContentSegmentsUtil
-import com.intelligentComments.ui.util.TextUtil
-import com.intelligentComments.ui.util.UpdatedGraphicsCookie
-import com.intelligentComments.ui.util.UpdatedRectCookie
+import com.intelligentComments.ui.util.*
 import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.impl.EditorImpl
 import com.intellij.openapi.util.use
@@ -32,7 +29,8 @@ class ListSegmentRenderer(private val model: ListContentSegmentUiModel) : Segmen
     g: Graphics,
     rect: Rectangle,
     editorImpl: EditorImpl,
-    rectanglesModel: RectanglesModel
+    rectanglesModel: RectanglesModel,
+    additionalRenderInfo: RenderAdditionalInfo
   ): Rectangle {
     var adjustedRect = renderListHeader(g, rect, editorImpl)
     var finalY = adjustedRect.y
@@ -105,13 +103,16 @@ class ListSegmentRenderer(private val model: ListContentSegmentUiModel) : Segmen
     }
   }
 
-  override fun calculateExpectedHeightInPixels(editorImpl: EditorImpl): Int {
+  override fun calculateExpectedHeightInPixels(
+    editorImpl: EditorImpl,
+    additionalRenderInfo: RenderAdditionalInfo
+  ): Int {
     var height = getHeaderHeightWithDelta(editorImpl)
 
     executeIfExpanded {
       for (item in model.items) {
         for (content in getAllContentFrom(item)) {
-          height += SegmentRenderer.getRendererFor(content).calculateExpectedHeightInPixels(editorImpl)
+          height += SegmentRenderer.getRendererFor(content).calculateExpectedHeightInPixels(editorImpl, additionalRenderInfo)
           height += ContentSegmentsUtil.deltaBetweenSegments
         }
       }
@@ -141,14 +142,17 @@ class ListSegmentRenderer(private val model: ListContentSegmentUiModel) : Segmen
     return TextUtil.getTextWidth(editorImpl, model.headerUiModel.textWrapper.text)
   }
 
-  override fun calculateExpectedWidthInPixels(editorImpl: EditorImpl): Int {
+  override fun calculateExpectedWidthInPixels(
+    editorImpl: EditorImpl,
+    additionalRenderInfo: RenderAdditionalInfo
+  ): Int {
     var headerWidth = getHeaderWidth(editorImpl)
 
     executeIfExpanded {
       for (item in model.items) {
         for (content in getAllContentFrom(item)) {
           val renderer = SegmentRenderer.getRendererFor(content)
-          val segmentWidth = renderer.calculateExpectedWidthInPixels(editorImpl)
+          val segmentWidth = renderer.calculateExpectedWidthInPixels(editorImpl, additionalRenderInfo)
           headerWidth = max(segmentWidth + leftIndentForListContent, headerWidth)
         }
       }
@@ -191,7 +195,7 @@ class ListSegmentRenderer(private val model: ListContentSegmentUiModel) : Segmen
         for (item in model.items) {
           for (content in getAllContentFrom(item)) {
             val renderer = SegmentRenderer.getRendererFor(content)
-            val height = renderer.calculateExpectedHeightInPixels(editorImpl)
+            val height = renderer.calculateExpectedHeightInPixels(editorImpl, context.additionalRenderInfo)
             renderer.accept(context)
             rect.y += height + ContentSegmentsUtil.deltaBetweenSegments
           }

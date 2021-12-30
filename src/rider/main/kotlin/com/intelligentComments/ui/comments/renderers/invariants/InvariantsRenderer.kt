@@ -9,6 +9,7 @@ import com.intelligentComments.ui.core.RectangleModelBuildContributor
 import com.intelligentComments.ui.core.RectanglesModel
 import com.intelligentComments.ui.core.Renderer
 import com.intelligentComments.ui.util.RectanglesModelUtil
+import com.intelligentComments.ui.util.RenderAdditionalInfo
 import com.intellij.openapi.editor.impl.EditorImpl
 import java.awt.Graphics
 import java.awt.Rectangle
@@ -31,40 +32,41 @@ class InvariantsRendererImpl(private val section: SectionWithHeaderUiModel<Invar
     g: Graphics,
     rect: Rectangle,
     editorImpl: EditorImpl,
-    rectanglesModel: RectanglesModel
+    rectanglesModel: RectanglesModel,
+    additionalRenderInfo: RenderAdditionalInfo
   ): Rectangle {
     var adjustedRect = rect
     var maxHeight = 0
     for (invariant in section.content) {
       val renderer = InvariantRenderer.getRendererFor(invariant)
-      maxHeight = max(renderer.calculateExpectedHeightInPixels(editorImpl), maxHeight)
+      maxHeight = max(renderer.calculateExpectedHeightInPixels(editorImpl, additionalRenderInfo), maxHeight)
     }
 
     adjustedRect.height = maxHeight
 
     for (invariant in section.content) {
       val renderer = InvariantRenderer.getRendererFor(invariant)
-      adjustedRect = renderer.render(g, adjustedRect, editorImpl, rectanglesModel)
+      adjustedRect = renderer.render(g, adjustedRect, editorImpl, rectanglesModel, additionalRenderInfo)
     }
 
     return Rectangle(rect.x, rect.y + maxHeight, rect.width, rect.height - maxHeight)
   }
 
-  override fun calculateContentHeight(editorImpl: EditorImpl): Int {
+  override fun calculateContentHeight(editorImpl: EditorImpl, additionalRenderInfo: RenderAdditionalInfo): Int {
     var height = 0
     for (invariant in section.content) {
       val renderer = InvariantRenderer.getRendererFor(invariant)
-      height = max(height, renderer.calculateExpectedHeightInPixels(editorImpl))
+      height = max(height, renderer.calculateExpectedHeightInPixels(editorImpl, additionalRenderInfo))
     }
 
     return height
   }
 
-  override fun calculateContentWidth(editorImpl: EditorImpl): Int {
+  override fun calculateContentWidth(editorImpl: EditorImpl, additionalRenderInfo: RenderAdditionalInfo): Int {
     var width = 0
     for (invariant in section.content) {
       val renderer = InvariantRenderer.getRendererFor(invariant)
-      width += renderer.calculateWidthWithInvariantInterval(editorImpl)
+      width += renderer.calculateWidthWithInvariantInterval(editorImpl, additionalRenderInfo)
     }
 
     return width
@@ -75,15 +77,15 @@ class InvariantsRendererImpl(private val section: SectionWithHeaderUiModel<Invar
     val startX = rect.x
     for (invariant in section.content) {
       val renderer = InvariantRenderer.getRendererFor(invariant)
-      val height = renderer.calculateExpectedHeightInPixels(context.editorImpl)
-      val width = renderer.calculateExpectedWidthInPixels(context.editorImpl)
+      val height = renderer.calculateExpectedHeightInPixels(context.editorImpl, context.additionalRenderInfo)
+      val width = renderer.calculateExpectedWidthInPixels(context.editorImpl, context.additionalRenderInfo)
 
       context.rectanglesModel.addElement(invariant, Rectangle(rect.x, rect.y, width, height))
       rect.x += width + gapBetweenInvariants
     }
 
-    val height = calculateContentHeight(context.editorImpl)
-    val width = calculateContentWidth(context.editorImpl)
+    val height = calculateContentHeight(context.editorImpl, context.additionalRenderInfo)
+    val width = calculateContentWidth(context.editorImpl, context.additionalRenderInfo)
     rect.x = startX
 
     RectanglesModelUtil.addHeightDeltaTo(context, height)

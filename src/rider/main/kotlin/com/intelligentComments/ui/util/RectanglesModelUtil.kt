@@ -122,8 +122,8 @@ class RectanglesModelUtil {
       context: RectangleModelBuildContext,
       uiInteractionModel: UiInteractionModelBase
     ) {
-      val width = renderer.calculateExpectedWidthInPixels(context.editorImpl)
-      val height = renderer.calculateExpectedHeightInPixels(context.editorImpl)
+      val width = renderer.calculateExpectedWidthInPixels(context.editorImpl, context.additionalRenderInfo)
+      val height = renderer.calculateExpectedHeightInPixels(context.editorImpl, context.additionalRenderInfo)
 
       context.widthAndHeight.updateHeightSum(height)
       context.widthAndHeight.updateWidthMax(width)

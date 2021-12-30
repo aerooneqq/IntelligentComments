@@ -6,6 +6,7 @@ import com.intelligentComments.ui.core.RectangleModelBuildContributor
 import com.intelligentComments.ui.core.RectanglesModel
 import com.intelligentComments.ui.core.Renderer
 import com.intelligentComments.ui.util.HeaderWithBackground
+import com.intelligentComments.ui.util.RenderAdditionalInfo
 import com.intelligentComments.ui.util.UpdatedRectCookie
 import com.intellij.openapi.editor.impl.EditorImpl
 import com.intellij.openapi.util.use
@@ -20,7 +21,8 @@ abstract class ExpandableContentWithHeader(
     g: Graphics,
     rect: Rectangle,
     editorImpl: EditorImpl,
-    rectanglesModel: RectanglesModel
+    rectanglesModel: RectanglesModel,
+    additionalRenderInfo: RenderAdditionalInfo
   ): Rectangle {
     val text = headerUiModel.text
     val color = headerUiModel.backgroundColor
@@ -40,21 +42,27 @@ abstract class ExpandableContentWithHeader(
     rectanglesModel: RectanglesModel
   ): Rectangle
 
-  final override fun calculateExpectedHeightInPixels(editorImpl: EditorImpl): Int {
+  final override fun calculateExpectedHeightInPixels(
+    editorImpl: EditorImpl,
+    additionalRenderInfo: RenderAdditionalInfo
+  ): Int {
     val headerHeight = HeaderWithBackground.calculateHeaderHeight(editorImpl)
-    val contentHeight = if (headerUiModel.parent.isExpanded) calculateContentHeight(editorImpl) else 0
+    val contentHeight = if (headerUiModel.parent.isExpanded) calculateContentHeight(editorImpl, additionalRenderInfo) else 0
     return headerHeight + contentHeight
   }
 
-  protected abstract fun calculateContentWidth(editorImpl: EditorImpl): Int
+  protected abstract fun calculateContentWidth(editorImpl: EditorImpl, additionalRenderInfo: RenderAdditionalInfo): Int
 
-  final override fun calculateExpectedWidthInPixels(editorImpl: EditorImpl): Int {
+  final override fun calculateExpectedWidthInPixels(
+    editorImpl: EditorImpl,
+    additionalRenderInfo: RenderAdditionalInfo
+  ): Int {
     val headerWidth = HeaderWithBackground.calculateHeaderWidth(editorImpl, headerUiModel.text)
-    val contentWidth = if (headerUiModel.parent.isExpanded) calculateContentWidth(editorImpl) else 0
+    val contentWidth = if (headerUiModel.parent.isExpanded) calculateContentWidth(editorImpl, additionalRenderInfo) else 0
     return max(headerWidth, contentWidth)
   }
 
-  protected abstract fun calculateContentHeight(editorImpl: EditorImpl): Int
+  protected abstract fun calculateContentHeight(editorImpl: EditorImpl, additionalRenderInfo: RenderAdditionalInfo): Int
 
   final override fun accept(context: RectangleModelBuildContext) {
     val editorImpl = context.editorImpl

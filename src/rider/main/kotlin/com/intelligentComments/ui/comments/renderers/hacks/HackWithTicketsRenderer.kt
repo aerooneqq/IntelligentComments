@@ -6,6 +6,7 @@ import com.intelligentComments.ui.core.RectangleModelBuildContext
 import com.intelligentComments.ui.core.RectangleModelBuildContributor
 import com.intelligentComments.ui.core.RectanglesModel
 import com.intelligentComments.ui.core.Renderer
+import com.intelligentComments.ui.util.RenderAdditionalInfo
 import com.intellij.openapi.editor.impl.EditorImpl
 import com.intellij.openapi.project.Project
 import java.awt.Graphics
@@ -27,16 +28,17 @@ class HackWithTicketsRenderer(hack: HackWithTickets, project: Project) : HackRen
     g: Graphics,
     rect: Rectangle,
     editorImpl: EditorImpl,
-    rectanglesModel: RectanglesModel
+    rectanglesModel: RectanglesModel,
+    additionalRenderInfo: RenderAdditionalInfo
   ): Rectangle {
     TODO("Not yet implemented")
   }
 
-  override fun calculateExpectedHeightInPixels(editorImpl: EditorImpl): Int {
+  override fun calculateExpectedHeightInPixels(editorImpl: EditorImpl, additionalRenderInfo: RenderAdditionalInfo): Int {
     TODO("Not yet implemented")
   }
 
-  override fun calculateExpectedWidthInPixels(editorImpl: EditorImpl): Int {
+  override fun calculateExpectedWidthInPixels(editorImpl: EditorImpl, additionalRenderInfo: RenderAdditionalInfo): Int {
     TODO("Not yet implemented")
   }
 

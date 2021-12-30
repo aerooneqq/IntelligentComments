@@ -5,6 +5,7 @@ import com.intelligentComments.ui.comments.model.highlighters.HighlightedTextUiW
 import com.intelligentComments.ui.core.RectangleModelBuildContext
 import com.intelligentComments.ui.core.RectanglesModel
 import com.intelligentComments.ui.util.ContentSegmentsUtil
+import com.intelligentComments.ui.util.RenderAdditionalInfo
 import com.intelligentComments.ui.util.TextUtil
 import com.intelligentComments.ui.util.UpdatedRectCookie
 import com.intellij.openapi.editor.impl.EditorImpl
@@ -25,14 +26,14 @@ abstract class LeftHeaderRightContentRenderer(
     g: Graphics,
     rect: Rectangle,
     editorImpl: EditorImpl,
-    rectanglesModel: RectanglesModel
+    rectanglesModel: RectanglesModel,
+    additionalRenderInfo: RenderAdditionalInfo
   ): Rectangle {
-    UpdatedRectCookie(rect, yDelta = -2).use {
+    UpdatedRectCookie(rect).use {
       renderHeader(g, rect, editorImpl, rectanglesModel)
     }
 
-    val nameWidth = calculateHeaderWidth(editorImpl)
-    val xDelta = nameWidth + deltaBetweenNameAndDescription
+    val xDelta = additionalRenderInfo.topmostLeftIndent + deltaBetweenNameAndDescription
     val adjustedRect = Rectangle(rect).apply {
       x += xDelta
       y = rect.y
@@ -44,8 +45,10 @@ abstract class LeftHeaderRightContentRenderer(
     }
   }
 
-  protected abstract fun calculateHeaderWidth(editorImpl: EditorImpl): Int
-  protected abstract fun calculateHeaderHeight(editorImpl: EditorImpl): Int
+  fun calculateHeaderWidth(editorImpl: EditorImpl) = calculateHeaderWidthInternal(editorImpl)
+
+  protected abstract fun calculateHeaderWidthInternal(editorImpl: EditorImpl): Int
+  protected abstract fun calculateHeaderHeightInternal(editorImpl: EditorImpl): Int
   protected abstract fun renderHeader(
     g: Graphics,
     rect: Rectangle,
@@ -53,22 +56,29 @@ abstract class LeftHeaderRightContentRenderer(
     rectanglesModel: RectanglesModel
   )
 
-  override fun calculateExpectedHeightInPixels(editorImpl: EditorImpl): Int {
-    val nameHeight = calculateHeaderHeight(editorImpl)
-    val contentHeight = ContentSegmentsUtil.calculateContentHeight(content, editorImpl) + ContentSegmentsUtil.deltaBetweenSegments
+  override fun calculateExpectedHeightInPixels(
+    editorImpl: EditorImpl,
+    additionalRenderInfo: RenderAdditionalInfo
+  ): Int {
+    val nameHeight = calculateHeaderHeightInternal(editorImpl)
+    val delta = ContentSegmentsUtil.deltaBetweenSegments
+    val contentHeight = ContentSegmentsUtil.calculateContentHeight(content, editorImpl, additionalRenderInfo) + delta
     return max(nameHeight, contentHeight)
   }
 
-  override fun calculateExpectedWidthInPixels(editorImpl: EditorImpl): Int {
-    var width = calculateHeaderWidth(editorImpl)
+  override fun calculateExpectedWidthInPixels(
+    editorImpl: EditorImpl,
+    additionalRenderInfo: RenderAdditionalInfo
+  ): Int {
+    var width = additionalRenderInfo.topmostLeftIndent
     width += deltaBetweenNameAndDescription
-    width += ContentSegmentsUtil.calculateContentWidth(content, editorImpl)
+    width += ContentSegmentsUtil.calculateContentWidth(content, editorImpl, additionalRenderInfo)
     return width
   }
 
   override fun accept(context: RectangleModelBuildContext) {
     ContentSegmentsUtil.accept(context.copyWithNewRect(Rectangle(context.rect).apply {
-      x += deltaBetweenNameAndDescription + calculateHeaderWidth(context.editorImpl)
+      x += deltaBetweenNameAndDescription + context.additionalRenderInfo.topmostLeftIndent
     }), content)
   }
 }
@@ -77,11 +87,11 @@ open class LeftTextHeaderAndRightContentRenderer(
   private val header: HighlightedTextUiWrapper,
   content: Collection<ContentSegmentUiModel>
 ) : LeftHeaderRightContentRenderer(content) {
-  override fun calculateHeaderWidth(editorImpl: EditorImpl): Int {
+  override fun calculateHeaderWidthInternal(editorImpl: EditorImpl): Int {
     return TextUtil.getTextWidthWithHighlighters(editorImpl, header)
   }
 
-  override fun calculateHeaderHeight(editorImpl: EditorImpl): Int {
+  override fun calculateHeaderHeightInternal(editorImpl: EditorImpl): Int {
     return TextUtil.getLineHeightWithHighlighters(editorImpl, header.highlighters)
   }
 
@@ -91,6 +101,12 @@ open class LeftTextHeaderAndRightContentRenderer(
     editorImpl: EditorImpl,
     rectanglesModel: RectanglesModel
   ) {
-    TextUtil.renderLine(g, rect, editorImpl, header, 0)
+    val adjustedRect = if (header.highlighters.first().backgroundStyle != null) {
+      Rectangle(rect).apply { y -= 3 }
+    } else {
+      rect
+    }
+
+    TextUtil.renderLine(g, adjustedRect, editorImpl, header, 0)
   }
 }

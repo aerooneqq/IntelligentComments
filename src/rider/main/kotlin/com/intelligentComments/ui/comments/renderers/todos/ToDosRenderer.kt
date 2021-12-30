@@ -8,6 +8,7 @@ import com.intelligentComments.ui.core.RectangleModelBuildContributor
 import com.intelligentComments.ui.core.RectanglesModel
 import com.intelligentComments.ui.core.Renderer
 import com.intelligentComments.ui.util.RectanglesModelUtil
+import com.intelligentComments.ui.util.RenderAdditionalInfo
 import com.intellij.openapi.editor.impl.EditorImpl
 import java.awt.Graphics
 import java.awt.Rectangle
@@ -32,12 +33,13 @@ class ToDosRendererImpl(private val section: SectionWithHeaderUiModel<ToDoUiMode
     g: Graphics,
     rect: Rectangle,
     editorImpl: EditorImpl,
-    rectanglesModel: RectanglesModel
+    rectanglesModel: RectanglesModel,
+    additionalRenderInfo: RenderAdditionalInfo
   ): Rectangle {
     var adjustedRect = Rectangle(rect)
 
     executeActionWithToDosAndRenderers { todo, renderer ->
-      adjustedRect = renderer.render(g, adjustedRect, editorImpl, rectanglesModel)
+      adjustedRect = renderer.render(g, adjustedRect, editorImpl, rectanglesModel, additionalRenderInfo)
       adjustedRect.y += deltaBetweenToDos
     }
 
@@ -53,19 +55,25 @@ class ToDosRendererImpl(private val section: SectionWithHeaderUiModel<ToDoUiMode
     }
   }
 
-  override fun calculateContentWidth(editorImpl: EditorImpl): Int {
+  override fun calculateContentWidth(
+    editorImpl: EditorImpl,
+    additionalRenderInfo: RenderAdditionalInfo
+  ): Int {
     var width = 0
     executeActionWithToDosAndRenderers { _, renderer ->
-      width = max(width, renderer.calculateExpectedWidthInPixels(editorImpl))
+      width = max(width, renderer.calculateExpectedWidthInPixels(editorImpl, additionalRenderInfo))
     }
 
     return width
   }
 
-  override fun calculateContentHeight(editorImpl: EditorImpl): Int {
+  override fun calculateContentHeight(
+    editorImpl: EditorImpl,
+    additionalRenderInfo: RenderAdditionalInfo
+  ): Int {
     var height = 0
     executeActionWithToDosAndRenderers { _, renderer ->
-      height += renderer.calculateExpectedHeightInPixels(editorImpl)
+      height += renderer.calculateExpectedHeightInPixels(editorImpl, additionalRenderInfo)
       height += deltaBetweenToDos
     }
 

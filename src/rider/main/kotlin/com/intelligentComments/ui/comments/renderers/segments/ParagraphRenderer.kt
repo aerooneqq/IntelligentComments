@@ -4,6 +4,7 @@ import com.intelligentComments.ui.comments.model.content.paragraphs.ParagraphUiM
 import com.intelligentComments.ui.comments.renderers.ContentSegmentsRenderer
 import com.intelligentComments.ui.core.RectangleModelBuildContext
 import com.intelligentComments.ui.core.RectanglesModel
+import com.intelligentComments.ui.util.RenderAdditionalInfo
 import com.intelligentComments.ui.util.UpdatedRectCookie
 import com.intellij.openapi.editor.impl.EditorImpl
 import com.intellij.openapi.util.use
@@ -21,11 +22,12 @@ class ParagraphRendererImpl(private val model: ParagraphUiModel) : ContentSegmen
     g: Graphics,
     rect: Rectangle,
     editorImpl: EditorImpl,
-    rectanglesModel: RectanglesModel
+    rectanglesModel: RectanglesModel,
+    additionalRenderInfo: RenderAdditionalInfo
   ): Rectangle {
     var adjustedRect: Rectangle = rect
     UpdatedRectCookie(rect, xDelta = leftDelta).use {
-      adjustedRect = super.render(g, rect, editorImpl, rectanglesModel)
+      adjustedRect = super.render(g, rect, editorImpl, rectanglesModel, additionalRenderInfo)
     }
 
     return adjustedRect.apply {
@@ -33,8 +35,11 @@ class ParagraphRendererImpl(private val model: ParagraphUiModel) : ContentSegmen
     }
   }
 
-  override fun calculateExpectedWidthInPixels(editorImpl: EditorImpl): Int {
-    return super.calculateExpectedWidthInPixels(editorImpl) + leftDelta
+  override fun calculateExpectedWidthInPixels(
+    editorImpl: EditorImpl,
+    additionalRenderInfo: RenderAdditionalInfo
+  ): Int {
+    return super.calculateExpectedWidthInPixels(editorImpl, additionalRenderInfo) + leftDelta
   }
 
   override fun accept(context: RectangleModelBuildContext) {

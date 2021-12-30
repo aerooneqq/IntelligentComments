@@ -6,6 +6,7 @@ import com.intelligentComments.ui.core.RectangleModelBuildContributor
 import com.intelligentComments.ui.core.RectanglesModel
 import com.intelligentComments.ui.core.Renderer
 import com.intelligentComments.ui.util.RectanglesModelUtil.Companion.heightDeltaBetweenSections
+import com.intelligentComments.ui.util.RenderAdditionalInfo
 import com.intelligentComments.ui.util.TextUtil
 import com.intellij.openapi.editor.impl.EditorImpl
 import java.awt.Graphics
@@ -34,7 +35,8 @@ class CommentAuthorsRendererImpl(private val authors: Collection<AuthorUiModel>)
     g: Graphics,
     rect: Rectangle,
     editorImpl: EditorImpl,
-    rectanglesModel: RectanglesModel
+    rectanglesModel: RectanglesModel,
+    additionalRenderInfo: RenderAdditionalInfo
   ): Rectangle {
     return TextUtil.renderText(g, rect, editorImpl, getText(), heightDeltaBetweenSections)
   }
@@ -54,17 +56,23 @@ class CommentAuthorsRendererImpl(private val authors: Collection<AuthorUiModel>)
     return cachedText
   }
 
-  override fun calculateExpectedHeightInPixels(editorImpl: EditorImpl): Int {
+  override fun calculateExpectedHeightInPixels(
+    editorImpl: EditorImpl,
+    additionalRenderInfo: RenderAdditionalInfo
+  ): Int {
     return TextUtil.getTextHeight(editorImpl, null)
   }
 
-  override fun calculateExpectedWidthInPixels(editorImpl: EditorImpl): Int {
+  override fun calculateExpectedWidthInPixels(
+    editorImpl: EditorImpl,
+    additionalRenderInfo: RenderAdditionalInfo
+  ): Int {
     return TextUtil.getTextWidth(editorImpl, getText())
   }
 
   override fun accept(context: RectangleModelBuildContext) {
-    val width = calculateExpectedWidthInPixels(context.editorImpl)
-    val height = calculateExpectedHeightInPixels(context.editorImpl)
+    val width = calculateExpectedWidthInPixels(context.editorImpl, context.additionalRenderInfo)
+    val height = calculateExpectedHeightInPixels(context.editorImpl, context.additionalRenderInfo)
     val interactionModel = authors.first()
     val rect = Rectangle(context.rect.x, context.rect.y, width, height)
 

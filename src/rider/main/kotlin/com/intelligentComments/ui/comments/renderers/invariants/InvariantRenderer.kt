@@ -4,6 +4,7 @@ import com.intelligentComments.ui.comments.model.invariants.AddNewInvariantUiMod
 import com.intelligentComments.ui.comments.model.invariants.InvariantUiModel
 import com.intelligentComments.ui.comments.model.invariants.TextInvariantUiModel
 import com.intelligentComments.ui.core.Renderer
+import com.intelligentComments.ui.util.RenderAdditionalInfo
 import com.intelligentComments.ui.util.UpdatedGraphicsCookie
 import com.intellij.openapi.editor.impl.EditorImpl
 import com.intellij.openapi.util.use
@@ -27,7 +28,7 @@ interface InvariantRenderer : Renderer {
     }
   }
 
-  fun calculateWidthWithInvariantInterval(editorImpl: EditorImpl): Int
+  fun calculateWidthWithInvariantInterval(editorImpl: EditorImpl, additionalRendererInfo: RenderAdditionalInfo): Int
 }
 
 class InvariantRendererUtil {

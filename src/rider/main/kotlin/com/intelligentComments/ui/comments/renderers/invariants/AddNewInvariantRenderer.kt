@@ -2,6 +2,7 @@ package com.intelligentComments.ui.comments.renderers.invariants
 
 import com.intelligentComments.ui.comments.model.invariants.AddNewInvariantUiModel
 import com.intelligentComments.ui.core.RectanglesModel
+import com.intelligentComments.ui.util.RenderAdditionalInfo
 import com.intelligentComments.ui.util.TextUtil
 import com.intellij.openapi.editor.impl.EditorImpl
 import java.awt.Graphics
@@ -12,7 +13,8 @@ class AddNewInvariantRenderer(private val model: AddNewInvariantUiModel) : Invar
     g: Graphics,
     rect: Rectangle,
     editorImpl: EditorImpl,
-    rectanglesModel: RectanglesModel
+    rectanglesModel: RectanglesModel,
+    additionalRenderInfo: RenderAdditionalInfo
   ): Rectangle {
     val width = calculateWidth(editorImpl)
     val background = editorImpl.contentComponent.background
@@ -37,10 +39,20 @@ class AddNewInvariantRenderer(private val model: AddNewInvariantUiModel) : Invar
     return textWidth + iconWidth + extraWidth + iconDelta
   }
 
-  override fun calculateWidthWithInvariantInterval(editorImpl: EditorImpl): Int {
-    return calculateExpectedWidthInPixels(editorImpl) + InvariantsRenderer.gapBetweenInvariants
+  override fun calculateWidthWithInvariantInterval(
+    editorImpl: EditorImpl,
+    additionalRenderInfo: RenderAdditionalInfo
+  ): Int {
+    return calculateExpectedWidthInPixels(editorImpl, additionalRenderInfo) + InvariantsRenderer.gapBetweenInvariants
   }
 
-  override fun calculateExpectedHeightInPixels(editorImpl: EditorImpl): Int = InvariantRenderer.invariantHeight
-  override fun calculateExpectedWidthInPixels(editorImpl: EditorImpl): Int = calculateWidth(editorImpl)
+  override fun calculateExpectedHeightInPixels(
+    editorImpl: EditorImpl,
+    additionalRenderInfo: RenderAdditionalInfo)
+  : Int = InvariantRenderer.invariantHeight
+
+  override fun calculateExpectedWidthInPixels(
+    editorImpl: EditorImpl,
+    additionalRenderInfo: RenderAdditionalInfo
+  ): Int = calculateWidth(editorImpl)
 }

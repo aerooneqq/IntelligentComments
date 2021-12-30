@@ -16,7 +16,7 @@ class CommentIdentifier(val moniker: String, val rangeMarker: RangeMarker) : Com
   }
 
   override fun hashCode(): Int {
-    return (moniker.hashCode() * rangeMarker.startOffset * rangeMarker.endOffset) % 1000007
+    return HashUtil.hashCode(moniker.hashCode(), rangeMarker.startOffset, rangeMarker.endOffset)
   }
 
   override fun equals(other: Any?): Boolean {

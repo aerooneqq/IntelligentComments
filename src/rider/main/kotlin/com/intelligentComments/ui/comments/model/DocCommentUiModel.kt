@@ -17,7 +17,6 @@ class DocCommentUiModel(
 ) : UiInteractionModelBase(project), RootUiModel {
   val contentSection: SectionUiModel<ContentSegmentUiModel>
   val underlyingTextRange = docComment.rangeMarker.range
-  var isInRenderMode = true
 
 
   init {
