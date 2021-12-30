@@ -6,6 +6,7 @@ using JetBrains.Annotations;
 using JetBrains.ReSharper.I18n.Services;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.ReSharper.Psi.Util;
+using JetBrains.Rider.Model;
 using JetBrains.Util;
 using JetBrains.Util.Logging;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
@@ -451,9 +452,34 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
     myVisitedNodes.Add(element);
     var typeOfList = element.GetAttribute("type");
 
-    if (typeOfList == "table") return;
+    switch (typeOfList)
+    {
+      case "number" or "bullet":
+        ProcessList(element);
+        break;
+      case "table":
+        ProcessTable(element);
+        break;
+    }
+  }
 
-    var list = new ListSegment();
+  private void ProcessList([NotNull] XmlElement element)
+  {
+    var list = new ListSegment(ListKind.Bullet);
+    
+    ExecuteActionOverTermsAndDescriptions(element, (termSegments, descriptionSegments) =>
+    {
+      var listItem = new ListItemImpl(termSegments, descriptionSegments);
+      list.Items.Add(listItem);
+    });
+    
+    ExecuteWithTopmostContentSegments(metadata => metadata.ContentSegments.Segments.Add(list));
+  }
+
+  private void ExecuteActionOverTermsAndDescriptions(
+    [NotNull] XmlElement element, 
+    [NotNull] Action<IEntityWithContentSegments, IEntityWithContentSegments> actionWithTermAndDescription)
+  {
     foreach (var child in element.ChildNodes)
     {
       if (child is not XmlElement childElement) continue;
@@ -461,24 +487,39 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
       var term = childElement.GetElementsByTagName("term").Item(0) as XmlElement;
       var description = childElement.GetElementsByTagName("description").Item(0) as XmlElement;
 
-      var termContentSegments = new EntityWithContentSegments(ContentSegments.CreateEmpty());
+      IEntityWithContentSegments termSegments = null;
       if (term is { })
       {
         myVisitedNodes.Add(term);
-        ProcessEntityWithContentSegments(termContentSegments, term, false);
+        termSegments = new EntityWithContentSegments(ContentSegments.CreateEmpty());
+        ProcessEntityWithContentSegments(termSegments, term, false);
       }
 
-      var descriptionContentSegments = new EntityWithContentSegments(ContentSegments.CreateEmpty());
+      IEntityWithContentSegments descriptionSegments = null;
       if (description is { })
       {
         myVisitedNodes.Add(description);
-        ProcessEntityWithContentSegments(descriptionContentSegments, description, false);
+        descriptionSegments = new EntityWithContentSegments(ContentSegments.CreateEmpty());
+        ProcessEntityWithContentSegments(descriptionSegments, description, false);
       }
-
-      var listItem = new ListItemImpl(termContentSegments, descriptionContentSegments);
-      list.Items.Add(listItem);
+      
+      actionWithTermAndDescription(termSegments, descriptionSegments);
     }
+  }
+
+  private void ProcessTable([NotNull] XmlElement element)
+  {
+    var table = new TableSegment(null);
+    ExecuteActionOverTermsAndDescriptions(element, (termSegments, descriptionSegments) =>
+    {
+      var termCell = new TableCell(termSegments.ContentSegments, TableCellProperties.DefaultProperties);
+      var descriptionCell = new TableCell(descriptionSegments.ContentSegments, TableCellProperties.DefaultProperties);
+      var row = new TableSegmentRow();
+      row.Cells.Add(termCell);
+      row.Cells.Add(descriptionCell);
+      table.Rows.Add(row);
+    });
     
-    ExecuteWithTopmostContentSegments(metadata => metadata.ContentSegments.Segments.Add(list));
+    ExecuteWithTopmostContentSegments(metadata => metadata.ContentSegments.Segments.Add(table));
   }
 }

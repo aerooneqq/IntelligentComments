@@ -96,7 +96,13 @@ object RdCommentsModel : Ext(SolutionModel.RdDocumentModel) {
     field("Path", PredefinedType.string)
   }
 
+  val ListKind = enum {
+    + "Bullet"
+    + "Number"
+  }
+
   val RdListSegment = structdef extends RdContentSegment {
+    field("ListKind", ListKind)
     field("ListContent", immutableList(RdListItem))
     field("Header", RdHighlightedText.nullable).optional
   }
@@ -107,8 +113,8 @@ object RdCommentsModel : Ext(SolutionModel.RdDocumentModel) {
   }
 
   val RdTableSegment = structdef extends RdContentSegment {
-    field("Header", RdHighlightedText)
     field("Rows", immutableList(RdTableRow))
+    field("Header", RdHighlightedText.nullable).optional
   }
 
   val RdTableRow = structdef {

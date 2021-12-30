@@ -43,7 +43,7 @@ interface ListContentSegment : ContentSegment {
 data class ListItem(val header: ContentSegments?, val description: ContentSegments?)
 
 interface TableContentSegment : ContentSegment {
-  val header: HighlightedText
+  val header: HighlightedText?
   val rows: Collection<TableRow>
 }
 

@@ -86,8 +86,10 @@ class TableSegmentRenderer(private val table: TableContentSegmentUiModel) : Segm
     rect: Rectangle,
     editorImpl: EditorImpl
   ) {
-    val text = table.header.highlightedTextUiWrapper.text
-    val highlighters = table.header.highlightedTextUiWrapper.highlighters
+    val headerText = table.headerUiModel?.highlightedTextUiWrapper ?: return
+
+    val text = headerText.text
+    val highlighters = headerText.highlighters
     TextUtil.renderLine(g, rect, editorImpl, text, highlighters, 0)
   }
 
@@ -189,7 +191,9 @@ class TableSegmentRenderer(private val table: TableContentSegmentUiModel) : Segm
 
   private fun calculateCellsHeight(editorImpl: EditorImpl) = calculateRowsHeights(editorImpl).sum()
   private fun calculateNameHeight(editorImpl: EditorImpl): Int {
-    val highlighters = table.header.highlightedTextUiWrapper.highlighters
+    val headerText = table.headerUiModel?.highlightedTextUiWrapper ?: return 0
+
+    val highlighters = headerText.highlighters
     return TextUtil.getLineHeightWithHighlighters(editorImpl, highlighters)
   }
 
@@ -201,7 +205,8 @@ class TableSegmentRenderer(private val table: TableContentSegmentUiModel) : Segm
 
   private fun calculateCellsWidth(editorImpl: EditorImpl) = calculateColsWidths(editorImpl).sum()
   private fun calculateNameWidth(editorImpl: EditorImpl): Int {
-    return TextUtil.getTextWidthWithHighlighters(editorImpl, table.header.highlightedTextUiWrapper)
+    val headerText = table.headerUiModel?.highlightedTextUiWrapper ?: return 0
+    return TextUtil.getTextWidthWithHighlighters(editorImpl, headerText)
   }
 
   override fun accept(context: RectangleModelBuildContext) {

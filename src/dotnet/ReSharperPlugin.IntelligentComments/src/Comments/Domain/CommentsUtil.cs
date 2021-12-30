@@ -84,8 +84,33 @@ public static class CommentsUtil
       ISeeAlsoContentSegment seeAlsoSegment => seeAlsoSegment.ToRdSeeAlso(),
       IExampleSegment exampleSegment => exampleSegment.ToRdExample(),
       IListSegment listSegment => listSegment.ToRdList(),
+      ITableSegment tableSegment => tableSegment.ToRdTable(),
       _ => throw new ArgumentOutOfRangeException(segment.GetType().Name)
     };
+  }
+
+  [NotNull]
+  private static RdTableSegment ToRdTable([NotNull] this ITableSegment table)
+  {
+    var rows = new List<RdTableRow>();
+    foreach (var row in table.Rows)
+    {
+      var cells = new List<RdTableCell>();
+      foreach (var cell in row.Cells)
+      {
+        cells.Add(new RdTableCell(cell.Content.ToRdContentSegments(), cell.Properties?.ToRdTableCellProperties()));
+      }
+      
+      rows.Add(new RdTableRow(cells));
+    }
+
+    return new RdTableSegment(rows);
+  }
+
+  [NotNull]
+  private static RdTableCellProperties ToRdTableCellProperties([NotNull] this TableCellProperties properties)
+  {
+    return new RdTableCellProperties(properties.HorizontalAlignment, properties.VerticalAlignment, properties.IsHeader);
   }
 
   [NotNull]
@@ -261,6 +286,6 @@ public static class CommentsUtil
       items.Add(new RdListItem(header, description));
     }
 
-    return new RdListSegment(items);
+    return new RdListSegment(listSegment.ListKind, items);
   }
 }

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using JetBrains.Annotations;
+using JetBrains.Rider.Model;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.Content;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
@@ -98,12 +99,40 @@ public class ExampleContentSegment : EntityWithContentSegments, IExampleSegment
 public class ListSegment : IListSegment
 {
   public IList<IListItem> Items { get; }
+  public ListKind ListKind { get; }
 
 
-  public ListSegment()
+  public ListSegment(ListKind listKind)
   {
+    ListKind = listKind;
     Items = new List<IListItem>();
   }
 }
 
 public record ListItemImpl(IEntityWithContentSegments Header, IEntityWithContentSegments Content) : IListItem;
+
+public class TableSegment : ITableSegment
+{
+  public IHighlightedText Header { get; }
+  public IList<ITableSegmentRow> Rows { get; }
+
+
+  public TableSegment([CanBeNull] IHighlightedText header)
+  {
+    Header = header;
+    Rows = new List<ITableSegmentRow>();
+  }
+}
+
+public class TableSegmentRow : ITableSegmentRow
+{
+  public IList<ITableCell> Cells { get; }
+
+
+  public TableSegmentRow()
+  {
+    Cells = new List<ITableCell>();
+  }
+}
+
+public record TableCell(IContentSegments Content, TableCellProperties Properties) : ITableCell;

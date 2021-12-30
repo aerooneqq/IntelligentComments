@@ -94,7 +94,7 @@ class TableSegmentFromRd(
   segment: RdTableSegment,
   project: Project
 ) : ContentSegmentFromRd(segment), TableContentSegment {
-  override val header: HighlightedText = segment.header.toIdeaHighlightedText(project)
+  override val header: HighlightedText? = segment.header?.toIdeaHighlightedText(project)
   override val rows: Collection<TableRow> = segment.rows.map { TableRowFromRd(it, project) }
 }
 
