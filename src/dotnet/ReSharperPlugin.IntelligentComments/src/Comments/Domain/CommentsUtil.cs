@@ -84,9 +84,16 @@ public static class CommentsUtil
       ISeeAlsoContentSegment seeAlsoSegment => seeAlsoSegment.ToRdSeeAlso(),
       IExampleSegment exampleSegment => exampleSegment.ToRdExample(),
       IListSegment listSegment => listSegment.ToRdList(),
+      ISummarySegment summarySegment => summarySegment.ToRdSummary(),
       ITableSegment tableSegment => tableSegment.ToRdTable(),
       _ => throw new ArgumentOutOfRangeException(segment.GetType().Name)
     };
+  }
+
+  [NotNull]
+  private static RdSummarySegment ToRdSummary([NotNull] this ISummarySegment summarySegment)
+  {
+    return new RdSummarySegment(summarySegment.ContentSegments.ToRdContentSegments());
   }
 
   [NotNull]

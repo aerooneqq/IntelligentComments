@@ -11,11 +11,13 @@ import com.intelligentComments.ui.comments.model.content.params.GroupedParamsUiM
 import com.intelligentComments.ui.comments.model.content.params.GroupedTypeParamsUiModel
 import com.intelligentComments.ui.comments.model.content.params.ParameterUiModel
 import com.intelligentComments.ui.comments.model.content.params.TypeParamUiModel
+import com.intelligentComments.ui.comments.model.content.remarks.GroupedRemarksUiModel
 import com.intelligentComments.ui.comments.model.content.remarks.RemarksUiModel
 import com.intelligentComments.ui.comments.model.content.`return`.GroupedReturnUiModel
 import com.intelligentComments.ui.comments.model.content.`return`.ReturnUiModel
 import com.intelligentComments.ui.comments.model.content.seeAlso.GroupedSeeAlsoUiModel
 import com.intelligentComments.ui.comments.model.content.seeAlso.SeeAlsoUiModel
+import com.intelligentComments.ui.comments.model.content.summary.GroupedSummaryUiModel
 import com.intelligentComments.ui.comments.model.content.table.TableContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.text.TextContentSegmentUiModel
 import com.intelligentComments.ui.core.RectangleModelBuildContributor
@@ -42,6 +44,8 @@ interface SegmentRenderer : Renderer, RectangleModelBuildContributor {
         is GroupedParamsUiModel -> GroupedParamsRenderer(segment)
         is GroupedTypeParamsUiModel -> GroupedTypeParamsRenderer(segment)
         is GroupedExceptionUiModel -> GroupedExceptionsRenderer(segment)
+        is GroupedSummaryUiModel -> GroupedSummariesRenderer(segment)
+        is GroupedRemarksUiModel -> GroupedRemarksRenderer(segment)
         is ExampleSegmentUiModel -> ExampleSegmentRenderer(segment)
         else -> throw IllegalArgumentException(segment.toString())
       }

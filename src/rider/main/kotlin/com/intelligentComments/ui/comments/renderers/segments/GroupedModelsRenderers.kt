@@ -3,8 +3,10 @@ package com.intelligentComments.ui.comments.renderers.segments
 import com.intelligentComments.ui.comments.model.content.exceptions.GroupedExceptionUiModel
 import com.intelligentComments.ui.comments.model.content.params.GroupedParamsUiModel
 import com.intelligentComments.ui.comments.model.content.params.GroupedTypeParamsUiModel
+import com.intelligentComments.ui.comments.model.content.remarks.GroupedRemarksUiModel
 import com.intelligentComments.ui.comments.model.content.`return`.GroupedReturnUiModel
 import com.intelligentComments.ui.comments.model.content.seeAlso.GroupedSeeAlsoUiModel
+import com.intelligentComments.ui.comments.model.content.summary.GroupedSummaryUiModel
 
 class GroupedSeeAlsoRenderer(
   model: GroupedSeeAlsoUiModel
@@ -24,4 +26,12 @@ class GroupedTypeParamsRenderer(
 
 class GroupedExceptionsRenderer(
   model: GroupedExceptionUiModel
+) : LeftTextHeaderAndRightContentRenderer(model.header, model.content.content)
+
+class GroupedSummariesRenderer(
+  model: GroupedSummaryUiModel
+) : LeftTextHeaderAndRightContentRenderer(model.header, model.content.content)
+
+class GroupedRemarksRenderer(
+  model: GroupedRemarksUiModel
 ) : LeftTextHeaderAndRightContentRenderer(model.header, model.content.content)

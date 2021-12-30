@@ -25,6 +25,7 @@ open class ContentSegmentFromRd(private val contentSegment: RdContentSegment) : 
         is RdExceptionsSegment -> ExceptionSegmentFromRd(contentSegment, project)
         is RdSeeAlsoContentSegment -> SeeAlsoSegmentFromRd.getFor(contentSegment, project)
         is RdExampleSegment -> ExampleFromRd(contentSegment, project)
+        is RdSummarySegment -> SummaryContentSegmentFromRd(contentSegment, project)
         else -> throw IllegalArgumentException(contentSegment.toString())
       }
     }
@@ -43,6 +44,13 @@ class ParagraphContentSegmentFromRd(
   project: Project
 ) : ContentSegmentFromRd(paragraph), ParagraphContentSegment {
   override val content: ContentSegments = ContentSegmentsFromRd(paragraph.content, project)
+}
+
+class SummaryContentSegmentFromRd(
+  rdSummary: RdSummarySegment,
+  project: Project
+) : ContentSegmentFromRd(rdSummary), SummaryContentSegment {
+  override val content: ContentSegments = ContentSegmentsFromRd(rdSummary.content, project)
 }
 
 class TextContentSegmentFromRd(

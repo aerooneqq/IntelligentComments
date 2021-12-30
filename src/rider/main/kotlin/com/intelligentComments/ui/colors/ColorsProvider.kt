@@ -37,9 +37,10 @@ object Colors {
 
   val ParamsSectionHeaderBackgroundColor = ColorName("params.section.header.background.color")
   val TypeParamNameBackgroundColor = ColorName("type.param.name.background.color")
-
   val ReturnBackgroundColor = ColorName("return.background.color")
   val ExceptionBackgroundColor = ColorName("exception.background.color")
+  val RemarksSectionHeaderBackgroundColor = ColorName("remarks.section.header.background.color")
+  val SummarySectionsHeaderBackgroundColor = ColorName("summary.section.header.background.color")
   val SeeAlsoBackgroundColor = ColorName("see.also.background.color")
 
   val ListItemBulletBackgroundColor = ColorName("list.item.bullet.background.color")

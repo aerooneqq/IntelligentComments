@@ -159,7 +159,8 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
   public override void VisitSummary(XmlElement element)
   {
     myVisitedNodes.Add(element);
-    ExecuteActionOverChildren(element, Visit);
+    var summary = new SummaryContentSegment(ContentSegments.CreateEmpty());
+    ProcessEntityWithContentSegments(summary, element);
   }
     
   private static void ExecuteActionOverChildren(XmlElement parent, Action<XmlNode> actionWithNode)

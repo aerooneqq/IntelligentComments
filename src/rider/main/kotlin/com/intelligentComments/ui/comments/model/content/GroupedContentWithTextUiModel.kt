@@ -2,6 +2,7 @@ package com.intelligentComments.ui.comments.model.content
 
 import com.intelligentComments.core.domain.core.*
 import com.intelligentComments.core.settings.RiderIntelligentCommentsSettingsProvider
+import com.intelligentComments.ui.colors.ColorName
 import com.intelligentComments.ui.colors.Colors
 import com.intelligentComments.ui.colors.ColorsProvider
 import com.intelligentComments.ui.comments.model.content.seeAlso.GroupedSeeAlsoUiModel
@@ -63,5 +64,21 @@ fun getSecondLevelHeader(project: Project, text: String): HighlightedText {
   val textColor = colorsProvider.getColorFor(Colors.TextInSectionsHeadersColor)
 
   val highlighter = TextHighlighterImpl(0, text.length, textColor, TextAttributesImpl(false, 500f, Font.PLAIN))
+  return HighlightedTextImpl(text, listOf(highlighter))
+}
+
+fun getFirstLevelHeader(
+  project: Project,
+  text: String,
+  textColorKey: ColorName,
+  backgroundColorKey: ColorName
+): HighlightedText {
+  val colorsProvider = project.service<ColorsProvider>()
+  val textColor = colorsProvider.getColorFor(textColorKey)
+  val returnBackgroundColor = colorsProvider.getColorFor(backgroundColorKey)
+
+  val length = text.length
+  val highlighter = CommonsHighlightersFactory.getWithRoundedBackgroundRect(textColor, returnBackgroundColor, length)
+
   return HighlightedTextImpl(text, listOf(highlighter))
 }

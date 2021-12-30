@@ -24,6 +24,8 @@ interface EntityWithContentSegments : ContentSegment {
 
 interface ParagraphContentSegment : EntityWithContentSegments
 
+interface SummaryContentSegment : EntityWithContentSegments
+
 interface ExampleContentSegment : EntityWithContentSegments
 
 interface TextContentSegment : ContentSegment {

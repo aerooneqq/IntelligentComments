@@ -59,6 +59,8 @@ object RdCommentsModel : Ext(SolutionModel.RdDocumentModel) {
 
   val RdTypeParam = structdef extends RdParam { }
 
+  val RdSummarySegment = structdef extends RdSegmentWithContent { }
+
   val RdRemarksSegment = structdef extends RdSegmentWithContent { }
 
   val RdParagraphSegment = structdef extends RdSegmentWithContent { }

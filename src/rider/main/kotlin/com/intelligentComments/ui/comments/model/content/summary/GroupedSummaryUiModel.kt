@@ -1,23 +1,25 @@
-package com.intelligentComments.ui.comments.model.content.`return`
+package com.intelligentComments.ui.comments.model.content.summary
 
 import com.intelligentComments.core.domain.core.GroupedContentSegment
-import com.intelligentComments.core.domain.core.ReturnSegment
+import com.intelligentComments.core.domain.core.SummaryContentSegment
 import com.intelligentComments.ui.colors.Colors
 import com.intelligentComments.ui.comments.model.content.GroupedContentUiModel
 import com.intelligentComments.ui.comments.model.content.getFirstLevelHeader
 import com.intellij.openapi.project.Project
 
-class GroupedReturnUiModel(
+class GroupedSummaryUiModel(
   project: Project,
-  groupedReturns: GroupedContentSegment<ReturnSegment>
+  model: GroupedContentSegment<SummaryContentSegment>
 ) : GroupedContentUiModel(
   project,
-  groupedReturns,
-  groupedReturns.segments.map { it.content },
+  model,
+  model.segments.map { it.content },
   getFirstLevelHeader(
     project,
-    returnSectionName,
+    summarySectionName,
     Colors.TextInSectionsRectanglesHeadersColor,
-    Colors.ReturnBackgroundColor
+    Colors.SummarySectionsHeaderBackgroundColor
   )
 )
+
+private const val summarySectionName = "Summary"

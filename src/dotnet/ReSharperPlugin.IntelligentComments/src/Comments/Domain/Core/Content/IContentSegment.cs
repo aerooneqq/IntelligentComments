@@ -22,6 +22,10 @@ public interface IRemarksSegment : IEntityWithContentSegments
 {
 }
 
+public interface ISummarySegment : IEntityWithContentSegments
+{
+}
+
 public interface IExceptionSegment : IEntityWithContentSegments
 {
   string ExceptionName { get; }

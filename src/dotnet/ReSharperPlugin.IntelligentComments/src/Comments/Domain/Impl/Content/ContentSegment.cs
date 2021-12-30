@@ -18,7 +18,7 @@ public class EntityWithContentSegments : IEntityWithContentSegments
   public IContentSegments ContentSegments { get; }
 
 
-  public EntityWithContentSegments(IContentSegments contentSegments)
+  public EntityWithContentSegments([NotNull] IContentSegments contentSegments)
   {
     ContentSegments = contentSegments;
   }
@@ -26,7 +26,14 @@ public class EntityWithContentSegments : IEntityWithContentSegments
 
 public class RemarksContentSegment : EntityWithContentSegments, IRemarksSegment
 {
-  public RemarksContentSegment(IContentSegments contentSegments) : base(contentSegments)
+  public RemarksContentSegment([NotNull] IContentSegments contentSegments) : base(contentSegments)
+  {
+  }
+}
+
+public class SummaryContentSegment : EntityWithContentSegments, ISummarySegment
+{
+  public SummaryContentSegment([NotNull] IContentSegments contentSegments) : base(contentSegments)
   {
   }
 }
@@ -36,7 +43,7 @@ public class ExceptionContentSegment : EntityWithContentSegments, IExceptionSegm
   public string ExceptionName { get; }
 
   
-  public ExceptionContentSegment(string name) : base(Content.ContentSegments.CreateEmpty())
+  public ExceptionContentSegment([NotNull] string name) : base(Content.ContentSegments.CreateEmpty())
   {
     ExceptionName = name;
   }
@@ -91,7 +98,7 @@ public class SeeAlsoLinkContentSegment : SeeAlsoContentSegment, ISeeAlsoLinkCont
 
 public class ExampleContentSegment : EntityWithContentSegments, IExampleSegment
 {
-  public ExampleContentSegment(IContentSegments contentSegments) : base(contentSegments)
+  public ExampleContentSegment([NotNull] IContentSegments contentSegments) : base(contentSegments)
   {
   }
 }

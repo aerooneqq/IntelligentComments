@@ -13,11 +13,14 @@ import com.intelligentComments.ui.comments.model.content.params.GroupedParamsUiM
 import com.intelligentComments.ui.comments.model.content.params.GroupedTypeParamsUiModel
 import com.intelligentComments.ui.comments.model.content.params.ParameterUiModel
 import com.intelligentComments.ui.comments.model.content.params.TypeParamUiModel
+import com.intelligentComments.ui.comments.model.content.remarks.GroupedRemarksUiModel
 import com.intelligentComments.ui.comments.model.content.remarks.RemarksUiModel
 import com.intelligentComments.ui.comments.model.content.`return`.GroupedReturnUiModel
 import com.intelligentComments.ui.comments.model.content.`return`.ReturnUiModel
 import com.intelligentComments.ui.comments.model.content.seeAlso.GroupedSeeAlsoUiModel
 import com.intelligentComments.ui.comments.model.content.seeAlso.SeeAlsoUiModel
+import com.intelligentComments.ui.comments.model.content.summary.GroupedSummaryUiModel
+import com.intelligentComments.ui.comments.model.content.summary.SummaryUiModel
 import com.intelligentComments.ui.comments.model.content.table.TableContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.text.TextContentSegmentUiModel
 import com.intelligentComments.ui.util.HashUtil
@@ -47,7 +50,10 @@ abstract class ContentSegmentUiModel(
         is GroupedParamSegments -> GroupedParamsUiModel(project, segment)
         is GroupedTypeParamSegments -> GroupedTypeParamsUiModel(project, segment)
         is GroupedExceptionsSegments -> GroupedExceptionUiModel(project, segment)
+        is GroupedSummarySegments -> GroupedSummaryUiModel(project, segment)
+        is GroupedRemarksSegments -> GroupedRemarksUiModel(project, segment)
         is ExampleContentSegment -> ExampleSegmentUiModel(project, segment)
+        is SummaryContentSegment -> SummaryUiModel(project, segment)
         else -> throw IllegalArgumentException(segment.javaClass.name)
       }
     }

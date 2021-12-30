@@ -1,10 +1,12 @@
 package com.intelligentComments.ui.comments.model.content.exceptions
 
-import com.intelligentComments.core.domain.core.*
+import com.intelligentComments.core.domain.core.ContentSegment
+import com.intelligentComments.core.domain.core.ContentSegments
+import com.intelligentComments.core.domain.core.ExceptionSegment
+import com.intelligentComments.core.domain.core.GroupedContentSegment
 import com.intelligentComments.ui.colors.Colors
-import com.intelligentComments.ui.colors.ColorsProvider
 import com.intelligentComments.ui.comments.model.content.GroupedContentUiModel
-import com.intellij.openapi.components.service
+import com.intelligentComments.ui.comments.model.content.getFirstLevelHeader
 import com.intellij.openapi.project.Project
 
 class GroupedExceptionUiModel(
@@ -18,18 +20,12 @@ class GroupedExceptionUiModel(
       override val segments: Collection<ContentSegment> = listOf(it)
     }
   },
-  getHeaderHighlightedText(project)
+  getFirstLevelHeader(
+    project,
+    exceptionsSectionName,
+    Colors.TextInSectionsRectanglesHeadersColor,
+    Colors.ExceptionBackgroundColor
+  )
 )
 
 private const val exceptionsSectionName = "Exceptions"
-
-private fun getHeaderHighlightedText(project: Project): HighlightedTextImpl {
-  val colorsProvider = project.service<ColorsProvider>()
-  val textColor = colorsProvider.getColorFor(Colors.TextInSectionsRectanglesHeadersColor)
-  val returnBackgroundColor = colorsProvider.getColorFor(Colors.ExceptionBackgroundColor)
-
-  val length = exceptionsSectionName.length
-  val highlighter = CommonsHighlightersFactory.getWithRoundedBackgroundRect(textColor, returnBackgroundColor, length)
-
-  return HighlightedTextImpl(exceptionsSectionName, listOf(highlighter))
-}

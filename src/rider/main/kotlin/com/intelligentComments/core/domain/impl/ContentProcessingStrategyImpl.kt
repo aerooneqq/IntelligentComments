@@ -13,11 +13,14 @@ class ContentProcessingStrategyImpl(private val project: Project) : ContentProce
 
   private fun preprocessSegments(segments: MutableList<ContentSegment>) {
     val settings = project.service<RiderIntelligentCommentsSettingsProvider>()
+
     groupSeeAlsoIfNeeded(settings, segments)
     groupReturnsIfNeeded(settings, segments)
     groupParamsIfNeeded(settings, segments)
     groupTypeParamsIfNeeded(settings, segments)
     groupExceptionsIfNeeded(settings, segments)
+    groupSummaryIfNeeded(settings, segments)
+    groupRemarksIfNeeded(settings, segments)
   }
 
   private fun groupSeeAlsoIfNeeded(
@@ -72,5 +75,21 @@ class ContentProcessingStrategyImpl(private val project: Project) : ContentProce
   ) {
     if (!settings.groupExceptions.value) return
     groupSegmentsOfType<ExceptionSegment>(segments) { GroupedExceptionsSegments(it) }
+  }
+
+  private fun groupSummaryIfNeeded(
+    settings: RiderIntelligentCommentsSettingsProvider,
+    segments: MutableList<ContentSegment>
+  ) {
+    if (!settings.groupSummary.value) return
+    groupSegmentsOfType<SummaryContentSegment>(segments) { GroupedSummarySegments(it) }
+  }
+
+  private fun groupRemarksIfNeeded(
+    settings: RiderIntelligentCommentsSettingsProvider,
+    segments: MutableList<ContentSegment>
+  ) {
+    if (!settings.groupRemarks.value) return
+    groupSegmentsOfType<RemarksSegment>(segments) { GroupedRemarksSegments(it) }
   }
 }

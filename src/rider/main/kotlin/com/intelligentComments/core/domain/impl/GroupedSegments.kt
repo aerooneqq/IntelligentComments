@@ -21,3 +21,11 @@ class GroupedTypeParamSegments(
 class GroupedExceptionsSegments(
   override val segments: List<ExceptionSegment>
 ) : UniqueEntityImpl(), GroupedContentSegment<ExceptionSegment>
+
+class GroupedSummarySegments(
+  override val segments: List<SummaryContentSegment>
+) : UniqueEntityImpl(), GroupedContentSegment<SummaryContentSegment>
+
+class GroupedRemarksSegments(
+  override val segments: List<RemarksSegment>
+) : UniqueEntityImpl(), GroupedContentSegment<RemarksSegment>
