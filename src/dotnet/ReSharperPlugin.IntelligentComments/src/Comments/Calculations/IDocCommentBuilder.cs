@@ -265,15 +265,19 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
 
   private void ProcessEntityWithContentSegments(
     [NotNull] IEntityWithContentSegments entityWithContentSegments, 
-    [NotNull] XmlElement element)
+    [NotNull] XmlElement element,
+    bool addToTopmostSegments = true)
   {
     var metadata = new ContentSegmentsMetadata(entityWithContentSegments, entityWithContentSegments.ContentSegments);
     using (new WithPushedToStackContentSegments(myContentSegmentsStack, metadata, ourLogger))
     {
       ExecuteActionOverChildren(element, Visit);
     }
-      
-    ExecuteWithTopmostContentSegments(metadata => metadata.ContentSegments.Segments.Add(entityWithContentSegments));
+
+    if (addToTopmostSegments)
+    {
+      ExecuteWithTopmostContentSegments(metadata => metadata.ContentSegments.Segments.Add(entityWithContentSegments));
+    }
   }
 
   public override void VisitReturns(XmlElement element)
@@ -440,5 +444,41 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
     };
     
     AddHighlightedText(content, highlighter);
+  }
+
+  public override void VisitList(XmlElement element)
+  {
+    myVisitedNodes.Add(element);
+    var typeOfList = element.GetAttribute("type");
+
+    if (typeOfList == "table") return;
+
+    var list = new ListSegment();
+    foreach (var child in element.ChildNodes)
+    {
+      if (child is not XmlElement childElement) continue;
+      
+      var term = childElement.GetElementsByTagName("term").Item(0) as XmlElement;
+      var description = childElement.GetElementsByTagName("description").Item(0) as XmlElement;
+
+      var termContentSegments = new EntityWithContentSegments(ContentSegments.CreateEmpty());
+      if (term is { })
+      {
+        myVisitedNodes.Add(term);
+        ProcessEntityWithContentSegments(termContentSegments, term, false);
+      }
+
+      var descriptionContentSegments = new EntityWithContentSegments(ContentSegments.CreateEmpty());
+      if (description is { })
+      {
+        myVisitedNodes.Add(description);
+        ProcessEntityWithContentSegments(descriptionContentSegments, description, false);
+      }
+
+      var listItem = new ListItemImpl(termContentSegments, descriptionContentSegments);
+      list.Items.Add(listItem);
+    }
+    
+    ExecuteWithTopmostContentSegments(metadata => metadata.ContentSegments.Segments.Add(list));
   }
 }

@@ -14,7 +14,7 @@ public interface IContentSegments
 
 public interface IEntityWithContentSegments : IContentSegment
 {
-  public IContentSegments ContentSegments { get; }
+  [NotNull] public IContentSegments ContentSegments { get; }
 }
 
 public interface IRemarksSegment : IEntityWithContentSegments
@@ -28,4 +28,15 @@ public interface IExceptionSegment : IEntityWithContentSegments
 
 public interface IExampleSegment : IEntityWithContentSegments
 {
+}
+
+public interface IListSegment : IContentSegment
+{
+  [NotNull] IList<IListItem> Items { get; }
+}
+
+public interface IListItem
+{
+  IEntityWithContentSegments Header { get; }
+  IEntityWithContentSegments Content { get; }
 }

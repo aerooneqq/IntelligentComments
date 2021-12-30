@@ -36,9 +36,11 @@ interface ImageContentSegment : ContentSegment {
 }
 
 interface ListContentSegment : ContentSegment {
-  val content: Collection<ContentSegments>
-  val header: HighlightedText
+  val content: Collection<ListItem>
+  val header: HighlightedText?
 }
+
+data class ListItem(val header: ContentSegments?, val description: ContentSegments?)
 
 interface TableContentSegment : ContentSegment {
   val header: HighlightedText

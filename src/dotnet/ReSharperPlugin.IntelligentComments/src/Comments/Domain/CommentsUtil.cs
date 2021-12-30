@@ -14,6 +14,7 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Domain;
 
 public static class CommentsUtil
 {
+  [NotNull]
   public static RdComment ToRdComment(this ICommentBase commentBase)
   {
     return commentBase switch
@@ -24,6 +25,7 @@ public static class CommentsUtil
     };
   }
 
+  [NotNull]
   private static RdComment ToRdComment(this IDocComment docComment)
   {
     var content = docComment.Content.ToRdContent();
@@ -35,6 +37,7 @@ public static class CommentsUtil
     return new RdDocComment(content, docComment.CreateIdentifier(), rdRange);
   }
 
+  [NotNull]
   private static RdComment ToRdComment(this IIntelligentComment comment)
   {
     var content = comment.Content.ToRdContent();
@@ -49,11 +52,13 @@ public static class CommentsUtil
     return new RdIntelligentComment(authors, DateTime.Now, content, null, null, null, null, identifier, rdRange);
   }
 
+  [NotNull]
   private static RdIntelligentCommentContent ToRdContent(this IIntelligentCommentContent content)
   {
     return new RdIntelligentCommentContent(content.ContentSegments.ToRdContentSegments());
   }
 
+  [NotNull]
   private static RdContentSegments ToRdContentSegments(this IContentSegments contentSegments)
   {
     var contentSegmentsList = new List<RdContentSegment>();
@@ -65,6 +70,7 @@ public static class CommentsUtil
     return new RdContentSegments(contentSegmentsList);
   }
 
+  [NotNull]
   private static RdContentSegment ToRdContentSegment(this IContentSegment segment)
   {
     return segment switch
@@ -77,10 +83,12 @@ public static class CommentsUtil
       IExceptionSegment exceptionSegment => exceptionSegment.ToRdExceptionSegment(),
       ISeeAlsoContentSegment seeAlsoSegment => seeAlsoSegment.ToRdSeeAlso(),
       IExampleSegment exampleSegment => exampleSegment.ToRdExample(),
+      IListSegment listSegment => listSegment.ToRdList(),
       _ => throw new ArgumentOutOfRangeException(segment.GetType().Name)
     };
   }
 
+  [NotNull]
   private static RdExampleSegment ToRdExample([NotNull] this IExampleSegment exampleSegment)
   {
     return new RdExampleSegment(exampleSegment.ContentSegments.ToRdContentSegments());
@@ -137,6 +145,7 @@ public static class CommentsUtil
     };
   }
 
+  [NotNull]
   private static RdLangWordReference ToRdReference([NotNull] this ILangWordReference langWordReference)
   {
     return new RdLangWordReference(langWordReference.RawValue);
@@ -216,6 +225,7 @@ public static class CommentsUtil
       _ => throw new ArgumentOutOfRangeException(nameof(fontStyle))
     };
 
+  [NotNull]
   private static RdTextAnimation ToRdAnimation([NotNull] this TextAnimation textAnimation)
   {
     return textAnimation switch
@@ -231,8 +241,26 @@ public static class CommentsUtil
     return new RdParagraphSegment(paragraph.ContentSegments.ToRdContentSegments());
   }
 
+  [NotNull]
   private static RdTypeParam ToRdParam([NotNull] this ITypeParamSegment typeParamSegment)
   {
     return new RdTypeParam(typeParamSegment.Name, typeParamSegment.ContentSegments.ToRdContentSegments());
+  }
+
+  [NotNull]
+  private static RdListSegment ToRdList([NotNull] this IListSegment listSegment)
+  {
+    var items = new List<RdListItem>();
+    foreach (var item in listSegment.Items)
+    {
+      var header = item.Header.ContentSegments.Segments.Count > 0 ? item.Header.ContentSegments.ToRdContentSegments() : null;
+      var description = item.Content.ContentSegments.Segments.Count > 0
+        ? item.Content.ContentSegments.ToRdContentSegments()
+        : null;
+      
+      items.Add(new RdListItem(header, description));
+    }
+
+    return new RdListSegment(items);
   }
 }

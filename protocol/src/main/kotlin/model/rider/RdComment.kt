@@ -97,8 +97,13 @@ object RdCommentsModel : Ext(SolutionModel.RdDocumentModel) {
   }
 
   val RdListSegment = structdef extends RdContentSegment {
-    field("ListContent", immutableList(RdContentSegments))
-    field("Header", RdHighlightedText)
+    field("ListContent", immutableList(RdListItem))
+    field("Header", RdHighlightedText.nullable).optional
+  }
+
+  val RdListItem = structdef {
+    field("Header", RdContentSegments.nullable).optional
+    field("Description", RdContentSegments.nullable).optional
   }
 
   val RdTableSegment = structdef extends RdContentSegment {

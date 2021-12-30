@@ -61,8 +61,13 @@ fun RdHighlightedText.toIdeaHighlightedText(project: Project): HighlightedText {
 }
 
 class ListSegmentFromRd(segment: RdListSegment, project: Project) : ContentSegmentFromRd(segment), ListContentSegment {
-  override val content: Collection<ContentSegments> = segment.listContent.map { ContentSegmentsFromRd(it, project) }
-  override val header: HighlightedText = segment.header.toIdeaHighlightedText(project)
+  override val content: Collection<ListItem> = segment.listContent.map {
+    val header = if (it.header == null) null else ContentSegmentsFromRd(it.header, project)
+    val description = if (it.description == null) null else ContentSegmentsFromRd(it.description, project)
+    ListItem(header, description)
+  }
+
+  override val header: HighlightedText? = segment.header?.toIdeaHighlightedText(project)
 }
 
 class FileBasedImageSegmentFromRd(

@@ -94,3 +94,16 @@ public class ExampleContentSegment : EntityWithContentSegments, IExampleSegment
   {
   }
 }
+
+public class ListSegment : IListSegment
+{
+  public IList<IListItem> Items { get; }
+
+
+  public ListSegment()
+  {
+    Items = new List<IListItem>();
+  }
+}
+
+public record ListItemImpl(IEntityWithContentSegments Header, IEntityWithContentSegments Content) : IListItem;
