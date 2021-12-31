@@ -78,7 +78,8 @@ class RectanglesModel {
 
   fun dispatchMouseMove(e: EditorMouseEvent, inlayBounds: Rectangle): Boolean {
     application.assertIsDispatchThread()
-    val point = e.mouseEvent.point.apply {
+
+    val adjustedPoint = e.mouseEvent.point.apply {
       x -= inlayBounds.x
       y -= inlayBounds.y
     }
@@ -86,7 +87,7 @@ class RectanglesModel {
     var anyUiChange = false
 
     executeWithRectangleAndModels { rect, model ->
-      if (!rect.contains(point) && model.mouseIn) {
+      if (!rect.contains(adjustedPoint) && model.mouseIn) {
         if (model.handleMouseOut(e)) {
           anyUiChange = true
         }
@@ -94,7 +95,7 @@ class RectanglesModel {
     }
 
     executeWithRectangleAndModels { rect, model ->
-      if (rect.contains(point) && !model.mouseIn) {
+      if (rect.contains(adjustedPoint) && !model.mouseIn) {
         if (model.handleMouseIn(e)) {
           anyUiChange = true
         }

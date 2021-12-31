@@ -29,7 +29,9 @@ class CommentIdentifier(val moniker: String, val rangeMarker: RangeMarker) : Com
   }
 
   override fun compareTo(other: CommentIdentifier): Int {
-    return hashCode() - other.hashCode()
+    if (moniker != other.moniker) throw Exception()
+
+    return rangeMarker.startOffset - other.rangeMarker.startOffset
   }
 }
 

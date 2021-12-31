@@ -43,7 +43,7 @@ class TextUtil {
       return fontMetrics.charsWidth(chars, from, to - from + 1)
     }
 
-    fun getTextWidth(
+    private fun getTextWidth(
       editorImpl: EditorImpl,
       chars: CharArray,
       from: Int,

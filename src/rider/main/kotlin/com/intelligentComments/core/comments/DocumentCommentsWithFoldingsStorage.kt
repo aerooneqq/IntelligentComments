@@ -9,6 +9,7 @@ import com.jetbrains.rd.util.reactive.ViewableMap
 
 class DocumentCommentsWithFoldingsStorage : DocumentCommentsStorage() {
   private val foldings = ViewableMap<CommentIdentifier, ViewableMap<Editor, CustomFoldRegion>>()
+  private val foldingsPerEditor = ViewableMap<Editor, MutableList<CustomFoldRegion>>()
 
 
   fun addFoldingToComment(
@@ -18,6 +19,8 @@ class DocumentCommentsWithFoldingsStorage : DocumentCommentsStorage() {
   ) {
     val editorsFoldings = foldings.getOrCreate(comment.commentIdentifier) { ViewableMap() }
     editorsFoldings[editor] = folding
+    val foldingsList = foldingsPerEditor.getOrCreate(editor) { mutableListOf() }
+    foldingsList.add(folding)
   }
 
   fun getFolding(commentIdentifier: CommentIdentifier, editor: Editor): CustomFoldRegion? {
@@ -25,6 +28,14 @@ class DocumentCommentsWithFoldingsStorage : DocumentCommentsStorage() {
   }
 
   fun removeFolding(commentIdentifier: CommentIdentifier, editor: Editor) {
-    foldings[commentIdentifier]?.remove(editor)
+    val folding = foldings[commentIdentifier]?.remove(editor)
+
+    if (folding != null) {
+      foldingsPerEditor[editor]?.remove(folding)
+    }
+  }
+
+  fun getAllFoldingsFor(editor: Editor): Collection<CustomFoldRegion> {
+    return foldingsPerEditor[editor] ?: emptyList()
   }
 }
