@@ -1,6 +1,7 @@
 package com.intelligentComments.ui.comments.renderers.segments
 
 import com.intelligentComments.ui.comments.model.content.ContentSegmentUiModel
+import com.intelligentComments.ui.comments.model.content.code.CodeSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.example.ExampleSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.exceptions.ExceptionUiModel
 import com.intelligentComments.ui.comments.model.content.exceptions.GroupedExceptionUiModel
@@ -47,6 +48,7 @@ interface SegmentRenderer : Renderer, RectangleModelBuildContributor {
         is GroupedSummaryUiModel -> GroupedSummariesRenderer(segment)
         is GroupedRemarksUiModel -> GroupedRemarksRenderer(segment)
         is ExampleSegmentUiModel -> ExampleSegmentRenderer(segment)
+        is CodeSegmentUiModel -> CodeSegmentRenderer(segment)
         else -> throw IllegalArgumentException(segment.toString())
       }
     }

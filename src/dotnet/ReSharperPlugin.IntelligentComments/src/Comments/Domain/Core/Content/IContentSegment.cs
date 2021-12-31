@@ -72,3 +72,8 @@ public record TableCellProperties(
   public static TableCellProperties DefaultProperties { get; } =
     new(RdHorizontalAlignment.Center, RdVerticalAlignment.Center, false);
 }
+
+public interface ICodeSegment : IContentSegment
+{
+  IHighlightedText Code { get; }
+}

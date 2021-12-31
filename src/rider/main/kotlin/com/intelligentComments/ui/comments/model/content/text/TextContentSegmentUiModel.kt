@@ -10,9 +10,7 @@ class TextContentSegmentUiModel(
   project: Project,
   textSegment: TextContentSegment
 ) : ContentSegmentUiModel(project, textSegment) {
-  private val highlightedTextWrapper = HighlightedTextUiWrapper(project, textSegment.highlightedText)
-  val text = highlightedTextWrapper.text
-  val highlighters = highlightedTextWrapper.highlighters
+  val highlightedTextWrapper = HighlightedTextUiWrapper(project, textSegment.highlightedText)
 
   override fun hashCode(): Int = HashUtil.hashCode(highlightedTextWrapper.hashCode())
   override fun equals(other: Any?): Boolean = other is TextContentSegmentUiModel && other.hashCode() == hashCode()

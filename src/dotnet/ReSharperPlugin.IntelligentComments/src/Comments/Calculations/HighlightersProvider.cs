@@ -19,7 +19,6 @@ public interface IHighlightersProvider
 [SolutionComponent]
 public class HighlightersProvider : IHighlightersProvider
 {
-  [NotNull] private static readonly TextHighlighterAttributes ourDefaultAttributes = new(FontStyle.Regular, false, 400);
   [NotNull] private static readonly UnderlineTextAnimation ourUnderlineTextAnimation = new();
   
   
@@ -33,23 +32,23 @@ public class HighlightersProvider : IHighlightersProvider
 
 
   public TextHighlighter GetCXmlElementHighlighter(int startOffset, int endOffset) =>
-    new(CElementKey, startOffset, endOffset, ourDefaultAttributes, ourUnderlineTextAnimation);
+    new(CElementKey, startOffset, endOffset, TextHighlighterAttributes.DefaultAttributes, ourUnderlineTextAnimation);
 
   public TextHighlighter GetParamRefElementHighlighter(int startOffset, int endOffset) =>
-    new(ParamRefKey, startOffset, endOffset, ourDefaultAttributes, ourUnderlineTextAnimation);
+    new(ParamRefKey, startOffset, endOffset, TextHighlighterAttributes.DefaultAttributes, ourUnderlineTextAnimation);
 
   public TextHighlighter GetSeeAlsoLinkHighlighter(int startOffset, int endOffset) =>
-    new(SeeAlsoLinkKey, startOffset, endOffset, ourDefaultAttributes, ourUnderlineTextAnimation);
+    new(SeeAlsoLinkKey, startOffset, endOffset, TextHighlighterAttributes.DefaultAttributes, ourUnderlineTextAnimation);
 
   public TextHighlighter GetSeeAlsoMemberHighlighter(int startOffset, int endOffset) =>
-    new(SeeAlsoMemberKey, startOffset, endOffset, ourDefaultAttributes, ourUnderlineTextAnimation);
+    new(SeeAlsoMemberKey, startOffset, endOffset, TextHighlighterAttributes.DefaultAttributes, ourUnderlineTextAnimation);
 
   public TextHighlighter GetSeeCodeEntityHighlighter(int startOffset, int endOffset) => 
-    new(SeeCodeEntityKey, startOffset, endOffset, ourDefaultAttributes, ourUnderlineTextAnimation);
+    new(SeeCodeEntityKey, startOffset, endOffset, TextHighlighterAttributes.DefaultAttributes, ourUnderlineTextAnimation);
 
   public TextHighlighter GetSeeHttpLinkHighlighter(int startOffset, int endOffset) =>
-    new(SeeHttpKey, startOffset, endOffset, ourDefaultAttributes, ourUnderlineTextAnimation);
+    new(SeeHttpKey, startOffset, endOffset, TextHighlighterAttributes.DefaultAttributes, ourUnderlineTextAnimation);
 
   public TextHighlighter GetSeeLangWordHighlighter(int startOffset, int endOffset) =>
-    new(SeeLangWord, startOffset, endOffset, ourDefaultAttributes, ourUnderlineTextAnimation);
+    new(SeeLangWord, startOffset, endOffset, TextHighlighterAttributes.DefaultAttributes, ourUnderlineTextAnimation);
 }

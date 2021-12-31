@@ -143,3 +143,5 @@ public class TableSegmentRow : ITableSegmentRow
 }
 
 public record TableCell(IContentSegments Content, TableCellProperties Properties) : ITableCell;
+
+public record CodeSegment(IHighlightedText Code) : ICodeSegment;

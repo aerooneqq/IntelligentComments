@@ -26,6 +26,7 @@ open class ContentSegmentFromRd(private val contentSegment: RdContentSegment) : 
         is RdSeeAlsoContentSegment -> SeeAlsoSegmentFromRd.getFor(contentSegment, project)
         is RdExampleSegment -> ExampleFromRd(contentSegment, project)
         is RdSummarySegment -> SummaryContentSegmentFromRd(contentSegment, project)
+        is RdCodeContentSegment -> CodeSegmentFromRd(contentSegment, project)
         else -> throw IllegalArgumentException(contentSegment.toString())
       }
     }
@@ -216,4 +217,11 @@ class SeeAlsoMemberSegmentFromRd(
 ) : SeeAlsoSegmentFromRd(rdSeeAlsoLink, project), SeeAlsoMemberSegment {
   override val reference: CodeEntityReference
     get() = TODO("Not yet implemented")
+}
+
+class CodeSegmentFromRd(
+  rdCodeSegment: RdCodeContentSegment,
+  project: Project
+) : ContentSegmentFromRd(rdCodeSegment), CodeSegment {
+  override val code: HighlightedText = rdCodeSegment.code.toIdeaHighlightedText(project)
 }

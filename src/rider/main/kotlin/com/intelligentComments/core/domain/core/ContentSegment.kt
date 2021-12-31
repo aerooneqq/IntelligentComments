@@ -113,3 +113,7 @@ interface SeeAlsoMemberSegment : SeeAlsoSegment {
 interface GroupedContentSegment<out T : ContentSegment> : ContentSegment {
   val segments: List<T>
 }
+
+interface CodeSegment : ContentSegment {
+  val code: HighlightedText
+}

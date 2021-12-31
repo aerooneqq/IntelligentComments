@@ -28,9 +28,9 @@ public class XmlDocsProcessor : IRecursiveElementProcessor
   {
     if (element is IXmlDocOwnerTreeNode xmlDocOwner)
     {
-      var builder = new DocCommentBuilder(myHighlightersProvider);
+      var builder = new DocCommentBuilder(myHighlightersProvider, xmlDocOwner);
 
-      if (builder.Build(xmlDocOwner) is { } comment)
+      if (builder.Build() is { } comment)
       {
         myComments.Add(comment);
       }

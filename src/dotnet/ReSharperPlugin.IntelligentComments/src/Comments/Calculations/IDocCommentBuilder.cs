@@ -3,10 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 using JetBrains.Annotations;
+using JetBrains.ProjectModel;
+using JetBrains.ReSharper.Daemon.CSharp.Stages;
+using JetBrains.ReSharper.Feature.Services.Daemon;
+using JetBrains.ReSharper.Feature.Services.Daemon.Attributes;
 using JetBrains.ReSharper.I18n.Services;
+using JetBrains.ReSharper.Psi;
+using JetBrains.ReSharper.Psi.CSharp;
+using JetBrains.ReSharper.Psi.CSharp.Tree;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.ReSharper.Psi.Util;
 using JetBrains.Rider.Model;
+using JetBrains.TextControl.DocumentMarkup;
 using JetBrains.Util;
 using JetBrains.Util.Logging;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
@@ -21,7 +29,7 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Calculations;
 
 public interface IDocCommentBuilder
 {
-  [CanBeNull] IDocComment Build(IXmlDocOwnerTreeNode node);
+  [CanBeNull] IDocComment Build();
 }
 
 public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
@@ -113,22 +121,33 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
   [NotNull] private readonly Stack<ContentSegmentsMetadata> myContentSegmentsStack;
   [NotNull] private readonly ISet<XmlNode> myVisitedNodes;
   [NotNull] private readonly IHighlightersProvider myHighlightersProvider;
+  [NotNull] private readonly IXmlDocOwnerTreeNode myOwner;
+  [NotNull] private readonly CSharpIdentifierHighlighter myCSharpIdentifierHighlighter;
+  [NotNull] private readonly IHighlightingAttributeRegistry myHighlightingAttributeRegistry;
+  [NotNull] private readonly IHighlightingSettingsManager myHighlightingSettingsManager;
 
 
-  public DocCommentBuilder([NotNull] IHighlightersProvider highlightersProvider)
+  public DocCommentBuilder([NotNull] IHighlightersProvider highlightersProvider, [NotNull] IXmlDocOwnerTreeNode owner)
   {
     myHighlightersProvider = highlightersProvider;
+    myOwner = owner;
     myContentSegmentsStack = new Stack<ContentSegmentsMetadata>();
-      
+    myHighlightingAttributeRegistry = owner.GetSolution().GetComponent<IHighlightingAttributeRegistry>();
+    myHighlightingSettingsManager = owner.GetSolution().GetComponent<IHighlightingSettingsManager>();
+    
+    var languageManager = LanguageManager.Instance;
+    var provider = languageManager.GetService<IHighlightingAttributeIdProvider>(CSharpLanguage.Instance!);
+    myCSharpIdentifierHighlighter = new CSharpIdentifierHighlighter(provider);
+    
     myVisitedNodes = new HashSet<XmlNode>();
   }
     
 
-  public IDocComment Build(IXmlDocOwnerTreeNode owner)
+  public IDocComment Build()
   {
     try
     {
-      if (owner.GetXMLDoc(true) is not { } xmlNode)
+      if (myOwner.GetXMLDoc(true) is not { } xmlNode)
       {
         return null;
       }
@@ -140,7 +159,7 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
       }
       
       var content = new IntelligentCommentContent(topmostContentSegments.ContentSegments);
-      return new DocComment(content, owner.FirstChild.CreatePointer());
+      return new DocComment(content, myOwner.FirstChild.CreatePointer());
     }
     catch (Exception ex)
     {
@@ -212,8 +231,12 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
     ExecuteWithTopmostContentSegments(metadata => metadata.ContentSegments.Segments.Add(textContentSegment));
   }
 
-  private static string PreprocessText([NotNull] string text) => text.Replace("\n ", "\n");
+  private static string PreprocessText([NotNull] string text) =>
+    text.Replace("  ", " ").Replace("\n ", "\n").Replace(" \n", "\n");
 
+  private static string PreprocessTextStrongly([NotNull] string text) =>
+    PreprocessText(text).TrimStart(' ', '\n') .TrimEnd(' ', '\n').Replace("\n ", "\n");
+  
   public override void VisitParam(XmlElement element)
   {
     ProcessParam(element, "name", ourParamFactory);
@@ -530,5 +553,28 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
     });
     
     ExecuteWithTopmostContentSegments(metadata => metadata.ContentSegments.Segments.Add(table));
+  }
+  
+  public override void VisitCode(XmlElement element)
+  {
+    myVisitedNodes.Add(element);
+    if (ElementHasOneTextChild(element, out var text))
+    {
+      var block = CSharpElementFactory.GetInstance(myOwner).CreateBlock("{" + text + "}");
+      
+      var highlightedText = CreateHighlightedTextFor(block);
+      var codeSegment = new CodeSegment(highlightedText);
+      ExecuteWithTopmostContentSegments(metadata => metadata.ContentSegments.Segments.Add(codeSegment));
+    }
+  }
+
+  [NotNull]
+  private IHighlightedText CreateHighlightedTextFor([NotNull] IBlock block)
+  {
+    var processor = new RecursiveElementsHighlighter(
+      myCSharpIdentifierHighlighter, myHighlightingSettingsManager, myOwner);
+    
+    block.ProcessThisAndDescendants(processor);
+    return processor.Text;
   }
 }

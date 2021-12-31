@@ -69,6 +69,10 @@ object RdCommentsModel : Ext(SolutionModel.RdDocumentModel) {
 
   val RdExampleSegment = structdef extends RdSegmentWithContent { }
 
+  val RdCodeContentSegment = structdef extends RdContentSegment {
+    field("Code", RdHighlightedText)
+  }
+
   val RdSeeAlsoContentSegment = basestruct extends RdContentSegment {
     field("Description", RdHighlightedText)
   }
@@ -178,6 +182,7 @@ object RdCommentsModel : Ext(SolutionModel.RdDocumentModel) {
     field("BackgroundStyle", RdBackgroundStyle.nullable).optional
     field("Animation", RdTextAnimation.nullable).optional
     field("References", immutableList(RdReference).nullable).optional
+    field("IsResharperHighlighter", PredefinedType.bool.nullable).optional
   }
 
   val RdTextAttributes = structdef {

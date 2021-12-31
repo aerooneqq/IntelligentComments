@@ -86,8 +86,14 @@ public static class CommentsUtil
       IListSegment listSegment => listSegment.ToRdList(),
       ISummarySegment summarySegment => summarySegment.ToRdSummary(),
       ITableSegment tableSegment => tableSegment.ToRdTable(),
+      ICodeSegment codeSegment => codeSegment.ToRdCodeSegment(),
       _ => throw new ArgumentOutOfRangeException(segment.GetType().Name)
     };
+  }
+
+  private static RdCodeContentSegment ToRdCodeSegment(this ICodeSegment segment)
+  {
+    return new RdCodeContentSegment(segment.Code.ToRdHighlightedText());
   }
 
   [NotNull]
@@ -239,7 +245,8 @@ public static class CommentsUtil
       highlighter.StartOffset,
       highlighter.EndOffset,
       attributes,
-      animation: highlighter.TextAnimation?.ToRdAnimation());
+      animation: highlighter.TextAnimation?.ToRdAnimation(),
+      isResharperHighlighter: highlighter.IsResharperHighlighter);
   }
 
   [NotNull]

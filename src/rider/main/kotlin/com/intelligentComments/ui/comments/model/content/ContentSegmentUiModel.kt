@@ -3,6 +3,7 @@ package com.intelligentComments.ui.comments.model.content
 import com.intelligentComments.core.domain.core.*
 import com.intelligentComments.core.domain.impl.*
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
+import com.intelligentComments.ui.comments.model.content.code.CodeSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.example.ExampleSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.exceptions.ExceptionUiModel
 import com.intelligentComments.ui.comments.model.content.exceptions.GroupedExceptionUiModel
@@ -54,6 +55,7 @@ abstract class ContentSegmentUiModel(
         is GroupedRemarksSegments -> GroupedRemarksUiModel(project, segment)
         is ExampleContentSegment -> ExampleSegmentUiModel(project, segment)
         is SummaryContentSegment -> SummaryUiModel(project, segment)
+        is CodeSegment -> CodeSegmentUiModel(project, segment)
         else -> throw IllegalArgumentException(segment.javaClass.name)
       }
     }
