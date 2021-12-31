@@ -75,6 +75,12 @@ class ListSegmentFromRd(segment: RdListSegment, project: Project) : ContentSegme
     ListItem(header, description)
   }
 
+  override val listKind: ListSegmentKind = when (segment.listKind) {
+    ListKind.Number -> ListSegmentKind.Number
+    ListKind.Bullet -> ListSegmentKind.Bullet
+    else -> throw IllegalArgumentException(segment.listKind.toString())
+  }
+
   override val header: HighlightedText? = segment.header?.toIdeaHighlightedText(project)
 }
 

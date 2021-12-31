@@ -1,5 +1,6 @@
 package com.intelligentComments.ui.comments.renderers.segments
 
+import com.intelligentComments.core.domain.core.ListSegmentKind
 import com.intelligentComments.ui.colors.Colors
 import com.intelligentComments.ui.colors.ColorsProvider
 import com.intelligentComments.ui.comments.model.content.ContentSegmentUiModel
@@ -13,6 +14,7 @@ import com.intelligentComments.ui.util.*
 import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.impl.EditorImpl
 import com.intellij.openapi.util.use
+import java.awt.FontMetrics
 import java.awt.Graphics
 import java.awt.Rectangle
 import java.lang.Integer.max
@@ -37,9 +39,9 @@ class ListSegmentRenderer(private val model: ListContentSegmentUiModel) : Segmen
 
     executeIfExpanded {
       UpdatedRectCookie(adjustedRect, xDelta = leftIndentForListContent).use {
-        for (item in model.items) {
+        for ((index, item) in model.items.withIndex()) {
           val listContent = getAllContentFrom(item)
-          drawItemBullet(g, adjustedRect, editorImpl, listContent.first())
+          drawItemBullet(g, adjustedRect, editorImpl, listContent.first(), index + 1)
           adjustedRect = ContentSegmentsUtil.renderSegments(listContent, g, adjustedRect, editorImpl, rectanglesModel)
           adjustedRect.y += ContentSegmentsUtil.deltaBetweenSegments
         }
@@ -87,7 +89,8 @@ class ListSegmentRenderer(private val model: ListContentSegmentUiModel) : Segmen
     g: Graphics,
     rect: Rectangle,
     editorImpl: EditorImpl,
-    segment: ContentSegmentUiModel
+    segment: ContentSegmentUiModel,
+    index: Int
   ) {
     val fontMetrics = TextUtil.getFontMetrics(editorImpl, null)
 
@@ -95,12 +98,38 @@ class ListSegmentRenderer(private val model: ListContentSegmentUiModel) : Segmen
       is ImageContentSegmentUiModel,
       is ListContentSegmentUiModel,
       is TextContentSegmentUiModel -> {
-        val bulletColor = model.project.service<ColorsProvider>().getColorFor(Colors.ListItemBulletBackgroundColor)
-        UpdatedGraphicsCookie(g, color = bulletColor).use {
-          g.fillOval(rect.x - 11, rect.y + fontMetrics.descent + fontMetrics.ascent / 4, bulletRadius, bulletRadius)
+        if (model.listKind == ListSegmentKind.Bullet) {
+          drawBullet(g, rect, fontMetrics)
+        } else if (model.listKind == ListSegmentKind.Number) {
+          drawNumber(g, rect, editorImpl, index)
         }
       }
     }
+  }
+
+  private fun drawBullet(
+    g: Graphics,
+    rect: Rectangle,
+    fontMetrics: FontMetrics
+  ) {
+    val bulletColor = model.project.service<ColorsProvider>().getColorFor(Colors.ListItemBulletBackgroundColor)
+    UpdatedGraphicsCookie(g, color = bulletColor).use {
+      g.fillOval(rect.x - 11, rect.y + fontMetrics.descent + fontMetrics.ascent / 4, bulletRadius, bulletRadius)
+    }
+  }
+
+  private fun drawNumber(
+    g: Graphics,
+    rect: Rectangle,
+    editorImpl: EditorImpl,
+    index: Int
+  ) {
+    val rectForNumber = Rectangle(rect).apply {
+      x -= 14
+    }
+
+    val numberString = "$index."
+    TextUtil.renderText(g, rectForNumber, editorImpl, numberString, 0)
   }
 
   override fun calculateExpectedHeightInPixels(

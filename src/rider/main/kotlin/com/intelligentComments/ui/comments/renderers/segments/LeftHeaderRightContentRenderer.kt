@@ -85,7 +85,7 @@ abstract class LeftHeaderRightContentRenderer(
 
 open class LeftTextHeaderAndRightContentRenderer(
   private val header: HighlightedTextUiWrapper,
-  content: Collection<ContentSegmentUiModel>
+  private val content: Collection<ContentSegmentUiModel>
 ) : LeftHeaderRightContentRenderer(content) {
   override fun calculateHeaderWidthInternal(editorImpl: EditorImpl): Int {
     return TextUtil.getTextWidthWithHighlighters(editorImpl, header)
@@ -101,7 +101,8 @@ open class LeftTextHeaderAndRightContentRenderer(
     editorImpl: EditorImpl,
     rectanglesModel: RectanglesModel
   ) {
-    val adjustedRect = if (header.highlighters.first().backgroundStyle != null) {
+    val firstContentChildHasHeader = !content.isEmpty() && SegmentRenderer.getRendererFor(content.first()) is LeftHeaderRightContentRenderer
+    val adjustedRect = if (header.highlighters.first().backgroundStyle != null && firstContentChildHasHeader) {
       Rectangle(rect).apply { y -= 3 }
     } else {
       rect

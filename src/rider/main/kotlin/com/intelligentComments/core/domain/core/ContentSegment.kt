@@ -37,7 +37,13 @@ interface ImageContentSegment : ContentSegment {
   val description: HighlightedText?
 }
 
+enum class ListSegmentKind {
+  Bullet,
+  Number
+}
+
 interface ListContentSegment : ContentSegment {
+  val listKind: ListSegmentKind
   val content: Collection<ListItem>
   val header: HighlightedText?
 }

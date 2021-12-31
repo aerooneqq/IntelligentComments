@@ -456,7 +456,7 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
     switch (typeOfList)
     {
       case "number" or "bullet":
-        ProcessList(element);
+        ProcessList(element, typeOfList);
         break;
       case "table":
         ProcessTable(element);
@@ -464,10 +464,18 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
     }
   }
 
-  private void ProcessList([NotNull] XmlElement element)
+  private void ProcessList([NotNull] XmlElement element, string typeOfList)
   {
-    var list = new ListSegment(ListKind.Bullet);
+    ListKind? listKindNullable = typeOfList switch
+    {
+      "number" => ListKind.Number,
+      "bullet" => ListKind.Bullet,
+      _ => null
+    };
+
+    if (listKindNullable is not { } listKind) return;
     
+    var list = new ListSegment(listKind);
     ExecuteActionOverTermsAndDescriptions(element, (termSegments, descriptionSegments) =>
     {
       var listItem = new ListItemImpl(termSegments, descriptionSegments);

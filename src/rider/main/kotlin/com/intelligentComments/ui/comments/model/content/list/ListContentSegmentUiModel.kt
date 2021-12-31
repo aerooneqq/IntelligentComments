@@ -17,6 +17,7 @@ class ListContentSegmentUiModel(
     ListContentSegmentHeaderUiModel(project, header, this)
   }
 
+  val listKind = listSegment.listKind
   val items = listSegment.content.map { ListItemUiModel(project, it) }
 
   override var isExpanded = true
