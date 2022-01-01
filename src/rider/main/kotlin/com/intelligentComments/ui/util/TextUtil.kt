@@ -21,6 +21,7 @@ class TextUtil {
   companion object {
     val font: Font = UIUtil.getLabelFont().deriveFont(13f)
     val boldFont: Font = font.deriveFont(Font.BOLD).deriveFont(14f)
+    const val backgroundArcDimension = 3
 
     const val deltaBetweenIconAndTextInHeader = 2
     private const val textHeightAdditionFactor = 0
@@ -323,7 +324,7 @@ class TextUtil {
           UpdatedGraphicsCookie(g, color = backgroundStyle.backgroundColor).use {
             val y = rect.y - textHeight + metrics.descent
             if (backgroundStyle.roundedRect) {
-              g.fillRoundRect(rect.x, y, textWidth, textHeight, 3, 3)
+              g.fillRoundRect(rect.x, y, textWidth, textHeight, backgroundArcDimension, backgroundArcDimension)
             } else {
               g.fillRect(rect.x, y, textWidth, textHeight)
             }
@@ -358,8 +359,7 @@ class TextUtil {
           if (highlighterModel.startOffset <= lineEndOffset && highlighterModel.endOffset >= lineStartOffset) {
             val highlighterLineRangeStart = max(highlighterModel.startOffset, lineStartOffset)
             val highlighterLineRangeEnd = min(highlighterModel.endOffset, lineEndOffset - 1)
-            val highlighterRangeForLine =
-              Range<Int>(highlighterLineRangeStart - lineStartOffset, highlighterLineRangeEnd - lineStartOffset)
+            val highlighterRangeForLine = Range<Int>(highlighterLineRangeStart - lineStartOffset, highlighterLineRangeEnd - lineStartOffset)
             val rangeWithHighlighter = RangeWithHighlighter(highlighterRangeForLine, highlighterModel)
             linesHighlighters[i - 1]!!.add(rangeWithHighlighter)
           }
@@ -383,6 +383,11 @@ class TextUtil {
         }
       }
     }
+
+    fun createRectanglesForHighlightedText(
+      text: HighlightedTextUiWrapper,
+      context: RectangleModelBuildContext
+    ) = createRectanglesForHighlighters(text.text, text.highlighters, context)
 
     fun createRectanglesForHighlighters(
       line: String,
@@ -413,7 +418,9 @@ class TextUtil {
         var textLength = 0
         val lineHeight = getLineHeightWithHighlighters(editorImpl, lineHighlighters)
         executeActionOverRanges(chars, lineHighlighters) { range, model ->
-          val textWidth = getTextWidth(editorImpl, chars, range.from, range.to - 1, model)
+          val backgroundXDelta = if (model?.backgroundStyle != null) backgroundArcDimension else 0
+          val textWidth = getTextWidth(editorImpl, chars, range.from, range.to - 1, model) + backgroundXDelta
+
           if (model != null) {
             val highlighterRect = Rectangle(rect.x + textLength, rect.y + yDelta, textWidth, lineHeight)
             context.rectanglesModel.addElement(model, highlighterRect)

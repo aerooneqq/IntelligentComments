@@ -30,7 +30,11 @@ public class HighlightedText : IHighlightedText
     myHighlighters = highlighters.ToList();
   }
 
-  
+  public HighlightedText(string text, TextHighlighter highlighter) : this(text, new[] { highlighter })
+  {
+  }
+
+
   public void Add(IHighlightedText other)
   {
     var length = Text.Length;
@@ -67,7 +71,7 @@ public class HighlightedText : IHighlightedText
 
     newHighlighters = newHighlighters
       .Select(h => h with { EndOffset = Math.Min(h.EndOffset, sb.Length) })
-      .Where(h => h.IsValid() && h.EndOffset < sb.Length)
+      .Where(h => h.IsValid() && h.EndOffset <= sb.Length)
       .ToList();
 
     Text = sb.ToString();

@@ -67,7 +67,7 @@ namespace JetBrains.Rider.Model
     
     
     
-    protected override long SerializationHash => 3278048434955087751L;
+    protected override long SerializationHash => -3306935432481034600L;
     
     protected override Action<ISerializers> Register => RegisterDeclaredTypesSerializers;
     public static void RegisterDeclaredTypesSerializers(ISerializers serializers)
@@ -1239,13 +1239,13 @@ namespace JetBrains.Rider.Model
   {
     //fields
     //public fields
-    [NotNull] public string Name {get; private set;}
+    [NotNull] public RdHighlightedText Name {get; private set;}
     [CanBeNull] public RdReference ExceptionReference {get; private set;}
     
     //private fields
     //primary constructor
     public RdExceptionsSegment(
-      [NotNull] string name,
+      [NotNull] RdHighlightedText name,
       [CanBeNull] RdReference exceptionReference,
       [NotNull] RdContentSegments content
     ) : base (
@@ -1264,7 +1264,7 @@ namespace JetBrains.Rider.Model
     public static new CtxReadDelegate<RdExceptionsSegment> Read = (ctx, reader) => 
     {
       var content = RdContentSegments.Read(ctx, reader);
-      var name = reader.ReadString();
+      var name = RdHighlightedText.Read(ctx, reader);
       var exceptionReference = ReadRdReferenceNullable(ctx, reader);
       var _result = new RdExceptionsSegment(name, exceptionReference, content);
       return _result;
@@ -1274,7 +1274,7 @@ namespace JetBrains.Rider.Model
     public static new CtxWriteDelegate<RdExceptionsSegment> Write = (ctx, writer, value) => 
     {
       RdContentSegments.Write(ctx, writer, value.Content);
-      writer.Write(value.Name);
+      RdHighlightedText.Write(ctx, writer, value.Name);
       WriteRdReferenceNullable(ctx, writer, value.ExceptionReference);
     };
     public static  CtxWriteDelegate<RdReference> WriteRdReferenceNullable = RdReference.Write.NullableClass();
@@ -1295,7 +1295,7 @@ namespace JetBrains.Rider.Model
     {
       if (ReferenceEquals(null, other)) return false;
       if (ReferenceEquals(this, other)) return true;
-      return Name == other.Name && Equals(ExceptionReference, other.ExceptionReference) && Equals(Content, other.Content);
+      return Equals(Name, other.Name) && Equals(ExceptionReference, other.ExceptionReference) && Equals(Content, other.Content);
     }
     //hash code trait
     public override int GetHashCode()

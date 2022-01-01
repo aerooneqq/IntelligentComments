@@ -102,12 +102,13 @@ open class LeftTextHeaderAndRightContentRenderer(
     rectanglesModel: RectanglesModel
   ) {
     val firstContentChildHasHeader = !content.isEmpty() && SegmentRenderer.getRendererFor(content.first()) is LeftHeaderRightContentRenderer
-    val adjustedRect = if (header.highlighters.first().backgroundStyle != null && firstContentChildHasHeader) {
-      Rectangle(rect).apply { y -= 3 }
-    } else {
-      rect
-    }
+    val adjustedRect = Rectangle(rect).apply { y -= TextUtil.backgroundArcDimension }
 
     TextUtil.renderLine(g, adjustedRect, editorImpl, header, 0)
+  }
+
+  override fun accept(context: RectangleModelBuildContext) {
+    TextUtil.createRectanglesForHighlightedText(header, context)
+    super.accept(context)
   }
 }

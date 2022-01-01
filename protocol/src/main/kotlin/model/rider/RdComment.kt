@@ -86,7 +86,7 @@ object RdCommentsModel : Ext(SolutionModel.RdDocumentModel) {
   }
 
   val RdExceptionsSegment = structdef extends RdSegmentWithContent {
-    field("Name", PredefinedType.string)
+    field("Name", RdHighlightedText)
     field("ExceptionReference", RdReference.nullable).optional
   }
 

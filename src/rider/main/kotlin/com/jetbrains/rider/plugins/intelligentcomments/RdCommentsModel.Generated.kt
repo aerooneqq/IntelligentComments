@@ -86,7 +86,7 @@ class RdCommentsModel private constructor(
         
         
         
-        const val serializationHash = 3278048434955087751L
+        const val serializationHash = -3306935432481034600L
         
     }
     override val serializersOwner: ISerializersOwner get() = RdCommentsModel
@@ -972,7 +972,7 @@ class RdExampleSegment (
  * #### Generated from [RdComment.kt:88]
  */
 class RdExceptionsSegment (
-    val name: String,
+    val name: RdHighlightedText,
     val exceptionReference: RdReference? = null,
     content: RdContentSegments
 ) : RdSegmentWithContent (
@@ -986,14 +986,14 @@ class RdExceptionsSegment (
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdExceptionsSegment  {
             val content = RdContentSegments.read(ctx, buffer)
-            val name = buffer.readString()
+            val name = RdHighlightedText.read(ctx, buffer)
             val exceptionReference = buffer.readNullable { ctx.serializers.readPolymorphic<RdReference>(ctx, buffer, RdReference) }
             return RdExceptionsSegment(name, exceptionReference, content)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: RdExceptionsSegment)  {
             RdContentSegments.write(ctx, buffer, value.content)
-            buffer.writeString(value.name)
+            RdHighlightedText.write(ctx, buffer, value.name)
             buffer.writeNullable(value.exceptionReference) { ctx.serializers.writePolymorphic(ctx, buffer, it) }
         }
         

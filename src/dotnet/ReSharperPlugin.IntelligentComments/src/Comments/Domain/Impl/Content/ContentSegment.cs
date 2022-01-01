@@ -40,10 +40,10 @@ public class SummaryContentSegment : EntityWithContentSegments, ISummarySegment
 
 public class ExceptionContentSegment : EntityWithContentSegments, IExceptionSegment
 {
-  public string ExceptionName { get; }
+  public IHighlightedText ExceptionName { get; }
 
   
-  public ExceptionContentSegment([NotNull] string name) : base(Content.ContentSegments.CreateEmpty())
+  public ExceptionContentSegment([NotNull] IHighlightedText name) : base(Content.ContentSegments.CreateEmpty())
   {
     ExceptionName = name;
   }

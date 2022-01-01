@@ -28,7 +28,7 @@ public interface ISummarySegment : IEntityWithContentSegments
 
 public interface IExceptionSegment : IEntityWithContentSegments
 {
-  string ExceptionName { get; }
+  IHighlightedText ExceptionName { get; }
 }
 
 public interface IExampleSegment : IEntityWithContentSegments

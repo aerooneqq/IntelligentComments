@@ -95,7 +95,7 @@ interface ReturnSegment : EntityWithContentSegments
 interface RemarksSegment : EntityWithContentSegments
 
 interface ExceptionSegment : EntityWithContentSegments {
-  val name: String
+  val name: HighlightedText
 }
 
 interface SeeAlsoSegment : ContentSegment {

@@ -198,7 +198,7 @@ public static class CommentsUtil
   [NotNull]
   private static RdExceptionsSegment ToRdExceptionSegment([NotNull] this IExceptionSegment segment)
   {
-    return new RdExceptionsSegment(segment.ExceptionName, null, segment.ContentSegments.ToRdContentSegments());
+    return new RdExceptionsSegment(segment.ExceptionName.ToRdHighlightedText(), null, segment.ContentSegments.ToRdContentSegments());
   }
     
   [NotNull]

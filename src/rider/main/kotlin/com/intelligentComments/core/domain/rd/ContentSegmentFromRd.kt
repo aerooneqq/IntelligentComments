@@ -182,7 +182,7 @@ class ExceptionSegmentFromRd(
   rdExceptionSegment: RdExceptionsSegment,
   project: Project
 ) : ContentSegmentFromRd(rdExceptionSegment), ExceptionSegment {
-  override val name: String = rdExceptionSegment.name
+  override val name: HighlightedText = rdExceptionSegment.name.toIdeaHighlightedText(project)
   override val content: ContentSegments = ContentSegmentsFromRd(rdExceptionSegment.content, project)
 }
 

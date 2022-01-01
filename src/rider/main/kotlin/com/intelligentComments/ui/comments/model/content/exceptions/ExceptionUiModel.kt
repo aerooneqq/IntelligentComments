@@ -12,7 +12,7 @@ class ExceptionUiModel(
   project: Project,
   exceptionSegment: ExceptionSegment
 ) : ContentSegmentUiModel(project, exceptionSegment) {
-  val name = HighlightedTextUiWrapper(project, getSecondLevelHeader(project, exceptionSegment.name))
+  val name = HighlightedTextUiWrapper(project, exceptionSegment.name)
   val content = ContentSegmentsUiModel(project, exceptionSegment.content)
 
   override fun hashCode(): Int = HashUtil.hashCode(name.hashCode(), content.hashCode())
