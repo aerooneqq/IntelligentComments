@@ -102,7 +102,11 @@ open class LeftTextHeaderAndRightContentRenderer(
     rectanglesModel: RectanglesModel
   ) {
     val firstContentChildHasHeader = !content.isEmpty() && SegmentRenderer.getRendererFor(content.first()) is LeftHeaderRightContentRenderer
-    val adjustedRect = Rectangle(rect).apply { y -= TextUtil.backgroundArcDimension }
+    val adjustedRect = if (header.highlighters.first().backgroundStyle != null && firstContentChildHasHeader) {
+      Rectangle(rect).apply { y -= TextUtil.backgroundArcDimension }
+    } else {
+      rect
+    }
 
     TextUtil.renderLine(g, adjustedRect, editorImpl, header, 0)
   }

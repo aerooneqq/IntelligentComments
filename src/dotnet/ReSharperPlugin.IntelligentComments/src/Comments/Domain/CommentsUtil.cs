@@ -93,7 +93,7 @@ public static class CommentsUtil
 
   private static RdCodeContentSegment ToRdCodeSegment(this ICodeSegment segment)
   {
-    return new RdCodeContentSegment(segment.Code.ToRdHighlightedText());
+    return new RdCodeContentSegment(segment.Code.ToRdHighlightedText(), segment.HighlightingRequestId);
   }
 
   [NotNull]

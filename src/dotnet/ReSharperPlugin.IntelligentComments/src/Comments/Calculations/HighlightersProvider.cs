@@ -11,6 +11,9 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Calculations;
 
 public interface IHighlightersProvider
 {
+  [CanBeNull] TextHighlighter TryGetReSharperHighlighter([NotNull] string resharperAttributeId, int length);
+  [CanBeNull] TextHighlighter TryGetReSharperHighlighter(int textLength, [NotNull] IDeclaredElement element);
+  
   [NotNull] TextHighlighter GetCXmlElementHighlighter(int startOffset, int endOffset);
   [NotNull] TextHighlighter GetParamRefElementHighlighter(int startOffset, int endOffset);
   [NotNull] TextHighlighter GetSeeAlsoLinkHighlighter(int startOffset, int endOffset);
@@ -56,7 +59,7 @@ public class HighlightersProvider : IHighlightersProvider
     myHighlighterNamesProvider = new CSharpHighlighterGroup.CSharpSettingsNamesProvider();
   }
 
-
+  
   public TextHighlighter GetCXmlElementHighlighter(int startOffset, int endOffset) => Get(CElementKey, startOffset, endOffset);
   public TextHighlighter GetParamRefElementHighlighter(int startOffset, int endOffset) => Get(ParamRefKey, startOffset, endOffset);
   public TextHighlighter GetSeeAlsoLinkHighlighter(int startOffset, int endOffset) => Get(SeeAlsoLinkKey, startOffset, endOffset);
@@ -89,6 +92,17 @@ public class HighlightersProvider : IHighlightersProvider
 
     return null;
   }
+
+  public TextHighlighter TryGetReSharperHighlighter(string resharperAttributeId, int length)
+  {
+    var id = myHighlighterNamesProvider.GetExternalName(resharperAttributeId);
+    return new TextHighlighter(id, 0, length, TextHighlighterAttributes.DefaultAttributes, IsResharperHighlighter: true);
+  }
+
+  public TextHighlighter TryGetReSharperHighlighter(int textLength, IDeclaredElement element)
+  {
+    return TryGetHighlighterWithReSharperId(0, textLength, element);
+  } 
   
   [CanBeNull]
   private string TryGetAttributeId([CanBeNull] IDeclaredElement element)

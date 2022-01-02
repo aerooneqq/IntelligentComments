@@ -4,9 +4,10 @@ using System.Linq;
 using System.Xml;
 using JetBrains.Annotations;
 using JetBrains.ProjectModel;
-using JetBrains.ReSharper.Daemon.CSharp.Stages;
+using JetBrains.RdBackend.Common.Features.Documents;
+using JetBrains.RdBackend.Common.Features.SyntaxHighlighting.CSharp;
+using JetBrains.ReSharper.Daemon.SyntaxHighlighting;
 using JetBrains.ReSharper.Feature.Services.Daemon;
-using JetBrains.ReSharper.Feature.Services.Daemon.Attributes;
 using JetBrains.ReSharper.I18n.Services;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp;
@@ -17,6 +18,7 @@ using JetBrains.ReSharper.Psi.Util;
 using JetBrains.Rider.Model;
 using JetBrains.Util;
 using JetBrains.Util.Logging;
+using ReSharperPlugin.IntelligentComments.Comments.CodeFragmentsHighlighting;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.Content;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
@@ -122,22 +124,27 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
   [NotNull] private readonly ISet<XmlNode> myVisitedNodes;
   [NotNull] private readonly IHighlightersProvider myHighlightersProvider;
   [NotNull] private readonly IXmlDocOwnerTreeNode myOwner;
-  [NotNull] private readonly CSharpIdentifierHighlighter myCSharpIdentifierHighlighter;
-  [NotNull] private readonly IHighlightingSettingsManager myHighlightingSettingsManager;
   [NotNull] private readonly IPsiServices myPsiServices;
   [NotNull] private readonly IPsiModule myPsiModule;
+  [NotNull] private readonly RdDocumentId myRdDocumentId;
+  [NotNull] private readonly CodeFragmentHighlightingManager myCodeFragmentHighlightingManager;
 
 
-  public DocCommentBuilder([NotNull] IHighlightersProvider highlightersProvider, [NotNull] IXmlDocOwnerTreeNode owner)
+  public DocCommentBuilder(
+    [NotNull] IHighlightersProvider highlightersProvider, 
+    [NotNull] IXmlDocOwnerTreeNode owner)
   {
+    if (owner.GetSourceFile()?.Document.GetData(DocumentHostBase.DocumentIdKey) is not { } documentId)
+    {
+      throw new ArgumentException($"RdDocument Id was null for {owner}");
+    }
+    
+    myRdDocumentId = documentId;
     myHighlightersProvider = highlightersProvider;
     myOwner = owner;
     myContentSegmentsStack = new Stack<ContentSegmentsMetadata>();
-    myHighlightingSettingsManager = owner.GetSolution().GetComponent<IHighlightingSettingsManager>();
-    
-    var languageManager = LanguageManager.Instance;
-    var provider = languageManager.GetService<IHighlightingAttributeIdProvider>(CSharpLanguage.Instance!);
-    myCSharpIdentifierHighlighter = new CSharpIdentifierHighlighter(provider);
+    myCodeFragmentHighlightingManager = owner.GetSolution().GetComponent<CodeFragmentHighlightingManager>();
+
     myPsiServices = myOwner.GetPsiServices();
     myPsiModule = myOwner.GetPsiModule();
     
@@ -573,21 +580,59 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
     myVisitedNodes.Add(element);
     if (ElementHasOneTextChild(element, out var text))
     {
-      var block = CSharpElementFactory.GetInstance(myOwner).CreateBlock("{" + text + "}");
-      
-      var highlightedText = CreateHighlightedTextFor(block);
-      var codeSegment = new CodeSegment(highlightedText);
+      var codeFragment = CreateCodeFragment(text);
+      var codeSegment = new CodeSegment(codeFragment.PreliminaryText, codeFragment.HighlightingRequestId);
       ExecuteWithTopmostContentSegments(metadata => metadata.ContentSegments.Segments.Add(codeSegment));
     }
   }
 
+  private record CodeFragment(IHighlightedText PreliminaryText, int HighlightingRequestId);
+  
   [NotNull]
-  private IHighlightedText CreateHighlightedTextFor([NotNull] IBlock block)
+  private CodeFragment CreateCodeFragment(string text)
   {
-    var processor = new RecursiveElementsHighlighter(
-      myCSharpIdentifierHighlighter, myHighlightingSettingsManager, myOwner);
+    if (myOwner.GetContainingFile() is not ICSharpFile file) return new CodeFragment(new HighlightedText(text), 0);
     
+    var block = CSharpElementFactory.GetInstance(myOwner).CreateBlock("{" + text + "}");
+    var imports = new List<string>();
+    foreach (var import in file.Imports)
+    {
+      imports.Add(import.GetText());
+    }
+
+    var syntaxProcessor = new CSharpFullSyntaxHighlightingProcessor();
+    var syntaxConsumer = new SyntaxHighlightingConsumer();
+    block.ProcessThisAndDescendants(syntaxProcessor, syntaxConsumer);
+    var syntaxHighlightings = syntaxConsumer.Highlightings
+      .Select(info => info.Highlighting)
+      .OfType<ReSharperSyntaxHighlighting>()
+      .Select(highlighting => (highlighting.AttributeId, highlighting.CalculateRange()))
+      .ToList();
+
+    var id = myCodeFragmentHighlightingManager.AddRequestForHighlighting(block.GetText(), myRdDocumentId, imports);
+    var processor = new RecursiveElementsHighlighter(myHighlightersProvider, myOwner, syntaxHighlightings);
     block.ProcessThisAndDescendants(processor);
-    return processor.Text;
+
+    return new CodeFragment(processor.Text, id);
+  }
+
+  private class SyntaxHighlightingConsumer : IHighlightingConsumer
+  {
+    [NotNull] private readonly List<HighlightingInfo> myHighlightingInfos;
+
+    public IReadOnlyList<HighlightingInfo> Highlightings => myHighlightingInfos;
+
+    
+    public SyntaxHighlightingConsumer()
+    {
+      myHighlightingInfos = new List<HighlightingInfo>();
+    }
+    
+    
+    public void ConsumeHighlighting(HighlightingInfo highlightingInfo)
+    {
+      if (highlightingInfo.Highlighting is not ReSharperSyntaxHighlighting) return;
+      myHighlightingInfos.Add(highlightingInfo);
+    }
   }
 }

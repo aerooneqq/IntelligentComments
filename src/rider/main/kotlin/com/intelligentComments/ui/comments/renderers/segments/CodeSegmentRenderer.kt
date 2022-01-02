@@ -30,7 +30,7 @@ class CodeSegmentRenderer(
       val height = super.calculateExpectedHeightInPixels(editorImpl, additionalRenderInfo)
 
       UpdatedGraphicsCookie(g, color = backgroundColor).use {
-        g.fillRoundRect(rect.x, rect.y + 2, lineWidth, height, 2, 2)
+        g.fillRoundRect(rect.x + 1, rect.y + 2, lineWidth, height, 2, 2)
       }
     }
   }

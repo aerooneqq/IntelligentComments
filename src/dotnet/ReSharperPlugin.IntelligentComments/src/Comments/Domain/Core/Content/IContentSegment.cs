@@ -75,5 +75,6 @@ public record TableCellProperties(
 
 public interface ICodeSegment : IContentSegment
 {
+  public int HighlightingRequestId { get; }
   IHighlightedText Code { get; }
 }

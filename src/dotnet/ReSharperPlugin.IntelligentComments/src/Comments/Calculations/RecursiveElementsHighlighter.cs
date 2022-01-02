@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
-using JetBrains.Application.Settings;
-using JetBrains.ReSharper.Daemon.CSharp.Stages;
-using JetBrains.ReSharper.Feature.Services.Daemon;
+using JetBrains.DocumentModel;
 using JetBrains.ReSharper.Psi;
+using JetBrains.ReSharper.Psi.CSharp.Parsing;
+using JetBrains.ReSharper.Psi.Resolve;
 using JetBrains.ReSharper.Psi.Tree;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl;
@@ -13,47 +13,27 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Calculations;
 
 public class RecursiveElementsHighlighter : IRecursiveElementProcessor
 {
-  private class HighlightingsConsumer : IHighlightingConsumer
-  {
-    [NotNull] private readonly List<HighlightingInfo> myHighlightingInfos;
-    
-    
-    public IReadOnlyList<HighlightingInfo> Highlightings => myHighlightingInfos;
-
-
-    public HighlightingsConsumer()
-    {
-      myHighlightingInfos = new List<HighlightingInfo>();
-    }
-    
-    
-    public void ConsumeHighlighting(HighlightingInfo highlightingInfo)
-    {
-      myHighlightingInfos.Add(highlightingInfo);
-    }
-  }
-  
-  [NotNull] private readonly CSharpIdentifierHighlighter myCSharpIdentifierHighlighter;
-  [NotNull] private readonly IHighlightingSettingsManager myHighlightingSettingsManager;
+  [NotNull] private readonly IHighlightersProvider myHighlightersProvider;
+  [NotNull] private readonly IList<(string, DocumentRange)> mySyntaxHighlightings;
   [NotNull] private readonly IHighlightedText myHighlightedText;
-  [NotNull] private readonly IContextBoundSettingsStore myContextBoundSettingsStore;
+  [NotNull] private readonly ISymbolTable mySymbolTable;
 
-  [CanBeNull] private readonly IPsiSourceFile myPsiSourceFile;
+  private int myCurrentSyntaxHighlightingIndex;
+  
 
   [NotNull] public IHighlightedText Text => myHighlightedText;
   public bool ProcessingIsFinished => false;
 
   
   public RecursiveElementsHighlighter(
-    [NotNull] CSharpIdentifierHighlighter cSharpIdentifierHighlighter,
-    [NotNull] IHighlightingSettingsManager highlightingSettingsManager,
-    [NotNull] ITreeNode owner)
+    [NotNull] IHighlightersProvider highlightersProvider,
+    [NotNull] ITreeNode owner,
+    [NotNull] IList<(string, DocumentRange)> syntaxHighlightings)
   {
+    myHighlightersProvider = highlightersProvider;
+    mySyntaxHighlightings = syntaxHighlightings;
     myHighlightedText = new HighlightedText(string.Empty);
-    myCSharpIdentifierHighlighter = cSharpIdentifierHighlighter;
-    myHighlightingSettingsManager = highlightingSettingsManager;
-    myPsiSourceFile = owner.GetSourceFile();
-    myContextBoundSettingsStore = owner.GetSettingsStore();
+    mySymbolTable = SymbolTableBuilder.GetTable(owner);
   }
   
 
@@ -62,31 +42,43 @@ public class RecursiveElementsHighlighter : IRecursiveElementProcessor
   public void ProcessBeforeInterior(ITreeNode element)
   {
     if (element.FirstChild is { }) return;
-    
-    var references = element.GetReferences();
-    var highlightingConsumer = new HighlightingsConsumer();
-    myCSharpIdentifierHighlighter.Highlight(element, highlightingConsumer, references);
 
-    if (highlightingConsumer.Highlightings.Count == 0)
-    {
-      myHighlightedText.Add(new HighlightedText(element.GetText()));
-      return;
-    }
-    
-    var attributeId = highlightingConsumer.Highlightings.First().GetAttributeId(
-      myHighlightingSettingsManager, myPsiSourceFile, myPsiSourceFile?.GetSolution(), myContextBoundSettingsStore);
-
-    if (attributeId is null)
+    var nodeType = element.NodeType;
+    if (nodeType == CSharpTokenType.WHITE_SPACE)
     {
       myHighlightedText.Add(new HighlightedText(element.GetText()));
       return;
     }
 
-    var text = element.GetText();
-    var textHighlighter = new TextHighlighter(
-      attributeId, 0, text.Length, TextHighlighterAttributes.DefaultAttributes, IsResharperHighlighter: true);
+    if (myCurrentSyntaxHighlightingIndex < mySyntaxHighlightings.Count)
+    {
+      var range = element.GetDocumentRange();
+      var (attributeId, documentRange) = mySyntaxHighlightings[myCurrentSyntaxHighlightingIndex];
+      if (range == documentRange)
+      {
+        var text = element.GetText();
+        var highlighter = myHighlightersProvider.TryGetReSharperHighlighter(attributeId, text.Length);
+        myHighlightedText.Add(new HighlightedText(text, highlighter));
+        ++myCurrentSyntaxHighlightingIndex;
+        return;
+      } 
+    }
+
+    if (element.NodeType == CSharpTokenType.IDENTIFIER)
+    {
+      var name = element.GetText();
+      var symbolInfos = mySymbolTable.GetSymbolInfos(name);
+      if (symbolInfos.Count > 0)
+      {
+        var symbol = symbolInfos.First();
+        var declaredElement = symbol.GetDeclaredElement();
+        var highlighter = myHighlightersProvider.TryGetReSharperHighlighter(name.Length, declaredElement);
+        myHighlightedText.Add(new HighlightedText(name, highlighter));
+        return;
+      }
+    }
     
-    myHighlightedText.Add(new HighlightedText(text, new [] { textHighlighter }));
+    myHighlightedText.Add(new HighlightedText(element.GetText()));
   }
 
   public void ProcessAfterInterior(ITreeNode element)

@@ -71,6 +71,7 @@ object RdCommentsModel : Ext(SolutionModel.RdDocumentModel) {
 
   val RdCodeContentSegment = structdef extends RdContentSegment {
     field("Code", RdHighlightedText)
+    field("HighlightingRequestId", PredefinedType.int)
   }
 
   val RdSeeAlsoContentSegment = basestruct extends RdContentSegment {
