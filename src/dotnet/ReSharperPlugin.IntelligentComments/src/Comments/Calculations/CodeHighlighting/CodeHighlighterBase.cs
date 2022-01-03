@@ -1,5 +1,6 @@
 using JetBrains.Annotations;
 using JetBrains.RdBackend.Common.Features.SyntaxHighlighting.CSharp;
+using JetBrains.ReSharper.Daemon.SyntaxHighlighting;
 using JetBrains.ReSharper.Psi.CSharp.Impl.Tree;
 using JetBrains.ReSharper.Psi.CSharp.Parsing;
 using JetBrains.ReSharper.Psi.Tree;
@@ -11,13 +12,15 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.CodeHighligh
 public abstract class CodeHighlighterBase : ICodeHighlighter
 {
   [NotNull] protected readonly IHighlightersProvider HighlightersProvider;
-  [NotNull] protected readonly CSharpFullSyntaxHighlightingProcessor CSharpFullSyntaxHighlightingProcessor;
+  [NotNull] protected readonly SyntaxHighlightingProcessor SyntaxHighlightingProcessor;
   
 
-  protected CodeHighlighterBase([NotNull] IHighlightersProvider highlightersProvider)
+  protected CodeHighlighterBase(
+    [NotNull] IHighlightersProvider highlightersProvider, 
+    [NotNull] SyntaxHighlightingProcessor syntaxHighlightingProcessor)
   {
     HighlightersProvider = highlightersProvider;
-    CSharpFullSyntaxHighlightingProcessor = new CSharpFullSyntaxHighlightingProcessor();
+    SyntaxHighlightingProcessor = syntaxHighlightingProcessor;
   }
   
   
@@ -36,20 +39,28 @@ public abstract class CodeHighlighterBase : ICodeHighlighter
       return;
     }
     
-    if (element is CSharpTokenBase token)
+    if (!TryProcessSyntax(element, context))
+    {
+      ProcessBeforeInteriorInternal(element, context); 
+    }
+  }
+  
+  protected virtual bool TryProcessSyntax(ITreeNode element, IHighlightedText context)
+  {
+    if (element is ITokenNode token)
     {
       var type = token.GetTokenType();
-      var attributeId = CSharpFullSyntaxHighlightingProcessor.GetAttributeId(type);
+      var attributeId = SyntaxHighlightingProcessor.GetAttributeId(type);
       if (attributeId is { })
       {
         var text = element.GetText();
         var highlighter = HighlightersProvider.TryGetReSharperHighlighter(attributeId, text.Length);
         context.Add(highlighter is { } ? new HighlightedText(text, highlighter) : new HighlightedText(text));
-        return;
+        return true;
       }
     }
 
-    ProcessBeforeInteriorInternal(element, context);
+    return false;
   }
 
   protected abstract void ProcessBeforeInteriorInternal([NotNull] ITreeNode element, [NotNull] IHighlightedText context);

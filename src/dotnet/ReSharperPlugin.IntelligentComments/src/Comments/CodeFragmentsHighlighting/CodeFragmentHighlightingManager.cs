@@ -113,7 +113,7 @@ public class CodeFragmentHighlightingManager
               return;
             }
 
-            var candidate = file.Descendants<IBlock>().Collect().FirstOrDefault();
+            var candidate = file.Descendants<IBlock>().Collect().LastOrDefault();
             if (candidate is not { } block)
             {
               LogErrorAndSetNull($"Failed to find block for file with text: {file.GetText()}");

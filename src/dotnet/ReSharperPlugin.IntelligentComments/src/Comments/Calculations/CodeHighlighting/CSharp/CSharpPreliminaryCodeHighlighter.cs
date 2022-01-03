@@ -1,4 +1,5 @@
 using JetBrains.Annotations;
+using JetBrains.RdBackend.Common.Features.SyntaxHighlighting.CSharp;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.ReSharper.Psi.Tree;
@@ -11,7 +12,7 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.CodeHighligh
 public class CSharpPreliminaryCodeHighlighter : CodeHighlighterBase, IPreliminaryCodeHighlighter
 {
   public CSharpPreliminaryCodeHighlighter([NotNull] IHighlightersProvider highlightersProvider)
-    : base(highlightersProvider)
+    : base(highlightersProvider, new CSharpFullSyntaxHighlightingProcessor())
   {
   }
   

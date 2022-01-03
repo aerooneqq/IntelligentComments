@@ -18,7 +18,8 @@ public record CSharpCodeHighlightingRequest(
   [NotNull] PsiLanguageType Language,
   [NotNull] string Text,
   [NotNull] RdDocumentId DocumentId,
-  IEnumerable<string> Imports) : CodeHighlightingRequest(Language, Text, DocumentId)
+  [NotNull] IEnumerable<string> Imports,
+  [NotNull] string Namespace) : CodeHighlightingRequest(Language, Text, DocumentId)
 {
   public override string CreateDocumentText()
   {
@@ -27,8 +28,13 @@ public record CSharpCodeHighlightingRequest(
     {
       sb.Append(import).Append("\n");
     }
+
+    sb.Append("namespace ").Append(Namespace).Append("{ class ").Append("ASDASD { \n");
+    sb.Append("public static void Foooooooooooo() { \n");
     
     sb.Append(Text);
+
+    sb.Append("}}}");
 
     return sb.ToString();
   }

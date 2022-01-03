@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
+using JetBrains.RdBackend.Common.Features.SyntaxHighlighting.CSharp;
 using JetBrains.ReSharper.Daemon.CSharp.Stages;
 using JetBrains.ReSharper.Feature.Services.Daemon;
 using JetBrains.ReSharper.Feature.Services.Daemon.Attributes;
@@ -22,7 +23,7 @@ public class CSharpFullCodeFragmentHighlighter : CodeHighlighterBase, IFullCodeH
   public CSharpFullCodeFragmentHighlighter(
     [NotNull] IHighlightingAttributeIdProvider attributeIdProvider,
     [NotNull] IHighlightersProvider highlightersProvider)
-    : base(highlightersProvider)
+    : base(highlightersProvider, new CSharpFullSyntaxHighlightingProcessor())
   {
     myCSharpIdentifierHighlighter = new CSharpIdentifierHighlighter(attributeIdProvider);
   }

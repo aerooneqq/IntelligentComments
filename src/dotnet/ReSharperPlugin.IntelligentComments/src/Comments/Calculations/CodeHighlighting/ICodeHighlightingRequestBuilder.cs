@@ -32,23 +32,23 @@ public class CSharpCodeHighlightingRequestBuilder : ICodeHighlightingRequestBuil
   
   public CodeHighlightingRequest CreateRequest(ICSharpFile file, ITreeNode commentOwner, ITreeNode code)
   {
+    if (commentOwner.GetSourceFile()?.Document.GetData(DocumentHostBase.DocumentIdKey) is not { } documentId)
+    {
+      return null;
+    }
+    
     var imports = new List<string>();
     foreach (var import in file.Imports)
     {
       imports.Add(import.GetText());
     }
 
-    if ((commentOwner as ICSharpTreeNode)?.GetContainingNamespaceDeclaration() is { DeclaredElement: { } @namespace})
+    if ((commentOwner as ICSharpTreeNode)?.GetContainingNamespaceDeclaration() is { DeclaredElement.QualifiedName: { } name })
     {
-      imports.Add($"using {@namespace.QualifiedName}");
-    }
-    
-    if (commentOwner.GetSourceFile()?.Document.GetData(DocumentHostBase.DocumentIdKey) is not { } documentId)
-    {
-      return null;
+      return new CSharpCodeHighlightingRequest(file.Language, code.GetText(), documentId, imports, name);
     }
 
-    return new CSharpCodeHighlightingRequest(file.Language, code.GetText(), documentId, imports);
+    return null;
   }
 
   public CodeHighlightingRequest CreateRequest(IFile file, ITreeNode commentOwner, ITreeNode code)
