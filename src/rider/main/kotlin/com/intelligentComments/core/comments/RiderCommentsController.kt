@@ -35,6 +35,10 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
   private val listenersManager = project.service<CommentsEditorsListenersManager>()
 
 
+  fun getFolding(commentIdentifier: CommentIdentifier, editor: EditorImpl): CustomFoldRegion? {
+    return commentsStorage.getFolding(commentIdentifier, editor)
+  }
+
   fun getAllFoldingsFor(editor: Editor) = commentsStorage.getAllFoldingsFor(editor)
 
   fun addComment(editor: EditorImpl, comment: CommentBase) {

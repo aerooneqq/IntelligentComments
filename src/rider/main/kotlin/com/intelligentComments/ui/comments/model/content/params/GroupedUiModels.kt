@@ -1,9 +1,6 @@
 package com.intelligentComments.ui.comments.model.content.params
 
-import com.intelligentComments.core.domain.core.CommonsHighlightersFactory
-import com.intelligentComments.core.domain.core.ContentSegments
-import com.intelligentComments.core.domain.core.HighlightedText
-import com.intelligentComments.core.domain.core.HighlightedTextImpl
+import com.intelligentComments.core.domain.core.*
 import com.intelligentComments.core.domain.impl.GroupedParamSegments
 import com.intelligentComments.core.domain.impl.GroupedTypeParamSegments
 import com.intelligentComments.ui.colors.ColorName
@@ -22,9 +19,10 @@ class GroupedParamsUiModel(
   model.segments.map {
     object : ContentSegments {
       override val segments = listOf(it)
+      override val parent: Parentable = model
     }
   },
-  getGroupedParamsSectionHeader(project, groupedParamsSectionName, Colors.ParamsSectionHeaderBackgroundColor)
+  getGroupedParamsSectionHeader(project, groupedParamsSectionName, Colors.ParamsSectionHeaderBackgroundColor, model)
 )
 
 private const val groupedParamsSectionName = "Parameters"
@@ -34,13 +32,14 @@ private fun getGroupedParamsSectionHeader(
   project: Project,
   sectionName: String,
   backgroundColor: ColorName,
+  parent: Parentable
 ): HighlightedText {
   val colorsProvider = project.service<ColorsProvider>()
   val textColor = colorsProvider.getColorFor(Colors.TextInSectionsRectanglesHeadersColor)
   val paramBackgroundColor = colorsProvider.getColorFor(backgroundColor)
 
   val highlighter = CommonsHighlightersFactory.getWithRoundedBackgroundRect(textColor, paramBackgroundColor, sectionName.length)
-  return HighlightedTextImpl(sectionName, listOf(highlighter))
+  return HighlightedTextImpl(sectionName, parent, listOf(highlighter))
 }
 
 class GroupedTypeParamsUiModel(
@@ -52,7 +51,8 @@ class GroupedTypeParamsUiModel(
   model.segments.map {
     object : ContentSegments {
       override val segments = listOf(it)
+      override val parent: Parentable = model
     }
   },
-  getGroupedParamsSectionHeader(project, groupedTypeParamsSectionName, Colors.TypeParamNameBackgroundColor)
+  getGroupedParamsSectionHeader(project, groupedTypeParamsSectionName, Colors.TypeParamNameBackgroundColor, model)
 )

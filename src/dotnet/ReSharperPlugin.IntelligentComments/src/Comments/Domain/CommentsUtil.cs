@@ -230,7 +230,7 @@ public static class CommentsUtil
   }
 
   [NotNull]
-  private static RdHighlightedText ToRdHighlightedText([NotNull] this IHighlightedText text)
+  public static RdHighlightedText ToRdHighlightedText([NotNull] this IHighlightedText text)
   {
     var rdHighlighters = text.Highlighters.Select(highlighter => highlighter.ToRdHighlighter()).ToList();
     return new RdHighlightedText(text.Text, rdHighlighters);

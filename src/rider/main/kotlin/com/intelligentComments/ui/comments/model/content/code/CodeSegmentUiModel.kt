@@ -7,7 +7,8 @@ import com.intellij.openapi.project.Project
 
 class CodeSegmentUiModel(
   project: Project,
-  codeSegment: CodeSegment
+  private val codeSegment: CodeSegment
 ) : ContentSegmentUiModel(project, codeSegment) {
-  val code = HighlightedTextUiWrapper(project, codeSegment.code)
+  val code: HighlightedTextUiWrapper
+    get() = HighlightedTextUiWrapper(project, codeSegment.code.value)
 }

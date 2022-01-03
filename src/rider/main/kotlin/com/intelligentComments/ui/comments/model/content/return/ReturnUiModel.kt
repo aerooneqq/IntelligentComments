@@ -16,7 +16,8 @@ class ReturnUiModel(project: Project, ret: ReturnSegment) : ContentSegmentUiMode
     project,
     returnSectionName,
     Colors.TextInSectionsRectanglesHeadersColor,
-    Colors.ReturnBackgroundColor
+    Colors.ReturnBackgroundColor,
+    ret
   )
 
   val headerText = HighlightedTextUiWrapper(project, highlightedHeader)

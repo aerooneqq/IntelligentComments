@@ -1,9 +1,6 @@
 package com.intelligentComments.ui.comments.model.content.exceptions
 
-import com.intelligentComments.core.domain.core.ContentSegment
-import com.intelligentComments.core.domain.core.ContentSegments
-import com.intelligentComments.core.domain.core.ExceptionSegment
-import com.intelligentComments.core.domain.core.GroupedContentSegment
+import com.intelligentComments.core.domain.core.*
 import com.intelligentComments.ui.colors.Colors
 import com.intelligentComments.ui.comments.model.content.GroupedContentUiModel
 import com.intelligentComments.ui.comments.model.content.getFirstLevelHeader
@@ -18,13 +15,15 @@ class GroupedExceptionUiModel(
   model.segments.map {
     object : ContentSegments {
       override val segments: Collection<ContentSegment> = listOf(it)
+      override val parent: Parentable = model
     }
   },
   getFirstLevelHeader(
     project,
     exceptionsSectionName,
     Colors.TextInSectionsRectanglesHeadersColor,
-    Colors.ExceptionBackgroundColor
+    Colors.ExceptionBackgroundColor,
+    model
   )
 )
 

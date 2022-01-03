@@ -1,8 +1,9 @@
 package com.intelligentComments.core.domain.core
 
+import com.jetbrains.rd.util.reactive.Property
 import java.awt.Image
 
-interface IntelligentCommentContent : UniqueEntity {
+interface IntelligentCommentContent : UniqueEntity, Parentable {
   val segments: Collection<ContentSegment>
 
   fun processSegments(strategy: ContentProcessingStrategy)
@@ -12,9 +13,13 @@ interface ContentProcessingStrategy {
   fun process(segments: MutableList<ContentSegment>)
 }
 
-interface ContentSegment : UniqueEntity
+interface Parentable {
+  val parent: Parentable?
+}
 
-interface ContentSegments {
+interface ContentSegment : Parentable, UniqueEntity
+
+interface ContentSegments : Parentable {
   val segments: Collection<ContentSegment>
 }
 
@@ -55,11 +60,11 @@ interface TableContentSegment : ContentSegment {
   val rows: Collection<TableRow>
 }
 
-interface TableRow {
+interface TableRow : Parentable {
   val cells: Collection<TableCell>
 }
 
-interface TableCell {
+interface TableCell : Parentable {
   val contentSegments: ContentSegments
   val properties: TableCellProperties
 }
@@ -115,5 +120,14 @@ interface GroupedContentSegment<out T : ContentSegment> : ContentSegment {
 }
 
 interface CodeSegment : ContentSegment {
-  val code: HighlightedText
+  val code: Property<HighlightedText>
+}
+
+fun tryFindComment(parentable: Parentable): CommentBase? {
+  var current: Parentable? = parentable
+  while (current != null &&  current !is CommentBase) {
+    current = current.parent
+  }
+
+  return current as? CommentBase
 }

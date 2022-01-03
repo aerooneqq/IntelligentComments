@@ -12,7 +12,7 @@ abstract class AbstractParameterUiModel(
   project: Project,
   parameter: ArbitraryParamSegment,
 ) : ContentSegmentUiModel(project, parameter) {
-  val name = HighlightedTextUiWrapper(project, getSecondLevelHeader(project, parameter.name))
+  val name = HighlightedTextUiWrapper(project, getSecondLevelHeader(project, parameter.name, parameter))
 
   val description = ContentSegmentsUiModel(project, parameter.content)
 

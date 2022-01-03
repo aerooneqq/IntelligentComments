@@ -42,32 +42,42 @@ namespace JetBrains.Rider.Model
   {
     //fields
     //public fields
+    [NotNull] public IRdEndpoint<RdCodeHighlightingRequest, RdHighlightedText> HighlightCode => _HighlightCode;
     [NotNull] public IRdEndpoint<int, bool> Evaluate => _Evaluate;
     
     //private fields
+    [NotNull] private readonly RdCall<RdCodeHighlightingRequest, RdHighlightedText> _HighlightCode;
     [NotNull] private readonly RdCall<int, bool> _Evaluate;
     
     //primary constructor
     private RdCommentsModel(
+      [NotNull] RdCall<RdCodeHighlightingRequest, RdHighlightedText> highlightCode,
       [NotNull] RdCall<int, bool> evaluate
     )
     {
+      if (highlightCode == null) throw new ArgumentNullException("highlightCode");
       if (evaluate == null) throw new ArgumentNullException("evaluate");
       
+      _HighlightCode = highlightCode;
       _Evaluate = evaluate;
+      _HighlightCode.ValueCanBeNull = true;
+      BindableChildren.Add(new KeyValuePair<string, object>("highlightCode", _HighlightCode));
       BindableChildren.Add(new KeyValuePair<string, object>("evaluate", _Evaluate));
     }
     //secondary constructor
     internal RdCommentsModel (
     ) : this (
+      new RdCall<RdCodeHighlightingRequest, RdHighlightedText>(RdCodeHighlightingRequest.Read, RdCodeHighlightingRequest.Write, ReadRdHighlightedTextNullable, WriteRdHighlightedTextNullable),
       new RdCall<int, bool>(JetBrains.Rd.Impl.Serializers.ReadInt, JetBrains.Rd.Impl.Serializers.WriteInt, JetBrains.Rd.Impl.Serializers.ReadBool, JetBrains.Rd.Impl.Serializers.WriteBool)
     ) {}
     //deconstruct trait
     //statics
     
+    public static CtxReadDelegate<RdHighlightedText> ReadRdHighlightedTextNullable = RdHighlightedText.Read.NullableClass();
     
+    public static  CtxWriteDelegate<RdHighlightedText> WriteRdHighlightedTextNullable = RdHighlightedText.Write.NullableClass();
     
-    protected override long SerializationHash => 5721976837373340075L;
+    protected override long SerializationHash => 4561302708283266692L;
     
     protected override Action<ISerializers> Register => RegisterDeclaredTypesSerializers;
     public static void RegisterDeclaredTypesSerializers(ISerializers serializers)
@@ -129,6 +139,7 @@ namespace JetBrains.Rider.Model
     {
       printer.Println("RdCommentsModel (");
       using (printer.IndentCookie()) {
+        printer.Print("highlightCode = "); _HighlightCode.PrintEx(printer); printer.Println();
         printer.Print("evaluate = "); _Evaluate.PrintEx(printer); printer.Println();
       }
       printer.Print(")");
@@ -141,11 +152,11 @@ namespace JetBrains.Rider.Model
       return printer.ToString();
     }
   }
-  public static class RdDocumentModelRdCommentsModelEx
+  public static class SolutionRdCommentsModelEx
    {
-    public static RdCommentsModel GetRdCommentsModel(this RdDocumentModel rdDocumentModel)
+    public static RdCommentsModel GetRdCommentsModel(this Solution solution)
     {
-      return rdDocumentModel.GetOrCreateExtension("rdCommentsModel", () => new RdCommentsModel());
+      return solution.GetOrCreateExtension("rdCommentsModel", () => new RdCommentsModel());
     }
   }
   
@@ -414,6 +425,105 @@ namespace JetBrains.Rider.Model
       printer.Println("RdCodeEntityReference (");
       using (printer.IndentCookie()) {
         printer.Print("rawValue = "); RawValue.PrintEx(printer); printer.Println();
+      }
+      printer.Print(")");
+    }
+    //toString
+    public override string ToString()
+    {
+      var printer = new SingleLinePrettyPrinter();
+      Print(printer);
+      return printer.ToString();
+    }
+  }
+  
+  
+  /// <summary>
+  /// <p>Generated from: RdComment.kt:246</p>
+  /// </summary>
+  public sealed class RdCodeHighlightingRequest : IPrintable, IEquatable<RdCodeHighlightingRequest>
+  {
+    //fields
+    //public fields
+    public int Id {get; private set;}
+    public int CodeHash {get; private set;}
+    public bool CanUseCachedValue {get; private set;}
+    
+    //private fields
+    //primary constructor
+    public RdCodeHighlightingRequest(
+      int id,
+      int codeHash,
+      bool canUseCachedValue
+    )
+    {
+      Id = id;
+      CodeHash = codeHash;
+      CanUseCachedValue = canUseCachedValue;
+    }
+    //secondary constructor
+    //deconstruct trait
+    public void Deconstruct(out int id, out int codeHash, out bool canUseCachedValue)
+    {
+      id = Id;
+      codeHash = CodeHash;
+      canUseCachedValue = CanUseCachedValue;
+    }
+    //statics
+    
+    public static CtxReadDelegate<RdCodeHighlightingRequest> Read = (ctx, reader) => 
+    {
+      var id = reader.ReadInt();
+      var codeHash = reader.ReadInt();
+      var canUseCachedValue = reader.ReadBool();
+      var _result = new RdCodeHighlightingRequest(id, codeHash, canUseCachedValue);
+      return _result;
+    };
+    
+    public static CtxWriteDelegate<RdCodeHighlightingRequest> Write = (ctx, writer, value) => 
+    {
+      writer.Write(value.Id);
+      writer.Write(value.CodeHash);
+      writer.Write(value.CanUseCachedValue);
+    };
+    
+    //constants
+    
+    //custom body
+    //methods
+    //equals trait
+    public override bool Equals(object obj)
+    {
+      if (ReferenceEquals(null, obj)) return false;
+      if (ReferenceEquals(this, obj)) return true;
+      if (obj.GetType() != GetType()) return false;
+      return Equals((RdCodeHighlightingRequest) obj);
+    }
+    public bool Equals(RdCodeHighlightingRequest other)
+    {
+      if (ReferenceEquals(null, other)) return false;
+      if (ReferenceEquals(this, other)) return true;
+      return Id == other.Id && CodeHash == other.CodeHash && CanUseCachedValue == other.CanUseCachedValue;
+    }
+    //hash code trait
+    public override int GetHashCode()
+    {
+      unchecked {
+        var hash = 0;
+        hash = hash * 31 + Id.GetHashCode();
+        hash = hash * 31 + CodeHash.GetHashCode();
+        hash = hash * 31 + CanUseCachedValue.GetHashCode();
+        return hash;
+      }
+    }
+    //pretty print
+    public void Print(PrettyPrinter printer)
+    {
+      printer.Println("RdCodeHighlightingRequest (");
+      using (printer.IndentCookie()) {
+        printer.Print("id = "); Id.PrintEx(printer); printer.Println();
+        printer.Print("codeHash = "); CodeHash.PrintEx(printer); printer.Println();
+        printer.Print("canUseCachedValue = "); CanUseCachedValue.PrintEx(printer); printer.Println();
       }
       printer.Print(")");
     }

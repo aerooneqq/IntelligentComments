@@ -17,7 +17,7 @@ open class ToDoFromRd(todo: RdToDo, project: Project) : UniqueEntityImpl(), ToDo
 
   final override val author: CommentAuthor = AuthorFromRd(todo.author)
   final override val name: String = todo.name
-  final override val description: ContentSegments = ContentSegmentsFromRd(todo.description, project)
+  final override val description: ContentSegments = ContentSegmentsFromRd(todo.description, null, project)
   final override val blockingReferences: Collection<Reference> =
     todo.blockingReferences.map { ReferenceFromRd.getFrom(it) }
 }

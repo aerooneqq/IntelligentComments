@@ -26,6 +26,7 @@ open class SeeAlsoUiModel(
 
   val description = TextContentSegmentUiModel(project, object : TextContentSegment {
     override val highlightedText: HighlightedText = seeAlso.description
+    override val parent: Parentable = seeAlso
     override val id: UUID = UUID.randomUUID()
   })
 
@@ -33,7 +34,8 @@ open class SeeAlsoUiModel(
     project,
     seeAlsoText,
     Colors.TextInSectionsRectanglesHeadersColor,
-    Colors.SeeAlsoBackgroundColor
+    Colors.SeeAlsoBackgroundColor,
+    seeAlso
   ))
 
   override fun hashCode(): Int = HashUtil.hashCode(description.hashCode(), header.hashCode())

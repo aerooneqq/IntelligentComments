@@ -26,7 +26,7 @@ class IntelligentCommentFromRd(
     return rdComment.authors?.map { AuthorFromRd(it) } ?: emptyList()
   }
 
-  private fun createContent(project: Project) = IntelligentCommentContentFromRd(rdComment.content, project)
+  private fun createContent(project: Project) = IntelligentCommentContentFromRd(rdComment.content, this, project)
   private fun createReferences(): List<ReferenceFromRd> =
     rdComment.references?.map { ReferenceFromRd.getFrom(it) } ?: emptyList()
 

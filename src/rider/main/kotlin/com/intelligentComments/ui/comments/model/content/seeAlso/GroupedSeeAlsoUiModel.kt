@@ -18,6 +18,7 @@ class GroupedSeeAlsoUiModel(
     project,
     seeAlsoText,
     Colors.TextInSectionsRectanglesHeadersColor,
-    Colors.SeeAlsoBackgroundColor
+    Colors.SeeAlsoBackgroundColor,
+    groupedSeeAlso
   )
 )

@@ -18,6 +18,7 @@ class GroupedReturnUiModel(
     project,
     returnSectionName,
     Colors.TextInSectionsRectanglesHeadersColor,
-    Colors.ReturnBackgroundColor
+    Colors.ReturnBackgroundColor,
+    groupedReturns
   )
 )

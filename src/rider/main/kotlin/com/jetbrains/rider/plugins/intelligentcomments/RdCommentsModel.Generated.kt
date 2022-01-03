@@ -17,6 +17,7 @@ import kotlin.reflect.KClass
  * #### Generated from [RdComment.kt:8]
  */
 class RdCommentsModel private constructor(
+    private val _highlightCode: RdCall<RdCodeHighlightingRequest, RdHighlightedText?>,
     private val _evaluate: RdCall<Int, Boolean>
 ) : RdExtBase() {
     //companion
@@ -69,6 +70,7 @@ class RdCommentsModel private constructor(
             serializers.register(RdToDoWithTickets)
             serializers.register(RdTicket)
             serializers.register(RdHackWithTickets)
+            serializers.register(RdCodeHighlightingRequest)
             serializers.register(RdComment_Unknown)
             serializers.register(RdContentSegment_Unknown)
             serializers.register(RdSegmentWithContent_Unknown)
@@ -85,24 +87,28 @@ class RdCommentsModel private constructor(
         
         
         
+        private val __RdHighlightedTextNullableSerializer = RdHighlightedText.nullable()
         
-        const val serializationHash = 5721976837373340075L
+        const val serializationHash = 4561302708283266692L
         
     }
     override val serializersOwner: ISerializersOwner get() = RdCommentsModel
     override val serializationHash: Long get() = RdCommentsModel.serializationHash
     
     //fields
+    val highlightCode: IRdCall<RdCodeHighlightingRequest, RdHighlightedText?> get() = _highlightCode
     val evaluate: IRdCall<Int, Boolean> get() = _evaluate
     //methods
     //initializer
     init {
+        bindableChildren.add("highlightCode" to _highlightCode)
         bindableChildren.add("evaluate" to _evaluate)
     }
     
     //secondary constructor
     internal constructor(
     ) : this(
+        RdCall<RdCodeHighlightingRequest, RdHighlightedText?>(RdCodeHighlightingRequest, __RdHighlightedTextNullableSerializer),
         RdCall<Int, Boolean>(FrameworkMarshallers.Int, FrameworkMarshallers.Bool)
     )
     
@@ -112,6 +118,7 @@ class RdCommentsModel private constructor(
     override fun print(printer: PrettyPrinter)  {
         printer.println("RdCommentsModel (")
         printer.indent {
+            print("highlightCode = "); _highlightCode.print(printer); println()
             print("evaluate = "); _evaluate.print(printer); println()
         }
         printer.print(")")
@@ -119,12 +126,13 @@ class RdCommentsModel private constructor(
     //deepClone
     override fun deepClone(): RdCommentsModel   {
         return RdCommentsModel(
+            _highlightCode.deepClonePolymorphic(),
             _evaluate.deepClonePolymorphic()
         )
     }
     //contexts
 }
-val RdDocumentModel.rdCommentsModel get() = getOrCreateExtension("rdCommentsModel", ::RdCommentsModel)
+val Solution.rdCommentsModel get() = getOrCreateExtension("rdCommentsModel", ::RdCommentsModel)
 
 
 
@@ -333,6 +341,75 @@ class RdCodeEntityReference (
     }
     
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
+    //deepClone
+    //contexts
+}
+
+
+/**
+ * #### Generated from [RdComment.kt:246]
+ */
+data class RdCodeHighlightingRequest (
+    val id: Int,
+    val codeHash: Int,
+    val canUseCachedValue: Boolean
+) : IPrintable {
+    //companion
+    
+    companion object : IMarshaller<RdCodeHighlightingRequest> {
+        override val _type: KClass<RdCodeHighlightingRequest> = RdCodeHighlightingRequest::class
+        
+        @Suppress("UNCHECKED_CAST")
+        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdCodeHighlightingRequest  {
+            val id = buffer.readInt()
+            val codeHash = buffer.readInt()
+            val canUseCachedValue = buffer.readBool()
+            return RdCodeHighlightingRequest(id, codeHash, canUseCachedValue)
+        }
+        
+        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: RdCodeHighlightingRequest)  {
+            buffer.writeInt(value.id)
+            buffer.writeInt(value.codeHash)
+            buffer.writeBool(value.canUseCachedValue)
+        }
+        
+        
+    }
+    //fields
+    //methods
+    //initializer
+    //secondary constructor
+    //equals trait
+    override fun equals(other: Any?): Boolean  {
+        if (this === other) return true
+        if (other == null || other::class != this::class) return false
+        
+        other as RdCodeHighlightingRequest
+        
+        if (id != other.id) return false
+        if (codeHash != other.codeHash) return false
+        if (canUseCachedValue != other.canUseCachedValue) return false
+        
+        return true
+    }
+    //hash code trait
+    override fun hashCode(): Int  {
+        var __r = 0
+        __r = __r*31 + id.hashCode()
+        __r = __r*31 + codeHash.hashCode()
+        __r = __r*31 + canUseCachedValue.hashCode()
+        return __r
+    }
+    //pretty print
+    override fun print(printer: PrettyPrinter)  {
+        printer.println("RdCodeHighlightingRequest (")
+        printer.indent {
+            print("id = "); id.print(printer); println()
+            print("codeHash = "); codeHash.print(printer); println()
+            print("canUseCachedValue = "); canUseCachedValue.print(printer); println()
+        }
+        printer.print(")")
+    }
     //deepClone
     //contexts
 }

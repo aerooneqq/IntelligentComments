@@ -5,7 +5,7 @@ import com.jetbrains.rider.model.nova.ide.SolutionModel
 
 
 @Suppress("unused")
-object RdCommentsModel : Ext(SolutionModel.RdDocumentModel) {
+object RdCommentsModel : Ext(SolutionModel.Solution) {
   val RdDocCommentFoldingModel = structdef extends SolutionModel.HighlighterModel {
     field("CommentIdentifier", PredefinedType.int)
     field("DocComment", RdDocComment)
@@ -241,5 +241,15 @@ object RdCommentsModel : Ext(SolutionModel.RdDocumentModel) {
 
   val RdHackWithTickets = structdef extends RdHack {
     field("Tickets", immutableList(RdTicket))
+  }
+
+  val RdCodeHighlightingRequest = structdef {
+    field("Id", PredefinedType.int)
+    field("CodeHash", PredefinedType.int)
+    field("CanUseCachedValue", PredefinedType.bool)
+  }
+
+  init {
+    call("HighlightCode", RdCodeHighlightingRequest, RdHighlightedText.nullable)
   }
 }

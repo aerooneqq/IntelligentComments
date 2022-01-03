@@ -35,7 +35,7 @@ class CommentIdentifier(val moniker: String, val rangeMarker: RangeMarker) : Com
   }
 }
 
-interface CommentBase : UniqueEntity {
+interface CommentBase : UniqueEntity, Parentable {
   val rangeMarker: RangeMarker
   val commentIdentifier: CommentIdentifier
 

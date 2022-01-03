@@ -14,6 +14,10 @@
     <projectService serviceImplementation="com.intelligentComments.core.domain.impl.ContentProcessingStrategyImpl" />
     <projectService serviceImplementation="com.intelligentComments.core.comments.RiderCommentsCreator" />
     <projectService serviceImplementation="com.intelligentComments.core.comments.listeners.CommentsEditorsListenersManager" />
+    <projectService serviceImplementation="com.intelligentComments.core.changes.ChangeManagerImpl"
+                    serviceInterface="com.intelligentComments.core.changes.ChangeManager" />
+    <projectService serviceImplementation="com.intelligentComments.core.comments.CodeFragmentHighlightingHost" />
+
     <rdclient.highlighterModelSupport implementation="com.intelligentComments.core.markup.DocCommentsFoldingHighlightersSupport" />
   </extensions>
 
@@ -23,6 +27,9 @@
     </component>
     <component>
       <implementation-class>com.intelligentComments.core.protocol.ProtocolModelsRegistrar</implementation-class>
+    </component>
+    <component>
+      <implementation-class>com.intelligentComments.core.comments.RiderCommentsUpdater</implementation-class>
     </component>
   </project-components>
 </idea-plugin>

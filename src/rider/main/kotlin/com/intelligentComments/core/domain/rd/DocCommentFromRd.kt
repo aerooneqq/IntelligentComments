@@ -12,7 +12,7 @@ class DocCommentFromRd(
   project: Project,
   range: RangeMarker
 ) : CommentFromRd(rdDocComment, project, range), DocComment {
-  override val content: IntelligentCommentContent = IntelligentCommentContentFromRd(rdDocComment.content, project)
+  override val content: IntelligentCommentContent = IntelligentCommentContentFromRd(rdDocComment.content, this, project)
 
   override fun isValid(): Boolean {
     return content.segments.isNotEmpty() && super.isValid()

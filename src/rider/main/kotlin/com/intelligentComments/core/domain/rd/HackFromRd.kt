@@ -16,7 +16,7 @@ open class HackFromRd(rdHack: RdHack, project: Project) : UniqueEntityImpl(), Ha
   }
 
   final override val name: String = rdHack.name
-  final override val description: ContentSegments = ContentSegmentsFromRd(rdHack.description, project)
+  final override val description: ContentSegments = ContentSegmentsFromRd(rdHack.description, null, project)
   final override val blockingReferences: Collection<Reference> =
     rdHack.blockingReferences.map { ReferenceFromRd.getFrom(it) }
 }

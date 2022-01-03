@@ -10,6 +10,8 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Domain.Impl;
 
 public class HighlightedText : IHighlightedText
 {
+  [NotNull] public static HighlightedText EmptyText { get; } = new HighlightedText(string.Empty);
+  
   [NotNull] private static readonly HashSet<char> ourWhitespaceTokens = new() { ' ', '\n' };
 
     

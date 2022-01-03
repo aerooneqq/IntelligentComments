@@ -19,8 +19,8 @@ class SectionHeaderUiModel(
   private val expandedName = headerTextInfo.expandedName
   private val collapsedName = headerTextInfo.closedName
 
-  private val highlightedTextExpanded = HighlightedTextImpl(expandedName, listOf(getHeaderHighlighter(expandedName)))
-  private val highlightedTextCollapsed = HighlightedTextImpl(collapsedName, listOf(getHeaderHighlighter(collapsedName)))
+  private val highlightedTextExpanded = HighlightedTextImpl(expandedName, null, listOf(getHeaderHighlighter(expandedName)))
+  private val highlightedTextCollapsed = HighlightedTextImpl(collapsedName, null, listOf(getHeaderHighlighter(collapsedName)))
 
   private val expandedHeaderText = HighlightedTextUiWrapper(project, highlightedTextExpanded)
   private val collapsedHeaderText = HighlightedTextUiWrapper(project, highlightedTextCollapsed)

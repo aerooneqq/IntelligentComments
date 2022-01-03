@@ -19,6 +19,7 @@ class GroupedRemarksUiModel(
     project,
     remarksSectionName,
     Colors.TextInSectionsRectanglesHeadersColor,
-    Colors.RemarksSectionHeaderBackgroundColor
+    Colors.RemarksSectionHeaderBackgroundColor,
+    model
   )
 )

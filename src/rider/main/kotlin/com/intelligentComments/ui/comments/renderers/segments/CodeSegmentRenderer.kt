@@ -14,28 +14,4 @@ import java.awt.Rectangle
 
 class CodeSegmentRenderer(
   codeSegment: CodeSegmentUiModel
-) : TextRendererWithLeftFigure(codeSegment.code) {
-  private val lineWidth = 2
-
-  override fun renderLeftFigure(
-    g: Graphics,
-    rect: Rectangle,
-    editorImpl: EditorImpl,
-    rectanglesModel: RectanglesModel,
-    additionalRenderInfo: RenderAdditionalInfo
-  ) {
-    val backgroundColor = editorImpl.project?.service<ColorsProvider>()?.getColorFor(Colors.CodeLeftLineBackgroundColor)
-
-    if (backgroundColor != null) {
-      val height = super.calculateExpectedHeightInPixels(editorImpl, additionalRenderInfo)
-
-      UpdatedGraphicsCookie(g, color = backgroundColor).use {
-        g.fillRoundRect(rect.x + 1, rect.y + 2, lineWidth, height, 2, 2)
-      }
-    }
-  }
-
-  override fun calculateLeftFigureWidth(editorImpl: EditorImpl, additionalRenderInfo: RenderAdditionalInfo): Int {
-    return lineWidth
-  }
-}
+) : TextRendererBase(codeSegment.code)

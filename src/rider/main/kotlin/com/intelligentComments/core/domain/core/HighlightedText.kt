@@ -1,6 +1,6 @@
 package com.intelligentComments.core.domain.core
 
-interface HighlightedText {
+interface HighlightedText : Parentable {
   val text: String
   val highlighters: Collection<TextHighlighter>
 
@@ -8,9 +8,13 @@ interface HighlightedText {
   fun mergeWith(rawText: String): HighlightedText
 }
 
-class HighlightedTextImpl(text: String, highlighters: Collection<TextHighlighter>) : HighlightedText {
+class HighlightedTextImpl(
+  text: String,
+  override val parent: Parentable?,
+  highlighters: Collection<TextHighlighter>
+) : HighlightedText {
   companion object {
-    fun createEmpty() = HighlightedTextImpl("", emptyList())
+    fun createEmpty(parent: Parentable?) = HighlightedTextImpl("", parent, emptyList())
   }
 
   override var text: String = text

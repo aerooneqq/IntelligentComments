@@ -15,9 +15,9 @@ public record CodeHighlightingRequest(
     var sb = new StringBuilder();
     foreach (var import in Imports)
     {
-      sb.AppendLine(import);
+      sb.Append(import).Append("\n");
     }
-
+    
     sb.Append(Text);
 
     return sb.ToString();

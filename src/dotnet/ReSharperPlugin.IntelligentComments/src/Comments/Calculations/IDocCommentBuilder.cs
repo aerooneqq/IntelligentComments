@@ -18,6 +18,7 @@ using JetBrains.ReSharper.Psi.Util;
 using JetBrains.Rider.Model;
 using JetBrains.Util;
 using JetBrains.Util.Logging;
+using ReSharperPlugin.IntelligentComments.Comments.Calculations.CodeHighlighting;
 using ReSharperPlugin.IntelligentComments.Comments.CodeFragmentsHighlighting;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.Content;
@@ -600,39 +601,15 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
       imports.Add(import.GetText());
     }
 
-    var syntaxProcessor = new CSharpFullSyntaxHighlightingProcessor();
-    var syntaxConsumer = new SyntaxHighlightingConsumer();
-    block.ProcessThisAndDescendants(syntaxProcessor, syntaxConsumer);
-    var syntaxHighlightings = syntaxConsumer.Highlightings
-      .Select(info => info.Highlighting)
-      .OfType<ReSharperSyntaxHighlighting>()
-      .Select(highlighting => (highlighting.AttributeId, highlighting.CalculateRange()))
-      .ToList();
-
+    if ((myOwner as ICSharpTreeNode)?.GetContainingNamespaceDeclaration() is { DeclaredElement: { } @namespace})
+    {
+      imports.Add($"using {@namespace.QualifiedName}");
+    }
+    
     var id = myCodeFragmentHighlightingManager.AddRequestForHighlighting(block.GetText(), myRdDocumentId, imports);
-    var processor = new RecursiveElementsHighlighter(myHighlightersProvider, myOwner, syntaxHighlightings);
-    block.ProcessThisAndDescendants(processor);
+    var preliminaryCodeHighlighter = new PreliminaryCodeHighlighter(myHighlightersProvider, myOwner);
+    block.ProcessThisAndDescendants(preliminaryCodeHighlighter);
 
-    return new CodeFragment(processor.Text, id);
-  }
-
-  private class SyntaxHighlightingConsumer : IHighlightingConsumer
-  {
-    [NotNull] private readonly List<HighlightingInfo> myHighlightingInfos;
-
-    public IReadOnlyList<HighlightingInfo> Highlightings => myHighlightingInfos;
-
-    
-    public SyntaxHighlightingConsumer()
-    {
-      myHighlightingInfos = new List<HighlightingInfo>();
-    }
-    
-    
-    public void ConsumeHighlighting(HighlightingInfo highlightingInfo)
-    {
-      if (highlightingInfo.Highlighting is not ReSharperSyntaxHighlighting) return;
-      myHighlightingInfos.Add(highlightingInfo);
-    }
+    return new CodeFragment(preliminaryCodeHighlighter.Text, id);
   }
 }

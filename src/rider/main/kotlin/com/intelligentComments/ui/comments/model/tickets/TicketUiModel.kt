@@ -9,7 +9,7 @@ import com.intellij.openapi.project.Project
 import java.awt.Color
 
 class TicketUiModel(private val ticket: Ticket, project: Project) : UiInteractionModelBase(project) {
-  val nameText = HighlightedTextUiWrapper(project, HighlightedTextImpl(ticket.shortName, listOf(getNameHighlighter())))
+  val nameText = HighlightedTextUiWrapper(project, HighlightedTextImpl(ticket.shortName, null, listOf(getNameHighlighter())))
   val url = ticket.url
 
   private fun getNameHighlighter(): TextHighlighter {

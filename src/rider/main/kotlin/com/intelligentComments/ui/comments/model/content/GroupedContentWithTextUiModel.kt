@@ -31,7 +31,7 @@ open class GroupedContentWithTextUiModel(
 
 
   init {
-    val unitedDescription = HighlightedTextImpl.createEmpty()
+    val unitedDescription = HighlightedTextImpl.createEmpty(groupedModel)
     if (textSegmentsToMerge.isNotEmpty()) {
       val delimiter = project.service<RiderIntelligentCommentsSettingsProvider>().groupingDelimiter.value
       unitedDescription.mergeWith(textSegmentsToMerge.first())
@@ -42,6 +42,7 @@ open class GroupedContentWithTextUiModel(
 
     description = TextContentSegmentUiModel(project, object : UniqueEntityImpl(), TextContentSegment {
       override val highlightedText: HighlightedText = unitedDescription
+      override val parent: Parentable = this
     })
   }
 
@@ -59,19 +60,20 @@ open class GroupedContentUiModel(
   val content = ContentSegmentsUiModel(project, segments.map { it.segments }.flatten())
 }
 
-fun getSecondLevelHeader(project: Project, text: String): HighlightedText {
+fun getSecondLevelHeader(project: Project, text: String, parent: Parentable): HighlightedText {
   val colorsProvider = project.service<ColorsProvider>()
   val textColor = colorsProvider.getColorFor(Colors.TextInSectionsHeadersColor)
 
   val highlighter = TextHighlighterImpl(0, text.length, textColor, TextAttributesImpl(false, 500f, Font.PLAIN))
-  return HighlightedTextImpl(text, listOf(highlighter))
+  return HighlightedTextImpl(text, parent, listOf(highlighter))
 }
 
 fun getFirstLevelHeader(
   project: Project,
   text: String,
   textColorKey: ColorName,
-  backgroundColorKey: ColorName
+  backgroundColorKey: ColorName,
+  parent: Parentable
 ): HighlightedText {
   val colorsProvider = project.service<ColorsProvider>()
   val textColor = colorsProvider.getColorFor(textColorKey)
@@ -80,5 +82,5 @@ fun getFirstLevelHeader(
   val length = text.length
   val highlighter = CommonsHighlightersFactory.getWithRoundedBackgroundRect(textColor, returnBackgroundColor, length)
 
-  return HighlightedTextImpl(text, listOf(highlighter))
+  return HighlightedTextImpl(text, parent, listOf(highlighter))
 }

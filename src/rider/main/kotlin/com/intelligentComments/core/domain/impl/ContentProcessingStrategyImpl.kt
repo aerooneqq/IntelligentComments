@@ -28,7 +28,7 @@ class ContentProcessingStrategyImpl(private val project: Project) : ContentProce
     segments: MutableList<ContentSegment>
   ) {
     if (!settings.groupSeeAlso.value) return
-    groupSegmentsOfType<SeeAlsoSegment>(segments) { GroupedSeeAlsoSegments(it) }
+    groupSegmentsOfType<SeeAlsoSegment>(segments) { GroupedSeeAlsoSegments(it, segments.first().parent) }
   }
 
   private inline fun <reified T : ContentSegment> groupSegmentsOfType(
@@ -50,7 +50,7 @@ class ContentProcessingStrategyImpl(private val project: Project) : ContentProce
     segments: MutableList<ContentSegment>
   ) {
     if (!settings.groupReturns.value) return
-    groupSegmentsOfType<ReturnSegment>(segments) { GroupedReturnSegments(it) }
+    groupSegmentsOfType<ReturnSegment>(segments) { GroupedReturnSegments(it, segments.first().parent) }
   }
 
   private fun groupParamsIfNeeded(
@@ -58,7 +58,7 @@ class ContentProcessingStrategyImpl(private val project: Project) : ContentProce
     segments: MutableList<ContentSegment>
   ) {
     if (!settings.groupParams.value) return
-    groupSegmentsOfType<ParameterSegment>(segments) { GroupedParamSegments(it) }
+    groupSegmentsOfType<ParameterSegment>(segments) { GroupedParamSegments(it, segments.first().parent) }
   }
 
   private fun groupTypeParamsIfNeeded(
@@ -66,7 +66,7 @@ class ContentProcessingStrategyImpl(private val project: Project) : ContentProce
     segments: MutableList<ContentSegment>
   ) {
     if (!settings.groupParams.value) return
-    groupSegmentsOfType<TypeParamSegment>(segments) { GroupedTypeParamSegments(it) }
+    groupSegmentsOfType<TypeParamSegment>(segments) { GroupedTypeParamSegments(it, segments.first().parent) }
   }
 
   private fun groupExceptionsIfNeeded(
@@ -74,7 +74,7 @@ class ContentProcessingStrategyImpl(private val project: Project) : ContentProce
     segments: MutableList<ContentSegment>
   ) {
     if (!settings.groupExceptions.value) return
-    groupSegmentsOfType<ExceptionSegment>(segments) { GroupedExceptionsSegments(it) }
+    groupSegmentsOfType<ExceptionSegment>(segments) { GroupedExceptionsSegments(it, segments.first().parent) }
   }
 
   private fun groupSummaryIfNeeded(
@@ -82,7 +82,7 @@ class ContentProcessingStrategyImpl(private val project: Project) : ContentProce
     segments: MutableList<ContentSegment>
   ) {
     if (!settings.groupSummary.value) return
-    groupSegmentsOfType<SummaryContentSegment>(segments) { GroupedSummarySegments(it) }
+    groupSegmentsOfType<SummaryContentSegment>(segments) { GroupedSummarySegments(it, segments.first().parent) }
   }
 
   private fun groupRemarksIfNeeded(
@@ -90,6 +90,6 @@ class ContentProcessingStrategyImpl(private val project: Project) : ContentProce
     segments: MutableList<ContentSegment>
   ) {
     if (!settings.groupRemarks.value) return
-    groupSegmentsOfType<RemarksSegment>(segments) { GroupedRemarksSegments(it) }
+    groupSegmentsOfType<RemarksSegment>(segments) { GroupedRemarksSegments(it, segments.first().parent) }
   }
 }

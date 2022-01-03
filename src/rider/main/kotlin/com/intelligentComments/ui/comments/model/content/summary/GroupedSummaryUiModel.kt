@@ -18,7 +18,8 @@ class GroupedSummaryUiModel(
     project,
     summarySectionName,
     Colors.TextInSectionsRectanglesHeadersColor,
-    Colors.SummarySectionsHeaderBackgroundColor
+    Colors.SummarySectionsHeaderBackgroundColor,
+    model
   )
 )
 
