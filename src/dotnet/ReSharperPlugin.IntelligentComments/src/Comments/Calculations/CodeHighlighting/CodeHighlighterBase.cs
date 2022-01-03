@@ -1,6 +1,5 @@
 using JetBrains.Annotations;
 using JetBrains.RdBackend.Common.Features.SyntaxHighlighting.CSharp;
-using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp.Impl.Tree;
 using JetBrains.ReSharper.Psi.CSharp.Parsing;
 using JetBrains.ReSharper.Psi.Tree;
@@ -9,7 +8,7 @@ using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.CodeHighlighting;
 
-public abstract class CodeHighlighterBase : IRecursiveElementProcessor
+public abstract class CodeHighlighterBase
 {
   [NotNull] protected readonly IHighlightersProvider HighlightersProvider;
   [NotNull] protected readonly CSharpFullSyntaxHighlightingProcessor CSharpFullSyntaxHighlightingProcessor;

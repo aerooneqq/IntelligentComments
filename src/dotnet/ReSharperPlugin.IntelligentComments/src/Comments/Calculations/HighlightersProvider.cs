@@ -36,6 +36,7 @@ public interface IHighlightersProvider
 }
   
   
+[Language(typeof(KnownLanguage))]
 [SolutionComponent]
 public class HighlightersProvider : IHighlightersProvider
 {

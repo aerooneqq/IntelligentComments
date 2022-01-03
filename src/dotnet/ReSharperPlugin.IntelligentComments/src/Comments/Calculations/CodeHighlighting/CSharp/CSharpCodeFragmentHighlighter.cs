@@ -4,21 +4,25 @@ using JetBrains.Annotations;
 using JetBrains.ReSharper.Daemon.CSharp.Stages;
 using JetBrains.ReSharper.Feature.Services.Daemon;
 using JetBrains.ReSharper.Feature.Services.Daemon.Attributes;
+using JetBrains.ReSharper.Psi;
+using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.ReSharper.Psi.CSharp.Parsing;
 using JetBrains.ReSharper.Psi.ExtensionsAPI.Tree;
 using JetBrains.ReSharper.Psi.Resolve;
 using JetBrains.ReSharper.Psi.Tree;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl;
 
-namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.CodeHighlighting;
+namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.CodeHighlighting.CSharp;
 
-public class CodeFragmentHighlighter : CodeHighlighterBase
+[Language(typeof(CSharpLanguage))]
+public class CSharpCodeFragmentHighlighter : CodeHighlighterBase, ICodeHighlighter
 {
   [NotNull] private readonly CSharpIdentifierHighlighter myCSharpIdentifierHighlighter;
+  
   [CanBeNull] private readonly IReferenceProvider myReferenceProvider;
 
 
-  public CodeFragmentHighlighter(
+  public CSharpCodeFragmentHighlighter(
     [NotNull] IHighlightingAttributeIdProvider attributeIdProvider,
     [NotNull] IHighlightersProvider highlightersProvider,
     [NotNull] ITreeNode owner)

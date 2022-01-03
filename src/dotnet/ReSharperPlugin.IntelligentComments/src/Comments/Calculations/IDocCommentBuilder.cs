@@ -5,9 +5,6 @@ using System.Xml;
 using JetBrains.Annotations;
 using JetBrains.ProjectModel;
 using JetBrains.RdBackend.Common.Features.Documents;
-using JetBrains.RdBackend.Common.Features.SyntaxHighlighting.CSharp;
-using JetBrains.ReSharper.Daemon.SyntaxHighlighting;
-using JetBrains.ReSharper.Feature.Services.Daemon;
 using JetBrains.ReSharper.I18n.Services;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp;
@@ -127,20 +124,15 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
   [NotNull] private readonly IXmlDocOwnerTreeNode myOwner;
   [NotNull] private readonly IPsiServices myPsiServices;
   [NotNull] private readonly IPsiModule myPsiModule;
-  [NotNull] private readonly RdDocumentId myRdDocumentId;
   [NotNull] private readonly CodeFragmentHighlightingManager myCodeFragmentHighlightingManager;
+  [NotNull] private readonly ILanguageManager myLanguageManager;
 
 
   public DocCommentBuilder(
     [NotNull] IHighlightersProvider highlightersProvider, 
     [NotNull] IXmlDocOwnerTreeNode owner)
   {
-    if (owner.GetSourceFile()?.Document.GetData(DocumentHostBase.DocumentIdKey) is not { } documentId)
-    {
-      throw new ArgumentException($"RdDocument Id was null for {owner}");
-    }
-    
-    myRdDocumentId = documentId;
+    myLanguageManager = LanguageManager.Instance;
     myHighlightersProvider = highlightersProvider;
     myOwner = owner;
     myContentSegmentsStack = new Stack<ContentSegmentsMetadata>();
@@ -592,24 +584,23 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
   [NotNull]
   private CodeFragment CreateCodeFragment(string text)
   {
-    if (myOwner.GetContainingFile() is not ICSharpFile file) return new CodeFragment(new HighlightedText(text), 0);
+    CodeFragment CreateDefaultFragment() => new(new HighlightedText(text), 0);
     
-    var block = CSharpElementFactory.GetInstance(myOwner).CreateBlock("{" + text + "}");
-    var imports = new List<string>();
-    foreach (var import in file.Imports)
+    if (myOwner.GetContainingFile() is not { } file) return CreateDefaultFragment();
+    
+    var requestBuilder = myLanguageManager.GetService<ICodeHighlightingRequestBuilder>(file.Language);
+
+    if (requestBuilder.CreateNodeFromText(text, myOwner) is { } node)
     {
-      imports.Add(import.GetText());
+      var codeHighlightingRequest = requestBuilder.CreateRequest(file, myOwner, node);
+      var id = myCodeFragmentHighlightingManager.AddRequestForHighlighting(codeHighlightingRequest);
+    
+      var preliminaryHighlighter = myLanguageManager.GetService<IPreliminaryCodeHighlighter>(file.Language);
+      node.ProcessThisAndDescendants(preliminaryHighlighter);
+
+      return new CodeFragment(preliminaryHighlighter.Text, id); 
     }
 
-    if ((myOwner as ICSharpTreeNode)?.GetContainingNamespaceDeclaration() is { DeclaredElement: { } @namespace})
-    {
-      imports.Add($"using {@namespace.QualifiedName}");
-    }
-    
-    var id = myCodeFragmentHighlightingManager.AddRequestForHighlighting(block.GetText(), myRdDocumentId, imports);
-    var preliminaryCodeHighlighter = new PreliminaryCodeHighlighter(myHighlightersProvider, myOwner);
-    block.ProcessThisAndDescendants(preliminaryCodeHighlighter);
-
-    return new CodeFragment(preliminaryCodeHighlighter.Text, id);
+    return CreateDefaultFragment();
   }
 }
