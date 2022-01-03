@@ -10,14 +10,12 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Calculations;
 public class XmlDocsProcessor : IRecursiveElementProcessor
 {
   [NotNull] [ItemNotNull] private readonly IList<ICommentBase> myComments;
-  [NotNull] private readonly IHighlightersProvider myHighlightersProvider;
 
   [NotNull] [ItemNotNull] public IReadOnlyList<ICommentBase> Comments => myComments.AsIReadOnlyList();
 
 
-  public XmlDocsProcessor([NotNull] IHighlightersProvider highlightersProvider)
+  public XmlDocsProcessor()
   {
-    myHighlightersProvider = highlightersProvider;
     myComments = new List<ICommentBase>();
   }
 
@@ -28,7 +26,7 @@ public class XmlDocsProcessor : IRecursiveElementProcessor
   {
     if (element is IXmlDocOwnerTreeNode xmlDocOwner)
     {
-      var builder = new DocCommentBuilder(myHighlightersProvider, xmlDocOwner);
+      var builder = new DocCommentBuilder(xmlDocOwner);
 
       if (builder.Build() is { } comment)
       {

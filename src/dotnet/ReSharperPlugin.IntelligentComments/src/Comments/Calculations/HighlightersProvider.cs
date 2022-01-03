@@ -1,5 +1,4 @@
 using JetBrains.Annotations;
-using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Daemon.CSharp.Highlighting;
 using JetBrains.ReSharper.Feature.Services.Daemon.Attributes;
 using JetBrains.ReSharper.Psi;
@@ -35,10 +34,8 @@ public interface IHighlightersProvider
   TextHighlighter GetReSharperExceptionHighlighter(int startOffset, int endOffset, [CanBeNull] IDeclaredElement element);
 }
   
-  
-[Language(typeof(KnownLanguage))]
-[SolutionComponent]
-public class HighlightersProvider : IHighlightersProvider
+
+public abstract class HighlightersProvider : IHighlightersProvider
 {
   [NotNull] private const string CElementKey = "doc.comment.c.element.text";
   [NotNull] private const string ParamRefKey = "doc.comment.param.ref.text";
@@ -54,10 +51,12 @@ public class HighlightersProvider : IHighlightersProvider
   [NotNull] private readonly IRiderHighlighterNamesProvider myHighlighterNamesProvider;
   
 
-  public HighlightersProvider()
+  protected HighlightersProvider(
+    [NotNull] IHighlightingAttributeIdProvider attributeIdProvider,
+    [NotNull] IRiderHighlighterNamesProvider highlighterNamesProvider)
   {
-    myAttributeIdProvider = LanguageManager.Instance.GetService<IHighlightingAttributeIdProvider>(CSharpLanguage.Instance!);
-    myHighlighterNamesProvider = new CSharpHighlighterGroup.CSharpSettingsNamesProvider();
+    myAttributeIdProvider = attributeIdProvider;
+    myHighlighterNamesProvider = highlighterNamesProvider;
   }
 
   
@@ -127,5 +126,14 @@ public class HighlightersProvider : IHighlightersProvider
   {
     return TryGetHighlighterWithReSharperId(startOffset, endOffset, element) ??
            GetExceptionHighlighter(startOffset, endOffset);
+  }
+}
+
+[Language(typeof(CSharpLanguage))]
+public class CSharpHighlightersProvider : HighlightersProvider
+{
+  public CSharpHighlightersProvider(IHighlightingAttributeIdProvider provider) 
+    : base(provider, new CSharpHighlighterGroup.CSharpSettingsNamesProvider())
+  {
   }
 }

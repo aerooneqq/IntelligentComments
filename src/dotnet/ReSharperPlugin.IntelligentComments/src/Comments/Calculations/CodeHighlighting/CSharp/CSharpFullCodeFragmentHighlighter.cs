@@ -7,37 +7,32 @@ using JetBrains.ReSharper.Feature.Services.Daemon.Attributes;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.ReSharper.Psi.CSharp.Parsing;
-using JetBrains.ReSharper.Psi.ExtensionsAPI.Tree;
-using JetBrains.ReSharper.Psi.Resolve;
 using JetBrains.ReSharper.Psi.Tree;
+using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.CodeHighlighting.CSharp;
 
 [Language(typeof(CSharpLanguage))]
-public class CSharpCodeFragmentHighlighter : CodeHighlighterBase, ICodeHighlighter
+public class CSharpFullCodeFragmentHighlighter : CodeHighlighterBase, IFullCodeHighlighter
 {
   [NotNull] private readonly CSharpIdentifierHighlighter myCSharpIdentifierHighlighter;
   
-  [CanBeNull] private readonly IReferenceProvider myReferenceProvider;
 
-
-  public CSharpCodeFragmentHighlighter(
+  public CSharpFullCodeFragmentHighlighter(
     [NotNull] IHighlightingAttributeIdProvider attributeIdProvider,
-    [NotNull] IHighlightersProvider highlightersProvider,
-    [NotNull] ITreeNode owner)
-    : base(highlightersProvider, owner)
+    [NotNull] IHighlightersProvider highlightersProvider)
+    : base(highlightersProvider)
   {
     myCSharpIdentifierHighlighter = new CSharpIdentifierHighlighter(attributeIdProvider);
-    myReferenceProvider = (owner.GetContainingFile() as IFileImpl)?.ReferenceProvider;
   }
 
 
-  protected override void ProcessBeforeInteriorInternal(ITreeNode element)
+  protected override void ProcessBeforeInteriorInternal(ITreeNode element, IHighlightedText context)
   {
     if (element.NodeType == CSharpTokenType.IDENTIFIER)
     {
-      var references = element.Parent.GetReferences(myReferenceProvider);
+      var references = element.Parent.GetReferences();
       var consumer = new MyHighlightingsConsumer();
       myCSharpIdentifierHighlighter.Highlight(element, consumer, references);
       
@@ -48,13 +43,13 @@ public class CSharpCodeFragmentHighlighter : CodeHighlighterBase, ICodeHighlight
         {
           var text = element.GetText();
           var highlighter = HighlightersProvider.TryGetReSharperHighlighter(attributeId, text.Length);
-          HighlightedText.Add(highlighter is { } ? new HighlightedText(text, highlighter) : new HighlightedText(text));
+          context.Add(highlighter is { } ? new HighlightedText(text, highlighter) : new HighlightedText(text));
           return;
         }
       }
     }
     
-    HighlightedText.Add(new HighlightedText(element.GetText()));
+    context.Add(new HighlightedText(element.GetText()));
   }
   
   private class MyHighlightingsConsumer : IHighlightingConsumer

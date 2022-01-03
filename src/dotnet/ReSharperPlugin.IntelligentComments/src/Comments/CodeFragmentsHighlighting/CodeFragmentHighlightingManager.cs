@@ -11,7 +11,6 @@ using JetBrains.Rd.Tasks;
 using JetBrains.RdBackend.Common.Features;
 using JetBrains.RdBackend.Common.Features.Documents;
 using JetBrains.RdBackend.Common.Features.Languages;
-using JetBrains.ReSharper.Feature.Services.Daemon.Attributes;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
 using JetBrains.ReSharper.Psi.Files;
@@ -19,11 +18,10 @@ using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.ReSharper.Resources.Shell;
 using JetBrains.Rider.Model;
 using JetBrains.Util;
-using ReSharperPlugin.IntelligentComments.Comments.Calculations;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.CodeHighlighting;
-using ReSharperPlugin.IntelligentComments.Comments.Calculations.CodeHighlighting.CSharp;
 using ReSharperPlugin.IntelligentComments.Comments.Domain;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
+using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.CodeFragmentsHighlighting;
 
@@ -37,7 +35,6 @@ public class CodeFragmentHighlightingManager
   [NotNull] private readonly ILogger myLogger;
   [NotNull] private readonly ISandboxDocumentsHelper myHelper;
   [NotNull] private readonly IShellLocks myShellLocks;
-  [NotNull] private readonly IHighlightersProvider myHighlighterProvider;
   [NotNull] private readonly object mySyncObject = new();
   [NotNull] private readonly IDictionary<int, CodeHighlightingRequest> myRequests;
   [NotNull] private readonly IDictionary<int, IHighlightedText> myCachedHighlightedCode;
@@ -48,15 +45,13 @@ public class CodeFragmentHighlightingManager
     [NotNull] ISolution solution,
     [NotNull] ILogger logger, 
     [NotNull] ISandboxDocumentsHelper helper,
-    [NotNull] IShellLocks shellLocks,
-    [NotNull] IHighlightersProvider highlighterProvider)
+    [NotNull] IShellLocks shellLocks)
   {
     myLifetime = lifetime;
     mySolution = solution;
     myLogger = logger;
     myHelper = helper;
     myShellLocks = shellLocks;
-    myHighlighterProvider = highlighterProvider;
     myRequests = new Dictionary<int, CodeHighlightingRequest>();
     myCachedHighlightedCode = new Dictionary<int, IHighlightedText>();
     var rdCommentsModel = solution.GetSolution().GetProtocolSolution().GetRdCommentsModel();
@@ -87,12 +82,17 @@ public class CodeFragmentHighlightingManager
       var task = new RdTask<RdHighlightedText>();
       var highlightingLifetimeDef = myLifetime.CreateNested();
       
+      void TerminateLifetime() => myShellLocks.Queue(
+        myLifetime, 
+        $"{nameof(CodeFragmentHighlightingManager)}::TerminatingLifetime", 
+        () => highlightingLifetimeDef.Terminate());
+      
       void LogErrorAndSetNull(string message)
       {
         myLogger.Error(message);
         task.Set((RdHighlightedText)null);
         RemoveRequest(id);
-        highlightingLifetimeDef.Terminate();
+        TerminateLifetime();
       }
       
       myShellLocks.QueueReadLock($"{nameof(CodeFragmentHighlightingManager)}::HighlightingCode", () =>
@@ -120,16 +120,15 @@ public class CodeFragmentHighlightingManager
               return;
             }
 
-            var idProvider = LanguageManager.Instance.GetService<IHighlightingAttributeIdProvider>(file.Language);
-            var highlighter = new CSharpCodeFragmentHighlighter(idProvider, myHighlighterProvider, block);
+            var highlighter = LanguageManager.Instance.GetService<IFullCodeHighlighter>(file.Language);
+            var text = HighlightedText.CreateEmptyText();
+            block.ProcessThisAndDescendants(highlighter, text);
             
-            block.ProcessThisAndDescendants(highlighter);
-          
             var newCodeHash = Hash.Create(block.GetText()).Value;
-            myCachedHighlightedCode[newCodeHash] = highlighter.Text;
+            myCachedHighlightedCode[newCodeHash] = text;
           
-            task.Set(highlighter.Text.ToRdHighlightedText());
-            highlightingLifetimeDef.Terminate();
+            task.Set(text.ToRdHighlightedText());
+            TerminateLifetime();
             RemoveRequest(id);
           }
         }));
@@ -187,8 +186,7 @@ public class CodeFragmentHighlightingManager
       myHelper.InitSandboxDocument(
         request.DocumentId,
         viewModel,
-        //ToDo: WTF?????
-        Lifetime.Eternal, 
+        highlightingLifetime, 
         riderDocument,
         sandboxFile,
         DocumentHostBase.GetInstance(sandboxFile.GetSolution()));

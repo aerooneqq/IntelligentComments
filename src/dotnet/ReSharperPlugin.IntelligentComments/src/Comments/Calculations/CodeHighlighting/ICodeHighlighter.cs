@@ -3,7 +3,6 @@ using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.CodeHighlighting;
 
-public interface ICodeHighlighter : IRecursiveElementProcessor
+public interface ICodeHighlighter : IRecursiveElementProcessor<IHighlightedText>
 {
-  public IHighlightedText Text { get; }
 }

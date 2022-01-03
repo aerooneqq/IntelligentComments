@@ -17,15 +17,11 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Daemon;
 
 public class DocCommentDaemonProcess : IDaemonStageProcess
 {
-  [NotNull] private readonly IHighlightersProvider myProvider;
-  
-  
   public IDaemonProcess DaemonProcess { get; }
 
 
   public DocCommentDaemonProcess([NotNull] IDaemonProcess process)
   {
-    myProvider = process.Solution.GetComponent<IHighlightersProvider>();
     DaemonProcess = process;
   }
   
@@ -36,7 +32,7 @@ public class DocCommentDaemonProcess : IDaemonStageProcess
     var result = new List<HighlightingInfo>();
     foreach (var file in files)
     {
-      var commentsCollector = new XmlDocsProcessor(myProvider);
+      var commentsCollector = new XmlDocsProcessor();
       file.ProcessThisAndDescendants(commentsCollector);
       foreach (var comment in commentsCollector.Comments.SafeOfType<IDocComment>())
       {

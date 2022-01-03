@@ -4,11 +4,8 @@ using System.Linq;
 using System.Xml;
 using JetBrains.Annotations;
 using JetBrains.ProjectModel;
-using JetBrains.RdBackend.Common.Features.Documents;
 using JetBrains.ReSharper.I18n.Services;
 using JetBrains.ReSharper.Psi;
-using JetBrains.ReSharper.Psi.CSharp;
-using JetBrains.ReSharper.Psi.CSharp.Tree;
 using JetBrains.ReSharper.Psi.Modules;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.ReSharper.Psi.Util;
@@ -128,12 +125,10 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
   [NotNull] private readonly ILanguageManager myLanguageManager;
 
 
-  public DocCommentBuilder(
-    [NotNull] IHighlightersProvider highlightersProvider, 
-    [NotNull] IXmlDocOwnerTreeNode owner)
+  public DocCommentBuilder([NotNull] IXmlDocOwnerTreeNode owner)
   {
     myLanguageManager = LanguageManager.Instance;
-    myHighlightersProvider = highlightersProvider;
+    myHighlightersProvider = myLanguageManager.GetService<IHighlightersProvider>(owner.Language);
     myOwner = owner;
     myContentSegmentsStack = new Stack<ContentSegmentsMetadata>();
     myCodeFragmentHighlightingManager = owner.GetSolution().GetComponent<CodeFragmentHighlightingManager>();
@@ -594,11 +589,12 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
     {
       var codeHighlightingRequest = requestBuilder.CreateRequest(file, myOwner, node);
       var id = myCodeFragmentHighlightingManager.AddRequestForHighlighting(codeHighlightingRequest);
-    
+      
       var preliminaryHighlighter = myLanguageManager.GetService<IPreliminaryCodeHighlighter>(file.Language);
-      node.ProcessThisAndDescendants(preliminaryHighlighter);
+      var highlightedText = HighlightedText.CreateEmptyText();
+      node.ProcessThisAndDescendants(preliminaryHighlighter, highlightedText);
 
-      return new CodeFragment(preliminaryHighlighter.Text, id); 
+      return new CodeFragment(highlightedText, id); 
     }
 
     return CreateDefaultFragment();

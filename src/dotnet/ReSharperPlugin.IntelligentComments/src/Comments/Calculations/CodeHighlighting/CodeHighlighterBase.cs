@@ -8,38 +8,31 @@ using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.CodeHighlighting;
 
-public abstract class CodeHighlighterBase
+public abstract class CodeHighlighterBase : ICodeHighlighter
 {
   [NotNull] protected readonly IHighlightersProvider HighlightersProvider;
   [NotNull] protected readonly CSharpFullSyntaxHighlightingProcessor CSharpFullSyntaxHighlightingProcessor;
-  [NotNull] protected readonly IHighlightedText HighlightedText;
-  [NotNull] protected readonly ITreeNode Owner;
   
-  public bool ProcessingIsFinished => false;
-  [NotNull] public IHighlightedText Text => HighlightedText;
-  
-  
-  protected CodeHighlighterBase(    
-    [NotNull] IHighlightersProvider highlightersProvider,
-    [NotNull] ITreeNode owner)
+
+  protected CodeHighlighterBase([NotNull] IHighlightersProvider highlightersProvider)
   {
     HighlightersProvider = highlightersProvider;
-    Owner = owner;
     CSharpFullSyntaxHighlightingProcessor = new CSharpFullSyntaxHighlightingProcessor();
-    HighlightedText = new HighlightedText(string.Empty );
   }
   
   
-  public bool InteriorShouldBeProcessed(ITreeNode element) => true;
+  public bool InteriorShouldBeProcessed(ITreeNode element, IHighlightedText context) => true;
+  
+  public bool IsProcessingFinished(IHighlightedText context) => false;
 
-  public virtual void ProcessBeforeInterior(ITreeNode element)
+  public virtual void ProcessBeforeInterior(ITreeNode element, IHighlightedText context)
   {
     if (!AcceptNode(element)) return;
 
     var nodeType = element.NodeType;
     if (nodeType == CSharpTokenType.WHITE_SPACE)
     {
-      HighlightedText.Add(new HighlightedText(element.GetText()));
+      context.Add(new HighlightedText(element.GetText()));
       return;
     }
     
@@ -51,21 +44,21 @@ public abstract class CodeHighlighterBase
       {
         var text = element.GetText();
         var highlighter = HighlightersProvider.TryGetReSharperHighlighter(attributeId, text.Length);
-        HighlightedText.Add(highlighter is { } ? new HighlightedText(text, highlighter) : new HighlightedText(text));
+        context.Add(highlighter is { } ? new HighlightedText(text, highlighter) : new HighlightedText(text));
         return;
       }
     }
 
-    ProcessBeforeInteriorInternal(element);
+    ProcessBeforeInteriorInternal(element, context);
   }
 
-  protected abstract void ProcessBeforeInteriorInternal(ITreeNode element);
-  protected virtual bool AcceptNode(ITreeNode node)
+  protected abstract void ProcessBeforeInteriorInternal([NotNull] ITreeNode element, [NotNull] IHighlightedText context);
+  protected virtual bool AcceptNode([NotNull] ITreeNode node)
   {
     return node.FirstChild is null;
   }
 
-  public void ProcessAfterInterior(ITreeNode element)
+  public void ProcessAfterInterior(ITreeNode element, IHighlightedText context)
   {
   }
 }
