@@ -3,7 +3,6 @@ using JetBrains.RdBackend.Common.Features.SyntaxHighlighting.CSharp;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.ReSharper.Psi.Tree;
-using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.CodeHighlighting.CSharp;

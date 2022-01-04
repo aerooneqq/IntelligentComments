@@ -8,6 +8,7 @@ using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.ReSharper.Psi.Util;
 using JetBrains.Rider.Model;
 using JetBrains.Util;
+using ReSharperPlugin.IntelligentComments.Comments.Caches;
 using ReSharperPlugin.IntelligentComments.Comments.CodeFragmentsHighlighting;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
 

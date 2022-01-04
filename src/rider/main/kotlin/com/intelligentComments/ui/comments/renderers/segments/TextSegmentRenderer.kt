@@ -14,8 +14,7 @@ import kotlin.test.assertNotNull
 
 open class TextRendererBase(private val textUiWrapper: HighlightedTextUiWrapper) : SegmentRenderer {
   private val cachedLines = textUiWrapper.text.split('\n')
-  private val cachedLinesHighlighters
-    get() = TextUtil.getLinesHighlighters(cachedLines, textUiWrapper.highlighters)
+  private val cachedLinesHighlighters = TextUtil.getLinesHighlighters(cachedLines, textUiWrapper.highlighters)
 
 
   override fun render(

@@ -12,8 +12,21 @@ class CodeSegmentUiModel(
   parent: UiInteractionModelBase?,
   private val codeSegment: CodeSegment
 ) : ContentSegmentUiModel(project, parent, codeSegment) {
+  private var previousHash: Int? = null
+  private var cachedText: HighlightedTextUiWrapper? = null
+
   val code: HighlightedTextUiWrapper
-    get() = HighlightedTextUiWrapper(project, this, codeSegment.code.value)
+    get() {
+      val hash = codeSegment.code.value.hashCode()
+      if (previousHash == null || previousHash != hash) {
+        val text = HighlightedTextUiWrapper(project, this, codeSegment.code.value)
+        previousHash = hash
+        cachedText = text
+        return text
+      }
+
+      return cachedText!!
+    }
 
   override fun calculateStateHash(): Int {
     return HashUtil.hashCode(code.calculateStateHash())

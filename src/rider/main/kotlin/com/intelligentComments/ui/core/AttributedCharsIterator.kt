@@ -19,7 +19,7 @@ class AttributedCharsIterator(
 
   init {
     if (highlighter.underline) {
-      attributes[TextAttribute.UNDERLINE] = TextAttribute.UNDERLINE_LOW_TWO_PIXEL
+      attributes[TextAttribute.UNDERLINE] = TextAttribute.UNDERLINE_LOW_ONE_PIXEL
     }
 
     attributes[TextAttribute.FOREGROUND] = highlighter.textColor

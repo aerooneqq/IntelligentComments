@@ -15,6 +15,7 @@ using JetBrains.Rider.Backend.Features.QuickDoc;
 using JetBrains.Rider.Backend.Features.TextControls;
 using JetBrains.Rider.Model;
 using JetBrains.Util;
+using ReSharperPlugin.IntelligentComments.Comments.Caches;
 using ReSharperPlugin.IntelligentComments.Comments.CodeFragmentsHighlighting;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.References;
@@ -32,7 +33,6 @@ public class ClickDocHost
   [NotNull] private readonly IPsiServices myPsiServices;
   [NotNull] private readonly RiderTextControlHost myTextControlHost;
   [NotNull] private readonly DataContexts myDataContexts;
-  [NotNull] private readonly SandboxesCache mySandboxesCache;
 
 
   public ClickDocHost(
@@ -54,7 +54,6 @@ public class ClickDocHost
     myPsiServices = psiServices;
     myTextControlHost = textControlHost;
     myDataContexts = dataContexts;
-    mySandboxesCache = sandboxesCache;
 
     solution.GetProtocolSolution().GetRdCommentsModel().RequestClickDoc.Set(HandleClickDocRequest);
   }
