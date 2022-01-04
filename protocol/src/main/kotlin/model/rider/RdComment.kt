@@ -165,6 +165,10 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
     field("RawValue", PredefinedType.string)
   }
 
+  val RdProxyReference = structdef extends RdReference {
+    field("RealReferenceId", PredefinedType.int)
+  }
+
   val RdExternalReference = basestruct extends RdReference { }
 
   val RdHttpLinkReference = structdef extends RdExternalReference { }
@@ -261,7 +265,7 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
   }
 
   val RdCommentClickDocRequest = structdef {
-    field("Reference", RdCodeEntityReference)
+    field("Reference", RdReference)
     field("TextControlId", TextControlId)
   }
 

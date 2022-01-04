@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using JetBrains.Diagnostics;
+using JetBrains.RdBackend.Common.Features.Documents;
 using JetBrains.RdBackend.Common.Features.Util.Ranges;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Rider.Model;
@@ -161,6 +162,7 @@ public static class CommentsUtil
   {
     return reference switch
     {
+      IProxyReference proxyReference => new RdProxyReference(proxyReference.RealReferenceId, string.Empty),
       ICodeEntityReference codeEntityReference => codeEntityReference.ToRdReference(),
       IExternalReference externalReference => externalReference.ToRdReference(),
       ILangWordReference langWordReference => langWordReference.ToRdReference(),
@@ -176,7 +178,7 @@ public static class CommentsUtil
       IXmlDocCodeEntityReference reference => new RdXmlDocCodeEntityReference(reference.RawValue),
       ISandBoxCodeEntityReference reference => new RdSandboxCodeEntityReference(
         reference.SandboxDocumentId,
-        reference.OriginalDocumentId,
+        reference.OriginalDocument.GetData(DocumentHostBase.DocumentIdKey),
         reference.Range.ToRdTextRange(),
         reference.RawValue
       ),

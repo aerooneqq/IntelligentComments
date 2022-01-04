@@ -20,7 +20,7 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Caches;
 public record SandboxFileInfo(LifetimeDefinition LifetimeDefinition, SandboxPsiSourceFile SandboxPsiSourceFile);
 
 [SolutionComponent]
-public class SandboxesCache : AbstractVisibleDocumentBasedCache<SandboxFileInfo>
+public class SandboxesCache : AbstractVisibleDocumentBasedCache<string, SandboxFileInfo>
 {
   private readonly Lifetime myLifetime;
   [NotNull] private readonly ILogger myLogger;

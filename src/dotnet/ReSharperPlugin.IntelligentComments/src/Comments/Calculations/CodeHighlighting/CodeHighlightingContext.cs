@@ -9,7 +9,7 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.CodeHighligh
 public static class CodeHighlightingKeys
 {
   [NotNull] public static Key<string> SandboxDocumentId { get; } = new(nameof(SandboxDocumentId));
-  [NotNull] public static Key<RdDocumentId> OriginalDocumentId { get; } = new(nameof(OriginalDocumentId));
+  [NotNull] public static Key<IDocument> OriginalDocument { get; } = new(nameof(OriginalDocument));
 }
 
 public record CodeHighlightingContext(IHighlightedText Text, IUserDataHolder AdditionalData);

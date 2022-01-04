@@ -1,4 +1,5 @@
 using JetBrains.Annotations;
+using JetBrains.DocumentModel;
 using JetBrains.ReSharper.Psi;
 using JetBrains.Rider.Model;
 using JetBrains.Util;
@@ -17,7 +18,7 @@ public interface IXmlDocCodeEntityReference : ICodeEntityReference
 public interface ISandBoxCodeEntityReference : ICodeEntityReference
 {
   public string SandboxDocumentId { get; }
-  public RdDocumentId OriginalDocumentId { get; }
+  public IDocument OriginalDocument { get; }
   public TextRange Range { get; }
 }
 

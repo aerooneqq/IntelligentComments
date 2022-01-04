@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
+using JetBrains.ProjectModel;
 using JetBrains.RdBackend.Common.Features.SyntaxHighlighting.CSharp;
 using JetBrains.ReSharper.Daemon.CSharp.Stages;
 using JetBrains.ReSharper.Feature.Services.Daemon;
@@ -12,6 +13,7 @@ using JetBrains.ReSharper.Psi.CSharp.Parsing;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Util;
 using JetBrains.Util.Logging;
+using ReSharperPlugin.IntelligentComments.Comments.Caches;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl;
@@ -58,6 +60,13 @@ public class CSharpFullCodeFragmentHighlighter : CodeHighlighterBase, IFullCodeH
           {
             var resolveContext = new ResolveContextImpl(element.GetSolution());
             highlighter = HighlightersProvider.TryGetReSharperHighlighter(text.Length, codeEntityReference, resolveContext);
+            
+            if (highlighter is { })
+            {
+              var originalDocument = context.AdditionalData.GetData(CodeHighlightingKeys.OriginalDocument);
+              var id = element.GetSolution().GetComponent<ReferencesCache>().AddReference(originalDocument, codeEntityReference);
+              highlighter = highlighter with { References = new[] { new ProxyReference(id) } };
+            }
           }
           else
           {
@@ -85,13 +94,13 @@ public class CSharpFullCodeFragmentHighlighter : CodeHighlighterBase, IFullCodeH
       {
         var resolveResult = reference.Resolve().DeclaredElement;
         var sandboxDocId = context.AdditionalData.GetData(CodeHighlightingKeys.SandboxDocumentId);
-        var originalDocumentId = context.AdditionalData.GetData(CodeHighlightingKeys.OriginalDocumentId);
+        var originalDocument = context.AdditionalData.GetData(CodeHighlightingKeys.OriginalDocument);
         var textRange = node.GetDocumentRange().TextRange;
 
-        if (resolveResult is null || sandboxDocId is null || originalDocumentId is null) return null;
+        if (resolveResult is null || sandboxDocId is null || originalDocument is null) return null;
         
         return new SandBoxCodeEntityReference(
-          resolveResult.ShortName, sandboxDocId, originalDocumentId, textRange, resolveResult);
+          resolveResult.ShortName, sandboxDocId, originalDocument, textRange, resolveResult);
       }
       catch (Exception ex)
       {

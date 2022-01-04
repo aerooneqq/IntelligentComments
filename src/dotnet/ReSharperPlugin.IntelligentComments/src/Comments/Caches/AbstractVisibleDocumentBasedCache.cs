@@ -9,11 +9,11 @@ using JetBrains.TextControl;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Caches;
 
-public abstract class AbstractVisibleDocumentBasedCache<TValue> where TValue : class
+public abstract class AbstractVisibleDocumentBasedCache<TId, TValue> where TValue : class
 {
   [NotNull] private readonly object mySyncObject = new();
   
-  [NotNull] private readonly IDictionary<IDocument, IDictionary<string, TValue>> myFilesPerDocument;
+  [NotNull] private readonly IDictionary<IDocument, IDictionary<TId, TValue>> myFilesPerDocument;
 
 
   protected AbstractVisibleDocumentBasedCache(
@@ -21,7 +21,7 @@ public abstract class AbstractVisibleDocumentBasedCache<TValue> where TValue : c
     [NotNull] ITextControlManager textControlManager,
     [NotNull] IShellLocks shellLocks)
   {
-    myFilesPerDocument = new Dictionary<IDocument, IDictionary<string, TValue>>();
+    myFilesPerDocument = new Dictionary<IDocument, IDictionary<TId, TValue>>();
     textControlManager.VisibleTextControls.AddRemove.Advise(lifetime, args =>
     {
       shellLocks.Queue(lifetime, $"{GetType().Name}::InvalidatingCache", () =>
@@ -30,6 +30,7 @@ public abstract class AbstractVisibleDocumentBasedCache<TValue> where TValue : c
         {
           lock (mySyncObject)
           {
+            //ToDo: Invalidate after daemon invalidation
             var allOpenedDocuments = textControlManager.VisibleTextControls.Select(editor => editor.Document).ToSet();
             var documentsToRemove = myFilesPerDocument.Keys.ToSet().Except(allOpenedDocuments);
             foreach (var document in documentsToRemove)
@@ -40,7 +41,7 @@ public abstract class AbstractVisibleDocumentBasedCache<TValue> where TValue : c
                 myFilesPerDocument.Remove(document);
               }
             }
-          } 
+          }
         }
       });
     });
@@ -49,20 +50,21 @@ public abstract class AbstractVisibleDocumentBasedCache<TValue> where TValue : c
 
   protected abstract void BeforeRemoval(IDocument document, IEnumerable<TValue> values);
 
-  protected void Add([NotNull] IDocument document, [NotNull] TValue entry)
+  protected TId Add([NotNull] IDocument document, [NotNull] TValue entry)
   {
     lock (mySyncObject)
     {
       var id = CreateId(entry);
-      var documentEntities = myFilesPerDocument.GetOrCreate(document, () => new Dictionary<string, TValue>());
+      var documentEntities = myFilesPerDocument.GetOrCreate(document, () => new Dictionary<TId, TValue>());
       documentEntities[id] = entry;
+      return id;
     }
   }
   
-  protected abstract string CreateId(TValue value);
+  protected abstract TId CreateId(TValue value);
   
   [CanBeNull] 
-  public TValue this[IDocument document, string id]
+  public TValue this[IDocument document, TId id]
   {
     get
     {

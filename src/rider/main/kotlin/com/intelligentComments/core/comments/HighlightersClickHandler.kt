@@ -1,6 +1,7 @@
 package com.intelligentComments.core.comments
 
 import com.intelligentComments.core.domain.core.CodeEntityReference
+import com.intelligentComments.core.domain.core.ProxyReference
 import com.intelligentComments.core.domain.core.TextHighlighter
 import com.intelligentComments.core.domain.core.tryFindComment
 import com.intellij.openapi.components.service
@@ -24,8 +25,11 @@ class HighlightersClickHandler(project: Project) {
       return
     }
 
-    val reference = highlighter.references.firstOrNull { it is CodeEntityReference } ?: return
+    var reference = highlighter.references.firstOrNull { it is CodeEntityReference }
+    if (reference == null) {
+      reference = highlighter.references.firstOrNull { it is ProxyReference }
+    }
 
-    clickDocHost.tryRequestHoverDoc(comment.commentIdentifier, reference as CodeEntityReference, editor, contextPoint)
+    clickDocHost.tryRequestHoverDoc(comment.commentIdentifier, reference ?: return, editor, contextPoint)
   }
 }

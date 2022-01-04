@@ -124,7 +124,7 @@ public class CodeFragmentHighlightingManager
             var text = HighlightedText.CreateEmptyText();
             var additionalData = new UserDataHolder();
             additionalData.PutData(CodeHighlightingKeys.SandboxDocumentId, sourceFile.ProjectFile.GetPersistentID());
-            additionalData.PutData(CodeHighlightingKeys.OriginalDocumentId, originalDocument.GetData(DocumentHostBase.DocumentIdKey));
+            additionalData.PutData(CodeHighlightingKeys.OriginalDocument, originalDocument);
             var context = new CodeHighlightingContext(text, additionalData);
             
             block.ProcessThisAndDescendants(codeHighlighter, context);

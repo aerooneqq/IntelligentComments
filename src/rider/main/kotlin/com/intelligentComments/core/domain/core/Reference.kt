@@ -7,6 +7,10 @@ interface Reference : UniqueEntity {
   val rawValue: String
 }
 
+interface ProxyReference : Reference {
+  val realReferenceId: Int
+}
+
 interface CodeEntityReference : Reference
 
 interface XmlDocCodeEntityReference : CodeEntityReference

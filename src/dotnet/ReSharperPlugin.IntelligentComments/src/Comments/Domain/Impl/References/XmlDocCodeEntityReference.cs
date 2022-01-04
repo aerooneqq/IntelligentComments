@@ -1,15 +1,13 @@
 using JetBrains.Annotations;
+using JetBrains.DocumentModel;
 using JetBrains.ProjectModel;
-using JetBrains.RdBackend.Common.Features.Documents;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Files;
 using JetBrains.ReSharper.Psi.Modules;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.ReSharper.Psi.Util;
-using JetBrains.Rider.Model;
 using JetBrains.Util;
 using ReSharperPlugin.IntelligentComments.Comments.Caches;
-using ReSharperPlugin.IntelligentComments.Comments.CodeFragmentsHighlighting;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.References;
@@ -44,14 +42,14 @@ public class SandBoxCodeEntityReference : ReferenceBase, ISandBoxCodeEntityRefer
   
   
   public string SandboxDocumentId { get; }
-  public RdDocumentId OriginalDocumentId { get; }
+  public IDocument OriginalDocument { get; }
   public TextRange Range { get; }
   
   
   public SandBoxCodeEntityReference(
     [NotNull] string rawValue,
     [NotNull] string sandboxDocumentId,
-    [NotNull] RdDocumentId documentId,
+    [NotNull] IDocument document,
     TextRange range,
     [CanBeNull] IDeclaredElement alreadyResolvedElement = null)
     : base(rawValue)
@@ -59,7 +57,7 @@ public class SandBoxCodeEntityReference : ReferenceBase, ISandBoxCodeEntityRefer
     myAlreadyResolvedElement = alreadyResolvedElement;
     Range = range;
     SandboxDocumentId = sandboxDocumentId;
-    OriginalDocumentId = documentId;
+    OriginalDocument = document;
   }
 
   
@@ -68,8 +66,7 @@ public class SandBoxCodeEntityReference : ReferenceBase, ISandBoxCodeEntityRefer
     if (myAlreadyResolvedElement is { }) return new DeclaredElementResolveResult(myAlreadyResolvedElement);
 
     var solution = context.Solution;
-    var originalDocument = DocumentHostBase.GetInstance(solution).TryGetHostDocument(OriginalDocumentId);
-    var sourceFile = solution.GetComponent<SandboxesCache>().TryGetSandboxPsiSourceFile(originalDocument, SandboxDocumentId);
+    var sourceFile = solution.GetComponent<SandboxesCache>().TryGetSandboxPsiSourceFile(OriginalDocument, SandboxDocumentId);
 
     var range = new TreeTextRange(new TreeOffset(Range.StartOffset), new TreeOffset(Range.EndOffset));
     var node = sourceFile?.GetPrimaryPsiFile()?.FindNodeAt(range);

@@ -15,6 +15,7 @@ open class ReferenceFromRd(private val reference: RdReference) : UniqueEntityImp
   companion object {
     fun getFrom(project: Project, reference: RdReference): ReferenceFromRd {
       return when (reference) {
+        is RdProxyReference -> ProxyReferenceFromRd(reference)
         is RdXmlDocCodeEntityReference -> XmlDocCodeEntityReferenceFromRd(reference)
         is RdSandboxCodeEntityReference -> SandboxCodeEntityReferenceFromRd(project, reference)
         is RdHttpLinkReference -> HttpLinkReferenceFromRd(reference)
@@ -50,8 +51,13 @@ open class HttpLinkReferenceFromRd(reference: RdHttpLinkReference) : ExternalRef
   override val rawLink: String = reference.rawValue
 }
 
+class ProxyReferenceFromRd(reference: RdProxyReference): ReferenceFromRd(reference), ProxyReference {
+  override val realReferenceId: Int = reference.realReferenceId
+}
+
 fun Reference.toRdReference(project: Project): RdReference {
   return when(this) {
+    is ProxyReference -> RdProxyReference(realReferenceId, rawValue)
     is XmlDocCodeEntityReference -> RdXmlDocCodeEntityReference(rawValue)
     is SandboxCodeEntityReference -> RdSandboxCodeEntityReference(
       sandboxFileId,

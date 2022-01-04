@@ -1,7 +1,6 @@
 using JetBrains.Annotations;
+using JetBrains.DocumentModel;
 using JetBrains.ProjectModel;
-using JetBrains.ReSharper.Psi;
-using JetBrains.ReSharper.Psi.Tree;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
 
@@ -13,9 +12,17 @@ public interface IReference
   ResolveResult Resolve(IResolveContext context);
 }
 
+public interface IProxyReference : IReference
+{
+  int RealReferenceId { get; }
+
+  [CanBeNull] 
+  IReference GetRealReference(ISolution solution, IDocument contextDocument);
+}
+
 public interface IResolveContext
 {
-  public ISolution Solution { get; }
+  ISolution Solution { get; }
 }
 
 public abstract class ResolveResult

@@ -2,16 +2,14 @@ package com.intelligentComments.core.comments
 
 import com.intelligentComments.core.domain.core.CodeEntityReference
 import com.intelligentComments.core.domain.core.CommentIdentifier
+import com.intelligentComments.core.domain.core.Reference
 import com.intelligentComments.core.domain.rd.toRdReference
 import com.intellij.codeInsight.documentation.DocumentationManager
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.ui.popup.PopupFactoryImpl
-import com.jetbrains.rd.ide.model.RdCodeEntityReference
-import com.jetbrains.rd.ide.model.RdCommentClickDocRequest
-import com.jetbrains.rd.ide.model.quickDocHostModel
-import com.jetbrains.rd.ide.model.rdCommentsModel
+import com.jetbrains.rd.ide.model.*
 import com.jetbrains.rd.platform.util.getLogger
 import com.jetbrains.rd.platform.util.idea.LifetimedService
 import com.jetbrains.rdclient.document.textControlId
@@ -35,13 +33,13 @@ class CommentClickDocHost(private val project: Project) : LifetimedService() {
 
   fun tryRequestHoverDoc(
     commentIdentifier: CommentIdentifier,
-    reference: CodeEntityReference,
+    reference: Reference,
     editor: Editor,
     contextPoint: Point,
   ) {
     val rdReference = reference.toRdReference(project)
-    if (rdReference !is RdCodeEntityReference) {
-      logger.error("Expected RdCodeEntityReference, got $rdReference for ${commentIdentifier.moniker}")
+    if (rdReference !is RdCodeEntityReference && rdReference !is RdProxyReference) {
+      logger.error("Expected RdCodeEntityReference or RdProxyReference, got $rdReference for ${commentIdentifier.moniker}")
       return
     }
 
