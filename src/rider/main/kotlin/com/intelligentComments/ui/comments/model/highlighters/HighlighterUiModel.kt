@@ -1,18 +1,27 @@
 package com.intelligentComments.ui.comments.model.highlighters
 
+import com.intelligentComments.core.comments.HighlightersClickHandler
+import com.intelligentComments.core.comments.RiderCommentsController
+import com.intelligentComments.core.comments.listeners.getBounds
 import com.intelligentComments.core.domain.core.TextHighlighter
+import com.intelligentComments.core.domain.core.tryFindComment
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
+import com.intelligentComments.ui.comments.model.tryGetRootUiModel
 import com.intelligentComments.ui.util.HashUtil
+import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.event.EditorMouseEvent
+import com.intellij.openapi.editor.impl.EditorImpl
 import com.intellij.openapi.project.Project
+import java.awt.Point
 
 class HighlighterUiModel(
   project: Project,
+  parent: UiInteractionModelBase?,
   private val highlighter: TextHighlighter
-) : UiInteractionModelBase(project) {
+) : UiInteractionModelBase(project, parent) {
   companion object {
-    fun getFor(project: Project, highlighter: TextHighlighter): HighlighterUiModel {
-      return HighlighterUiModel(project, highlighter)
+    fun getFor(project: Project, parent: UiInteractionModelBase?, highlighter: TextHighlighter): HighlighterUiModel {
+      return HighlighterUiModel(project, parent, highlighter)
     }
   }
 
@@ -38,10 +47,30 @@ class HighlighterUiModel(
   }
 
   override fun handleMouseOut(e: EditorMouseEvent): Boolean = applyMouseInOutAnimation(false)
-  override fun hashCode(): Int {
+
+  override fun handleClick(e: EditorMouseEvent): Boolean {
+    val root = tryGetRootUiModel(this)
+    var point = e.mouseEvent.point
+    val commentId = tryFindComment(highlighter)?.commentIdentifier
+
+    if (commentId != null && root != null) {
+      val rectangle = root.renderer.rectanglesModel?.getRectanglesFor(this)?.lastOrNull()
+      val folding = project.service<RiderCommentsController>().getFolding(commentId, e.editor as EditorImpl)
+
+      if (rectangle != null && folding != null) {
+        val bounds = folding.getBounds()
+        if (bounds != null) {
+          point = Point(rectangle.x + bounds.x, rectangle.y + rectangle.height + bounds.y)
+        }
+      }
+    }
+
+    e.editor.project?.service<HighlightersClickHandler>()?.handleClick(highlighter, e.editor, point)
+    return false
+  }
+
+  override fun calculateStateHash(): Int {
     val bsHashCode = if (backgroundStyle == null) 1 else backgroundStyle.hashCode()
     return HashUtil.hashCode(highlighter.hashCode(), textColor.hashCode(), bsHashCode, underline.hashCode())
   }
-
-  override fun equals(other: Any?): Boolean = other is HighlighterUiModel && other.hashCode() == hashCode()
 }

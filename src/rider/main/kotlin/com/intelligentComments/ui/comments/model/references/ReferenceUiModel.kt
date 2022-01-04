@@ -10,8 +10,9 @@ import com.intellij.openapi.project.Project
 
 open class ReferenceUiModel(
   project: Project,
+  parent: UiInteractionModelBase?,
   reference: Reference
-) : UiInteractionModelBase(project), ExpandableUiModel {
+) : UiInteractionModelBase(project, parent), ExpandableUiModel {
   companion object {
     fun getFrom(project: Project, reference: Reference): ReferenceUiModel {
       return when (reference) {
@@ -29,6 +30,8 @@ open class ReferenceUiModel(
   )
   override var isExpanded: Boolean = true
 
-  override fun hashCode(): Int = HashUtil.hashCode(headerUiModel.hashCode(), isExpanded.hashCode())
-  override fun equals(other: Any?): Boolean = other is ReferenceUiModel && other.hashCode() == hashCode()
+
+  override fun calculateStateHash(): Int {
+    return HashUtil.hashCode(headerUiModel.calculateStateHash(), isExpanded.hashCode())
+  }
 }

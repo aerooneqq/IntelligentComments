@@ -6,9 +6,15 @@ import com.intelligentComments.ui.comments.model.highlighters.HighlightedTextUiW
 import com.intelligentComments.ui.util.HashUtil
 import com.intellij.openapi.project.Project
 
-class TableNameUiModel(header: HighlightedText, project: Project) : UiInteractionModelBase(project) {
-  val highlightedTextUiWrapper = HighlightedTextUiWrapper(project, header)
+class TableNameUiModel(
+  header: HighlightedText,
+  parent: UiInteractionModelBase?,
+  project: Project
+) : UiInteractionModelBase(project, parent) {
+  val highlightedTextUiWrapper = HighlightedTextUiWrapper(project, this, header)
 
-  override fun hashCode(): Int = HashUtil.hashCode(highlightedTextUiWrapper.hashCode())
-  override fun equals(other: Any?): Boolean = other is TableNameUiModel && other.hashCode() == hashCode()
+
+  override fun calculateStateHash(): Int {
+    return HashUtil.hashCode(highlightedTextUiWrapper.calculateStateHash())
+  }
 }

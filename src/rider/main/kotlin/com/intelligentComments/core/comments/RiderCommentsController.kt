@@ -162,8 +162,8 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
 
   private fun getCommentFoldingRenderer(comment: CommentBase, editor: Editor): CustomFoldRegionRenderer {
     return when (comment) {
-      is DocComment -> DocCommentUiModel(comment, project, editor).getCustomFoldRegionRenderer(project)
-      is IntelligentComment -> IntelligentCommentUiModel(project, comment).getCustomFoldRegionRenderer(project)
+      is DocComment -> DocCommentUiModel(comment, project, editor).renderer
+      is IntelligentComment -> IntelligentCommentUiModel(project, comment).renderer
       else -> throw IllegalArgumentException(comment.javaClass.name)
     }
   }

@@ -6,8 +6,11 @@ import com.intellij.openapi.project.Project
 
 open class SectionUiModel<T : UiInteractionModelBase>(
   project: Project,
+  parent: UiInteractionModelBase?,
   val content: Collection<T>
-) : UiInteractionModelBase(project) {
-  override fun hashCode(): Int = HashUtil.calculateHashFor(content)
-  override fun equals(other: Any?): Boolean = other is SectionUiModel<*> && other.hashCode() == hashCode()
+) : UiInteractionModelBase(project, parent) {
+
+  override fun calculateStateHash(): Int {
+    return HashUtil.calculateHashFor(content) { it.calculateStateHash() }
+  }
 }

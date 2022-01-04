@@ -1,11 +1,24 @@
 using JetBrains.Annotations;
 using JetBrains.ReSharper.Psi;
+using JetBrains.Rider.Model;
+using JetBrains.Util;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
 
 public interface ICodeEntityReference : IReference
 {
-  new DeclaredElementResolveResult Resolve();
+  new DeclaredElementResolveResult Resolve(IResolveContext context);
+}
+
+public interface IXmlDocCodeEntityReference : ICodeEntityReference
+{
+}
+
+public interface ISandBoxCodeEntityReference : ICodeEntityReference
+{
+  public string SandboxDocumentId { get; }
+  public RdDocumentId OriginalDocumentId { get; }
+  public TextRange Range { get; }
 }
 
 public class DeclaredElementResolveResult : ResolveResult

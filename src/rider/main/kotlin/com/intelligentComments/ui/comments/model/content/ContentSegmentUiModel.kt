@@ -29,38 +29,41 @@ import com.intellij.openapi.project.Project
 
 abstract class ContentSegmentUiModel(
   project: Project,
+  parent: UiInteractionModelBase?,
   private val segment: ContentSegment
-) : UiInteractionModelBase(project) {
+) : UiInteractionModelBase(project, parent) {
   companion object {
-    fun getFrom(project: Project, segment: ContentSegment): ContentSegmentUiModel {
+    fun getFrom(project: Project, parent: UiInteractionModelBase?, segment: ContentSegment): ContentSegmentUiModel {
       //ToDo: sth is definitely wrong here
       return when (segment) {
-        is TextContentSegment -> TextContentSegmentUiModel(project, segment)
-        is ListContentSegment -> ListContentSegmentUiModel(project, segment)
-        is ImageContentSegment -> ImageContentSegmentUiModel(project, segment)
-        is TableContentSegment -> TableContentSegmentUiModel(project, segment)
-        is ParagraphContentSegment -> ParagraphUiModel(project, segment)
-        is TypeParamSegment -> TypeParamUiModel(project, segment)
-        is ParameterSegment -> ParameterUiModel(project, segment)
-        is ReturnSegment -> ReturnUiModel(project, segment)
-        is RemarksSegment -> RemarksUiModel(project, segment)
-        is ExceptionSegment -> ExceptionUiModel(project, segment)
-        is SeeAlsoSegment -> SeeAlsoUiModel.getFor(project, segment)
-        is GroupedSeeAlsoSegments -> GroupedSeeAlsoUiModel(project, segment)
-        is GroupedReturnSegments -> GroupedReturnUiModel(project, segment)
-        is GroupedParamSegments -> GroupedParamsUiModel(project, segment)
-        is GroupedTypeParamSegments -> GroupedTypeParamsUiModel(project, segment)
-        is GroupedExceptionsSegments -> GroupedExceptionUiModel(project, segment)
-        is GroupedSummarySegments -> GroupedSummaryUiModel(project, segment)
-        is GroupedRemarksSegments -> GroupedRemarksUiModel(project, segment)
-        is ExampleContentSegment -> ExampleSegmentUiModel(project, segment)
-        is SummaryContentSegment -> SummaryUiModel(project, segment)
-        is CodeSegment -> CodeSegmentUiModel(project, segment)
+        is TextContentSegment -> TextContentSegmentUiModel(project, parent, segment)
+        is ListContentSegment -> ListContentSegmentUiModel(project, parent, segment)
+        is ImageContentSegment -> ImageContentSegmentUiModel(project, parent, segment)
+        is TableContentSegment -> TableContentSegmentUiModel(project, parent, segment)
+        is ParagraphContentSegment -> ParagraphUiModel(project, parent, segment)
+        is TypeParamSegment -> TypeParamUiModel(project, parent, segment)
+        is ParameterSegment -> ParameterUiModel(project, parent, segment)
+        is ReturnSegment -> ReturnUiModel(project, parent, segment)
+        is RemarksSegment -> RemarksUiModel(project, parent, segment)
+        is ExceptionSegment -> ExceptionUiModel(project, parent, segment)
+        is SeeAlsoSegment -> SeeAlsoUiModel.getFor(project, parent, segment)
+        is GroupedSeeAlsoSegments -> GroupedSeeAlsoUiModel(project, parent, segment)
+        is GroupedReturnSegments -> GroupedReturnUiModel(project, parent, segment)
+        is GroupedParamSegments -> GroupedParamsUiModel(project, parent, segment)
+        is GroupedTypeParamSegments -> GroupedTypeParamsUiModel(project, parent, segment)
+        is GroupedExceptionsSegments -> GroupedExceptionUiModel(project, parent, segment)
+        is GroupedSummarySegments -> GroupedSummaryUiModel(project, parent, segment)
+        is GroupedRemarksSegments -> GroupedRemarksUiModel(project, parent, segment)
+        is ExampleContentSegment -> ExampleSegmentUiModel(project, parent, segment)
+        is SummaryContentSegment -> SummaryUiModel(project, parent, segment)
+        is CodeSegment -> CodeSegmentUiModel(project, parent, segment)
         else -> throw IllegalArgumentException(segment.javaClass.name)
       }
     }
   }
 
-  override fun hashCode(): Int = HashUtil.hashCode(segment.hashCode())
-  override fun equals(other: Any?): Boolean = other is ContentSegmentUiModel && other.hashCode() == hashCode()
+
+  override fun calculateStateHash(): Int {
+    return HashUtil.hashCode(segment.hashCode())
+  }
 }

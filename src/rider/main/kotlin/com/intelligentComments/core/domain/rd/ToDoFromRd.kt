@@ -19,7 +19,7 @@ open class ToDoFromRd(todo: RdToDo, project: Project) : UniqueEntityImpl(), ToDo
   final override val name: String = todo.name
   final override val description: ContentSegments = ContentSegmentsFromRd(todo.description, null, project)
   final override val blockingReferences: Collection<Reference> =
-    todo.blockingReferences.map { ReferenceFromRd.getFrom(it) }
+    todo.blockingReferences.map { ReferenceFromRd.getFrom(project, it) }
 }
 
 class ToDoWithTicketsFromRd(todo: RdToDoWithTickets, project: Project) : ToDoFromRd(todo, project), ToDoWithTickets {

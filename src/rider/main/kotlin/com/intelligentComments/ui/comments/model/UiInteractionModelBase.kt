@@ -3,6 +3,7 @@ package com.intelligentComments.ui.comments.model
 import com.intelligentComments.ui.colors.ColorName
 import com.intelligentComments.ui.colors.Colors
 import com.intelligentComments.ui.colors.ColorsProvider
+import com.intelligentComments.ui.comments.renderers.RendererWithRectangleModel
 import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.CustomFoldRegionRenderer
 import com.intellij.openapi.editor.EditorCustomElementRenderer
@@ -10,7 +11,10 @@ import com.intellij.openapi.editor.event.EditorMouseEvent
 import com.intellij.openapi.project.Project
 import java.awt.Color
 
-open class UiInteractionModelBase(val project: Project) {
+abstract class UiInteractionModelBase(
+  val project: Project,
+  val parent: UiInteractionModelBase?
+) {
   protected val colorsProvider = project.service<ColorsProvider>()
 
   protected var myMouseIn: Boolean = false
@@ -19,6 +23,8 @@ open class UiInteractionModelBase(val project: Project) {
 
   protected open val backgroundColorKey: ColorName = Colors.EmptyColor
   protected open val hoveredBackgroundColorKey: ColorName = Colors.EmptyColor
+
+  abstract fun calculateStateHash(): Int
 
   open val backgroundColor: Color
     get() = if (myMouseIn) {
@@ -42,9 +48,17 @@ open class UiInteractionModelBase(val project: Project) {
   }
 }
 
+fun tryGetRootUiModel(model: UiInteractionModelBase): RootUiModel? {
+  var current: UiInteractionModelBase? = model
+  while (current != null && current !is RootUiModel) {
+    current = current.parent
+  }
+
+  return current as? RootUiModel
+}
+
 interface RootUiModel {
-  fun getEditorCustomElementRenderer(project: Project): EditorCustomElementRenderer
-  fun getCustomFoldRegionRenderer(project: Project): CustomFoldRegionRenderer
+  val renderer: RendererWithRectangleModel
 }
 
 interface ExpandableUiModel {

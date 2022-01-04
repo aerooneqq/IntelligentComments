@@ -3,6 +3,7 @@ package com.intelligentComments.ui.comments.model.content.list
 import com.intelligentComments.core.domain.core.ListContentSegment
 import com.intelligentComments.core.domain.core.ListItem
 import com.intelligentComments.ui.comments.model.ExpandableUiModel
+import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intelligentComments.ui.comments.model.content.ContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.ContentSegmentsUiModel
 import com.intelligentComments.ui.util.HashUtil
@@ -10,36 +11,38 @@ import com.intellij.openapi.project.Project
 
 class ListContentSegmentUiModel(
   project: Project,
+  parent: UiInteractionModelBase?,
   listSegment: ListContentSegment
-) : ContentSegmentUiModel(project, listSegment), ExpandableUiModel {
+) : ContentSegmentUiModel(project, parent, listSegment), ExpandableUiModel {
   private val header = listSegment.header
   val headerUiModel = if (header == null) null else {
-    ListContentSegmentHeaderUiModel(project, header, this)
+    ListContentSegmentHeaderUiModel(project, this, header)
   }
 
   val listKind = listSegment.listKind
-  val items = listSegment.content.map { ListItemUiModel(project, it) }
+  val items = listSegment.content.map { ListItemUiModel(project, this, it) }
 
   override var isExpanded = true
 
-  override fun hashCode(): Int =
-    HashUtil.hashCode(header.hashCode(), HashUtil.calculateHashFor(items), isExpanded.hashCode())
-
-  override fun equals(other: Any?): Boolean = other is ListContentSegmentUiModel && other.hashCode() == hashCode()
+  override fun calculateStateHash(): Int {
+    val headerHash = headerUiModel?.calculateStateHash() ?: 1
+    return HashUtil.hashCode(headerHash, HashUtil.calculateHashFor(items) { it.calculateStateHash() }, isExpanded.hashCode())
+  }
 }
 
-class ListItemUiModel(project: Project, listItem: ListItem) {
-  val header = if (listItem.header == null) null else ContentSegmentsUiModel(project, listItem.header)
-  val description = if (listItem.description == null) null else ContentSegmentsUiModel(project, listItem.description)
+class ListItemUiModel(
+  project: Project,
+  parent: UiInteractionModelBase?,
+  listItem: ListItem
+) : UiInteractionModelBase(project, parent) {
+  val header = if (listItem.header == null) null else ContentSegmentsUiModel(project, this, listItem.header)
+  val description = if (listItem.description == null) null else ContentSegmentsUiModel(project, this, listItem.description)
 
-  override fun hashCode(): Int {
-    var hash = header?.hashCode() ?: 1
-    hash *= description?.hashCode() ?: 1
+
+  override fun calculateStateHash(): Int {
+    var hash = header?.calculateStateHash() ?: 1
+    hash *= description?.calculateStateHash() ?: 1
 
     return hash
-  }
-
-  override fun equals(other: Any?): Boolean {
-    return other is ListItemUiModel && other.hashCode() == hashCode()
   }
 }

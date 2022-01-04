@@ -28,7 +28,7 @@ class IntelligentCommentFromRd(
 
   private fun createContent(project: Project) = IntelligentCommentContentFromRd(rdComment.content, this, project)
   private fun createReferences(): List<ReferenceFromRd> =
-    rdComment.references?.map { ReferenceFromRd.getFrom(it) } ?: emptyList()
+    rdComment.references?.map { ReferenceFromRd.getFrom(project, it) } ?: emptyList()
 
   private fun createInvariants(): List<InvariantFromRd> =
     rdComment.invariants?.map { InvariantFromRd.getFrom(it) } ?: emptyList()

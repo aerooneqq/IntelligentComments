@@ -5,6 +5,7 @@ import com.intelligentComments.core.settings.RiderIntelligentCommentsSettingsPro
 import com.intelligentComments.ui.colors.ColorName
 import com.intelligentComments.ui.colors.Colors
 import com.intelligentComments.ui.colors.ColorsProvider
+import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intelligentComments.ui.comments.model.content.seeAlso.GroupedSeeAlsoUiModel
 import com.intelligentComments.ui.comments.model.content.text.TextContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.highlighters.HighlightedTextUiWrapper
@@ -13,20 +14,22 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import java.awt.Font
 
-open class GroupedUiModel(
+abstract class GroupedUiModel(
   project: Project,
+  parent: UiInteractionModelBase?,
   groupedModel: GroupedContentSegment<*>,
   header: HighlightedText
-) : ContentSegmentUiModel(project, groupedModel) {
-  val header = HighlightedTextUiWrapper(project, header)
+) : ContentSegmentUiModel(project, parent, groupedModel) {
+  val header = HighlightedTextUiWrapper(project, this, header)
 }
 
 open class GroupedContentWithTextUiModel(
   project: Project,
+  parent: UiInteractionModelBase?,
   groupedModel: GroupedContentSegment<*>,
   textSegmentsToMerge: List<HighlightedText>,
   header: HighlightedText
-) : GroupedUiModel(project, groupedModel, header) {
+) : GroupedUiModel(project, parent, groupedModel, header) {
   val description: TextContentSegmentUiModel
 
 
@@ -40,31 +43,38 @@ open class GroupedContentWithTextUiModel(
       }
     }
 
-    description = TextContentSegmentUiModel(project, object : UniqueEntityImpl(), TextContentSegment {
+    description = TextContentSegmentUiModel(project, this, object : UniqueEntityImpl(), TextContentSegment {
       override val highlightedText: HighlightedText = unitedDescription
       override val parent: Parentable = this
     })
   }
 
 
-  override fun hashCode(): Int = HashUtil.hashCode(description.hashCode(), header.hashCode())
-  override fun equals(other: Any?): Boolean = other is GroupedSeeAlsoUiModel && other.hashCode() == hashCode()
+  override fun calculateStateHash(): Int {
+    return HashUtil.hashCode(description.hashCode(), header.hashCode())
+  }
 }
 
 open class GroupedContentUiModel(
   project: Project,
+  parent: UiInteractionModelBase?,
   groupedModel: GroupedContentSegment<*>,
   segments: List<ContentSegments>,
   header: HighlightedText
-) : GroupedUiModel(project, groupedModel, header) {
-  val content = ContentSegmentsUiModel(project, segments.map { it.segments }.flatten())
+) : GroupedUiModel(project, parent, groupedModel, header) {
+  val content = ContentSegmentsUiModel(project, this, segments.map { it.segments }.flatten())
+
+  override fun calculateStateHash(): Int {
+    return HashUtil.hashCode(header.calculateStateHash(), content.calculateStateHash())
+  }
 }
 
 fun getSecondLevelHeader(project: Project, text: String, parent: Parentable): HighlightedText {
   val colorsProvider = project.service<ColorsProvider>()
   val textColor = colorsProvider.getColorFor(Colors.TextInSectionsHeadersColor)
 
-  val highlighter = TextHighlighterImpl(0, text.length, textColor, TextAttributesImpl(false, 500f, Font.PLAIN))
+  val attributes = TextAttributesImpl(false, 900f, Font.PLAIN)
+  val highlighter = TextHighlighterImpl(null,0, text.length, textColor, attributes = attributes)
   return HighlightedTextImpl(text, parent, listOf(highlighter))
 }
 
@@ -80,7 +90,7 @@ fun getFirstLevelHeader(
   val returnBackgroundColor = colorsProvider.getColorFor(backgroundColorKey)
 
   val length = text.length
-  val highlighter = CommonsHighlightersFactory.getWithRoundedBackgroundRect(textColor, returnBackgroundColor, length)
+  val highlighter = CommonsHighlightersFactory.getWithRoundedBackgroundRect(null, textColor, returnBackgroundColor, length)
 
   return HighlightedTextImpl(text, parent, listOf(highlighter))
 }

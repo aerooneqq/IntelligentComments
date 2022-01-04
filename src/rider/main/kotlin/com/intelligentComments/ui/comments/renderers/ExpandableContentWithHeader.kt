@@ -1,5 +1,6 @@
 package com.intelligentComments.ui.comments.renderers
 
+import com.intelligentComments.ui.comments.model.ExpandableUiModel
 import com.intelligentComments.ui.comments.model.HeaderUiModel
 import com.intelligentComments.ui.core.RectangleModelBuildContext
 import com.intelligentComments.ui.core.RectangleModelBuildContributor
@@ -28,11 +29,17 @@ abstract class ExpandableContentWithHeader(
     val color = headerUiModel.backgroundColor
     val adjustedRect = HeaderWithBackground.drawTextWithBackground(g, rect, editorImpl, text, color)
 
-    if (headerUiModel.parent.isExpanded) {
+    if (isExpanded()) {
       return renderContent(g, adjustedRect, editorImpl, rectanglesModel)
     }
 
     return adjustedRect
+  }
+
+  private fun isExpanded(): Boolean {
+    val parent = headerUiModel.parent
+    parent as ExpandableUiModel
+    return parent.isExpanded
   }
 
   protected abstract fun renderContent(
@@ -47,7 +54,7 @@ abstract class ExpandableContentWithHeader(
     additionalRenderInfo: RenderAdditionalInfo
   ): Int {
     val headerHeight = HeaderWithBackground.calculateHeaderHeight(editorImpl)
-    val contentHeight = if (headerUiModel.parent.isExpanded) calculateContentHeight(editorImpl, additionalRenderInfo) else 0
+    val contentHeight = if (isExpanded()) calculateContentHeight(editorImpl, additionalRenderInfo) else 0
     return headerHeight + contentHeight
   }
 
@@ -58,7 +65,7 @@ abstract class ExpandableContentWithHeader(
     additionalRenderInfo: RenderAdditionalInfo
   ): Int {
     val headerWidth = HeaderWithBackground.calculateHeaderWidth(editorImpl, headerUiModel.text)
-    val contentWidth = if (headerUiModel.parent.isExpanded) calculateContentWidth(editorImpl, additionalRenderInfo) else 0
+    val contentWidth = if (isExpanded()) calculateContentWidth(editorImpl, additionalRenderInfo) else 0
     return max(headerWidth, contentWidth)
   }
 
@@ -73,7 +80,7 @@ abstract class ExpandableContentWithHeader(
     val headerRect = Rectangle(rect.x, rect.y, headerWidth, headerHeight)
     context.rectanglesModel.addElement(headerUiModel, headerRect)
 
-    if (headerUiModel.parent.isExpanded) {
+    if (isExpanded()) {
       UpdatedRectCookie(context.rect, yDelta = headerHeight).use {
         acceptContent(context)
       }

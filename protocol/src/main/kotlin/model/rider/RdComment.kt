@@ -2,6 +2,9 @@ package model.rider
 
 import com.jetbrains.rd.generator.nova.*
 import com.jetbrains.rider.model.nova.ide.SolutionModel
+import com.jetbrains.rider.model.nova.ide.SolutionModel.RdDocumentId
+import com.jetbrains.rider.model.nova.ide.SolutionModel.RdTextRange
+import com.jetbrains.rider.model.nova.ide.SolutionModel.TextControlId
 
 
 @Suppress("unused")
@@ -166,7 +169,15 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
 
   val RdHttpLinkReference = structdef extends RdExternalReference { }
 
-  val RdCodeEntityReference = structdef extends RdReference { }
+  val RdCodeEntityReference = basestruct extends RdReference { }
+
+  val RdXmlDocCodeEntityReference = structdef extends RdCodeEntityReference { }
+
+  val RdSandboxCodeEntityReference = structdef extends RdCodeEntityReference {
+    field("SandboxFileId", PredefinedType.string)
+    field("OriginalDocumentId", RdDocumentId.nullable)
+    field("Range", RdTextRange)
+  }
 
   val RdLangWordReference = structdef extends RdReference { }
 
@@ -249,7 +260,14 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
     field("CanUseCachedValue", PredefinedType.bool)
   }
 
+  val RdCommentClickDocRequest = structdef {
+    field("Reference", RdCodeEntityReference)
+    field("TextControlId", TextControlId)
+  }
+
   init {
     call("HighlightCode", RdCodeHighlightingRequest, RdHighlightedText.nullable)
+    call("RequestClickDoc", RdCommentClickDocRequest, PredefinedType.int.nullable)
+    call("PerformNavigation", RdCodeEntityReference, PredefinedType.void)
   }
 }

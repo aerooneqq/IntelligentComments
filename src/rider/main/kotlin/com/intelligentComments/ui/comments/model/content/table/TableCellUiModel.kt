@@ -8,13 +8,19 @@ import com.intelligentComments.ui.comments.model.content.ContentSegmentsUiModel
 import com.intelligentComments.ui.util.HashUtil
 import com.intellij.openapi.project.Project
 
-class TableCellUiModel(cell: TableCell, project: Project) : UiInteractionModelBase(project) {
-  val contentSegments = ContentSegmentsUiModel(project, cell.contentSegments)
+class TableCellUiModel(
+  cell: TableCell,
+  parent: UiInteractionModelBase?,
+  project: Project
+) : UiInteractionModelBase(project, parent) {
+  val contentSegments = ContentSegmentsUiModel(project, this, cell.contentSegments)
   val properties = cell.properties
 
   override val backgroundColorKey: ColorName
     get() = if (properties.isHeader) Colors.TableHeaderCellBackgroundColor else Colors.EmptyColor
 
-  override fun hashCode(): Int = HashUtil.hashCode(contentSegments.hashCode(), properties.hashCode())
-  override fun equals(other: Any?): Boolean = other is TableCellUiModel && other.hashCode() == hashCode()
+
+  override fun calculateStateHash(): Int {
+    return HashUtil.hashCode(contentSegments.calculateStateHash(), properties.hashCode())
+  }
 }

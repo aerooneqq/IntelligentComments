@@ -1,16 +1,23 @@
 package com.intelligentComments.core.domain.core
 
-import java.nio.file.Path
+import com.intellij.openapi.editor.Document
+import com.intellij.openapi.util.TextRange
 
-interface Reference : UniqueEntity
-
-interface CodeEntityReference : Reference {
-  val rawMemberName: String
+interface Reference : UniqueEntity {
+  val rawValue: String
 }
 
-interface ExternalReference : Reference {
+interface CodeEntityReference : Reference
 
+interface XmlDocCodeEntityReference : CodeEntityReference
+
+interface SandboxCodeEntityReference : CodeEntityReference {
+  val originalDocument: Document?
+  val sandboxFileId: String
+  val range: TextRange
 }
+
+interface ExternalReference : Reference
 
 interface HttpLinkReference : ExternalReference {
   val rawLink: String

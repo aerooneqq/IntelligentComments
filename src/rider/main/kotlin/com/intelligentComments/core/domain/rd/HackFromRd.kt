@@ -18,7 +18,7 @@ open class HackFromRd(rdHack: RdHack, project: Project) : UniqueEntityImpl(), Ha
   final override val name: String = rdHack.name
   final override val description: ContentSegments = ContentSegmentsFromRd(rdHack.description, null, project)
   final override val blockingReferences: Collection<Reference> =
-    rdHack.blockingReferences.map { ReferenceFromRd.getFrom(it) }
+    rdHack.blockingReferences.map { ReferenceFromRd.getFrom(project, it) }
 }
 
 class HackWithTicketsFromRd(

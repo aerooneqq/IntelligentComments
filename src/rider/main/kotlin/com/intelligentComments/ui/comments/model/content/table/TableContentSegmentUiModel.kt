@@ -1,20 +1,23 @@
 package com.intelligentComments.ui.comments.model.content.table
 
 import com.intelligentComments.core.domain.core.TableContentSegment
+import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intelligentComments.ui.comments.model.content.ContentSegmentUiModel
 import com.intelligentComments.ui.util.HashUtil
 import com.intellij.openapi.project.Project
 
 class TableContentSegmentUiModel(
   project: Project,
+  parent: UiInteractionModelBase?,
   segment: TableContentSegment
-) : ContentSegmentUiModel(project, segment) {
-  val rows = segment.rows.map { TableRowSegmentUiModel(it, project) }
+) : ContentSegmentUiModel(project, parent, segment) {
+  val rows = segment.rows.map { TableRowSegmentUiModel(it, this, project) }
 
   private val header = segment.header
-  val headerUiModel = if (header == null) null else TableNameUiModel(header, project)
+  val headerUiModel = if (header == null) null else TableNameUiModel(header, this, project)
 
 
-  override fun hashCode(): Int = HashUtil.hashCode(header.hashCode(), HashUtil.calculateHashFor(rows))
-  override fun equals(other: Any?): Boolean = other is TableContentSegmentUiModel && other.hashCode() == hashCode()
+  override fun calculateStateHash(): Int {
+    return HashUtil.hashCode(headerUiModel?.calculateStateHash() ?: 1, HashUtil.calculateHashFor(rows) { it.calculateStateHash() })
+  }
 }

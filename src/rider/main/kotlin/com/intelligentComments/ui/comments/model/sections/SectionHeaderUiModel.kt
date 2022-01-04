@@ -12,27 +12,31 @@ import javax.swing.Icon
 
 class SectionHeaderUiModel(
   project: Project,
+  parent: UiInteractionModelBase?,
   val icon: Icon,
-  headerTextInfo: HeaderTextInfo,
-  private val parent: ExpandableUiModel
-) : UiInteractionModelBase(project) {
+  headerTextInfo: HeaderTextInfo
+) : UiInteractionModelBase(project, parent) {
   private val expandedName = headerTextInfo.expandedName
   private val collapsedName = headerTextInfo.closedName
 
   private val highlightedTextExpanded = HighlightedTextImpl(expandedName, null, listOf(getHeaderHighlighter(expandedName)))
   private val highlightedTextCollapsed = HighlightedTextImpl(collapsedName, null, listOf(getHeaderHighlighter(collapsedName)))
 
-  private val expandedHeaderText = HighlightedTextUiWrapper(project, highlightedTextExpanded)
-  private val collapsedHeaderText = HighlightedTextUiWrapper(project, highlightedTextCollapsed)
+  private val expandedHeaderText = HighlightedTextUiWrapper(project, this, highlightedTextExpanded)
+  private val collapsedHeaderText = HighlightedTextUiWrapper(project, this, highlightedTextCollapsed)
 
   val headerText: HighlightedTextUiWrapper
-    get() = if (parent.isExpanded) expandedHeaderText else collapsedHeaderText
+    get() {
+      parent as ExpandableUiModel
+      return if (parent.isExpanded) expandedHeaderText else collapsedHeaderText
+    }
 
   private fun getHeaderHighlighter(text: String): TextHighlighter {
     val defaultColor = colorsProvider.getColorFor(Colors.TextDefaultColor)
     val hoveredColor = colorsProvider.getColorFor(Colors.TextDefaultHoveredColor)
 
     return TextHighlighterImpl(
+      null,
       0,
       text.length,
       defaultColor,
@@ -41,7 +45,12 @@ class SectionHeaderUiModel(
   }
 
   override fun handleClick(e: EditorMouseEvent): Boolean {
+    parent as ExpandableUiModel
     parent.isExpanded = !parent.isExpanded
     return true
+  }
+
+  override fun calculateStateHash(): Int {
+    return headerText.calculateStateHash()
   }
 }

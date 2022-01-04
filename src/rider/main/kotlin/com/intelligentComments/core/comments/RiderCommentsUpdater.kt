@@ -4,6 +4,7 @@ import com.intelligentComments.core.changes.Change
 import com.intelligentComments.core.changes.ChangeListener
 import com.intelligentComments.core.changes.ChangeManager
 import com.intelligentComments.core.changes.RenderAffectedCommentChange
+import com.intelligentComments.ui.comments.renderers.RendererWithRectangleModel
 import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.impl.EditorImpl
 import com.intellij.openapi.project.Project
@@ -24,7 +25,10 @@ class RiderCommentsUpdater(project: Project) : LifetimedProjectComponent(project
   override fun handleChange(change: Change) {
     if (change is RenderAffectedCommentChange) {
       for ((_, editor) in textControlHost.openedEditors) {
-        controller.getFolding(change.id, editor as EditorImpl)?.repaint()
+        val folding = controller.getFolding(change.id, editor as EditorImpl)
+        val renderer = folding?.renderer as? RendererWithRectangleModel ?: return
+        renderer.invalidateRectangleModel(editor)
+        folding.repaint()
       }
     }
   }

@@ -14,22 +14,19 @@ class DocCommentUiModel(
   val docComment: DocComment,
   project: Project,
   val editor: Editor
-) : UiInteractionModelBase(project), RootUiModel {
+) : UiInteractionModelBase(project, null), RootUiModel {
+  override val renderer = DocCommentRenderer(this)
+
   val contentSection: SectionUiModel<ContentSegmentUiModel>
   val underlyingTextRange = docComment.rangeMarker.range
 
 
   init {
-    val segments = docComment.content.segments.map { ContentSegmentUiModel.getFrom(project, it) }
-    contentSection = SectionUiModel(project, segments)
+    val segments = docComment.content.segments.map { ContentSegmentUiModel.getFrom(project, this, it) }
+    contentSection = SectionUiModel(project, this, segments)
   }
 
-
-  override fun getCustomFoldRegionRenderer(project: Project): CustomFoldRegionRenderer {
-    return DocCommentRenderer(this)
-  }
-
-  override fun getEditorCustomElementRenderer(project: Project): EditorCustomElementRenderer {
-    return DocCommentRenderer(this)
+  override fun calculateStateHash(): Int {
+    return contentSection.calculateStateHash()
   }
 }

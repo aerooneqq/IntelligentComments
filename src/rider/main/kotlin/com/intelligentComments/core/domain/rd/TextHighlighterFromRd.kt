@@ -15,35 +15,44 @@ import java.awt.Font
 import java.awt.font.TextAttribute
 
 
-fun RdTextHighlighter.toIdeaHighlighter(project: Project): TextHighlighter {
-  if (isResharperHighlighter == true) return toIdeaHighlighterFromReSharper(project)
+fun RdTextHighlighter.toIdeaHighlighter(project: Project, parent: Parentable?): TextHighlighter {
+  if (isResharperHighlighter == true) return toIdeaHighlighterFromReSharper(project, parent)
 
-  return toIdeaHighlighterInternal(project, null)
+  return toIdeaHighlighterInternal(project, parent, null)
 }
 
-private fun RdTextHighlighter.toIdeaHighlighterInternal(project: Project, textColor: Color?): TextHighlighter {
+private fun RdTextHighlighter.toIdeaHighlighterInternal(
+  project: Project,
+  parent: Parentable?,
+  textColor: Color?
+): TextHighlighter {
   val finalTextColor = textColor ?: project.service<ColorsProvider>().getColorFor(ColorName(key))
 
   val attributes = attributes.toIntelligentCommentsAttributes()
   val mouseInOutAnimation = animation?.toTextAnimation(finalTextColor, project)
+  val references = references?.map { ReferenceFromRd.getFrom(project, it) } ?: emptyList()
   val backgroundStyle = if (backgroundStyle != null) {
     BackgroundStyleFromRd(backgroundStyle)
   } else {
     null
   }
 
-  return TextHighlighterImpl(startOffset, endOffset, finalTextColor, attributes, backgroundStyle, mouseInOutAnimation)
+  return TextHighlighterImpl(
+     parent, startOffset, endOffset, finalTextColor, references, attributes, backgroundStyle, mouseInOutAnimation)
 }
 
-private fun RdTextHighlighter.toIdeaHighlighterFromReSharper(project: Project): TextHighlighter {
+private fun RdTextHighlighter.toIdeaHighlighterFromReSharper(
+  project: Project,
+  parent: Parentable?,
+): TextHighlighter {
   val scheme = EditorColorsManager.getInstance().globalScheme
   val key = IdeaTextAttributesKey(null, this.key)
 
   val host = TextAttributesRegistrationHost.getInstance()
-  val textAttributes = host.getTextAttributes(key, scheme) ?: return toIdeaHighlighterInternal(project, null)
+  val textAttributes = host.getTextAttributes(key, scheme) ?: return toIdeaHighlighterInternal(project, parent, null)
 
   val textColor = textAttributes.foregroundColor.darker()
-  return toIdeaHighlighterInternal(project, textColor)
+  return toIdeaHighlighterInternal(project, parent, textColor)
 }
 
 class BackgroundStyleFromRd(rdBackgroundStyle: RdBackgroundStyle) : BackgroundStyle {

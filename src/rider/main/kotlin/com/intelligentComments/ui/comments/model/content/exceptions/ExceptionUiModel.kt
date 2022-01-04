@@ -1,6 +1,7 @@
 package com.intelligentComments.ui.comments.model.content.exceptions
 
 import com.intelligentComments.core.domain.core.ExceptionSegment
+import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intelligentComments.ui.comments.model.content.ContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.ContentSegmentsUiModel
 import com.intelligentComments.ui.comments.model.content.getSecondLevelHeader
@@ -10,12 +11,14 @@ import com.intellij.openapi.project.Project
 
 class ExceptionUiModel(
   project: Project,
+  parent: UiInteractionModelBase?,
   exceptionSegment: ExceptionSegment
-) : ContentSegmentUiModel(project, exceptionSegment) {
-  val name = HighlightedTextUiWrapper(project, exceptionSegment.name)
-  val content = ContentSegmentsUiModel(project, exceptionSegment.content)
+) : ContentSegmentUiModel(project, parent, exceptionSegment) {
+  val name = HighlightedTextUiWrapper(project, this, exceptionSegment.name)
+  val content = ContentSegmentsUiModel(project, this, exceptionSegment.content)
 
-  override fun hashCode(): Int = HashUtil.hashCode(name.hashCode(), content.hashCode())
 
-  override fun equals(other: Any?): Boolean = other is ExceptionUiModel && other.hashCode() == hashCode()
+  override fun calculateStateHash(): Int {
+    return HashUtil.hashCode(name.calculateStateHash(), content.calculateStateHash())
+  }
 }

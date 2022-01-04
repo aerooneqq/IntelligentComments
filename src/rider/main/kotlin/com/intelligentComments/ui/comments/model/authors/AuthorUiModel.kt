@@ -7,15 +7,19 @@ import com.intellij.openapi.project.Project
 
 open class AuthorUiModel(
   project: Project,
+  parent: UiInteractionModelBase?,
   private val author: CommentAuthor
-) : UiInteractionModelBase(project) {
+) : UiInteractionModelBase(project, parent) {
   companion object {
-    fun getFrom(project: Project, author: CommentAuthor): AuthorUiModel = AuthorUiModel(project, author)
+    fun getFrom(
+      project: Project,
+      parent: UiInteractionModelBase?,
+      author: CommentAuthor
+    ): AuthorUiModel = AuthorUiModel(project, parent, author)
   }
 
   val name = author.name
   val date = author.date
 
-  override fun hashCode(): Int = HashUtil.hashCode(author.hashCode())
-  override fun equals(other: Any?): Boolean = other is AuthorUiModel && other.hashCode() == hashCode()
+  override fun calculateStateHash(): Int = HashUtil.hashCode(author.hashCode())
 }

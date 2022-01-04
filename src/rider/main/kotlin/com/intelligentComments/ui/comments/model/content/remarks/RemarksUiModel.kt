@@ -1,6 +1,7 @@
 package com.intelligentComments.ui.comments.model.content.remarks
 
 import com.intelligentComments.core.domain.core.RemarksSegment
+import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intelligentComments.ui.comments.model.content.ContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.ContentSegmentsUiModel
 import com.intelligentComments.ui.util.HashUtil
@@ -8,10 +9,13 @@ import com.intellij.openapi.project.Project
 
 class RemarksUiModel(
   project: Project,
+  parent: UiInteractionModelBase?,
   remarksSegment: RemarksSegment
-) : ContentSegmentUiModel(project, remarksSegment) {
-  val content = ContentSegmentsUiModel(project, remarksSegment.content)
+) : ContentSegmentUiModel(project, parent, remarksSegment) {
+  val content = ContentSegmentsUiModel(project, this, remarksSegment.content)
 
-  override fun hashCode(): Int = HashUtil.hashCode(content.hashCode())
-  override fun equals(other: Any?): Boolean = other is RemarksUiModel && other.hashCode() == hashCode()
+
+  override fun calculateStateHash(): Int {
+    return HashUtil.hashCode(content.calculateStateHash())
+  }
 }

@@ -2,6 +2,7 @@ package com.intelligentComments.ui.comments.model.content.`return`
 
 import com.intelligentComments.core.domain.core.ReturnSegment
 import com.intelligentComments.ui.colors.Colors
+import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intelligentComments.ui.comments.model.content.ContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.ContentSegmentsUiModel
 import com.intelligentComments.ui.comments.model.content.getFirstLevelHeader
@@ -9,8 +10,12 @@ import com.intelligentComments.ui.comments.model.highlighters.HighlightedTextUiW
 import com.intelligentComments.ui.util.HashUtil
 import com.intellij.openapi.project.Project
 
-class ReturnUiModel(project: Project, ret: ReturnSegment) : ContentSegmentUiModel(project, ret) {
-  val content = ContentSegmentsUiModel(project, ret.content)
+class ReturnUiModel(
+  project: Project,
+  parent: UiInteractionModelBase?,
+  ret: ReturnSegment
+) : ContentSegmentUiModel(project, parent, ret) {
+  val content = ContentSegmentsUiModel(project, this, ret.content)
 
   private val highlightedHeader = getFirstLevelHeader(
     project,
@@ -20,11 +25,12 @@ class ReturnUiModel(project: Project, ret: ReturnSegment) : ContentSegmentUiMode
     ret
   )
 
-  val headerText = HighlightedTextUiWrapper(project, highlightedHeader)
+  val headerText = HighlightedTextUiWrapper(project, this, highlightedHeader)
 
 
-  override fun hashCode(): Int = HashUtil.hashCode(content.hashCode())
-  override fun equals(other: Any?): Boolean = other is ReturnUiModel && other.hashCode() == hashCode()
+  override fun calculateStateHash(): Int {
+    return HashUtil.hashCode(content.calculateStateHash())
+  }
 }
 
 const val returnSectionName = "Returns"

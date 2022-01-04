@@ -7,11 +7,14 @@ import com.intelligentComments.ui.colors.Colors
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intellij.openapi.project.Project
 
-open class InvariantUiModel(project: Project) : UiInteractionModelBase(project) {
+abstract class InvariantUiModel(
+  project: Project,
+  parent: UiInteractionModelBase?,
+) : UiInteractionModelBase(project, parent) {
   companion object {
-    fun getFrom(project: Project, invariant: Invariant): InvariantUiModel {
+    fun getFrom(project: Project, parent: UiInteractionModelBase?, invariant: Invariant): InvariantUiModel {
       return when (invariant) {
-        is TextInvariant -> TextInvariantUiModel(project, invariant)
+        is TextInvariant -> TextInvariantUiModel(project, parent, invariant)
         else -> throw IllegalArgumentException(invariant.toString())
       }
     }

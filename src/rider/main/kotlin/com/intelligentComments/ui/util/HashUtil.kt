@@ -4,9 +4,9 @@ class HashUtil {
   companion object {
     private const val mod = 1000007
 
-    fun <T> calculateHashFor(items: Collection<T>): Int {
+    fun <T> calculateHashFor(items: Collection<T>, hashGetter: (T) -> Int): Int {
       var hash = 1
-      for (item in items) hash *= item.hashCode() % mod
+      for (item in items) hash *= hashGetter(item) % mod
       return hash % mod
     }
 

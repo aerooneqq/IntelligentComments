@@ -25,7 +25,9 @@ import javax.swing.Icon
 class IntelligentCommentUiModel(
   project: Project,
   val comment: IntelligentComment
-) : UiInteractionModelBase(project), RootUiModel {
+) : UiInteractionModelBase(project, null), RootUiModel {
+  override val renderer = IntelligentCommentsRenderer(this)
+
   val authorsSection: SectionUiModel<AuthorUiModel>
   val contentSection: SectionWithHeaderUiModel<ContentSegmentUiModel>
   val referencesSection: SectionWithHeaderUiModel<ReferenceUiModel>
@@ -40,18 +42,18 @@ class IntelligentCommentUiModel(
     val invariants = mutableListOf<InvariantUiModel>()
     val todos = mutableListOf<ToDoUiModel>()
     val hacks = mutableListOf<HackUiModel>()
-    val content = IntelligentCommentContentUiModel(project, comment.content)
+    val content = IntelligentCommentContentUiModel(project, this, comment.content)
 
-    for (author in comment.allAuthors) authors.add(AuthorUiModel.getFrom(project, author))
+    for (author in comment.allAuthors) authors.add(AuthorUiModel.getFrom(project, this, author))
     for (reference in comment.references) references.add(ReferenceUiModel.getFrom(project, reference))
 
-    for (invariant in comment.invariants) invariants.add(InvariantUiModel.getFrom(project, invariant))
-    invariants.add(AddNewInvariantUiModel(project))
+    for (invariant in comment.invariants) invariants.add(InvariantUiModel.getFrom(project, this, invariant))
+    invariants.add(AddNewInvariantUiModel(project, this))
 
-    for (todo in comment.todos) todos.add(ToDoUiModel.getFrom(project, todo))
-    for (hack in comment.hacks) hacks.add(HackUiModel.getFrom(project, hack))
+    for (todo in comment.todos) todos.add(ToDoUiModel.getFrom(project, this, todo))
+    for (hack in comment.hacks) hacks.add(HackUiModel.getFrom(project, this, hack))
 
-    authorsSection = SectionUiModel(project, authors)
+    authorsSection = SectionUiModel(project, this, authors)
     contentSection = getSectionHeaderUiModel(content.segments, AllIcons.FileTypes.Text, "Content")
     referencesSection = getSectionHeaderUiModel(references, AllIcons.FileTypes.Java, "References")
     invariantsSection = getSectionHeaderUiModel(invariants, AllIcons.Nodes.Interface, "Invariants")
@@ -66,7 +68,7 @@ class IntelligentCommentUiModel(
     name: String
   ): SectionWithHeaderUiModel<T> {
     val headerTextInfo = getHeaderInfo(name)
-    return SectionWithHeaderUiModel(project, items, icon, headerTextInfo)
+    return SectionWithHeaderUiModel(project, this, items, icon, headerTextInfo)
   }
 
   private fun getHeaderInfo(name: String): HeaderTextInfo {
@@ -88,27 +90,18 @@ class IntelligentCommentUiModel(
     return false
   }
 
-  override fun hashCode(): Int {
+
+  override fun calculateStateHash(): Int {
     val hashCode = HashUtil.hashCode(
-      authorsSection.hashCode(),
-      todosSection.hashCode(),
-      hacksSection.hashCode(),
-      referencesSection.hashCode(),
-      invariantsSection.hashCode(),
-      contentSection.hashCode()
+      authorsSection.calculateStateHash(),
+      todosSection.calculateStateHash (),
+      hacksSection.calculateStateHash(),
+      referencesSection.calculateStateHash(),
+      invariantsSection.calculateStateHash(),
+      contentSection.calculateStateHash()
     )
 
     assert(hashCode != 0)
     return hashCode
-  }
-
-  override fun equals(other: Any?): Boolean = other is IntelligentCommentUiModel && other.hashCode() == hashCode()
-
-  override fun getCustomFoldRegionRenderer(project: Project): CustomFoldRegionRenderer {
-    return IntelligentCommentsRenderer(this)
-  }
-
-  override fun getEditorCustomElementRenderer(project: Project): EditorCustomElementRenderer {
-    return IntelligentCommentsRenderer(this)
   }
 }

@@ -5,9 +5,15 @@ import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intelligentComments.ui.util.HashUtil
 import com.intellij.openapi.project.Project
 
-class TableRowSegmentUiModel(row: TableRow, project: Project) : UiInteractionModelBase(project) {
-  val cells = row.cells.map { TableCellUiModel(it, project) }
+class TableRowSegmentUiModel(
+  row: TableRow,
+  parent: UiInteractionModelBase?,
+  project: Project
+) : UiInteractionModelBase(project, parent) {
+  val cells = row.cells.map { TableCellUiModel(it, this, project) }
 
-  override fun hashCode(): Int = HashUtil.calculateHashFor(cells)
-  override fun equals(other: Any?): Boolean = other is TableRowSegmentUiModel && other.hashCode() == hashCode()
+
+  override fun calculateStateHash(): Int {
+    return HashUtil.calculateHashFor(cells) { it.calculateStateHash() }
+  }
 }

@@ -5,20 +5,30 @@ import com.intelligentComments.core.domain.core.ContentSegments
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intelligentComments.ui.util.HashUtil
 import com.intellij.openapi.project.Project
+import com.intellij.util.castSafelyTo
 
 class ContentSegmentsUiModel : UiInteractionModelBase {
   val content: Collection<ContentSegmentUiModel>
 
 
-  constructor(project: Project, content: ContentSegments) : super(project) {
-    this.content = content.segments.map { ContentSegmentUiModel.getFrom(project, it) }
+  constructor(
+    project: Project,
+    parent: UiInteractionModelBase?,
+    content: ContentSegments
+  ) : super(project, parent) {
+    this.content = content.segments.map { ContentSegmentUiModel.getFrom(project, this, it) }
   }
 
-  constructor(project: Project, content: Collection<ContentSegment>) : super(project) {
-    this.content = content.map { ContentSegmentUiModel.getFrom(project, it) }
+  constructor(
+    project: Project,
+    parent: UiInteractionModelBase?,
+    content: Collection<ContentSegment>
+  ) : super(project, parent) {
+    this.content = content.map { ContentSegmentUiModel.getFrom(project, this, it) }
   }
 
 
-  override fun hashCode(): Int = HashUtil.calculateHashFor(content)
-  override fun equals(other: Any?): Boolean = other is ContentSegmentsUiModel && other.hashCode() == hashCode()
+  override fun calculateStateHash(): Int {
+    return HashUtil.calculateHashFor(content) { it.calculateStateHash() }
+  }
 }

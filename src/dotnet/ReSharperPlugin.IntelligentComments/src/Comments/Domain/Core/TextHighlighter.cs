@@ -1,4 +1,7 @@
+using System.Collections.Generic;
 using JetBrains.Annotations;
+using JetBrains.Util;
+using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 
@@ -18,6 +21,7 @@ public record TextHighlighter(
   int StartOffset,
   int EndOffset,
   TextHighlighterAttributes Attributes,
+  [CanBeNull] IReadOnlyList<IReference> References = null,
   [CanBeNull] TextAnimation TextAnimation = null,
   bool IsResharperHighlighter = false)
 {

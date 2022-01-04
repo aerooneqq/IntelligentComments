@@ -9,7 +9,7 @@ import com.intellij.util.ui.UIUtil
 import java.awt.Cursor
 
 class CursorMouseMoveListener(project: Project) : EditorMouseMotionListener {
-  private val commentsController = project.service<RiderCommentsController>()
+  private val commentsController = project.getComponent(RiderCommentsController::class.java)
 
   override fun mouseMoved(e: EditorMouseEvent) {
     val allFoldings = commentsController.getAllFoldingsFor(e.editor)

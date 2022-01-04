@@ -21,7 +21,7 @@ class RectanglesModelHolder(private val uiModel: UiInteractionModelBase) {
   fun revalidate(editor: EditorImpl, xDelta: Int, yDelta: Int): RectanglesModel {
     application.assertIsDispatchThread()
     val oldModel = model
-    val hashCode = uiModel.hashCode()
+    val hashCode = uiModel.calculateStateHash()
     if (oldModel != null && hashCode == lastUpdateHash) return oldModel
 
     val newModel = RectanglesModelUtil.buildRectanglesModel(editor, uiModel, xDelta, yDelta)
@@ -46,6 +46,10 @@ class RectanglesModel {
   val allRectangles: Iterable<Rectangle>
     get() = rectanglesToElements.keys
 
+
+  fun getRectanglesFor(model: UiInteractionModelBase): Collection<Rectangle>? {
+    return elementsToRectangles[model]
+  }
 
   fun addElement(model: UiInteractionModelBase, rect: Rectangle) {
     application.assertIsDispatchThread()

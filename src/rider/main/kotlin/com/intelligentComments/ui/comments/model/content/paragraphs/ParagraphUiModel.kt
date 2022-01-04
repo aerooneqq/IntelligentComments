@@ -1,6 +1,7 @@
 package com.intelligentComments.ui.comments.model.content.paragraphs
 
 import com.intelligentComments.core.domain.core.ParagraphContentSegment
+import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intelligentComments.ui.comments.model.content.ContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.ContentSegmentsUiModel
 import com.intelligentComments.ui.util.HashUtil
@@ -8,10 +9,13 @@ import com.intellij.openapi.project.Project
 
 class ParagraphUiModel(
   project: Project,
+  parent: UiInteractionModelBase?,
   paragraph: ParagraphContentSegment
-) : ContentSegmentUiModel(project, paragraph) {
-  val content = ContentSegmentsUiModel(project, paragraph.content)
+) : ContentSegmentUiModel(project, parent, paragraph) {
+  val content = ContentSegmentsUiModel(project, this, paragraph.content)
 
-  override fun hashCode(): Int = HashUtil.hashCode(content.hashCode())
-  override fun equals(other: Any?): Boolean = other is ParagraphUiModel && other.hashCode() == hashCode()
+
+  override fun calculateStateHash(): Int {
+    return HashUtil.hashCode(content.calculateStateHash())
+  }
 }

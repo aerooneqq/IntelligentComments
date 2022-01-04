@@ -76,7 +76,7 @@ fun RdHighlightedText.toIdeaHighlightedText(project: Project, parent: Parentable
   return HighlightedTextImpl(
     text,
     parent,
-    highlighters?.map { it.toIdeaHighlighter(project) } ?: listOf()
+    highlighters?.map { it.toIdeaHighlighter(project, null) } ?: listOf()
   )
 }
 
@@ -142,7 +142,7 @@ class TableCellFromRd(
   cell: RdTableCell,
   override val parent: Parentable?,
   project: Project
-) : UiInteractionModelBase(project), TableCell {
+) : TableCell {
   override val contentSegments: ContentSegments = ContentSegmentsFromRd(cell.content, this, project)
   override val properties: TableCellProperties
 

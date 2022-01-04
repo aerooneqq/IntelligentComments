@@ -17,8 +17,8 @@ public class CSharpPreliminaryCodeHighlighter : CodeHighlighterBase, IPreliminar
   }
   
   
-  protected override void ProcessBeforeInteriorInternal(ITreeNode element, IHighlightedText context)
+  protected override void ProcessBeforeInteriorInternal(ITreeNode element, CodeHighlightingContext context)
   {
-    context.Add(new HighlightedText(element.GetText()));
+    context.Text.Add(new HighlightedText(element.GetText()));
   }
 }

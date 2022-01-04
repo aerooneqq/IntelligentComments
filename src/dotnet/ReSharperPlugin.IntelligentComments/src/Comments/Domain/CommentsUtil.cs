@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using JetBrains.Diagnostics;
+using JetBrains.RdBackend.Common.Features.Util.Ranges;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Rider.Model;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
@@ -170,7 +171,17 @@ public static class CommentsUtil
   [NotNull]
   private static RdCodeEntityReference ToRdReference([NotNull] this ICodeEntityReference codeEntityReference)
   {
-    return new RdCodeEntityReference(codeEntityReference.RawValue);
+    return codeEntityReference switch
+    {
+      IXmlDocCodeEntityReference reference => new RdXmlDocCodeEntityReference(reference.RawValue),
+      ISandBoxCodeEntityReference reference => new RdSandboxCodeEntityReference(
+        reference.SandboxDocumentId,
+        reference.OriginalDocumentId,
+        reference.Range.ToRdTextRange(),
+        reference.RawValue
+      ),
+      _ => throw new ArgumentOutOfRangeException(codeEntityReference.GetType().Name)
+    };
   }
 
   [NotNull]
@@ -245,6 +256,7 @@ public static class CommentsUtil
       highlighter.StartOffset,
       highlighter.EndOffset,
       attributes,
+      references: highlighter.References?.Select(reference => reference.ToRdReference()).ToList(),
       animation: highlighter.TextAnimation?.ToRdAnimation(),
       isResharperHighlighter: highlighter.IsResharperHighlighter);
   }

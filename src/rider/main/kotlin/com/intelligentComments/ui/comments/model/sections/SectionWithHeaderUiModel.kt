@@ -8,14 +8,17 @@ import javax.swing.Icon
 
 class SectionWithHeaderUiModel<T : UiInteractionModelBase>(
   project: Project,
+  parent: UiInteractionModelBase?,
   content: Collection<T>,
   icon: Icon,
   headerText: HeaderTextInfo
-) : SectionUiModel<T>(project, content), ExpandableUiModel {
+) : SectionUiModel<T>(project, parent, content), ExpandableUiModel {
   override var isExpanded: Boolean = true
 
-  val headerUiModel = SectionHeaderUiModel(project, icon, headerText, this)
+  val headerUiModel = SectionHeaderUiModel(project, this, icon, headerText)
 
-  override fun hashCode(): Int = HashUtil.hashCode (isExpanded.hashCode(), super.hashCode())
-  override fun equals(other: Any?): Boolean = other is SectionWithHeaderUiModel<*> && other.hashCode() == hashCode()
+
+  override fun calculateStateHash(): Int {
+    return HashUtil.hashCode(isExpanded.hashCode(), super.hashCode())
+  }
 }

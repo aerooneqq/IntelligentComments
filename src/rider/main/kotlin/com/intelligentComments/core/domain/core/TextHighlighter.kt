@@ -6,31 +6,39 @@ import java.awt.Font
 import java.awt.font.TextAttribute
 
 
-interface TextHighlighter : UniqueEntity {
+interface TextHighlighter : UniqueEntity, Parentable {
   val startOffset: Int
   val endOffset: Int
   val attributes: TextAttributes
   val textColor: Color
   val backgroundStyle: BackgroundStyle?
   val mouseInOutAnimation: MouseInOutAnimation?
+  val references: Collection<Reference>
 
   fun shift(delta: Int): TextHighlighter
 }
 
 class TextHighlighterImpl(
+  parent: Parentable?,
   override val startOffset: Int,
   override val endOffset: Int,
   override val textColor: Color,
+  override val references: Collection<Reference> = emptyList(),
   override val attributes: TextAttributes = TextAttributesImpl.defaultAttributes,
   override val backgroundStyle: BackgroundStyle? = null,
   override val mouseInOutAnimation: MouseInOutAnimation? = null,
 ) : UniqueEntityImpl(), TextHighlighter {
 
+  override var parent: Parentable? = parent
+    internal set
+
   override fun shift(delta: Int): TextHighlighter {
     return TextHighlighterImpl(
+      parent,
       startOffset + delta,
       endOffset + delta,
       textColor,
+      references,
       attributes,
       backgroundStyle,
       mouseInOutAnimation,

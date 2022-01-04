@@ -5,13 +5,16 @@ using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.TextControl.DocumentMarkup;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
+using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
+using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.References;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Calculations;
 
 public interface IHighlightersProvider
 {
   [CanBeNull] TextHighlighter TryGetReSharperHighlighter([NotNull] string resharperAttributeId, int length);
-  [CanBeNull] TextHighlighter TryGetReSharperHighlighter(int textLength, [NotNull] IDeclaredElement element);
+  [CanBeNull] TextHighlighter TryGetReSharperHighlighter(
+    int textLength, [NotNull] ICodeEntityReference reference, [NotNull] IResolveContext context);
   
   [NotNull] TextHighlighter GetCXmlElementHighlighter(int startOffset, int endOffset);
   [NotNull] TextHighlighter GetParamRefElementHighlighter(int startOffset, int endOffset);
@@ -25,13 +28,16 @@ public interface IHighlightersProvider
   
   
   [NotNull]
-  TextHighlighter GetReSharperSeeCodeEntityHighlighter(int startOffset, int endOffset, [CanBeNull] IDeclaredElement element);
+  TextHighlighter GetReSharperSeeCodeEntityHighlighter(
+    int startOffset, int endOffset, [CanBeNull] ICodeEntityReference reference, [NotNull] IResolveContext context);
   
   [NotNull]
-  TextHighlighter GetSeeAlsoReSharperMemberHighlighter(int startOffset, int endOffset, [CanBeNull] IDeclaredElement element);
+  TextHighlighter GetSeeAlsoReSharperMemberHighlighter(
+    int startOffset, int endOffset, [CanBeNull] ICodeEntityReference reference, [NotNull] IResolveContext context);
   
   [NotNull]
-  TextHighlighter GetReSharperExceptionHighlighter(int startOffset, int endOffset, [CanBeNull] IDeclaredElement element);
+  TextHighlighter GetReSharperExceptionHighlighter(
+    int startOffset, int endOffset, [CanBeNull] ICodeEntityReference reference, [NotNull] IResolveContext context);
 }
   
 
@@ -70,22 +76,24 @@ public abstract class HighlightersProvider : IHighlightersProvider
   public TextHighlighter GetExceptionHighlighter(int startOffset, int endOffset) => Get(Exception, startOffset, endOffset);
   
   private static TextHighlighter Get(string key, int startOffset, int endOffset) =>
-    new(key, startOffset, endOffset, TextHighlighterAttributes.DefaultAttributes, UnderlineTextAnimation.Instance);
+    new(key, startOffset, endOffset, TextHighlighterAttributes.DefaultAttributes, TextAnimation: UnderlineTextAnimation.Instance);
   
-  public TextHighlighter GetReSharperSeeCodeEntityHighlighter(int startOffset, int endOffset, IDeclaredElement element)
+  public TextHighlighter GetReSharperSeeCodeEntityHighlighter(
+    int startOffset, int endOffset, ICodeEntityReference reference, IResolveContext context)
   {
-    return TryGetHighlighterWithReSharperId(startOffset, endOffset, element) ??
+    return TryGetHighlighterWithReSharperId(startOffset, endOffset, reference, context) ??
            GetSeeCodeEntityHighlighter(startOffset, endOffset);
   }
   
   [CanBeNull]
   private TextHighlighter TryGetHighlighterWithReSharperId(
-    int startOffset, int endOffset, [CanBeNull] IDeclaredElement element)
+    int startOffset, int endOffset, [CanBeNull] ICodeEntityReference reference, IResolveContext context)
   {
-    if (TryGetAttributeId(element) is { } attributeId)
+    if (reference is { } && TryGetAttributeId(reference, context) is { } attributeId)
     {
       return new TextHighlighter(
         attributeId, startOffset, endOffset, TextHighlighterAttributes.DefaultAttributes,
+        References: new [] { reference },
         TextAnimation: UnderlineTextAnimation.Instance,
         IsResharperHighlighter: true);
     }
@@ -99,16 +107,17 @@ public abstract class HighlightersProvider : IHighlightersProvider
     return new TextHighlighter(id, 0, length, TextHighlighterAttributes.DefaultAttributes, IsResharperHighlighter: true);
   }
 
-  public TextHighlighter TryGetReSharperHighlighter(int textLength, IDeclaredElement element)
+  public TextHighlighter TryGetReSharperHighlighter(
+    int textLength, ICodeEntityReference reference, IResolveContext context)
   {
-    return TryGetHighlighterWithReSharperId(0, textLength, element);
+    return TryGetHighlighterWithReSharperId(0, textLength, reference, context);
   } 
   
   [CanBeNull]
-  private string TryGetAttributeId([CanBeNull] IDeclaredElement element)
+  private string TryGetAttributeId([CanBeNull] ICodeEntityReference reference, IResolveContext context)
   {
-    if (element is { } &&
-        myAttributeIdProvider.GetHighlightingAttributeId(element, false) is { } attributeId)
+    if (reference?.Resolve(context).DeclaredElement is { } declaredElement && 
+        myAttributeIdProvider.GetHighlightingAttributeId(declaredElement, false) is { } attributeId)
     {
       return myHighlighterNamesProvider.GetExternalName(attributeId);
     }
@@ -116,15 +125,17 @@ public abstract class HighlightersProvider : IHighlightersProvider
     return null;
   }
   
-  public TextHighlighter GetSeeAlsoReSharperMemberHighlighter(int startOffset, int endOffset, IDeclaredElement element)
+  public TextHighlighter GetSeeAlsoReSharperMemberHighlighter(
+    int startOffset, int endOffset, ICodeEntityReference reference, IResolveContext context)
   {
-    return TryGetHighlighterWithReSharperId(startOffset, endOffset, element) ??
+    return TryGetHighlighterWithReSharperId(startOffset, endOffset, reference, context) ??
            GetSeeAlsoMemberHighlighter(startOffset, endOffset);
   }
 
-  public TextHighlighter GetReSharperExceptionHighlighter(int startOffset, int endOffset, IDeclaredElement element)
+  public TextHighlighter GetReSharperExceptionHighlighter(
+    int startOffset, int endOffset, ICodeEntityReference reference, IResolveContext context)
   {
-    return TryGetHighlighterWithReSharperId(startOffset, endOffset, element) ??
+    return TryGetHighlighterWithReSharperId(startOffset, endOffset, reference, context) ??
            GetExceptionHighlighter(startOffset, endOffset);
   }
 }

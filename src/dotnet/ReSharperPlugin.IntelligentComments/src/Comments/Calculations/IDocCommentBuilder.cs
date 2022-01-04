@@ -123,10 +123,12 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
   [NotNull] private readonly IPsiModule myPsiModule;
   [NotNull] private readonly CodeFragmentHighlightingManager myCodeFragmentHighlightingManager;
   [NotNull] private readonly ILanguageManager myLanguageManager;
+  [NotNull] private readonly IResolveContext myResolveContext;
 
 
   public DocCommentBuilder([NotNull] IXmlDocOwnerTreeNode owner)
   {
+    myResolveContext = new ResolveContextImpl(owner.GetSolution());
     myLanguageManager = LanguageManager.Instance;
     myHighlightersProvider = myLanguageManager.GetService<IHighlightersProvider>(owner.Language);
     myOwner = owner;
@@ -324,8 +326,8 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
     }
 
     var reference = CreateCodeEntityReference(exceptionName);
-    var declaredElement = reference.Resolve().DeclaredElement;
-    var highlighter = myHighlightersProvider.GetReSharperExceptionHighlighter(0, exceptionName.Length, declaredElement);
+    var highlighter = myHighlightersProvider.GetReSharperExceptionHighlighter(
+      0, exceptionName.Length, reference, myResolveContext);
     
     var exceptionSegment = new ExceptionContentSegment(new HighlightedText(exceptionName, highlighter));
     ProcessEntityWithContentSegments(exceptionSegment, element);
@@ -404,18 +406,17 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
     ProcessSeeAlso(element, CRef, (referenceRawText, description) =>
     {
       var reference = CreateCodeEntityReference(referenceRawText);
-      var declaredElement = reference.Resolve().DeclaredElement;
-      
-      var highlighter = myHighlightersProvider.GetSeeAlsoReSharperMemberHighlighter(0, description.Length, declaredElement);
+      var highlighter = myHighlightersProvider.GetSeeAlsoReSharperMemberHighlighter(
+        0, description.Length, reference, myResolveContext);
       
       var highlightedText = new HighlightedText(description, new[] { highlighter });
       return new SeeAlsoMemberContentSegment(highlightedText, CreateCodeEntityReference(referenceRawText));
     });
   }
   
-  private CodeEntityReference CreateCodeEntityReference(string rawValue)
+  private XmlDocCodeEntityReference CreateCodeEntityReference(string rawValue)
   {
-    return new CodeEntityReference(rawValue, myPsiServices, myPsiModule);
+    return new XmlDocCodeEntityReference(rawValue, myPsiServices, myPsiModule);
   }
 
   public override void VisitTypeParam(XmlElement element)
@@ -470,7 +471,7 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
     var highlighter = reference switch
     {
       ICodeEntityReference codeEntityReference => 
-        myHighlightersProvider.GetReSharperSeeCodeEntityHighlighter(0, content.Length, codeEntityReference.Resolve().DeclaredElement),
+        myHighlightersProvider.GetReSharperSeeCodeEntityHighlighter(0, content.Length, codeEntityReference, myResolveContext),
       IHttpReference => myHighlightersProvider.GetSeeHttpLinkHighlighter(0, content.Length),
       ILangWordReference => myHighlightersProvider.GetSeeLangWordHighlighter(0, content.Length),
       _ => throw new ArgumentOutOfRangeException(reference.GetType().Name)
@@ -592,7 +593,9 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
       
       var preliminaryHighlighter = myLanguageManager.GetService<IPreliminaryCodeHighlighter>(file.Language);
       var highlightedText = HighlightedText.CreateEmptyText();
-      node.ProcessThisAndDescendants(preliminaryHighlighter, highlightedText);
+      var context = new CodeHighlightingContext(highlightedText, new UserDataHolder());
+      
+      node.ProcessThisAndDescendants(preliminaryHighlighter, context);
 
       return new CodeFragment(highlightedText, id); 
     }

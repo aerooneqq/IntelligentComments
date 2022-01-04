@@ -6,19 +6,22 @@ import com.intellij.openapi.project.Project
 
 class HeaderUiModel(
   project: Project,
-  val parent: ExpandableUiModel,
+  parent: UiInteractionModelBase?,
   val text: String,
   defaultBackground: ColorName,
   hoveredBackground: ColorName
-) : UiInteractionModelBase(project) {
+) : UiInteractionModelBase(project, parent) {
   override val backgroundColorKey: ColorName = defaultBackground
   override val hoveredBackgroundColorKey: ColorName = hoveredBackground
 
   override fun handleClick(e: EditorMouseEvent): Boolean {
+    parent as ExpandableUiModel
     parent.isExpanded = !parent.isExpanded
     return super.handleClick(e)
   }
 
-  override fun hashCode(): Int = text.hashCode()
-  override fun equals(other: Any?): Boolean = other is HeaderUiModel && other.hashCode() == hashCode()
+
+  override fun calculateStateHash(): Int {
+    return text.hashCode()
+  }
 }

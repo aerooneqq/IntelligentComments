@@ -11,11 +11,15 @@ import com.intelligentComments.ui.comments.model.references.ReferenceUiModel
 import com.intelligentComments.ui.util.HashUtil
 import com.intellij.openapi.project.Project
 
-open class ToDoUiModel(todo: ToDo, project: Project) : UiInteractionModelBase(project), ExpandableUiModel {
+open class ToDoUiModel(
+  todo: ToDo,
+  parent: UiInteractionModelBase?,
+  project: Project
+) : UiInteractionModelBase(project, parent), ExpandableUiModel {
   companion object {
-    fun getFrom(project: Project, todo: ToDo): ToDoUiModel {
+    fun getFrom(project: Project, parent: UiInteractionModelBase?, todo: ToDo): ToDoUiModel {
       return when (todo) {
-        is ToDoWithTickets -> ToDoWithTicketsUiModel(todo, project)
+        is ToDoWithTickets -> ToDoWithTicketsUiModel(todo, parent, project)
         else -> throw IllegalArgumentException(todo.toString())
       }
     }
@@ -23,20 +27,19 @@ open class ToDoUiModel(todo: ToDo, project: Project) : UiInteractionModelBase(pr
 
   override var isExpanded: Boolean = true
 
-  val description = ContentSegmentsUiModel(project, todo.description)
+  val description = ContentSegmentsUiModel(project, this, todo.description)
   val headerUiModel =
     HeaderUiModel(project, this, todo.name, Colors.ToDoHeaderBackgroundColor, Colors.ToDoHeaderHoveredBackgroundColor)
-  val blockingReferences = todo.blockingReferences.map { ReferenceUiModel(project, it) }
+  val blockingReferences = todo.blockingReferences.map { ReferenceUiModel(project, this, it) }
 
-  override fun hashCode(): Int {
+
+  override fun calculateStateHash(): Int {
     return HashUtil.hashCode(
       isExpanded.hashCode(),
-      description.hashCode(),
-      headerUiModel.hashCode(),
-      HashUtil.calculateHashFor(blockingReferences)
+      description.calculateStateHash(),
+      headerUiModel.calculateStateHash(),
+      HashUtil.calculateHashFor(blockingReferences) { it.calculateStateHash() }
     )
   }
-
-  override fun equals(other: Any?): Boolean = other is ToDoUiModel && other.hashCode() == hashCode()
 }
 
