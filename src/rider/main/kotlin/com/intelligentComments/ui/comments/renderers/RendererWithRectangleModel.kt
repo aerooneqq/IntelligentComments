@@ -94,12 +94,12 @@ abstract class RendererWithRectangleModel(
     val defaultTextColor = colorsProvider.getColorFor(Colors.TextDefaultColor)
 
     UpdatedRectCookie(targetRegion, xDelta = xDelta, yDelta = yDelta).use {
-      UpdatedGraphicsCookie(g, defaultTextColor, TextUtil.font).use {
+      UpdatedGraphicsCookie(g, defaultTextColor, TextUtil.getFont(editor)).use {
         paintInternal(editor, g, targetRegion, textAttributes, colorsProvider)
       }
     }
 
-    UpdatedGraphicsCookie(g, defaultTextColor, TextUtil.font).use {
+    UpdatedGraphicsCookie(g, defaultTextColor, TextUtil.getFont(editor)).use {
       for (rectangle in rectanglesModel!!.allRectangles) {
         //g.drawRect(rectangle.x + targetRegion.x, rectangle.y + targetRegion.y, rectangle.width, rectangle.height)
       }

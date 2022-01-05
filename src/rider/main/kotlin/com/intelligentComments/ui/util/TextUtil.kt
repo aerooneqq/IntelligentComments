@@ -19,8 +19,14 @@ import kotlin.test.assertNotNull
 
 class TextUtil {
   companion object {
-    val font: Font = UIUtil.getLabelFont().deriveFont(12f)
-    val boldFont: Font = font.deriveFont(Font.BOLD).deriveFont(14f)
+    fun getFont(editorImpl: EditorImpl): Font {
+      return editorImpl.getFontMetrics(Font.PLAIN).font.deriveFont(12f)
+    }
+
+    fun getBoldFont(editorImpl: EditorImpl): Font {
+      return getFont(editorImpl).deriveFont(Font.BOLD).deriveFont(14f)
+    }
+
     const val backgroundArcDimension = 3
 
     const val deltaBetweenIconAndTextInHeader = 2
@@ -28,9 +34,9 @@ class TextUtil {
 
     fun getFontMetrics(editorImpl: EditorImpl, highlighterUiModel: HighlighterUiModel?): FontMetrics {
       return when (highlighterUiModel?.style) {
-        Font.PLAIN -> editorImpl.contentComponent.getFontMetrics(font)
-        Font.BOLD -> editorImpl.contentComponent.getFontMetrics(boldFont)
-        else -> editorImpl.contentComponent.getFontMetrics(font)
+        Font.PLAIN -> editorImpl.contentComponent.getFontMetrics(getFont(editorImpl))
+        Font.BOLD -> editorImpl.contentComponent.getFontMetrics(getBoldFont(editorImpl))
+        else -> editorImpl.contentComponent.getFontMetrics(getFont(editorImpl))
       }
     }
 
@@ -334,7 +340,7 @@ class TextUtil {
           }
         }
 
-        g.drawString(AttributedCharsIterator(line, from, to, highlighterModel), rect.x + currentTextLength + xDelta, adjustedY)
+        g.drawString(AttributedCharsIterator(editorImpl, line, from, to, highlighterModel), rect.x + currentTextLength + xDelta, adjustedY)
       }
 
       return textWidth

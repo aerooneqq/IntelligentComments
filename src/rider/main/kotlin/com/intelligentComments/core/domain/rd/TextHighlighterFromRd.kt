@@ -51,7 +51,7 @@ private fun RdTextHighlighter.toIdeaHighlighterFromReSharper(
   val host = TextAttributesRegistrationHost.getInstance()
   val textAttributes = host.getTextAttributes(key, scheme) ?: return toIdeaHighlighterInternal(project, parent, null)
 
-  val textColor = textAttributes.foregroundColor.darker()
+  val textColor = textAttributes.foregroundColor
   return toIdeaHighlighterInternal(project, parent, textColor)
 }
 

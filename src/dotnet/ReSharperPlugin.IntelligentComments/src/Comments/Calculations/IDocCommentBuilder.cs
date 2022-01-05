@@ -5,10 +5,10 @@ using System.Text;
 using System.Xml;
 using JetBrains.Annotations;
 using JetBrains.ProjectModel;
+using JetBrains.ReSharper.Feature.Services.Daemon.Attributes;
 using JetBrains.ReSharper.I18n.Services;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp;
-using JetBrains.ReSharper.Psi.CSharp.Impl.DocComments;
 using JetBrains.ReSharper.Psi.Modules;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.ReSharper.Psi.Util;
@@ -128,6 +128,7 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
   [NotNull] private readonly CodeFragmentHighlightingManager myCodeFragmentHighlightingManager;
   [NotNull] private readonly ILanguageManager myLanguageManager;
   [NotNull] private readonly IResolveContext myResolveContext;
+  [NotNull] private readonly string myDocCommentAttributeId;
 
 
   public DocCommentBuilder([NotNull] IDocCommentBlock comment)
@@ -138,11 +139,10 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
     myComment = comment;
     myContentSegmentsStack = new Stack<ContentSegmentsMetadata>();
     myCodeFragmentHighlightingManager = comment.GetSolution().GetComponent<CodeFragmentHighlightingManager>();
-
     myPsiServices = myComment.GetPsiServices();
     myPsiModule = myComment.GetPsiModule();
-    
     myVisitedNodes = new HashSet<XmlNode>();
+    myDocCommentAttributeId = DefaultLanguageAttributeIds.DOC_COMMENT;
   }
     
 
@@ -303,7 +303,10 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
   public override void VisitText(XmlText text)
   {
     myVisitedNodes.Add(text);
-    var textContentSegment = new MergeableTextContentSegment(new HighlightedText(PreprocessText(text.Value)));
+
+    var processedText = PreprocessText(text.Value);
+    var highlighter = myHighlightersProvider.TryGetReSharperHighlighter(myDocCommentAttributeId, processedText.Length);
+    var textContentSegment = new MergeableTextContentSegment(new HighlightedText(processedText, highlighter));
     ExecuteWithTopmostContentSegments(metadata => metadata.ContentSegments.Segments.Add(textContentSegment));
   }
 
@@ -490,7 +493,11 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
   public override void VisitSee(XmlElement element)
   {
     myVisitedNodes.Add(element);
-    if (IsTopmostContext()) return;
+    if (IsTopmostContext())
+    {
+      VisitSeeAlso(element);
+      return;
+    }
 
     IReference reference = null;
     if (element.GetAttribute(CRef) is { } cRefAttrValue && !cRefAttrValue.IsEmpty())
