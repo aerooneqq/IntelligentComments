@@ -108,7 +108,8 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
       Normalize();
     }
   }
-  
+
+  [NotNull] private const string Name = "name";
   [NotNull] private const string UndefinedParam = "???";
   [NotNull] private const string CRef = "cref";
   [NotNull] private const string Href = "href";
@@ -204,7 +205,7 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
     myVisitedNodes.Add(element);
     if (ElementHasOneTextChild(element, out var value))
     {
-      value = PreprocessText(value);
+      value = PreprocessTextWithContext(value, element);
       var highlighter = myHighlightersProvider.GetCXmlElementHighlighter(0, value.Length);
       AddHighlightedText(value, highlighter);
       
@@ -229,22 +230,31 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
 
   private void AddHighlightedText([NotNull] string text, [NotNull] TextHighlighter highlighter)
   {
-    var highlightedText = new HighlightedText($" {text} ", new[] { highlighter.Shift(1) });
+    var highlightedText = new HighlightedText(text, new[] { highlighter });
     var textContentSegment = new MergeableTextContentSegment(highlightedText);
     ExecuteWithTopmostContentSegments(metadata => metadata.ContentSegments.Segments.Add(textContentSegment));
   }
 
-  private static string PreprocessText([NotNull] string text)
+  [NotNull]
+  private static string PreprocessText([NotNull] string text, bool leaveTrailingLineBreak)
   {
     var sb = new StringBuilder(text);
+    
     while (ourWhitespaceChars.Contains(sb[0]))
     {
       sb.Remove(0, 1);
     }
-      
+
+    bool deletedLineBreak = false;
     while (ourWhitespaceChars.Contains(sb[^1]))
     {
+      if (sb[^1] == '\n') deletedLineBreak = true;
       sb.Remove(sb.Length - 1, 1);
+    }
+
+    if (deletedLineBreak && leaveTrailingLineBreak)
+    {
+      sb.Append('\n');
     }
     
     for (int i = sb.Length - 1; i >= 0; --i)
@@ -262,9 +272,14 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
     return text.Replace("\n ", "\n").Replace(" \n", "\n");
   }
 
+  private static string PreprocessTextWithContext(string text, XmlNode context)
+  {
+    return PreprocessText(text, context.NextSibling is { });
+  }
+  
   public override void VisitParam(XmlElement element)
   {
-    ProcessParam(element, "name", ourParamFactory);
+    ProcessParam(element, Name, ourParamFactory);
   }
 
   private void ProcessParam(XmlElement element, string nameAttrName, Func<string, IParamContentSegment> factory)
@@ -303,8 +318,8 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
   public override void VisitText(XmlText text)
   {
     myVisitedNodes.Add(text);
-
-    var processedText = PreprocessText(text.Value);
+    
+    var processedText = PreprocessText(text.Value, false);
     var highlighter = myHighlightersProvider.TryGetReSharperHighlighter(myDocCommentAttributeId, processedText.Length);
     var textContentSegment = new MergeableTextContentSegment(new HighlightedText(processedText, highlighter));
     ExecuteWithTopmostContentSegments(metadata => metadata.ContentSegments.Segments.Add(textContentSegment));
@@ -385,7 +400,7 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
 
   public override void VisitParamRef(XmlElement element)
   {
-    ProcessArbitraryParamRef(element, "name", length => myHighlightersProvider.GetParamRefElementHighlighter(0, length));
+    ProcessArbitraryParamRef(element, Name, length => myHighlightersProvider.GetParamRefElementHighlighter(0, length));
   }
 
   private void ProcessArbitraryParamRef(
@@ -396,7 +411,7 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
     myVisitedNodes.Add(element);
     var paramName = element.GetAttribute(nameAttrName);
     if (paramName == string.Empty) paramName = UndefinedParam;
-    paramName = PreprocessText(paramName);
+    paramName = PreprocessTextWithContext(paramName, element);
 
     var highlighter = highlighterFactory.Invoke(paramName.Length);
     AddHighlightedText(paramName, highlighter);
@@ -475,12 +490,12 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
 
   public override void VisitTypeParam(XmlElement element)
   {
-    ProcessParam(element, "name", ourTypeParamFactory);
+    ProcessParam(element, Name, ourTypeParamFactory);
   }
 
   public override void VisitTypeParamRef(XmlElement element)
   {
-    ProcessArbitraryParamRef(element, "name", length => myHighlightersProvider.GetParamRefElementHighlighter(0, length));
+    ProcessArbitraryParamRef(element, Name, length => myHighlightersProvider.GetParamRefElementHighlighter(0, length));
   }
 
   public override void VisitExample(XmlElement element)
@@ -524,7 +539,7 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
     
     if (ElementHasOneTextChild(element, out var text))
     {
-      content = PreprocessText(text);
+      content = PreprocessTextWithContext(text, element);
     }
     
     ProcessSee(content, reference);
@@ -534,7 +549,7 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
   {
     var highlighter = reference switch
     {
-      ICodeEntityReference codeEntityReference => 
+      ICodeEntityReference codeEntityReference =>
         myHighlightersProvider.GetReSharperSeeCodeEntityHighlighter(0, content.Length, codeEntityReference, myResolveContext),
       IHttpReference => myHighlightersProvider.GetSeeHttpLinkHighlighter(0, content.Length),
       ILangWordReference => myHighlightersProvider.GetSeeLangWordHighlighter(0, content.Length),

@@ -1,13 +1,14 @@
 package com.intelligentComments.ui.util
 
+import com.intelligentComments.core.settings.RiderIntelligentCommentsSettingsProvider
 import com.intelligentComments.ui.comments.model.highlighters.HighlightedTextUiWrapper
 import com.intelligentComments.ui.comments.model.highlighters.HighlighterUiModel
 import com.intelligentComments.ui.core.AttributedCharsIterator
 import com.intelligentComments.ui.core.RectangleModelBuildContext
+import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.impl.EditorImpl
 import com.intellij.openapi.util.use
 import com.intellij.util.Range
-import com.intellij.util.ui.UIUtil
 import java.awt.Font
 import java.awt.FontMetrics
 import java.awt.Graphics
@@ -20,11 +21,13 @@ import kotlin.test.assertNotNull
 class TextUtil {
   companion object {
     fun getFont(editorImpl: EditorImpl): Font {
-      return editorImpl.getFontMetrics(Font.PLAIN).font.deriveFont(12f)
+      val size = editorImpl.project?.service<RiderIntelligentCommentsSettingsProvider>()?.fontSize?.value ?: 12f
+      return editorImpl.getFontMetrics(Font.PLAIN).font.deriveFont(size)
     }
 
     fun getBoldFont(editorImpl: EditorImpl): Font {
-      return getFont(editorImpl).deriveFont(Font.BOLD).deriveFont(14f)
+      val size = editorImpl.project?.service<RiderIntelligentCommentsSettingsProvider>()?.boldFontSize?.value ?: 14f
+      return getFont(editorImpl).deriveFont(Font.BOLD).deriveFont(size)
     }
 
     const val backgroundArcDimension = 3
@@ -331,7 +334,7 @@ class TextUtil {
           textWidth += 2 * backgroundStyle.leftRightPadding
           xDelta = backgroundStyle.leftRightPadding
           UpdatedGraphicsCookie(g, color = backgroundStyle.backgroundColor).use {
-            val y = rect.y - textHeight + metrics.descent
+            val y = rect.y - textHeight + metrics.descent / 2
             if (backgroundStyle.roundedRect) {
               g.fillRoundRect(rect.x, y, textWidth, textHeight, backgroundArcDimension, backgroundArcDimension)
             } else {

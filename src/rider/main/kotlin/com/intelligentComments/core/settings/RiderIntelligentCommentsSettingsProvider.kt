@@ -20,6 +20,9 @@ interface RiderIntelligentCommentsSettingsProvider {
   val groupSummary: Property<Boolean>
 
   val showFirstLevelHeaderWhenOneElement: Property<Boolean>
+
+  val fontSize: Property<Float>
+  val boldFontSize: Property<Float>
 }
 
 class RiderIntelligentCommentsSettingsProviderImpl : LifetimedService(), RiderIntelligentCommentsSettingsProvider {
@@ -34,4 +37,6 @@ class RiderIntelligentCommentsSettingsProviderImpl : LifetimedService(), RiderIn
   override val groupSummary: Property<Boolean> = Property(true)
 
   override val showFirstLevelHeaderWhenOneElement: Property<Boolean> = Property(false)
+  override val fontSize: Property<Float> = Property(12f)
+  override val boldFontSize: Property<Float> = Property(14f)
 }
