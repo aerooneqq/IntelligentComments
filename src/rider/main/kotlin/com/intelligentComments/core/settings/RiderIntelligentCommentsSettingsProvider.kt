@@ -18,6 +18,8 @@ interface RiderIntelligentCommentsSettingsProvider {
   val groupParams: Property<Boolean>
   val groupExceptions: Property<Boolean>
   val groupSummary: Property<Boolean>
+
+  val showFirstLevelHeaderWhenOneElement: Property<Boolean>
 }
 
 class RiderIntelligentCommentsSettingsProviderImpl : LifetimedService(), RiderIntelligentCommentsSettingsProvider {
@@ -30,4 +32,6 @@ class RiderIntelligentCommentsSettingsProviderImpl : LifetimedService(), RiderIn
   override val groupParams: Property<Boolean> = Property(true)
   override val groupExceptions: Property<Boolean> = Property(true)
   override val groupSummary: Property<Boolean> = Property(true)
+
+  override val showFirstLevelHeaderWhenOneElement: Property<Boolean> = Property(false)
 }

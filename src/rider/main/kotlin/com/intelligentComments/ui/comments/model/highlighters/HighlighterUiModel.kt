@@ -55,7 +55,7 @@ class HighlighterUiModel(
 
     if (commentId != null && root != null) {
       val rectangle = root.renderer.rectanglesModel?.getRectanglesFor(this)?.lastOrNull()
-      val folding = project.service<RiderCommentsController>().getFolding(commentId, e.editor as EditorImpl)
+      val folding = project.getComponent(RiderCommentsController::class.java).getFolding(commentId, e.editor as EditorImpl)
 
       if (rectangle != null && folding != null) {
         val bounds = folding.getBounds()

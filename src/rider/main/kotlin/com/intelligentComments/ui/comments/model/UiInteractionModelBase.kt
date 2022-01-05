@@ -3,10 +3,9 @@ package com.intelligentComments.ui.comments.model
 import com.intelligentComments.ui.colors.ColorName
 import com.intelligentComments.ui.colors.Colors
 import com.intelligentComments.ui.colors.ColorsProvider
+import com.intelligentComments.ui.comments.model.content.ContentSegmentUiModel
 import com.intelligentComments.ui.comments.renderers.RendererWithRectangleModel
 import com.intellij.openapi.components.service
-import com.intellij.openapi.editor.CustomFoldRegionRenderer
-import com.intellij.openapi.editor.EditorCustomElementRenderer
 import com.intellij.openapi.editor.event.EditorMouseEvent
 import com.intellij.openapi.project.Project
 import java.awt.Color
@@ -63,4 +62,8 @@ interface RootUiModel {
 
 interface ExpandableUiModel {
   var isExpanded: Boolean
+}
+
+interface ModelWithContent {
+  val content: Collection<ContentSegmentUiModel>
 }

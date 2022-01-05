@@ -92,7 +92,7 @@ public class ClickDocHost
       }
       
       if (reference is not ICodeEntityReference codeEntityReference ||
-          codeEntityReference?.Resolve(new ResolveContextImpl(mySolution))?.DeclaredElement is not { } declaredElement)
+          codeEntityReference.Resolve(new ResolveContextImpl(mySolution))?.DeclaredElement is not { } declaredElement)
       {
         LogErrorAndSetNull($"Declared element was null for {request.PrintToString()}");
         return;

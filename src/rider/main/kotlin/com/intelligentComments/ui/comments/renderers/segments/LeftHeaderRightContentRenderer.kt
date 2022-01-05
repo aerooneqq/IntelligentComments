@@ -1,5 +1,7 @@
 package com.intelligentComments.ui.comments.renderers.segments
 
+import com.intelligentComments.core.settings.RiderIntelligentCommentsSettingsProvider
+import com.intelligentComments.ui.comments.model.ModelWithContent
 import com.intelligentComments.ui.comments.model.content.ContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.GroupedUiModel
 import com.intelligentComments.ui.comments.model.highlighters.HighlightedTextUiWrapper
@@ -9,6 +11,7 @@ import com.intelligentComments.ui.util.ContentSegmentsUtil
 import com.intelligentComments.ui.util.RenderAdditionalInfo
 import com.intelligentComments.ui.util.TextUtil
 import com.intelligentComments.ui.util.UpdatedRectCookie
+import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.impl.EditorImpl
 import com.intellij.openapi.util.use
 import java.awt.Graphics
@@ -30,20 +33,49 @@ abstract class LeftHeaderRightContentRenderer(
     rectanglesModel: RectanglesModel,
     additionalRenderInfo: RenderAdditionalInfo
   ): Rectangle {
-    UpdatedRectCookie(rect).use {
-      renderHeader(g, rect, editorImpl, rectanglesModel)
+    val shouldDrawHeader = shouldDrawHeader(editorImpl)
+    if (shouldDrawHeader) {
+      UpdatedRectCookie(rect).use {
+        renderHeader(g, rect, editorImpl, rectanglesModel)
+      }
     }
 
     val xDelta = additionalRenderInfo.topmostLeftIndent + deltaBetweenNameAndDescription
-    val adjustedRect = Rectangle(rect).apply {
-      x += xDelta
-      y = rect.y
+    val adjustedRect = if (shouldDrawHeader) {
+      Rectangle(rect).apply {
+        x += xDelta
+        y = rect.y
+      }
+    } else {
+      rect
     }
 
     return ContentSegmentsUtil.renderSegments(content, g, adjustedRect, editorImpl, rectanglesModel).apply {
-      x -= xDelta
+      x -= if (shouldDrawHeader) xDelta else 0
       y += ContentSegmentsUtil.deltaBetweenSegments
     }
+  }
+
+  private fun shouldDrawHeader(editorImpl: EditorImpl): Boolean {
+    if (content.isEmpty()) {
+      return true
+    }
+
+    val parent = content.first().parent?.parent?.parent
+    var current = parent
+    while (current != null) {
+      if (current is ContentSegmentUiModel && SegmentRenderer.getRendererFor(current) is LeftHeaderRightContentRenderer) {
+        return true
+      }
+
+      current = current.parent
+    }
+
+    val singleContent = parent is ModelWithContent && parent.content.size == 1
+    val settings = editorImpl.project?.service<RiderIntelligentCommentsSettingsProvider>()
+    val canOmitHeader = !(settings?.showFirstLevelHeaderWhenOneElement?.value ?: return true)
+
+    return !(canOmitHeader && singleContent)
   }
 
   fun calculateHeaderWidth(editorImpl: EditorImpl) = calculateHeaderWidthInternal(editorImpl)
@@ -61,9 +93,11 @@ abstract class LeftHeaderRightContentRenderer(
     editorImpl: EditorImpl,
     additionalRenderInfo: RenderAdditionalInfo
   ): Int {
-    val nameHeight = calculateHeaderHeightInternal(editorImpl)
+    val nameHeight = if (shouldDrawHeader(editorImpl)) calculateHeaderHeightInternal(editorImpl) else 0
+
     val delta = ContentSegmentsUtil.deltaBetweenSegments
     val contentHeight = ContentSegmentsUtil.calculateContentHeight(content, editorImpl, additionalRenderInfo) + delta
+
     return max(nameHeight, contentHeight)
   }
 
@@ -71,15 +105,24 @@ abstract class LeftHeaderRightContentRenderer(
     editorImpl: EditorImpl,
     additionalRenderInfo: RenderAdditionalInfo
   ): Int {
-    var width = additionalRenderInfo.topmostLeftIndent
-    width += deltaBetweenNameAndDescription
+    var width = 0
+
+    if (shouldDrawHeader(editorImpl)) {
+      width = additionalRenderInfo.topmostLeftIndent
+      width += deltaBetweenNameAndDescription
+    }
+
     width += ContentSegmentsUtil.calculateContentWidth(content, editorImpl, additionalRenderInfo)
     return width
   }
 
   override fun accept(context: RectangleModelBuildContext) {
     ContentSegmentsUtil.accept(context.createCopy(Rectangle(context.rect).apply {
-      x += deltaBetweenNameAndDescription + context.additionalRenderInfo.topmostLeftIndent
+      x += if (shouldDrawHeader(context.editorImpl)) {
+        deltaBetweenNameAndDescription + context.additionalRenderInfo.topmostLeftIndent
+      } else {
+        0
+      }
     }), content)
   }
 }
