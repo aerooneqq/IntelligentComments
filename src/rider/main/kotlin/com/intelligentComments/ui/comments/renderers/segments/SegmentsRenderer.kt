@@ -26,8 +26,13 @@ interface SegmentsRenderer : Renderer, RectangleModelBuildContributor {
   }
 }
 
-class DefaultSegmentsRenderer(section: SectionUiModel<ContentSegmentUiModel>) :
-  ContentSegmentsRenderer(section.content), SegmentsRenderer
+class DefaultSegmentsRenderer(
+  private val section: SectionUiModel<ContentSegmentUiModel>
+) : ContentSegmentsRenderer(section.content), SegmentsRenderer {
+  override fun accept(context: RectangleModelBuildContext) {
+    ContentSegmentsUtil.accept(context, section.content)
+  }
+}
 
 class SegmentsRendererWithHeader(private val segmentsSection: SectionWithHeaderUiModel<ContentSegmentUiModel>) :
   VerticalSectionWithHeaderRenderer<ContentSegmentUiModel>(segmentsSection), SegmentsRenderer {

@@ -6,7 +6,4 @@ import com.intelligentComments.ui.core.RectangleModelBuildContext
 
 class RemarksSegmentRenderer(
   remarksUiModel: RemarksUiModel
-) : ContentSegmentsRenderer(remarksUiModel.content.content), SegmentRenderer {
-  override fun accept(context: RectangleModelBuildContext) {
-  }
-}
+) : ContentSegmentsRenderer(remarksUiModel.content.content), SegmentRenderer

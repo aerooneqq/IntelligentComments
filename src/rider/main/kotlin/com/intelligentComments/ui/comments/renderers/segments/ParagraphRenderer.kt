@@ -14,7 +14,7 @@ import java.awt.Rectangle
 class ParagraphRendererImpl(private val model: ParagraphUiModel) : ContentSegmentsRenderer(model.content.content),
   SegmentRenderer {
   companion object {
-    private const val leftDelta = 5
+    private const val leftDelta = 0
   }
 
 
@@ -40,8 +40,5 @@ class ParagraphRendererImpl(private val model: ParagraphUiModel) : ContentSegmen
     additionalRenderInfo: RenderAdditionalInfo
   ): Int {
     return super.calculateExpectedWidthInPixels(editorImpl, additionalRenderInfo) + leftDelta
-  }
-
-  override fun accept(context: RectangleModelBuildContext) {
   }
 }

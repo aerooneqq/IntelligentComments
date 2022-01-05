@@ -31,7 +31,11 @@ data class RectangleModelBuildContext(
     return RectangleModelBuildContext(rectanglesModel, widthAndHeight, newRectangle, editorImpl, additionalRenderInfo)
   }
 
-  fun copyWithNewRect(newRectangle: Rectangle): RectangleModelBuildContext {
+  fun createCopy(): RectangleModelBuildContext {
+    return createCopy(Rectangle(rect))
+  }
+
+  fun createCopy(newRectangle: Rectangle): RectangleModelBuildContext {
     return RectangleModelBuildContext(rectanglesModel, WidthAndHeight(widthAndHeight), newRectangle, editorImpl, additionalRenderInfo)
   }
 

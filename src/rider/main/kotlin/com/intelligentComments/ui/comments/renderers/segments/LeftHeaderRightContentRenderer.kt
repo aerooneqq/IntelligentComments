@@ -78,7 +78,7 @@ abstract class LeftHeaderRightContentRenderer(
   }
 
   override fun accept(context: RectangleModelBuildContext) {
-    ContentSegmentsUtil.accept(context.copyWithNewRect(Rectangle(context.rect).apply {
+    ContentSegmentsUtil.accept(context.createCopy(Rectangle(context.rect).apply {
       x += deltaBetweenNameAndDescription + context.additionalRenderInfo.topmostLeftIndent
     }), content)
   }

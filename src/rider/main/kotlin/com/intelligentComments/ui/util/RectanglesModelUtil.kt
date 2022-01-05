@@ -40,7 +40,9 @@ class RectanglesModelUtil {
       yDelta: Int
     ): RectanglesModel {
       val context = createRectanglesBuildContext(xDelta, yDelta, editorImpl)
-      SegmentsRenderer.getRendererFor(model.contentSection).accept(context)
+
+      val renderer = SegmentsRenderer.getRendererFor(model.contentSection)
+      renderer.accept(context)
 
       addTopmostModel(context, xDelta, yDelta, model)
       return context.rectanglesModel.apply {

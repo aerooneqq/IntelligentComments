@@ -24,7 +24,7 @@ public class XmlDocsProcessor : IRecursiveElementProcessor
 
   public void ProcessBeforeInterior(ITreeNode element)
   {
-    if (element is IXmlDocOwnerTreeNode xmlDocOwner)
+    if (element is IDocCommentBlock xmlDocOwner)
     {
       var builder = new DocCommentBuilder(xmlDocOwner);
 

@@ -1,11 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Xml;
 using JetBrains.Annotations;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.I18n.Services;
 using JetBrains.ReSharper.Psi;
+using JetBrains.ReSharper.Psi.CSharp;
+using JetBrains.ReSharper.Psi.CSharp.Impl.DocComments;
 using JetBrains.ReSharper.Psi.Modules;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.ReSharper.Psi.Util;
@@ -105,12 +108,13 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
       Normalize();
     }
   }
-
+  
   [NotNull] private const string UndefinedParam = "???";
   [NotNull] private const string CRef = "cref";
   [NotNull] private const string Href = "href";
   [NotNull] private const string LangWord = "langword";
-  
+
+  [NotNull] private static readonly ISet<char> ourWhitespaceChars = new HashSet<char> { ' ', '\n', '\r', '\t' };
   [NotNull] private static readonly ILogger ourLogger = Logger.GetLogger<DocCommentBuilder>();
   [NotNull] private static readonly Func<string, IParamContentSegment> ourParamFactory = name => new ParamContentSegment(name);
   [NotNull] private static readonly Func<string, ITypeParamSegment> ourTypeParamFactory = name => new TypeParamSegment(name);
@@ -118,7 +122,7 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
   [NotNull] private readonly Stack<ContentSegmentsMetadata> myContentSegmentsStack;
   [NotNull] private readonly ISet<XmlNode> myVisitedNodes;
   [NotNull] private readonly IHighlightersProvider myHighlightersProvider;
-  [NotNull] private readonly IXmlDocOwnerTreeNode myOwner;
+  [NotNull] private readonly IDocCommentBlock myComment;
   [NotNull] private readonly IPsiServices myPsiServices;
   [NotNull] private readonly IPsiModule myPsiModule;
   [NotNull] private readonly CodeFragmentHighlightingManager myCodeFragmentHighlightingManager;
@@ -126,17 +130,17 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
   [NotNull] private readonly IResolveContext myResolveContext;
 
 
-  public DocCommentBuilder([NotNull] IXmlDocOwnerTreeNode owner)
+  public DocCommentBuilder([NotNull] IDocCommentBlock comment)
   {
-    myResolveContext = new ResolveContextImpl(owner.GetSolution());
+    myResolveContext = new ResolveContextImpl(comment.GetSolution());
     myLanguageManager = LanguageManager.Instance;
-    myHighlightersProvider = myLanguageManager.GetService<IHighlightersProvider>(owner.Language);
-    myOwner = owner;
+    myHighlightersProvider = myLanguageManager.GetService<IHighlightersProvider>(comment.Language);
+    myComment = comment;
     myContentSegmentsStack = new Stack<ContentSegmentsMetadata>();
-    myCodeFragmentHighlightingManager = owner.GetSolution().GetComponent<CodeFragmentHighlightingManager>();
+    myCodeFragmentHighlightingManager = comment.GetSolution().GetComponent<CodeFragmentHighlightingManager>();
 
-    myPsiServices = myOwner.GetPsiServices();
-    myPsiModule = myOwner.GetPsiModule();
+    myPsiServices = myComment.GetPsiServices();
+    myPsiModule = myComment.GetPsiModule();
     
     myVisitedNodes = new HashSet<XmlNode>();
   }
@@ -146,7 +150,7 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
   {
     try
     {
-      if (myOwner.GetXMLDoc(true) is not { } xmlNode)
+      if (myComment.GetXML(null) is not { } xmlNode)
       {
         return null;
       }
@@ -158,7 +162,7 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
       }
       
       var content = new IntelligentCommentContent(topmostContentSegments.ContentSegments);
-      return new DocComment(content, myOwner.FirstChild.CreatePointer());
+      return new DocComment(content, myComment.CreatePointer());
     }
     catch (Exception ex)
     {
@@ -225,14 +229,39 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
 
   private void AddHighlightedText([NotNull] string text, [NotNull] TextHighlighter highlighter)
   {
-    var highlightedText = new HighlightedText(text, new[] { highlighter });
+    var highlightedText = new HighlightedText($" {text} ", new[] { highlighter.Shift(1) });
     var textContentSegment = new MergeableTextContentSegment(highlightedText);
     ExecuteWithTopmostContentSegments(metadata => metadata.ContentSegments.Segments.Add(textContentSegment));
   }
 
-  private static string PreprocessText([NotNull] string text) =>
-    text.Replace("  ", " ").Replace("\n ", "\n").Replace(" \n", "\n");
-  
+  private static string PreprocessText([NotNull] string text)
+  {
+    var sb = new StringBuilder(text);
+    while (ourWhitespaceChars.Contains(sb[0]))
+    {
+      sb.Remove(0, 1);
+    }
+      
+    while (ourWhitespaceChars.Contains(sb[^1]))
+    {
+      sb.Remove(sb.Length - 1, 1);
+    }
+    
+    for (int i = sb.Length - 1; i >= 0; --i)
+    {
+      if (sb[i] == '\r') sb.Remove(i, 1);
+    }
+
+    text = sb.ToString();
+    
+    while (text.Contains("  "))
+    {
+      text = text.Replace("  ", " ");
+    }
+
+    return text.Replace("\n ", "\n").Replace(" \n", "\n");
+  }
+
   public override void VisitParam(XmlElement element)
   {
     ProcessParam(element, "name", ourParamFactory);
@@ -326,11 +355,29 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
     }
 
     var reference = CreateCodeEntityReference(exceptionName);
+
+    exceptionName = reference.Resolve(myResolveContext).DeclaredElement switch
+    {
+      { } declaredElement => Present(declaredElement),
+      null => BeautifyCodeEntityId(exceptionName)
+    };
+
     var highlighter = myHighlightersProvider.GetReSharperExceptionHighlighter(
       0, exceptionName.Length, reference, myResolveContext);
     
     var exceptionSegment = new ExceptionContentSegment(new HighlightedText(exceptionName, highlighter));
     ProcessEntityWithContentSegments(exceptionSegment, element);
+  }
+
+  private static string Present(IDeclaredElement element)
+  {
+    return DeclaredElementPresenter.Format(
+      CSharpLanguage.Instance, XmlDocPresenterUtil.LinkedElementPresentationStyle, element).Text;
+  }
+  
+  private static string BeautifyCodeEntityId(string id)
+  {
+    return id[(id.IndexOf(":", StringComparison.Ordinal) + 1)..];
   }
 
   public override void VisitParamRef(XmlElement element)
@@ -369,6 +416,7 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
   {
     ProcessSeeAlso(element, Href, (referenceRawText, description) =>
     {
+      description ??= referenceRawText;
       var highlighter = myHighlightersProvider.GetSeeAlsoLinkHighlighter(0, description.Length);
       var highlightedText = new HighlightedText(description, new[] { highlighter });
       return new SeeAlsoLinkContentSegment(highlightedText, new HttpReference(referenceRawText));
@@ -381,11 +429,7 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
     [NotNull] Func<string, string, ISeeAlsoContentSegment> factory)
   {
     var attributeValue = element.GetAttribute(attributeName);
-    var innerText = attributeValue;
-    if (ElementHasOneTextChild(element, out var text))
-    {
-      innerText = text;
-    }
+    var innerText = ElementHasOneTextChild(element, out var text) ? text : null;
 
     var seeAlso = factory.Invoke(attributeValue, innerText);
     if (IsTopmostContext())
@@ -406,6 +450,13 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
     ProcessSeeAlso(element, CRef, (referenceRawText, description) =>
     {
       var reference = CreateCodeEntityReference(referenceRawText);
+      description = description switch
+      {
+        null when reference.Resolve(myResolveContext).DeclaredElement is { } declaredElement => Present(declaredElement),
+        null => BeautifyCodeEntityId(referenceRawText),
+        _ => description
+      };
+
       var highlighter = myHighlightersProvider.GetSeeAlsoReSharperMemberHighlighter(
         0, description.Length, reference, myResolveContext);
       
@@ -456,8 +507,14 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
     }
 
     if (reference is null) return;
-
-    var content = reference.RawValue;
+    var content = BeautifyCodeEntityId(reference.RawValue);
+    
+    if (reference is ICodeEntityReference codeEntityReference &&
+        codeEntityReference.Resolve(myResolveContext).DeclaredElement is { } declaredElement)
+    {
+      content = Present(declaredElement);
+    }
+    
     if (ElementHasOneTextChild(element, out var text))
     {
       content = PreprocessText(text);
@@ -582,13 +639,13 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
   {
     CodeFragment CreateDefaultFragment() => new(new HighlightedText(text), 0);
     
-    if (myOwner.GetContainingFile() is not { } file) return CreateDefaultFragment();
+    if (myComment.GetContainingFile() is not { } file) return CreateDefaultFragment();
     
     var requestBuilder = myLanguageManager.GetService<ICodeHighlightingRequestBuilder>(file.Language);
 
-    if (requestBuilder.CreateNodeFromText(text, myOwner) is { } node)
+    if (requestBuilder.CreateNodeFromText(text, myComment) is { } node)
     {
-      var codeHighlightingRequest = requestBuilder.CreateRequest(file, myOwner, node);
+      var codeHighlightingRequest = requestBuilder.CreateRequest(file, myComment, node);
       var id = myCodeFragmentHighlightingManager.AddRequestForHighlighting(codeHighlightingRequest);
       
       var preliminaryHighlighter = myLanguageManager.GetService<IPreliminaryCodeHighlighter>(file.Language);

@@ -26,6 +26,11 @@ public record TextHighlighter(
   bool IsResharperHighlighter = false)
 {
   public bool IsValid() => StartOffset >= 0 && StartOffset < EndOffset;
+  
+  public TextHighlighter Shift(int delta)
+  {
+    return this with { StartOffset = StartOffset + delta, EndOffset = EndOffset + delta };
+  }
 }
 
 public abstract class TextAnimation

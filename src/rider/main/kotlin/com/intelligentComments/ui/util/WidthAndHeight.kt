@@ -34,6 +34,10 @@ class WidthAndHeight {
     myHeight += newHeight
   }
 
+  fun updateHeightMax(newHeight: Int) {
+    myHeight = max(myHeight, newHeight)
+  }
+
   fun executeWithAdditionalWidth(additionalWidth: Int, action: () -> Unit) {
     myAdditionalWidth += additionalWidth
     action()

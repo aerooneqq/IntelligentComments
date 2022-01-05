@@ -3,14 +3,15 @@ package com.intelligentComments.core.comments
 import com.intelligentComments.core.domain.core.CommentBase
 import com.intelligentComments.core.domain.core.CommentIdentifier
 import com.intellij.openapi.editor.CustomFoldRegion
+import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.Editor
 import com.jetbrains.rd.util.getOrCreate
 import com.jetbrains.rd.util.reactive.ViewableMap
 import java.util.*
+import kotlin.collections.HashMap
 
 class DocumentCommentsWithFoldingsStorage : DocumentCommentsStorage() {
-  private val foldings = TreeMap<CommentIdentifier, ViewableMap<Editor, CustomFoldRegion>>()
-  private val foldingsPerEditor = ViewableMap<Editor, MutableList<CustomFoldRegion>>()
+  private val foldings = HashMap<Editor, TreeMap<CommentIdentifier, CustomFoldRegion>>()
 
 
   fun addFoldingToComment(
@@ -18,25 +19,19 @@ class DocumentCommentsWithFoldingsStorage : DocumentCommentsStorage() {
     folding: CustomFoldRegion,
     editor: Editor
   ) {
-    val editorsFoldings = foldings.getOrCreate(comment.commentIdentifier) { ViewableMap() }
-    editorsFoldings[editor] = folding
-    val foldingsList = foldingsPerEditor.getOrCreate(editor) { mutableListOf() }
-    foldingsList.add(folding)
+    val editorFoldings = foldings.getOrCreate(editor) { TreeMap() }
+    editorFoldings[comment.commentIdentifier] = folding
   }
 
   fun getFolding(commentIdentifier: CommentIdentifier, editor: Editor): CustomFoldRegion? {
-    return foldings[commentIdentifier]?.get(editor)
+    return foldings[editor]?.get(commentIdentifier)
   }
 
   fun removeFolding(commentIdentifier: CommentIdentifier, editor: Editor) {
-    val folding = foldings[commentIdentifier]?.remove(editor)
-
-    if (folding != null) {
-      foldingsPerEditor[editor]?.remove(folding)
-    }
+    foldings[editor]?.remove(commentIdentifier)
   }
 
   fun getAllFoldingsFor(editor: Editor): Collection<CustomFoldRegion> {
-    return foldingsPerEditor[editor] ?: emptyList()
+    return foldings[editor]?.values ?: emptyList()
   }
 }
