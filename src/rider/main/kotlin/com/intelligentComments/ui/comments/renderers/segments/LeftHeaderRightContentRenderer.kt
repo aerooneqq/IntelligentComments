@@ -1,6 +1,7 @@
 package com.intelligentComments.ui.comments.renderers.segments
 
 import com.intelligentComments.ui.comments.model.content.ContentSegmentUiModel
+import com.intelligentComments.ui.comments.model.content.GroupedUiModel
 import com.intelligentComments.ui.comments.model.highlighters.HighlightedTextUiWrapper
 import com.intelligentComments.ui.core.RectangleModelBuildContext
 import com.intelligentComments.ui.core.RectanglesModel
@@ -101,9 +102,18 @@ open class LeftTextHeaderAndRightContentRenderer(
     editorImpl: EditorImpl,
     rectanglesModel: RectanglesModel
   ) {
+    val adjustedRect = if (!shouldShiftUpHeader()) {
+      rect
+    } else {
+      Rectangle(rect).apply { y -= TextUtil.backgroundArcDimension }
+    }
 
-    val adjustedRect = Rectangle(rect).apply { y -= TextUtil.backgroundArcDimension }
     TextUtil.renderLine(g, adjustedRect, editorImpl, header, 0)
+  }
+
+  private fun shouldShiftUpHeader(): Boolean {
+    val parent = header.parent?.parent?.parent
+    return !(parent is GroupedUiModel && SegmentRenderer.getRendererFor(parent) is LeftHeaderRightContentRenderer)
   }
 
   override fun accept(context: RectangleModelBuildContext) {

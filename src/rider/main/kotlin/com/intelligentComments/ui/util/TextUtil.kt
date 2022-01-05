@@ -19,7 +19,7 @@ import kotlin.test.assertNotNull
 
 class TextUtil {
   companion object {
-    val font: Font = UIUtil.getLabelFont().deriveFont(13f)
+    val font: Font = UIUtil.getLabelFont().deriveFont(12f)
     val boldFont: Font = font.deriveFont(Font.BOLD).deriveFont(14f)
     const val backgroundArcDimension = 3
 
@@ -78,7 +78,7 @@ class TextUtil {
       return width
     }
 
-    private fun getTextHeight(fontMetrics: FontMetrics) = fontMetrics.ascent + textHeightAdditionFactor
+    private fun getTextHeight(fontMetrics: FontMetrics) = fontMetrics.height + textHeightAdditionFactor
 
     fun getTextHeight(editorImpl: EditorImpl, highlighter: HighlighterUiModel?): Int {
       var height = getTextHeight(getFontMetrics(editorImpl, highlighter))
@@ -99,9 +99,10 @@ class TextUtil {
       text: String,
       delta: Int
     ): Rectangle {
+      val metrics = getFontMetrics(editorImpl, null)
       val textHeight = getTextHeight(editorImpl, null)
       val adjustedRect = Rectangle(rect.x, rect.y + textHeight, rect.width, rect.height - textHeight)
-      g.drawString(text, adjustedRect.x, adjustedRect.y)
+      g.drawString(text, adjustedRect.x, adjustYCoordinateForTextDraw(adjustedRect.y, metrics))
 
       return Rectangle(adjustedRect.x, adjustedRect.y + delta, adjustedRect.width, adjustedRect.height - delta)
     }
@@ -157,11 +158,12 @@ class TextUtil {
       lines: List<String>,
       delta: Int
     ): Rectangle {
+      val metrics = getFontMetrics(editorImpl, null)
       val textHeight = getTextHeight(editorImpl, null)
       var textDelta = textHeight
 
       for (line in lines) {
-        g.drawString(line, rect.x, rect.y + textDelta)
+        g.drawString(line, rect.x, adjustYCoordinateForTextDraw(rect.y + textDelta, metrics))
         textDelta += textHeight
       }
 
@@ -314,8 +316,9 @@ class TextUtil {
 
       var xDelta = 0
 
+      val adjustedY = adjustYCoordinateForTextDraw(rect.y, metrics)
       if (highlighterModel == null) {
-        g.drawChars(line, from, to - from, rect.x + currentTextLength, rect.y)
+        g.drawChars(line, from, to - from, rect.x + currentTextLength, adjustedY)
       } else {
         val backgroundStyle = highlighterModel.backgroundStyle
         if (backgroundStyle != null) {
@@ -331,11 +334,13 @@ class TextUtil {
           }
         }
 
-        g.drawString(AttributedCharsIterator(line, from, to, highlighterModel), rect.x + currentTextLength + xDelta, rect.y)
+        g.drawString(AttributedCharsIterator(line, from, to, highlighterModel), rect.x + currentTextLength + xDelta, adjustedY)
       }
 
       return textWidth
     }
+
+    private fun adjustYCoordinateForTextDraw(y: Int, metrics: FontMetrics) = y - metrics.descent
 
     data class RangeWithHighlighter(val range: Range<Int>, val highlighter: HighlighterUiModel?)
 
