@@ -2,7 +2,6 @@ package com.intelligentComments.core.domain.rd
 
 import com.intelligentComments.core.comments.CodeFragmentHighlightingHost
 import com.intelligentComments.core.domain.core.*
-import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.jetbrains.rd.ide.model.*
@@ -275,7 +274,7 @@ class CodeSegmentFromRd(
   override val code = Property(rdCodeSegment.code.toIdeaHighlightedText(project, this))
 
   init {
-    highlightingHost.requestFullHighlighting(this, rdCodeSegment.highlightingRequestId, 0, true) {
+    highlightingHost.requestFullHighlighting(this, rdCodeSegment.highlightingRequestId) {
       code.set(it)
     }
   }

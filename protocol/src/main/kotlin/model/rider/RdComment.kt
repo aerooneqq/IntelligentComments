@@ -260,8 +260,6 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
 
   val RdCodeHighlightingRequest = structdef {
     field("Id", PredefinedType.int)
-    field("CodeHash", PredefinedType.int)
-    field("CanUseCachedValue", PredefinedType.bool)
   }
 
   val RdCommentClickDocRequest = structdef {

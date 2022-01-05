@@ -96,7 +96,7 @@ class RdCommentsModel private constructor(
         private val __RdHighlightedTextNullableSerializer = RdHighlightedText.nullable()
         private val __IntNullableSerializer = FrameworkMarshallers.Int.nullable()
         
-        const val serializationHash = -587144061572254190L
+        const val serializationHash = 5758425271312013188L
         
     }
     override val serializersOwner: ISerializersOwner get() = RdCommentsModel
@@ -399,9 +399,7 @@ class RdCodeEntityReference_Unknown (
  * #### Generated from [RdComment.kt:261]
  */
 data class RdCodeHighlightingRequest (
-    val id: Int,
-    val codeHash: Int,
-    val canUseCachedValue: Boolean
+    val id: Int
 ) : IPrintable {
     //companion
     
@@ -411,15 +409,11 @@ data class RdCodeHighlightingRequest (
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdCodeHighlightingRequest  {
             val id = buffer.readInt()
-            val codeHash = buffer.readInt()
-            val canUseCachedValue = buffer.readBool()
-            return RdCodeHighlightingRequest(id, codeHash, canUseCachedValue)
+            return RdCodeHighlightingRequest(id)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: RdCodeHighlightingRequest)  {
             buffer.writeInt(value.id)
-            buffer.writeInt(value.codeHash)
-            buffer.writeBool(value.canUseCachedValue)
         }
         
         
@@ -436,8 +430,6 @@ data class RdCodeHighlightingRequest (
         other as RdCodeHighlightingRequest
         
         if (id != other.id) return false
-        if (codeHash != other.codeHash) return false
-        if (canUseCachedValue != other.canUseCachedValue) return false
         
         return true
     }
@@ -445,8 +437,6 @@ data class RdCodeHighlightingRequest (
     override fun hashCode(): Int  {
         var __r = 0
         __r = __r*31 + id.hashCode()
-        __r = __r*31 + codeHash.hashCode()
-        __r = __r*31 + canUseCachedValue.hashCode()
         return __r
     }
     //pretty print
@@ -454,8 +444,6 @@ data class RdCodeHighlightingRequest (
         printer.println("RdCodeHighlightingRequest (")
         printer.indent {
             print("id = "); id.print(printer); println()
-            print("codeHash = "); codeHash.print(printer); println()
-            print("canUseCachedValue = "); canUseCachedValue.print(printer); println()
         }
         printer.print(")")
     }
@@ -555,7 +543,7 @@ abstract class RdComment (
 
 
 /**
- * #### Generated from [RdComment.kt:267]
+ * #### Generated from [RdComment.kt:265]
  */
 data class RdCommentClickDocRequest (
     val reference: RdReference,

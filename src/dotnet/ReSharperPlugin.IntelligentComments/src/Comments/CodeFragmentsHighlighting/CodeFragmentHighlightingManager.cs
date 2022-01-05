@@ -15,13 +15,11 @@ using JetBrains.ReSharper.Psi.Files;
 using JetBrains.ReSharper.Psi.Files.SandboxFiles;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.ReSharper.Resources.Shell;
-using JetBrains.Rider.Backend.Features.Documents;
 using JetBrains.Rider.Model;
 using JetBrains.Util;
 using ReSharperPlugin.IntelligentComments.Comments.Caches;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.CodeHighlighting;
 using ReSharperPlugin.IntelligentComments.Comments.Domain;
-using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.CodeFragmentsHighlighting;
@@ -36,7 +34,6 @@ public class CodeFragmentHighlightingManager
   [NotNull] private readonly SandboxesCache mySandboxesCache;
   [NotNull] private readonly IShellLocks myShellLocks;
   [NotNull] private readonly IDictionary<int, CodeHighlightingRequest> myRequests;
-  [NotNull] private readonly IDictionary<int, IHighlightedText> myCachedHighlightedCode;
   [NotNull] private readonly DocumentHostBase myDocumentHostBase;
 
   
@@ -55,7 +52,6 @@ public class CodeFragmentHighlightingManager
     mySandboxesCache = sandboxesCache;
     myShellLocks = shellLocks;
     myRequests = new Dictionary<int, CodeHighlightingRequest>();
-    myCachedHighlightedCode = new Dictionary<int, IHighlightedText>();
     
     myDocumentHostBase = DocumentHostBase.GetInstance(solution);
     
@@ -69,15 +65,8 @@ public class CodeFragmentHighlightingManager
     myShellLocks.AssertMainThread();
     lock (mySyncObject)
     {
-      var (id, codeHash, canUseCachedValue) = rdRequest;
-      if (canUseCachedValue)
-      {
-        if (myCachedHighlightedCode.TryGetValue(codeHash, out var highlightedText))
-        {
-          return RdTask<RdHighlightedText>.Successful(highlightedText.ToRdHighlightedText());
-        }
-      }
-      
+      var id = rdRequest.Id;
+
       if (!myRequests.TryGetValue(id, out var request) ||
           myDocumentHostBase.TryGetHostDocument(request.DocumentId) is not { } originalDocument)
       {
@@ -129,9 +118,6 @@ public class CodeFragmentHighlightingManager
             
             block.ProcessThisAndDescendants(codeHighlighter, context);
             
-            var newCodeHash = Hash.Create(block.GetText()).Value;
-            myCachedHighlightedCode[newCodeHash] = text;
-          
             task.Set(text.ToRdHighlightedText());
             RemoveRequest(id);
           }

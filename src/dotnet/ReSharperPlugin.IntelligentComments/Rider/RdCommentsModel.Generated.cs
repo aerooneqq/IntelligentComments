@@ -94,7 +94,7 @@ namespace JetBrains.Rider.Model
     public static  CtxWriteDelegate<RdHighlightedText> WriteRdHighlightedTextNullable = RdHighlightedText.Write.NullableClass();
     public static  CtxWriteDelegate<int?> WriteIntNullable = JetBrains.Rd.Impl.Serializers.WriteInt.NullableStruct();
     
-    protected override long SerializationHash => -587144061572254190L;
+    protected override long SerializationHash => 5758425271312013188L;
     
     protected override Action<ISerializers> Register => RegisterDeclaredTypesSerializers;
     public static void RegisterDeclaredTypesSerializers(ISerializers serializers)
@@ -501,45 +501,33 @@ namespace JetBrains.Rider.Model
     //fields
     //public fields
     public int Id {get; private set;}
-    public int CodeHash {get; private set;}
-    public bool CanUseCachedValue {get; private set;}
     
     //private fields
     //primary constructor
     public RdCodeHighlightingRequest(
-      int id,
-      int codeHash,
-      bool canUseCachedValue
+      int id
     )
     {
       Id = id;
-      CodeHash = codeHash;
-      CanUseCachedValue = canUseCachedValue;
     }
     //secondary constructor
     //deconstruct trait
-    public void Deconstruct(out int id, out int codeHash, out bool canUseCachedValue)
+    public void Deconstruct(out int id)
     {
       id = Id;
-      codeHash = CodeHash;
-      canUseCachedValue = CanUseCachedValue;
     }
     //statics
     
     public static CtxReadDelegate<RdCodeHighlightingRequest> Read = (ctx, reader) => 
     {
       var id = reader.ReadInt();
-      var codeHash = reader.ReadInt();
-      var canUseCachedValue = reader.ReadBool();
-      var _result = new RdCodeHighlightingRequest(id, codeHash, canUseCachedValue);
+      var _result = new RdCodeHighlightingRequest(id);
       return _result;
     };
     
     public static CtxWriteDelegate<RdCodeHighlightingRequest> Write = (ctx, writer, value) => 
     {
       writer.Write(value.Id);
-      writer.Write(value.CodeHash);
-      writer.Write(value.CanUseCachedValue);
     };
     
     //constants
@@ -558,7 +546,7 @@ namespace JetBrains.Rider.Model
     {
       if (ReferenceEquals(null, other)) return false;
       if (ReferenceEquals(this, other)) return true;
-      return Id == other.Id && CodeHash == other.CodeHash && CanUseCachedValue == other.CanUseCachedValue;
+      return Id == other.Id;
     }
     //hash code trait
     public override int GetHashCode()
@@ -566,8 +554,6 @@ namespace JetBrains.Rider.Model
       unchecked {
         var hash = 0;
         hash = hash * 31 + Id.GetHashCode();
-        hash = hash * 31 + CodeHash.GetHashCode();
-        hash = hash * 31 + CanUseCachedValue.GetHashCode();
         return hash;
       }
     }
@@ -577,8 +563,6 @@ namespace JetBrains.Rider.Model
       printer.Println("RdCodeHighlightingRequest (");
       using (printer.IndentCookie()) {
         printer.Print("id = "); Id.PrintEx(printer); printer.Println();
-        printer.Print("codeHash = "); CodeHash.PrintEx(printer); printer.Println();
-        printer.Print("canUseCachedValue = "); CanUseCachedValue.PrintEx(printer); printer.Println();
       }
       printer.Print(")");
     }
@@ -718,7 +702,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:267</p>
+  /// <p>Generated from: RdComment.kt:265</p>
   /// </summary>
   public sealed class RdCommentClickDocRequest : IPrintable, IEquatable<RdCommentClickDocRequest>
   {
