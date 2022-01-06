@@ -1,6 +1,5 @@
 using JetBrains.Annotations;
 using JetBrains.DocumentModel;
-using JetBrains.Rider.Model;
 using JetBrains.Util;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 

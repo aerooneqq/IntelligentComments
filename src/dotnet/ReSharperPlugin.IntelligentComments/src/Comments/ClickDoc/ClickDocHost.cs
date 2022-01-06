@@ -8,17 +8,13 @@ using JetBrains.ProjectModel.DataContext;
 using JetBrains.Rd.Base;
 using JetBrains.Rd.Tasks;
 using JetBrains.RdBackend.Common.Features;
-using JetBrains.RdBackend.Common.Features.Documents;
-using JetBrains.RdBackend.Common.Features.Util.Ranges;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.DataContext;
 using JetBrains.Rider.Backend.Features.QuickDoc;
 using JetBrains.Rider.Backend.Features.TextControls;
 using JetBrains.Rider.Model;
 using JetBrains.Util;
-using JetBrains.Util.Special;
 using ReSharperPlugin.IntelligentComments.Comments.Caches;
-using ReSharperPlugin.IntelligentComments.Comments.CodeFragmentsHighlighting;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.References;
 
@@ -32,10 +28,10 @@ public class ClickDocHost
   [NotNull] private readonly ISolution mySolution;
   [NotNull] private readonly QuickDocHost myQuickDocHost;
   [NotNull] private readonly IShellLocks myShellLocks;
-  [NotNull] private readonly IPsiServices myPsiServices;
   [NotNull] private readonly RiderTextControlHost myTextControlHost;
   [NotNull] private readonly DataContexts myDataContexts;
   [NotNull] private readonly ReferencesCache myReferencesCache;
+  [NotNull] private readonly RdReferenceConverter myRdReferenceConverter;
 
 
   public ClickDocHost(
@@ -44,20 +40,20 @@ public class ClickDocHost
     [NotNull] ISolution solution, 
     [NotNull] QuickDocHost quickDocHost,
     [NotNull] IShellLocks shellLocks,
-    [NotNull] IPsiServices psiServices,
     [NotNull] RiderTextControlHost textControlHost, 
     [NotNull] DataContexts dataContexts, 
-    [NotNull] ReferencesCache referencesCache)
+    [NotNull] ReferencesCache referencesCache,
+    [NotNull] RdReferenceConverter rdReferenceConverter)
   {
     myLifetime = lifetime;
     myLogger = logger;
     mySolution = solution;
     myQuickDocHost = quickDocHost;
     myShellLocks = shellLocks;
-    myPsiServices = psiServices;
     myTextControlHost = textControlHost;
     myDataContexts = dataContexts;
     myReferencesCache = referencesCache;
+    myRdReferenceConverter = rdReferenceConverter;
 
     solution.GetProtocolSolution().GetRdCommentsModel().RequestClickDoc.Set(HandleClickDocRequest);
   }
@@ -80,7 +76,7 @@ public class ClickDocHost
         return;
       }
 
-      if (TryGetReference(request) is not { } reference)
+      if (myRdReferenceConverter.TryGetReference(request.Reference, request.TextControlId) is not { } reference)
       {
         LogErrorAndSetNull($"Declared element was null for {request.PrintToString()}");
         return;
@@ -90,9 +86,9 @@ public class ClickDocHost
       {
         reference = myReferencesCache[textControl.Document, proxyReference.RealReferenceId]?.Reference;
       }
-      
-      if (reference is not ICodeEntityReference codeEntityReference ||
-          codeEntityReference.Resolve(new ResolveContextImpl(mySolution))?.DeclaredElement is not { } declaredElement)
+
+      var resolveContext = new ResolveContextImpl(mySolution, textControl.Document);
+      if (reference?.Resolve(resolveContext) is not DeclaredElementResolveResult { DeclaredElement: { } declaredElement })
       {
         LogErrorAndSetNull($"Declared element was null for {request.PrintToString()}");
         return;
@@ -112,50 +108,5 @@ public class ClickDocHost
     });
     
     return task;
-  }
-  
-  [CanBeNull]
-  private IReference TryGetReference(RdCommentClickDocRequest request)
-  {
-    return request.Reference switch
-    {
-      RdProxyReference proxyReference => new ProxyReference(proxyReference.RealReferenceId),
-      RdXmlDocCodeEntityReference xmlReference => TryGetXmlDocReference(request, xmlReference),
-      RdSandboxCodeEntityReference sandBoxReference => TryGetSandboxReference(sandBoxReference),
-      _ => null
-    };
-  }
-  
-  [CanBeNull]
-  private IXmlDocCodeEntityReference TryGetXmlDocReference(
-    [NotNull] RdCommentClickDocRequest request,
-    [NotNull] RdXmlDocCodeEntityReference reference)
-  {
-    if (myTextControlHost.TryGetTextControl(request.TextControlId) is not { } textControl)
-    {
-      return null;
-    }
-    
-    var document = textControl.Document;
-    if (document.GetPsiSourceFile(mySolution) is not { } sourceFile)
-    {
-      return null;
-    }
-    
-    var module = sourceFile.PsiModule;
-    var rawName = reference.RawValue;
-    return new XmlDocCodeEntityReference(rawName, myPsiServices, module);
-  }
-  
-  [CanBeNull]
-  private ISandBoxCodeEntityReference TryGetSandboxReference([NotNull] RdSandboxCodeEntityReference reference)
-  {
-    if (reference.OriginalDocumentId is null) return null;
-    
-    var document = DocumentHostBase.GetInstance(mySolution).TryGetHostDocument(reference.OriginalDocumentId);
-    if (document is null) return null;
-
-    return new SandBoxCodeEntityReference(
-      reference.RawValue, reference.SandboxFileId, document, reference.Range.ToTextRange());
   }
 }

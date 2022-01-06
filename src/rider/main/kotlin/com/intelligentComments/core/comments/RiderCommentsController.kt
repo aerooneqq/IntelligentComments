@@ -3,6 +3,7 @@ package com.intelligentComments.core.comments
 import com.intelligentComments.core.comments.listeners.CommentsEditorsListenersManager
 import com.intelligentComments.core.comments.states.CommentState
 import com.intelligentComments.core.comments.states.RiderCommentsStateManager
+import com.intelligentComments.core.comments.storages.DocumentCommentsWithFoldingsStorage
 import com.intelligentComments.core.domain.core.CommentBase
 import com.intelligentComments.core.domain.core.CommentIdentifier
 import com.intelligentComments.core.domain.core.DocComment

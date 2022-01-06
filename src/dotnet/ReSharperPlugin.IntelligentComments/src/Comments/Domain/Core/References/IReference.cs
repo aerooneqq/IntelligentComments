@@ -15,14 +15,12 @@ public interface IReference
 public interface IProxyReference : IReference
 {
   int RealReferenceId { get; }
-
-  [CanBeNull] 
-  IReference GetRealReference(ISolution solution, IDocument contextDocument);
 }
 
 public interface IResolveContext
 {
-  ISolution Solution { get; }
+  [NotNull] ISolution Solution { get; }
+  [CanBeNull] IDocument Document { get; }
 }
 
 public abstract class ResolveResult

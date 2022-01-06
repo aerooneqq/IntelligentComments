@@ -19,7 +19,7 @@ import kotlin.reflect.KClass
 class RdCommentsModel private constructor(
     private val _highlightCode: RdCall<RdCodeHighlightingRequest, RdHighlightedText?>,
     private val _requestClickDoc: RdCall<RdCommentClickDocRequest, Int?>,
-    private val _performNavigation: RdCall<RdCodeEntityReference, Unit>,
+    private val _performNavigation: RdCall<RdNavigationRequest, Unit>,
     private val _evaluate: RdCall<Int, Boolean>
 ) : RdExtBase() {
     //companion
@@ -76,6 +76,7 @@ class RdCommentsModel private constructor(
             serializers.register(RdHackWithTickets)
             serializers.register(RdCodeHighlightingRequest)
             serializers.register(RdCommentClickDocRequest)
+            serializers.register(RdNavigationRequest)
             serializers.register(RdComment_Unknown)
             serializers.register(RdContentSegment_Unknown)
             serializers.register(RdSegmentWithContent_Unknown)
@@ -96,7 +97,7 @@ class RdCommentsModel private constructor(
         private val __RdHighlightedTextNullableSerializer = RdHighlightedText.nullable()
         private val __IntNullableSerializer = FrameworkMarshallers.Int.nullable()
         
-        const val serializationHash = 5758425271312013188L
+        const val serializationHash = 3315001305892084604L
         
     }
     override val serializersOwner: ISerializersOwner get() = RdCommentsModel
@@ -105,7 +106,7 @@ class RdCommentsModel private constructor(
     //fields
     val highlightCode: IRdCall<RdCodeHighlightingRequest, RdHighlightedText?> get() = _highlightCode
     val requestClickDoc: IRdCall<RdCommentClickDocRequest, Int?> get() = _requestClickDoc
-    val performNavigation: IRdCall<RdCodeEntityReference, Unit> get() = _performNavigation
+    val performNavigation: IRdCall<RdNavigationRequest, Unit> get() = _performNavigation
     val evaluate: IRdCall<Int, Boolean> get() = _evaluate
     //methods
     //initializer
@@ -121,7 +122,7 @@ class RdCommentsModel private constructor(
     ) : this(
         RdCall<RdCodeHighlightingRequest, RdHighlightedText?>(RdCodeHighlightingRequest, __RdHighlightedTextNullableSerializer),
         RdCall<RdCommentClickDocRequest, Int?>(RdCommentClickDocRequest, __IntNullableSerializer),
-        RdCall<RdCodeEntityReference, Unit>(AbstractPolymorphic(RdCodeEntityReference), FrameworkMarshallers.Void),
+        RdCall<RdNavigationRequest, Unit>(RdNavigationRequest, FrameworkMarshallers.Void),
         RdCall<Int, Boolean>(FrameworkMarshallers.Int, FrameworkMarshallers.Bool)
     )
     
@@ -2383,6 +2384,69 @@ class RdListSegment (
     }
     
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
+    //deepClone
+    //contexts
+}
+
+
+/**
+ * #### Generated from [RdComment.kt:270]
+ */
+data class RdNavigationRequest (
+    val reference: RdReference,
+    val textControlId: TextControlId
+) : IPrintable {
+    //companion
+    
+    companion object : IMarshaller<RdNavigationRequest> {
+        override val _type: KClass<RdNavigationRequest> = RdNavigationRequest::class
+        
+        @Suppress("UNCHECKED_CAST")
+        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdNavigationRequest  {
+            val reference = ctx.serializers.readPolymorphic<RdReference>(ctx, buffer, RdReference)
+            val textControlId = TextControlId.read(ctx, buffer)
+            return RdNavigationRequest(reference, textControlId)
+        }
+        
+        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: RdNavigationRequest)  {
+            ctx.serializers.writePolymorphic(ctx, buffer, value.reference)
+            TextControlId.write(ctx, buffer, value.textControlId)
+        }
+        
+        
+    }
+    //fields
+    //methods
+    //initializer
+    //secondary constructor
+    //equals trait
+    override fun equals(other: Any?): Boolean  {
+        if (this === other) return true
+        if (other == null || other::class != this::class) return false
+        
+        other as RdNavigationRequest
+        
+        if (reference != other.reference) return false
+        if (textControlId != other.textControlId) return false
+        
+        return true
+    }
+    //hash code trait
+    override fun hashCode(): Int  {
+        var __r = 0
+        __r = __r*31 + reference.hashCode()
+        __r = __r*31 + textControlId.hashCode()
+        return __r
+    }
+    //pretty print
+    override fun print(printer: PrettyPrinter)  {
+        printer.println("RdNavigationRequest (")
+        printer.indent {
+            print("reference = "); reference.print(printer); println()
+            print("textControlId = "); textControlId.print(printer); println()
+        }
+        printer.print(")")
+    }
     //deepClone
     //contexts
 }

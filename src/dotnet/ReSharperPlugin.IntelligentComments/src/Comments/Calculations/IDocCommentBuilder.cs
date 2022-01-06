@@ -143,7 +143,7 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
 
   public DocCommentBuilder([NotNull] IDocCommentBlock comment)
   {
-    myResolveContext = new ResolveContextImpl(comment.GetSolution());
+    myResolveContext = new ResolveContextImpl(comment.GetSolution(), comment.GetSourceFile()?.Document);
     myLanguageManager = LanguageManager.Instance;
     myHighlightersProvider = myLanguageManager.GetService<IHighlightersProvider>(comment.Language);
     myComment = comment;
@@ -412,7 +412,7 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
 
     var reference = CreateCodeEntityReference(exceptionName);
 
-    exceptionName = reference.Resolve(myResolveContext).DeclaredElement switch
+    exceptionName = (reference.Resolve(myResolveContext) as DeclaredElementResolveResult)?.DeclaredElement switch
     {
       { } declaredElement => Present(declaredElement),
       null => BeautifyCodeEntityId(exceptionName)
@@ -507,9 +507,13 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
     ProcessSeeAlso(element, CRef, (referenceRawText, description) =>
     {
       var reference = CreateCodeEntityReference(referenceRawText);
+      
+      // ReSharper disable once UsePatternMatching
+      var resolveResult = reference.Resolve(myResolveContext) as DeclaredElementResolveResult;
+      
       description = description switch
       {
-        null when reference.Resolve(myResolveContext).DeclaredElement is { } declaredElement => Present(declaredElement),
+        null when resolveResult is { DeclaredElement: { } declaredElement } => Present(declaredElement),
         null => BeautifyCodeEntityId(referenceRawText),
         _ => description
       };
@@ -569,9 +573,9 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
 
     if (reference is null) return;
     var content = BeautifyCodeEntityId(reference.RawValue);
-    
-    if (reference is ICodeEntityReference codeEntityReference &&
-        codeEntityReference.Resolve(myResolveContext).DeclaredElement is { } declaredElement)
+
+    var resolveResult = reference.Resolve(myResolveContext) as DeclaredElementResolveResult;
+    if (resolveResult is { DeclaredElement: { } declaredElement })
     {
       content = Present(declaredElement);
     }

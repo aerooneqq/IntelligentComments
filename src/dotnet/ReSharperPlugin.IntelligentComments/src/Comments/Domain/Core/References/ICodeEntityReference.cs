@@ -8,7 +8,6 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
 
 public interface ICodeEntityReference : IReference
 {
-  new DeclaredElementResolveResult Resolve(IResolveContext context);
 }
 
 public interface IXmlDocCodeEntityReference : ICodeEntityReference

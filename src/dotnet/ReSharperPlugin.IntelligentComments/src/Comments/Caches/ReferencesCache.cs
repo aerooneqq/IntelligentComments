@@ -17,6 +17,7 @@ public class ReferencesCache : AbstractVisibleDocumentBasedCache<int, ReferenceI
 {
   private int myCurrentId;
 
+  
   public ReferencesCache(
     Lifetime lifetime, 
     [NotNull] ITextControlManager textControlManager, 

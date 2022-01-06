@@ -1,12 +1,10 @@
-package com.intelligentComments.core.comments
+package com.intelligentComments.core.comments.storages
 
 import com.intelligentComments.core.domain.core.CommentBase
 import com.intelligentComments.core.domain.core.CommentIdentifier
 import com.intellij.openapi.editor.CustomFoldRegion
-import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.Editor
 import com.jetbrains.rd.util.getOrCreate
-import com.jetbrains.rd.util.reactive.ViewableMap
 import java.util.*
 import kotlin.collections.HashMap
 

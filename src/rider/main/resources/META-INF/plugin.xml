@@ -16,9 +16,10 @@
     <projectService serviceImplementation="com.intelligentComments.core.comments.listeners.CommentsEditorsListenersManager" />
     <projectService serviceImplementation="com.intelligentComments.core.changes.ChangeManagerImpl"
                     serviceInterface="com.intelligentComments.core.changes.ChangeManager" />
-    <projectService serviceImplementation="com.intelligentComments.core.comments.CodeFragmentHighlightingHost" />
+    <projectService serviceImplementation="com.intelligentComments.core.comments.codeHighlighting.CodeFragmentHighlightingHost" />
     <projectService serviceImplementation="com.intelligentComments.core.comments.HighlightersClickHandler" />
-    <projectService serviceImplementation="com.intelligentComments.core.comments.CommentClickDocHost" />
+    <projectService serviceImplementation="com.intelligentComments.core.comments.docs.CommentClickDocHost" />
+    <projectService serviceImplementation="com.intelligentComments.core.comments.navigation.CommentsNavigationHost" />
 
     <rdclient.highlighterModelSupport implementation="com.intelligentComments.core.markup.DocCommentsFoldingHighlightersSupport" />
   </extensions>

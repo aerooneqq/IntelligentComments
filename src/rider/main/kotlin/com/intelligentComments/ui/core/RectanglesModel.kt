@@ -34,8 +34,8 @@ class RectanglesModelHolder(private val uiModel: UiInteractionModelBase) {
 class RectanglesModel {
   private val rectanglesToElements = HashMap<Rectangle, MutableList<UiInteractionModelBase>>()
   private val elementsToRectangles = HashMap<UiInteractionModelBase, MutableList<Rectangle>>()
-  private var sealed = false
 
+  private var sealed = false
   private var myWidth: Int = -1
   private var myHeight: Int = -1
 

@@ -1,6 +1,5 @@
-package com.intelligentComments.core.comments
+package com.intelligentComments.core.comments.docs
 
-import com.intelligentComments.core.domain.core.CodeEntityReference
 import com.intelligentComments.core.domain.core.CommentIdentifier
 import com.intelligentComments.core.domain.core.Reference
 import com.intelligentComments.core.domain.rd.toRdReference

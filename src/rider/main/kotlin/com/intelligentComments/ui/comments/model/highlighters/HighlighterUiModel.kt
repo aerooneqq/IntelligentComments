@@ -49,6 +49,14 @@ class HighlighterUiModel(
   override fun handleMouseOut(e: EditorMouseEvent): Boolean = applyMouseInOutAnimation(false)
 
   override fun handleClick(e: EditorMouseEvent): Boolean {
+    if (e.mouseEvent.isControlDown) {
+      return handleCtrlClick(e)
+    }
+
+    return handleUsualClick(e)
+  }
+
+  private fun handleUsualClick(e: EditorMouseEvent): Boolean {
     val root = tryGetRootUiModel(this)
     var point = e.mouseEvent.point
     val commentId = tryFindComment(highlighter)?.commentIdentifier
@@ -66,6 +74,11 @@ class HighlighterUiModel(
     }
 
     e.editor.project?.service<HighlightersClickHandler>()?.handleClick(highlighter, e.editor, point)
+    return false
+  }
+
+  private fun handleCtrlClick(e: EditorMouseEvent): Boolean {
+    e.editor.project?.service<HighlightersClickHandler>()?.handleCtrlClick(highlighter, e.editor)
     return false
   }
 

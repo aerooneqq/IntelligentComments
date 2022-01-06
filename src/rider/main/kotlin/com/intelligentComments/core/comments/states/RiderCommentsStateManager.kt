@@ -1,6 +1,6 @@
 package com.intelligentComments.core.comments.states
 
-import com.intelligentComments.core.comments.CommentsIdentifierStorage
+import com.intelligentComments.core.comments.storages.CommentsIdentifierStorage
 import com.intelligentComments.core.domain.core.CommentIdentifier
 import com.intelligentComments.core.settings.CommentsDisplayKind
 import com.intelligentComments.core.settings.RiderIntelligentCommentsSettingsProvider

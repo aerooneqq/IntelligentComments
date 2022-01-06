@@ -267,9 +267,14 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
     field("TextControlId", TextControlId)
   }
 
+  val RdNavigationRequest = structdef {
+    field("Reference", RdReference)
+    field("TextControlId", TextControlId)
+  }
+
   init {
     call("HighlightCode", RdCodeHighlightingRequest, RdHighlightedText.nullable)
     call("RequestClickDoc", RdCommentClickDocRequest, PredefinedType.int.nullable)
-    call("PerformNavigation", RdCodeEntityReference, PredefinedType.void)
+    call("PerformNavigation", RdNavigationRequest, PredefinedType.void)
   }
 }

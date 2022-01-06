@@ -29,7 +29,7 @@ public class XmlDocCodeEntityReference : ReferenceBase, IXmlDocCodeEntityReferen
   }
   
   
-  public new DeclaredElementResolveResult Resolve(IResolveContext context)
+  public override ResolveResult Resolve(IResolveContext context)
   {
     var declaredElement = XMLDocUtil.ResolveId(myServices, RawValue, myModule, true);
     return new DeclaredElementResolveResult(declaredElement);
@@ -61,7 +61,7 @@ public class SandBoxCodeEntityReference : ReferenceBase, ISandBoxCodeEntityRefer
   }
 
   
-  public new DeclaredElementResolveResult Resolve(IResolveContext context)
+  public override ResolveResult Resolve(IResolveContext context)
   {
     if (myAlreadyResolvedElement is { }) return new DeclaredElementResolveResult(myAlreadyResolvedElement);
 

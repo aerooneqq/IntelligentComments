@@ -25,12 +25,14 @@ public class ReferenceBase : IReference
 
 public class ResolveContextImpl : IResolveContext
 {
-  [NotNull] public ISolution Solution { get; }
+  public ISolution Solution { get; }
+  public IDocument Document { get; }
 
-  
-  public ResolveContextImpl([NotNull] ISolution solution)
+
+  public ResolveContextImpl([NotNull] ISolution solution, [CanBeNull] IDocument document)
   {
     Solution = solution;
+    Document = document;
   }
 }
 
@@ -43,10 +45,15 @@ public class ProxyReference : ReferenceBase, IProxyReference
   {
     RealReferenceId = realReferenceId;
   }
-  
-  
-  public IReference GetRealReference(ISolution solution, IDocument contextDocument)
+
+
+  public override ResolveResult Resolve(IResolveContext context)
   {
-    return solution.GetComponent<ReferencesCache>()[contextDocument, RealReferenceId]?.Reference;
+    if (context.Document is not { } document) return EmptyResolveResult.Instance;
+    
+    var cache = context.Solution.GetComponent<ReferencesCache>();
+    if (cache[document, RealReferenceId]?.Reference is not { } realReference) return EmptyResolveResult.Instance;
+
+    return realReference.Resolve(context);
   }
 }

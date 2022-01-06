@@ -44,20 +44,20 @@ namespace JetBrains.Rider.Model
     //public fields
     [NotNull] public IRdEndpoint<RdCodeHighlightingRequest, RdHighlightedText> HighlightCode => _HighlightCode;
     [NotNull] public IRdEndpoint<RdCommentClickDocRequest, int?> RequestClickDoc => _RequestClickDoc;
-    [NotNull] public IRdEndpoint<RdCodeEntityReference, Unit> PerformNavigation => _PerformNavigation;
+    [NotNull] public IRdEndpoint<RdNavigationRequest, Unit> PerformNavigation => _PerformNavigation;
     [NotNull] public IRdEndpoint<int, bool> Evaluate => _Evaluate;
     
     //private fields
     [NotNull] private readonly RdCall<RdCodeHighlightingRequest, RdHighlightedText> _HighlightCode;
     [NotNull] private readonly RdCall<RdCommentClickDocRequest, int?> _RequestClickDoc;
-    [NotNull] private readonly RdCall<RdCodeEntityReference, Unit> _PerformNavigation;
+    [NotNull] private readonly RdCall<RdNavigationRequest, Unit> _PerformNavigation;
     [NotNull] private readonly RdCall<int, bool> _Evaluate;
     
     //primary constructor
     private RdCommentsModel(
       [NotNull] RdCall<RdCodeHighlightingRequest, RdHighlightedText> highlightCode,
       [NotNull] RdCall<RdCommentClickDocRequest, int?> requestClickDoc,
-      [NotNull] RdCall<RdCodeEntityReference, Unit> performNavigation,
+      [NotNull] RdCall<RdNavigationRequest, Unit> performNavigation,
       [NotNull] RdCall<int, bool> evaluate
     )
     {
@@ -82,7 +82,7 @@ namespace JetBrains.Rider.Model
     ) : this (
       new RdCall<RdCodeHighlightingRequest, RdHighlightedText>(RdCodeHighlightingRequest.Read, RdCodeHighlightingRequest.Write, ReadRdHighlightedTextNullable, WriteRdHighlightedTextNullable),
       new RdCall<RdCommentClickDocRequest, int?>(RdCommentClickDocRequest.Read, RdCommentClickDocRequest.Write, ReadIntNullable, WriteIntNullable),
-      new RdCall<RdCodeEntityReference, Unit>(RdCodeEntityReference.Read, RdCodeEntityReference.Write, JetBrains.Rd.Impl.Serializers.ReadVoid, JetBrains.Rd.Impl.Serializers.WriteVoid),
+      new RdCall<RdNavigationRequest, Unit>(RdNavigationRequest.Read, RdNavigationRequest.Write, JetBrains.Rd.Impl.Serializers.ReadVoid, JetBrains.Rd.Impl.Serializers.WriteVoid),
       new RdCall<int, bool>(JetBrains.Rd.Impl.Serializers.ReadInt, JetBrains.Rd.Impl.Serializers.WriteInt, JetBrains.Rd.Impl.Serializers.ReadBool, JetBrains.Rd.Impl.Serializers.WriteBool)
     ) {}
     //deconstruct trait
@@ -94,7 +94,7 @@ namespace JetBrains.Rider.Model
     public static  CtxWriteDelegate<RdHighlightedText> WriteRdHighlightedTextNullable = RdHighlightedText.Write.NullableClass();
     public static  CtxWriteDelegate<int?> WriteIntNullable = JetBrains.Rd.Impl.Serializers.WriteInt.NullableStruct();
     
-    protected override long SerializationHash => 5758425271312013188L;
+    protected override long SerializationHash => 3315001305892084604L;
     
     protected override Action<ISerializers> Register => RegisterDeclaredTypesSerializers;
     public static void RegisterDeclaredTypesSerializers(ISerializers serializers)
@@ -3073,6 +3073,100 @@ namespace JetBrains.Rider.Model
         printer.Print("listKind = "); ListKind.PrintEx(printer); printer.Println();
         printer.Print("listContent = "); ListContent.PrintEx(printer); printer.Println();
         printer.Print("header = "); Header.PrintEx(printer); printer.Println();
+      }
+      printer.Print(")");
+    }
+    //toString
+    public override string ToString()
+    {
+      var printer = new SingleLinePrettyPrinter();
+      Print(printer);
+      return printer.ToString();
+    }
+  }
+  
+  
+  /// <summary>
+  /// <p>Generated from: RdComment.kt:270</p>
+  /// </summary>
+  public sealed class RdNavigationRequest : IPrintable, IEquatable<RdNavigationRequest>
+  {
+    //fields
+    //public fields
+    [NotNull] public RdReference Reference {get; private set;}
+    [NotNull] public JetBrains.Rider.Model.TextControlId TextControlId {get; private set;}
+    
+    //private fields
+    //primary constructor
+    public RdNavigationRequest(
+      [NotNull] RdReference reference,
+      [NotNull] JetBrains.Rider.Model.TextControlId textControlId
+    )
+    {
+      if (reference == null) throw new ArgumentNullException("reference");
+      if (textControlId == null) throw new ArgumentNullException("textControlId");
+      
+      Reference = reference;
+      TextControlId = textControlId;
+    }
+    //secondary constructor
+    //deconstruct trait
+    public void Deconstruct([NotNull] out RdReference reference, [NotNull] out JetBrains.Rider.Model.TextControlId textControlId)
+    {
+      reference = Reference;
+      textControlId = TextControlId;
+    }
+    //statics
+    
+    public static CtxReadDelegate<RdNavigationRequest> Read = (ctx, reader) => 
+    {
+      var reference = RdReference.Read(ctx, reader);
+      var textControlId = JetBrains.Rider.Model.TextControlId.Read(ctx, reader);
+      var _result = new RdNavigationRequest(reference, textControlId);
+      return _result;
+    };
+    
+    public static CtxWriteDelegate<RdNavigationRequest> Write = (ctx, writer, value) => 
+    {
+      RdReference.Write(ctx, writer, value.Reference);
+      JetBrains.Rider.Model.TextControlId.Write(ctx, writer, value.TextControlId);
+    };
+    
+    //constants
+    
+    //custom body
+    //methods
+    //equals trait
+    public override bool Equals(object obj)
+    {
+      if (ReferenceEquals(null, obj)) return false;
+      if (ReferenceEquals(this, obj)) return true;
+      if (obj.GetType() != GetType()) return false;
+      return Equals((RdNavigationRequest) obj);
+    }
+    public bool Equals(RdNavigationRequest other)
+    {
+      if (ReferenceEquals(null, other)) return false;
+      if (ReferenceEquals(this, other)) return true;
+      return Equals(Reference, other.Reference) && Equals(TextControlId, other.TextControlId);
+    }
+    //hash code trait
+    public override int GetHashCode()
+    {
+      unchecked {
+        var hash = 0;
+        hash = hash * 31 + Reference.GetHashCode();
+        hash = hash * 31 + TextControlId.GetHashCode();
+        return hash;
+      }
+    }
+    //pretty print
+    public void Print(PrettyPrinter printer)
+    {
+      printer.Println("RdNavigationRequest (");
+      using (printer.IndentCookie()) {
+        printer.Print("reference = "); Reference.PrintEx(printer); printer.Println();
+        printer.Print("textControlId = "); TextControlId.PrintEx(printer); printer.Println();
       }
       printer.Print(")");
     }

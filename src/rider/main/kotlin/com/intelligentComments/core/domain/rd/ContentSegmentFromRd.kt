@@ -1,6 +1,6 @@
 package com.intelligentComments.core.domain.rd
 
-import com.intelligentComments.core.comments.CodeFragmentHighlightingHost
+import com.intelligentComments.core.comments.codeHighlighting.CodeFragmentHighlightingHost
 import com.intelligentComments.core.domain.core.*
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project

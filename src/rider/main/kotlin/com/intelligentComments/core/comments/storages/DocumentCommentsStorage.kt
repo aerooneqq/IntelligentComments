@@ -1,4 +1,4 @@
-package com.intelligentComments.core.comments
+package com.intelligentComments.core.comments.storages
 
 import com.intelligentComments.core.domain.core.CommentBase
 import com.intelligentComments.core.domain.core.CommentIdentifier
