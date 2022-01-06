@@ -13,7 +13,7 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Caches;
 public record ReferenceInfo(IReference Reference);
 
 [SolutionComponent]
-public class ReferencesCache : AbstractVisibleDocumentBasedCache<int, ReferenceInfo>
+public class ReferencesCache : AbstractOpenedDocumentBasedCache<int, ReferenceInfo>
 {
   private int myCurrentId;
 

@@ -9,20 +9,20 @@ using JetBrains.TextControl;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Caches;
 
-public abstract class AbstractVisibleDocumentBasedCache<TId, TValue> where TValue : class
+public abstract class AbstractOpenedDocumentBasedCache<TId, TValue> where TValue : class
 {
   [NotNull] private readonly object mySyncObject = new();
   
   [NotNull] private readonly IDictionary<IDocument, IDictionary<TId, TValue>> myFilesPerDocument;
 
 
-  protected AbstractVisibleDocumentBasedCache(
+  protected AbstractOpenedDocumentBasedCache(
     Lifetime lifetime,
     [NotNull] ITextControlManager textControlManager,
     [NotNull] IShellLocks shellLocks)
   {
     myFilesPerDocument = new Dictionary<IDocument, IDictionary<TId, TValue>>();
-    textControlManager.VisibleTextControls.AddRemove.Advise(lifetime, args =>
+    textControlManager.TextControls.AddRemove.Advise(lifetime, args =>
     {
       shellLocks.Queue(lifetime, $"{GetType().Name}::InvalidatingCache", () =>
       {
@@ -31,7 +31,7 @@ public abstract class AbstractVisibleDocumentBasedCache<TId, TValue> where TValu
           lock (mySyncObject)
           {
             //ToDo: Invalidate after daemon invalidation
-            var allOpenedDocuments = textControlManager.VisibleTextControls.Select(editor => editor.Document).ToSet();
+            var allOpenedDocuments = textControlManager.TextControls.Select(editor => editor.Document).ToSet();
             var documentsToRemove = myFilesPerDocument.Keys.ToSet().Except(allOpenedDocuments);
             foreach (var document in documentsToRemove)
             {
