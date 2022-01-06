@@ -30,7 +30,7 @@ class GroupedExceptionsRenderer(
 
 class GroupedSummariesRenderer(
   model: GroupedSummaryUiModel
-) : LeftTextHeaderAndRightContentRenderer(model.header, model.content.content)
+) : LeftTextHeaderAndRightContentRenderer(model.header, model.content.content, false)
 
 class GroupedRemarksRenderer(
   model: GroupedRemarksUiModel

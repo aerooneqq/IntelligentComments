@@ -19,7 +19,8 @@ import java.awt.Rectangle
 import kotlin.math.max
 
 abstract class LeftHeaderRightContentRenderer(
-  private val content: Collection<ContentSegmentUiModel>
+  private val content: Collection<ContentSegmentUiModel>,
+  private val renderHeader: Boolean = true
 ) : SegmentRenderer {
   companion object {
     private const val deltaBetweenNameAndDescription = 10
@@ -57,6 +58,8 @@ abstract class LeftHeaderRightContentRenderer(
   }
 
   private fun shouldDrawHeader(editorImpl: EditorImpl): Boolean {
+    if (!renderHeader) return false
+
     if (content.isEmpty()) {
       return true
     }
@@ -129,8 +132,9 @@ abstract class LeftHeaderRightContentRenderer(
 
 open class LeftTextHeaderAndRightContentRenderer(
   private val header: HighlightedTextUiWrapper,
-  content: Collection<ContentSegmentUiModel>
-) : LeftHeaderRightContentRenderer(content) {
+  content: Collection<ContentSegmentUiModel>,
+  renderHeader: Boolean = true
+) : LeftHeaderRightContentRenderer(content, renderHeader) {
   override fun calculateHeaderWidthInternal(editorImpl: EditorImpl): Int {
     return TextUtil.getTextWidthWithHighlighters(editorImpl, header)
   }
