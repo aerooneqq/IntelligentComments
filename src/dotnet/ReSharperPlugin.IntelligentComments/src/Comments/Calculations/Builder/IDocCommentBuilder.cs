@@ -327,7 +327,11 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
     ProcessSeeAlso(element, Href, (referenceRawText, description) =>
     {
       description ??= referenceRawText;
-      var highlighter = myHighlightersProvider.GetSeeAlsoLinkHighlighter(0, description.Length);
+      
+      (description, var addedTrailingChar) = CommentsBuilderUtil.PreprocessTextWithContext(description, element);
+      var length = addedTrailingChar ? description.Length - 1 : description.Length;
+      
+      var highlighter = myHighlightersProvider.GetSeeAlsoLinkHighlighter(0, length);
       var highlightedText = new HighlightedText(description, new[] { highlighter });
       return new SeeAlsoLinkContentSegment(highlightedText, new HttpReference(referenceRawText));
     });
@@ -372,13 +376,8 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
         _ => description
       };
 
-      var length = description.Length;
-
-      if (!IsTopmostContext())
-      {
-        (description, var addedTrailingChar) = CommentsBuilderUtil.PreprocessTextWithContext(description, element);
-        length = addedTrailingChar ? description.Length - 1 : description.Length;
-      }
+      (description, var addedTrailingChar) = CommentsBuilderUtil.PreprocessTextWithContext(description, element);
+      var length = addedTrailingChar ? description.Length - 1 : description.Length;
 
       var highlighter = myHighlightersProvider.GetSeeAlsoReSharperMemberHighlighter(0, length, reference, myResolveContext);
       

@@ -370,7 +370,7 @@ class TextUtil {
         for (i in 1 until lineRanges.size) {
           val lineStartOffset = lineRanges[i - 1]
           val lineEndOffset = lineRanges[i]
-          if (highlighterModel.startOffset <= lineEndOffset && highlighterModel.endOffset >= lineStartOffset) {
+          if (highlighterModel.startOffset < lineEndOffset && highlighterModel.endOffset >= lineStartOffset) {
             val highlighterLineRangeStart = max(highlighterModel.startOffset, lineStartOffset)
             val highlighterLineRangeEnd = min(highlighterModel.endOffset, lineEndOffset - 1)
             val highlighterRangeForLine = Range<Int>(highlighterLineRangeStart - lineStartOffset, highlighterLineRangeEnd - lineStartOffset)
