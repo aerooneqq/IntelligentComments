@@ -32,7 +32,7 @@ public class TextContentSegment : ITextContentSegment
     int lastRightRange = -1;
     foreach (var highlighter in Text.Highlighters)
     {
-      Assertion.Assert(highlighter.StartOffset > lastRightRange, "highlighter.StartOffset > lastRightRange");
+      Assertion.Assert(highlighter.StartOffset >= lastRightRange, "highlighter.StartOffset > lastRightRange");
       lastRightRange = highlighter.EndOffset;
     }
   }
