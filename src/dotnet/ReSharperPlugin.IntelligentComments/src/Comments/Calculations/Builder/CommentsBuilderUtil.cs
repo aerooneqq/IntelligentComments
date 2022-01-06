@@ -5,6 +5,8 @@ using JetBrains.Annotations;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Builder;
 
+internal record struct TextProcessingResult(string ProcessedText, int EffectiveLength);
+
 internal static class CommentsBuilderUtil
 {
   [NotNull] private static readonly ISet<char> ourCharsWithNoNeedToAddSpaceAfter = new HashSet<char>
@@ -52,9 +54,16 @@ internal static class CommentsBuilderUtil
 
     return text.Replace("\n ", "\n").Replace(" \n", "\n");
   }
-
-  internal static (string, bool) PreprocessTextWithContext([NotNull] string text, [NotNull] XmlNode context)
+  
+  internal static TextProcessingResult PreprocessTextWithContext(
+    [NotNull] string text, [NotNull] XmlNode context, bool isTopmostContext)
   {
+    if (isTopmostContext)
+    {
+      var processedText = PreprocessText(text, null);
+      return new TextProcessingResult(processedText, processedText.Length);
+    }
+    
     var nextSibling = context.NextSibling;
 
     char? trailingCharToAdd = null;
@@ -85,7 +94,9 @@ internal static class CommentsBuilderUtil
         }
       }
     }
+
+    text = PreprocessText(text, trailingCharToAdd);
     
-    return (PreprocessText(text, trailingCharToAdd), trailingCharToAdd is { });
+    return new TextProcessingResult(text, trailingCharToAdd is { } ? text.Length - 1 : text.Length);
   }
 }

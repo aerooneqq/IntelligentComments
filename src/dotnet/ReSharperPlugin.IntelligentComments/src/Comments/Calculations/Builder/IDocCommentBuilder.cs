@@ -133,8 +133,7 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
     myVisitedNodes.Add(element);
     if (ElementHasOneTextChild(element, out var value))
     {
-      (value, var addedTrailingChar) = CommentsBuilderUtil.PreprocessTextWithContext(value, element);
-      var length = addedTrailingChar ? value.Length - 1 : value.Length;
+      (value, var length) = PreprocessTextWithContext(value, element);
       var highlighter = myHighlightersProvider.GetCXmlElementHighlighter(0, length);
       AddHighlightedText(value, highlighter);
       
@@ -142,6 +141,11 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
     }
       
     ExecuteActionOverChildren(element, Visit);
+  }
+  
+  private TextProcessingResult PreprocessTextWithContext(string text, XmlNode context)
+  {
+    return CommentsBuilderUtil.PreprocessTextWithContext(text, context, IsTopmostContext());
   }
   
   private static bool ElementHasOneTextChild([NotNull] XmlElement element, [NotNull] out string value)
@@ -208,8 +212,7 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
   {
     myVisitedNodes.Add(text);
 
-    var (processedText, addedTrailingChar) = CommentsBuilderUtil.PreprocessTextWithContext(text.Value, text);
-    var length = addedTrailingChar ? processedText.Length - 1 : processedText.Length;
+    var (processedText, length) = PreprocessTextWithContext(text.Value, text);
     var highlighter = myHighlightersProvider.TryGetReSharperHighlighter(myDocCommentAttributeId, length);
     var textContentSegment = new MergeableTextContentSegment(new HighlightedText(processedText, highlighter));
     ExecuteWithTopmostContentSegments(metadata => metadata.ContentSegments.Segments.Add(textContentSegment));
@@ -302,9 +305,8 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
     myVisitedNodes.Add(element);
     var paramName = element.GetAttribute(nameAttrName);
     if (paramName == string.Empty) paramName = UndefinedParam;
-    (paramName, var addedTrailingChar) = CommentsBuilderUtil.PreprocessTextWithContext(paramName, element);
+    (paramName, var length) = PreprocessTextWithContext(paramName, element);
 
-    var length = addedTrailingChar ? paramName.Length - 1 : paramName.Length;
     var highlighter = highlighterFactory.Invoke(length);
     AddHighlightedText(paramName, highlighter);
   }
@@ -328,8 +330,7 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
     {
       description ??= referenceRawText;
       
-      (description, var addedTrailingChar) = CommentsBuilderUtil.PreprocessTextWithContext(description, element);
-      var length = addedTrailingChar ? description.Length - 1 : description.Length;
+      (description, var length) = PreprocessTextWithContext(description, element);
       
       var highlighter = myHighlightersProvider.GetSeeAlsoLinkHighlighter(0, length);
       var highlightedText = new HighlightedText(description, new[] { highlighter });
@@ -376,8 +377,7 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
         _ => description
       };
 
-      (description, var addedTrailingChar) = CommentsBuilderUtil.PreprocessTextWithContext(description, element);
-      var length = addedTrailingChar ? description.Length - 1 : description.Length;
+      (description, var length) = PreprocessTextWithContext(description, element);
 
       var highlighter = myHighlightersProvider.GetSeeAlsoReSharperMemberHighlighter(0, length, reference, myResolveContext);
       
@@ -451,8 +451,7 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
 
   private void ProcessSee([NotNull] string content, [NotNull] IReference reference, XmlElement element)
   {
-    (content, var addedTrailingChar) = CommentsBuilderUtil.PreprocessTextWithContext(content, element);
-    var length = addedTrailingChar ? content.Length - 1 : content.Length;
+    (content, var length) = PreprocessTextWithContext(content, element);
     
     var highlighter = reference switch
     {

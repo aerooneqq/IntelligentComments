@@ -12,6 +12,7 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.event.EditorMouseEvent
 import com.intellij.openapi.editor.impl.EditorImpl
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.SystemInfo
 import java.awt.Point
 
 class HighlighterUiModel(
@@ -49,7 +50,7 @@ class HighlighterUiModel(
   override fun handleMouseOut(e: EditorMouseEvent): Boolean = applyMouseInOutAnimation(false)
 
   override fun handleClick(e: EditorMouseEvent): Boolean {
-    if (e.mouseEvent.isControlDown) {
+    if (e.mouseEvent.isControlDown || (SystemInfo.isMac && e.mouseEvent.isMetaDown)) {
       return handleCtrlClick(e)
     }
 
