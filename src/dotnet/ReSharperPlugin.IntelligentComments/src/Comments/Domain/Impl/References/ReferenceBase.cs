@@ -52,7 +52,10 @@ public class ProxyReference : ReferenceBase, IProxyReference
     if (context.Document is not { } document) return EmptyResolveResult.Instance;
     
     var cache = context.Solution.GetComponent<ReferencesCache>();
-    if (cache[document, RealReferenceId]?.Reference is not { } realReference) return EmptyResolveResult.Instance;
+    if (cache.TryGetValue(document, RealReferenceId)?.Reference is not { } realReference)
+    {
+      return EmptyResolveResult.Instance;
+    }
 
     return realReference.Resolve(context);
   }

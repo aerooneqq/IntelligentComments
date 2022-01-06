@@ -84,7 +84,7 @@ public class ClickDocHost
 
       if (reference is IProxyReference proxyReference)
       {
-        reference = myReferencesCache[textControl.Document, proxyReference.RealReferenceId]?.Reference;
+        reference = myReferencesCache.TryGetValue(textControl.Document, proxyReference.RealReferenceId)?.Reference;
       }
 
       var resolveContext = new ResolveContextImpl(mySolution, textControl.Document);

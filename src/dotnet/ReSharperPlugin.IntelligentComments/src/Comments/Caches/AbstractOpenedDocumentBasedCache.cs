@@ -54,30 +54,26 @@ public abstract class AbstractOpenedDocumentBasedCache<TId, TValue> where TValue
   {
     lock (mySyncObject)
     {
-      var id = CreateId(entry);
+      var id = CreateId(document, entry);
       var documentEntities = myFilesPerDocument.GetOrCreate(document, () => new Dictionary<TId, TValue>());
       documentEntities[id] = entry;
       return id;
     }
   }
   
-  protected abstract TId CreateId(TValue value);
+  protected abstract TId CreateId(IDocument document, TValue value);
   
-  [CanBeNull] 
-  public TValue this[IDocument document, TId id]
+  public TValue TryGetValue(IDocument document, TId id)
   {
-    get
+    lock (mySyncObject)
     {
-      lock (mySyncObject)
+      if (myFilesPerDocument.TryGetValue(document, out var documentEntities) &&
+          documentEntities.TryGetValue(id, out var entry))
       {
-        if (myFilesPerDocument.TryGetValue(document, out var documentEntities) &&
-            documentEntities.TryGetValue(id, out var entry))
-        {
-          return entry;
-        }
-
-        return null;
+        return entry;
       }
+
+      return null;
     }
   }
 }

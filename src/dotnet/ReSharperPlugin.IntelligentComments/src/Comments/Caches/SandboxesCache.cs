@@ -17,7 +17,12 @@ using ReSharperPlugin.IntelligentComments.Comments.CodeFragmentsHighlighting;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Caches;
 
-public record SandboxFileInfo(LifetimeDefinition LifetimeDefinition, SandboxPsiSourceFile SandboxPsiSourceFile);
+public record SandboxFileInfo(
+  [NotNull] LifetimeDefinition LifetimeDefinition, 
+  [NotNull] SandboxPsiSourceFile SandboxPsiSourceFile,
+  [NotNull] IDictionary<int, TextRange> TextHashesToOffset);
+
+public record SandboxCodeFragmentInfo([NotNull] SandboxPsiSourceFile SourceFile, int StartOffset, int EndOffset);
 
 [SolutionComponent]
 public class SandboxesCache : AbstractOpenedDocumentBasedCache<string, SandboxFileInfo>
@@ -49,17 +54,24 @@ public class SandboxesCache : AbstractOpenedDocumentBasedCache<string, SandboxFi
   [CanBeNull]
   public SandboxPsiSourceFile TryGetSandboxPsiSourceFile(IDocument originalDocument, string fileName)
   {
-    return this[originalDocument, fileName]?.SandboxPsiSourceFile;
+    return TryGetValue(originalDocument, fileName)?.SandboxPsiSourceFile;
   }
 
-  public SandboxPsiSourceFile CreateSandboxFileFor(IDocument originalDocument, CodeHighlightingRequest request)
+  public SandboxCodeFragmentInfo GetOrCreateSandboxFileForHighlighting(
+    [NotNull] IDocument originalDocument,
+    [NotNull] CodeHighlightingRequest request)
   {
     myShellLocks.AssertMainThread();
     var lifetimeDef = myLifetime.CreateNested();
     var highlightingLifetime = lifetimeDef.Lifetime;
     var sandBoxInfo = CreateSandboxInfo(request);
     var sandboxFile = myHelper.GetOrCreateSandboxProjectFile(request.DocumentId, sandBoxInfo, highlightingLifetime);
-
+    
+    if (TryGetValue(originalDocument, originalDocument.Moniker) is { } existingSandboxFileInfo)
+    {
+      return AddTextIfNeededAndGetFragment(existingSandboxFileInfo, request);
+    }
+    
     var document = sandboxFile.GetDocument();
     if (document is not RiderDocument riderDocument)
     {
@@ -82,10 +94,39 @@ public class SandboxesCache : AbstractOpenedDocumentBasedCache<string, SandboxFi
       myLogger.LogAssertion($"Got unexpected sourceFile for {sandboxFile}: {sourceFile}");
       return null;
     }
-    
-    Add(originalDocument, new SandboxFileInfo(lifetimeDef, sandboxPsiSourceFile));
 
-    return sandboxPsiSourceFile;
+    var endOffset = riderDocument.GetTextLength();
+    var idToOffsets = new Dictionary<int, TextRange>
+    {
+      [request.CalculateTextHash()] = new(0, endOffset)
+    };
+    
+    Add(originalDocument, new SandboxFileInfo(lifetimeDef, sandboxPsiSourceFile, idToOffsets));
+
+    return new SandboxCodeFragmentInfo(sandboxPsiSourceFile, 0, endOffset);
+  }
+  
+  [NotNull]
+  private static SandboxCodeFragmentInfo AddTextIfNeededAndGetFragment(
+    [NotNull] SandboxFileInfo sandboxFileInfo,
+    [NotNull] CodeHighlightingRequest request)
+  {
+    var (_, sandboxPsiSourceFile, textHashesToOffset) = sandboxFileInfo;
+    if (textHashesToOffset.TryGetValue(request.CalculateTextHash(), out var existingRange))
+    {
+      return new SandboxCodeFragmentInfo(sandboxPsiSourceFile, existingRange.StartOffset, existingRange.EndOffset);
+    }
+    
+    var sandboxDocument = sandboxPsiSourceFile.Document;
+    var startOffset = sandboxDocument.GetTextLength();
+    var createdText = request.CreateDocumentText();
+    var endOffset = startOffset + createdText.Length;
+    
+    sandboxDocument.InsertText(startOffset, request.CreateDocumentText());
+    
+    textHashesToOffset[request.CalculateTextHash()] = new TextRange(startOffset, endOffset);
+    
+    return new SandboxCodeFragmentInfo(sandboxPsiSourceFile, startOffset, endOffset);
   }
   
   private static SandboxInfo CreateSandboxInfo(CodeHighlightingRequest request)
@@ -123,8 +164,8 @@ public class SandboxesCache : AbstractOpenedDocumentBasedCache<string, SandboxFi
     }
   }
 
-  protected override string CreateId(SandboxFileInfo value)
+  protected override string CreateId(IDocument document, SandboxFileInfo value)
   {
-    return value.SandboxPsiSourceFile.ProjectFile.GetPersistentID();
+    return document.Moniker;
   }
 }

@@ -4,6 +4,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using JetBrains.Application.Threading;
+using JetBrains.Application.Threading.Tasks;
+using JetBrains.DocumentModel;
 using JetBrains.Lifetimes;
 using JetBrains.ProjectModel;
 using JetBrains.Rd.Tasks;
@@ -28,49 +30,52 @@ namespace ReSharperPlugin.IntelligentComments.Comments.CodeFragmentsHighlighting
 public class CodeFragmentHighlightingManager
 {
   [NotNull] private readonly object mySyncObject = new();
-  
+
   private readonly Lifetime myLifetime;
   [NotNull] private readonly ILogger myLogger;
   [NotNull] private readonly SandboxesCache mySandboxesCache;
   [NotNull] private readonly IShellLocks myShellLocks;
+  [NotNull] private readonly IPsiServices myPsiServices;
   [NotNull] private readonly IDictionary<int, CodeHighlightingRequest> myRequests;
   [NotNull] private readonly DocumentHostBase myDocumentHostBase;
 
-  
+
   private volatile int myCurrentId;
 
 
   public CodeFragmentHighlightingManager(
     Lifetime lifetime,
     [NotNull] ISolution solution,
-    [NotNull] ILogger logger, 
+    [NotNull] ILogger logger,
     [NotNull] SandboxesCache sandboxesCache,
-    [NotNull] IShellLocks shellLocks)
+    [NotNull] IShellLocks shellLocks,
+    [NotNull] IPsiServices psiServices)
   {
     myLifetime = lifetime;
     myLogger = logger;
     mySandboxesCache = sandboxesCache;
     myShellLocks = shellLocks;
+    myPsiServices = psiServices;
     myRequests = new Dictionary<int, CodeHighlightingRequest>();
-    
+
     myDocumentHostBase = DocumentHostBase.GetInstance(solution);
-    
+
     var rdCommentsModel = solution.GetSolution().GetProtocolSolution().GetRdCommentsModel();
     rdCommentsModel.HighlightCode.Set(ServeCodeHighlightingRequest);
   }
 
-  
+
+  [NotNull]
   private RdTask<RdHighlightedText> ServeCodeHighlightingRequest(Lifetime lifetime, RdCodeHighlightingRequest rdRequest)
   {
     myShellLocks.AssertMainThread();
-    lock (mySyncObject)
-    {
-      var id = rdRequest.Id;
+    var id = rdRequest.Id;
 
-      if (!myRequests.TryGetValue(id, out var request) ||
+    using (ReadLockCookie.Create())
+    {
+      if (TryGetRequest(id) is not { } request ||
           myDocumentHostBase.TryGetHostDocument(request.DocumentId) is not { } originalDocument)
       {
-        myLogger.Error($"Failed to get highlighting request for {id}");
         return RdTask<RdHighlightedText>.Successful(null);
       }
 
@@ -82,52 +87,64 @@ public class CodeFragmentHighlightingManager
         task.Set((RdHighlightedText)null);
         RemoveRequest(id);
       }
-      
-      myShellLocks.QueueReadLock($"{nameof(CodeFragmentHighlightingManager)}::HighlightingCode", () =>
+
+      if (TryCreateSandboxSourceFile(id, request) is not var (sourceFile, startOffset, endOffset))
       {
-        if (TryCreateSandboxSourceFile(id) is not SandboxPsiSourceFile sourceFile)
+        LogErrorAndSetNull($"Failed to create sandbox for {id}");
+        return task;
+      }
+
+      myPsiServices.Files.ExecuteAfterCommitAllDocuments(() =>
+      {
+        using (ReadLockCookie.Create())
         {
-          LogErrorAndSetNull($"Failed to create sandbox for {id}");
-          return;
-        }
-        
-        myShellLocks.Tasks.Start(new Task(() =>
-        {
-          using (ReadLockCookie.Create())
+          if (sourceFile.GetPrimaryPsiFile() is not { } file)
           {
-            if (sourceFile.GetPrimaryPsiFile() is not { } file)
-            {
-              LogErrorAndSetNull($"Primary PSI file was null for {sourceFile}");
-              return;
-            }
-
-            var candidate = file.Descendants<IBlock>().Collect().LastOrDefault();
-            if (candidate is not { } block)
-            {
-              LogErrorAndSetNull($"Failed to find block for file with text: {file.GetText()}");
-              return;
-            }
-
-            var codeHighlighter = LanguageManager.Instance.GetService<IFullCodeHighlighter>(file.Language);
-            
-            var text = HighlightedText.CreateEmptyText();
-            var additionalData = new UserDataHolder();
-            additionalData.PutData(CodeHighlightingKeys.SandboxDocumentId, sourceFile.ProjectFile.GetPersistentID());
-            additionalData.PutData(CodeHighlightingKeys.OriginalDocument, originalDocument);
-            var context = new CodeHighlightingContext(text, additionalData);
-            
-            block.ProcessThisAndDescendants(codeHighlighter, context);
-            
-            task.Set(text.ToRdHighlightedText());
-            RemoveRequest(id);
+            LogErrorAndSetNull($"Primary PSI file was null for {sourceFile}");
+            return;
           }
-        }));
+
+          var range = new TreeTextRange(new TreeOffset(startOffset), new TreeOffset(endOffset));
+          var candidate = file.FindNodeAt(range).Descendants<IBlock>().Collect().LastOrDefault();
+          if (candidate is not { } block)
+          {
+            LogErrorAndSetNull($"Failed to find block for file with text: {file.GetText()}");
+            return;
+          }
+
+          var codeHighlighter = LanguageManager.Instance.GetService<IFullCodeHighlighter>(file.Language);
+
+          var text = HighlightedText.CreateEmptyText();
+          var additionalData = new UserDataHolder();
+          additionalData.PutData(CodeHighlightingKeys.SandboxDocumentId, sourceFile.ProjectFile.GetPersistentID());
+          additionalData.PutData(CodeHighlightingKeys.OriginalDocument, originalDocument);
+          var context = new CodeHighlightingContext(text, additionalData);
+
+          block.ProcessThisAndDescendants(codeHighlighter, context);
+
+          task.Set(text.ToRdHighlightedText());
+          RemoveRequest(id);
+        }
       });
 
       return task;
     }
   }
   
+  private CodeHighlightingRequest TryGetRequest(int id)
+  {
+    lock (mySyncObject)
+    {
+      if (!myRequests.TryGetValue(id, out var request))
+      {
+        myLogger.Error($"Failed to get highlighting request for {id}");
+        return null;
+      }
+
+      return request;
+    }
+  }
+
   private void RemoveRequest(int id)
   {
     lock (mySyncObject)
@@ -150,23 +167,19 @@ public class CodeFragmentHighlightingManager
       return nextId;
     }
   }
-  
-  private IPsiSourceFile TryCreateSandboxSourceFile(int id)
+
+  private SandboxCodeFragmentInfo TryCreateSandboxSourceFile(int id, CodeHighlightingRequest request)
   {
     myShellLocks.AssertMainThread();
-    lock (mySyncObject)
+    if (myDocumentHostBase.TryGetHostDocument(request.DocumentId) is not { } originalDocument)
     {
-      if (!myRequests.TryGetValue(id, out var request) ||
-          myDocumentHostBase.TryGetHostDocument(request.DocumentId) is not { } originalDocument)
-      {
-        myLogger.LogAssertion($"Failed to get highlighting request for {id}");
-        return null;
-      }
-
-      return mySandboxesCache.CreateSandboxFileFor(originalDocument, request);
+      myLogger.LogAssertion($"Failed to get highlighting request for {id}");
+      return null;
     }
+
+    return mySandboxesCache.GetOrCreateSandboxFileForHighlighting(originalDocument, request);
   }
-  
+
   private int GetNextId()
   {
     return Interlocked.Increment(ref myCurrentId);

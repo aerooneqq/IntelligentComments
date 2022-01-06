@@ -32,7 +32,7 @@ public class ReferencesCache : AbstractOpenedDocumentBasedCache<int, ReferenceIn
   {
   }
 
-  protected override int CreateId(ReferenceInfo value)
+  protected override int CreateId(IDocument document, ReferenceInfo value)
   {
     return Interlocked.Increment(ref myCurrentId);
   }
