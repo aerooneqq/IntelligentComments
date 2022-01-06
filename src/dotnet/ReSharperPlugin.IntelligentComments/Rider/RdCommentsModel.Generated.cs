@@ -94,7 +94,7 @@ namespace JetBrains.Rider.Model
     public static  CtxWriteDelegate<RdHighlightedText> WriteRdHighlightedTextNullable = RdHighlightedText.Write.NullableClass();
     public static  CtxWriteDelegate<int?> WriteIntNullable = JetBrains.Rd.Impl.Serializers.WriteInt.NullableStruct();
     
-    protected override long SerializationHash => 3315001305892084604L;
+    protected override long SerializationHash => -7958158883432726195L;
     
     protected override Action<ISerializers> Register => RegisterDeclaredTypesSerializers;
     public static void RegisterDeclaredTypesSerializers(ISerializers serializers)
@@ -3266,12 +3266,12 @@ namespace JetBrains.Rider.Model
   {
     //fields
     //public fields
-    [NotNull] public string Name {get; private set;}
+    [NotNull] public RdHighlightedText Name {get; private set;}
     
     //private fields
     //primary constructor
     public RdParam(
-      [NotNull] string name,
+      [NotNull] RdHighlightedText name,
       [NotNull] RdContentSegments content
     ) : base (
       content
@@ -3288,7 +3288,7 @@ namespace JetBrains.Rider.Model
     public static new CtxReadDelegate<RdParam> Read = (ctx, reader) => 
     {
       var content = RdContentSegments.Read(ctx, reader);
-      var name = reader.ReadString();
+      var name = RdHighlightedText.Read(ctx, reader);
       var _result = new RdParam(name, content);
       return _result;
     };
@@ -3296,7 +3296,7 @@ namespace JetBrains.Rider.Model
     public static new CtxWriteDelegate<RdParam> Write = (ctx, writer, value) => 
     {
       RdContentSegments.Write(ctx, writer, value.Content);
-      writer.Write(value.Name);
+      RdHighlightedText.Write(ctx, writer, value.Name);
     };
     
     //constants
@@ -3315,7 +3315,7 @@ namespace JetBrains.Rider.Model
     {
       if (ReferenceEquals(null, other)) return false;
       if (ReferenceEquals(this, other)) return true;
-      return Name == other.Name && Equals(Content, other.Content);
+      return Equals(Name, other.Name) && Equals(Content, other.Content);
     }
     //hash code trait
     public override int GetHashCode()
@@ -3355,7 +3355,7 @@ namespace JetBrains.Rider.Model
     //private fields
     //primary constructor
     public RdParam_Unknown(
-      [NotNull] string name,
+      [NotNull] RdHighlightedText name,
       [NotNull] RdContentSegments content
     ) : base (
       name,
@@ -3369,7 +3369,7 @@ namespace JetBrains.Rider.Model
     
     public static new CtxReadDelegate<RdParam_Unknown> Read = (ctx, reader) => 
     {
-      var name = reader.ReadString();
+      var name = RdHighlightedText.Read(ctx, reader);
       var content = RdContentSegments.Read(ctx, reader);
       var _result = new RdParam_Unknown(name, content);
       return _result;
@@ -3377,7 +3377,7 @@ namespace JetBrains.Rider.Model
     
     public static new CtxWriteDelegate<RdParam_Unknown> Write = (ctx, writer, value) => 
     {
-      writer.Write(value.Name);
+      RdHighlightedText.Write(ctx, writer, value.Name);
       RdContentSegments.Write(ctx, writer, value.Content);
     };
     
@@ -3397,7 +3397,7 @@ namespace JetBrains.Rider.Model
     {
       if (ReferenceEquals(null, other)) return false;
       if (ReferenceEquals(this, other)) return true;
-      return Name == other.Name && Equals(Content, other.Content);
+      return Equals(Name, other.Name) && Equals(Content, other.Content);
     }
     //hash code trait
     public override int GetHashCode()
@@ -5696,7 +5696,7 @@ namespace JetBrains.Rider.Model
     //private fields
     //primary constructor
     public RdTypeParam(
-      [NotNull] string name,
+      [NotNull] RdHighlightedText name,
       [NotNull] RdContentSegments content
     ) : base (
       name,
@@ -5710,7 +5710,7 @@ namespace JetBrains.Rider.Model
     
     public static new CtxReadDelegate<RdTypeParam> Read = (ctx, reader) => 
     {
-      var name = reader.ReadString();
+      var name = RdHighlightedText.Read(ctx, reader);
       var content = RdContentSegments.Read(ctx, reader);
       var _result = new RdTypeParam(name, content);
       return _result;
@@ -5718,7 +5718,7 @@ namespace JetBrains.Rider.Model
     
     public static new CtxWriteDelegate<RdTypeParam> Write = (ctx, writer, value) => 
     {
-      writer.Write(value.Name);
+      RdHighlightedText.Write(ctx, writer, value.Name);
       RdContentSegments.Write(ctx, writer, value.Content);
     };
     
@@ -5738,7 +5738,7 @@ namespace JetBrains.Rider.Model
     {
       if (ReferenceEquals(null, other)) return false;
       if (ReferenceEquals(this, other)) return true;
-      return Name == other.Name && Equals(Content, other.Content);
+      return Equals(Name, other.Name) && Equals(Content, other.Content);
     }
     //hash code trait
     public override int GetHashCode()

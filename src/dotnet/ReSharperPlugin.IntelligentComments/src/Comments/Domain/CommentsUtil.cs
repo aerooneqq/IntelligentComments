@@ -232,7 +232,7 @@ public static class CommentsUtil
     return param switch
     {
       ITypeParamSegment paramSegment => paramSegment.ToRdParam(),
-      { } => new RdParam(param.Name, param.ContentSegments.ToRdContentSegments()),
+      { } => new RdParam(param.Name.ToRdHighlightedText(), param.ContentSegments.ToRdContentSegments()),
     };
   }
 
@@ -297,7 +297,8 @@ public static class CommentsUtil
   [NotNull]
   private static RdTypeParam ToRdParam([NotNull] this ITypeParamSegment typeParamSegment)
   {
-    return new RdTypeParam(typeParamSegment.Name, typeParamSegment.ContentSegments.ToRdContentSegments());
+    return new RdTypeParam(
+      typeParamSegment.Name.ToRdHighlightedText(), typeParamSegment.ContentSegments.ToRdContentSegments());
   }
 
   [NotNull]

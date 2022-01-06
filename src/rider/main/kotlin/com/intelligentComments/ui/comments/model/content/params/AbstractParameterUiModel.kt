@@ -14,7 +14,7 @@ abstract class AbstractParameterUiModel(
   parent: UiInteractionModelBase?,
   parameter: ArbitraryParamSegment,
 ) : ContentSegmentUiModel(project, parent, parameter) {
-  val name = HighlightedTextUiWrapper(project, this, getSecondLevelHeader(project, parameter.name, parameter))
+  val name = HighlightedTextUiWrapper(project, this, getSecondLevelHeader(project, parameter.name.text, parameter))
 
   val description = ContentSegmentsUiModel(project, this, parameter.content)
 

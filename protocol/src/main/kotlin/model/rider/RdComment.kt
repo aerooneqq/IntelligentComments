@@ -57,7 +57,7 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
   }
 
   val RdParam = openstruct extends RdSegmentWithContent {
-    field("Name", PredefinedType.string)
+    field("Name", RdHighlightedText)
   }
 
   val RdTypeParam = structdef extends RdParam { }

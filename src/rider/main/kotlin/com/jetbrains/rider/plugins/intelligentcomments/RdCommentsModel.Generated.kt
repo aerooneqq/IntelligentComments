@@ -97,7 +97,7 @@ class RdCommentsModel private constructor(
         private val __RdHighlightedTextNullableSerializer = RdHighlightedText.nullable()
         private val __IntNullableSerializer = FrameworkMarshallers.Int.nullable()
         
-        const val serializationHash = 3315001305892084604L
+        const val serializationHash = -7958158883432726195L
         
     }
     override val serializersOwner: ISerializersOwner get() = RdCommentsModel
@@ -2517,7 +2517,7 @@ class RdParagraphSegment (
  * #### Generated from [RdComment.kt:59]
  */
 open class RdParam (
-    val name: String,
+    val name: RdHighlightedText,
     content: RdContentSegments
 ) : RdSegmentWithContent (
     content
@@ -2530,19 +2530,19 @@ open class RdParam (
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdParam  {
             val content = RdContentSegments.read(ctx, buffer)
-            val name = buffer.readString()
+            val name = RdHighlightedText.read(ctx, buffer)
             return RdParam(name, content)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: RdParam)  {
             RdContentSegments.write(ctx, buffer, value.content)
-            buffer.writeString(value.name)
+            RdHighlightedText.write(ctx, buffer, value.name)
         }
         
         
         override fun readUnknownInstance(ctx: SerializationCtx, buffer: AbstractBuffer, unknownId: RdId, size: Int): RdParam  {
             val objectStartPosition = buffer.position
-            val name = buffer.readString()
+            val name = RdHighlightedText.read(ctx, buffer)
             val content = RdContentSegments.read(ctx, buffer)
             val unknownBytes = ByteArray(objectStartPosition + size - buffer.position)
             buffer.readByteArrayRaw(unknownBytes)
@@ -2588,7 +2588,7 @@ open class RdParam (
 
 
 class RdParam_Unknown (
-    name: String,
+    name: RdHighlightedText,
     content: RdContentSegments,
     override val unknownId: RdId,
     val unknownBytes: ByteArray
@@ -2607,7 +2607,7 @@ class RdParam_Unknown (
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: RdParam_Unknown)  {
-            buffer.writeString(value.name)
+            RdHighlightedText.write(ctx, buffer, value.name)
             RdContentSegments.write(ctx, buffer, value.content)
             buffer.writeByteArrayRaw(value.unknownBytes)
         }
@@ -4345,7 +4345,7 @@ class RdToDo_Unknown (
  * #### Generated from [RdComment.kt:63]
  */
 class RdTypeParam (
-    name: String,
+    name: RdHighlightedText,
     content: RdContentSegments
 ) : RdParam (
     name,
@@ -4358,13 +4358,13 @@ class RdTypeParam (
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdTypeParam  {
-            val name = buffer.readString()
+            val name = RdHighlightedText.read(ctx, buffer)
             val content = RdContentSegments.read(ctx, buffer)
             return RdTypeParam(name, content)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: RdTypeParam)  {
-            buffer.writeString(value.name)
+            RdHighlightedText.write(ctx, buffer, value.name)
             RdContentSegments.write(ctx, buffer, value.content)
         }
         

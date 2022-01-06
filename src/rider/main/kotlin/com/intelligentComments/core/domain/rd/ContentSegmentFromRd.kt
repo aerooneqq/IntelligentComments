@@ -182,7 +182,7 @@ class ParameterFromRd(
   parent: Parentable?,
   project: Project
 ) : ContentSegmentFromRd(rdParam, parent), ParameterSegment {
-  override val name: String = rdParam.name
+  override val name = rdParam.name.toIdeaHighlightedText(project, this)
   override val content: ContentSegments = ContentSegmentsFromRd(rdParam.content, this, project)
 }
 
@@ -191,7 +191,7 @@ class TypeParamFromRd(
   parent: Parentable?,
   project: Project
 ) : ContentSegmentFromRd(rdTypeParam, parent), TypeParamSegment {
-  override val name: String = rdTypeParam.name
+  override val name = rdTypeParam.name.toIdeaHighlightedText(project, this)
   override val content: ContentSegments = ContentSegmentsFromRd(rdTypeParam.content, this, project)
 }
 

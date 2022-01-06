@@ -1,13 +1,14 @@
+using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.Content;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.Content;
 
 public class ParamContentSegment : EntityWithContentSegments, IParamContentSegment
 {
-  public string Name { get; }
+  public IHighlightedText Name { get; }
 
 
-  public ParamContentSegment(string name) : base(Content.ContentSegments.CreateEmpty())
+  public ParamContentSegment(IHighlightedText name) : base(Content.ContentSegments.CreateEmpty())
   {
     Name = name;
   }
@@ -15,7 +16,7 @@ public class ParamContentSegment : EntityWithContentSegments, IParamContentSegme
 
 public class TypeParamSegment : ParamContentSegment, ITypeParamSegment
 {
-  public TypeParamSegment(string name) : base(name)
+  public TypeParamSegment(IHighlightedText name) : base(name)
   {
   }
 }

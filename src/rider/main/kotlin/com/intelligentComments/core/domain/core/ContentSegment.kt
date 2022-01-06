@@ -88,7 +88,7 @@ interface TableCellProperties {
 }
 
 interface ArbitraryParamSegment : EntityWithContentSegments {
-  val name: String
+  val name: HighlightedText
 }
 
 interface ParameterSegment : ArbitraryParamSegment

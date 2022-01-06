@@ -4,7 +4,7 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Domain.Core.Content;
 
 public interface IParamContentSegment : IEntityWithContentSegments
 {
-  [NotNull] string Name { get; }
+  [NotNull] IHighlightedText Name { get; }
 }
 
 public interface ITypeParamSegment : IParamContentSegment
