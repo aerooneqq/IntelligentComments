@@ -73,14 +73,12 @@ public class CodeFragmentHighlightingManager
 
     using (ReadLockCookie.Create())
     {
-      if (TryGetRequest(id) is not { } request ||
-          myDocumentHostBase.TryGetHostDocument(request.DocumentId) is not { } originalDocument)
+      if (TryGetRequest(id) is not { } request)
       {
         return RdTask<RdHighlightedText>.Successful(null);
       }
 
       var task = new RdTask<RdHighlightedText>();
-
       void LogErrorAndSetNull(string message)
       {
         myLogger.Error(message);
@@ -105,8 +103,7 @@ public class CodeFragmentHighlightingManager
           }
 
           var range = new TreeTextRange(new TreeOffset(startOffset), new TreeOffset(endOffset));
-          var candidate = file.FindNodeAt(range).Descendants<IBlock>().Collect().LastOrDefault();
-          if (candidate is not { } block)
+          if (request.Operations.TryFind(file, range) is not { } candidate)
           {
             LogErrorAndSetNull($"Failed to find block for file with text: {file.GetText()}");
             return;
@@ -117,10 +114,10 @@ public class CodeFragmentHighlightingManager
           var text = HighlightedText.CreateEmptyText();
           var additionalData = new UserDataHolder();
           additionalData.PutData(CodeHighlightingKeys.SandboxDocumentId, sourceFile.ProjectFile.GetPersistentID());
-          additionalData.PutData(CodeHighlightingKeys.OriginalDocument, originalDocument);
+          additionalData.PutData(CodeHighlightingKeys.OriginalDocument, request.Document);
           var context = new CodeHighlightingContext(text, additionalData);
 
-          block.ProcessThisAndDescendants(codeHighlighter, context);
+          candidate.ProcessThisAndDescendants(codeHighlighter, context);
 
           task.Set(text.ToRdHighlightedText());
           RemoveRequest(id);
@@ -171,13 +168,7 @@ public class CodeFragmentHighlightingManager
   private SandboxCodeFragmentInfo TryCreateSandboxSourceFile(int id, CodeHighlightingRequest request)
   {
     myShellLocks.AssertMainThread();
-    if (myDocumentHostBase.TryGetHostDocument(request.DocumentId) is not { } originalDocument)
-    {
-      myLogger.LogAssertion($"Failed to get highlighting request for {id}");
-      return null;
-    }
-
-    return mySandboxesCache.GetOrCreateSandboxFileForHighlighting(originalDocument, request);
+    return mySandboxesCache.GetOrCreateSandboxFileForHighlighting(request.Document, request);
   }
 
   private int GetNextId()

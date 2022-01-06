@@ -64,8 +64,14 @@ public class SandboxesCache : AbstractOpenedDocumentBasedCache<string, SandboxFi
     myShellLocks.AssertMainThread();
     var lifetimeDef = myLifetime.CreateNested();
     var highlightingLifetime = lifetimeDef.Lifetime;
-    var sandBoxInfo = CreateSandboxInfo(request);
-    var sandboxFile = myHelper.GetOrCreateSandboxProjectFile(request.DocumentId, sandBoxInfo, highlightingLifetime);
+    if (request.Document.GetData(DocumentHostBase.DocumentIdKey) is not { } documentId)
+    {
+      myLogger.Error($"Failed to get documentId for {request.Document.Moniker}");
+      return null;
+    }
+    
+    var sandBoxInfo = CreateSandboxInfo(request, documentId);
+    var sandboxFile = myHelper.GetOrCreateSandboxProjectFile(documentId, sandBoxInfo, highlightingLifetime);
     
     if (TryGetValue(originalDocument, originalDocument.Moniker) is { } existingSandboxFileInfo)
     {
@@ -81,7 +87,7 @@ public class SandboxesCache : AbstractOpenedDocumentBasedCache<string, SandboxFi
 
     var viewModel = new SandBoxDocumentModel(sandBoxInfo);
     myHelper.InitSandboxDocument(
-      request.DocumentId,
+      documentId,
       viewModel,
       highlightingLifetime, 
       riderDocument,
@@ -119,21 +125,21 @@ public class SandboxesCache : AbstractOpenedDocumentBasedCache<string, SandboxFi
     
     var sandboxDocument = sandboxPsiSourceFile.Document;
     var startOffset = sandboxDocument.GetTextLength();
-    var createdText = request.CreateDocumentText();
+    var createdText = request.Text;
     var endOffset = startOffset + createdText.Length;
     
-    sandboxDocument.InsertText(startOffset, request.CreateDocumentText());
+    sandboxDocument.InsertText(startOffset, createdText);
     
     textHashesToOffset[request.CalculateTextHash()] = new TextRange(startOffset, endOffset);
     
     return new SandboxCodeFragmentInfo(sandboxPsiSourceFile, startOffset, endOffset);
   }
   
-  private static SandboxInfo CreateSandboxInfo(CodeHighlightingRequest request)
+  private static SandboxInfo CreateSandboxInfo(CodeHighlightingRequest request, RdDocumentId rdDocumentId)
   {
-    var documentText = request.CreateDocumentText();
+    var documentText = request.Text;
     return new SandboxInfo(
-      request.DocumentId,
+      rdDocumentId,
       documentText,
       new RdTextRange(documentText.Length, documentText.Length),
       true,

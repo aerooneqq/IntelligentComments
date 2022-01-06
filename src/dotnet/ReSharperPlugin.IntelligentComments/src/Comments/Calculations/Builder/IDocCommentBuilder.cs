@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Xml;
 using JetBrains.Annotations;
 using JetBrains.ProjectModel;
@@ -571,10 +570,12 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
     
     var requestBuilder = myLanguageManager.GetService<ICodeHighlightingRequestBuilder>(file.Language);
 
-    if (requestBuilder.CreateNodeFromText(text, myComment) is { } node)
+    if (requestBuilder.CreateNodeOperations(text, myComment) is var (node, operations) &&
+        operations.CreateTextForSandBox() is { } code &&
+        file.GetSourceFile()?.Document is { } document)
     {
-      var codeHighlightingRequest = requestBuilder.CreateRequest(file, myComment, node);
-      var id = myCodeFragmentHighlightingManager.AddRequestForHighlighting(codeHighlightingRequest);
+      var request = new CodeHighlightingRequest(file.Language, code, document, operations);
+      var id = myCodeFragmentHighlightingManager.AddRequestForHighlighting(request);
       
       var preliminaryHighlighter = myLanguageManager.GetService<IPreliminaryCodeHighlighter>(file.Language);
       var highlightedText = HighlightedText.CreateEmptyText();
