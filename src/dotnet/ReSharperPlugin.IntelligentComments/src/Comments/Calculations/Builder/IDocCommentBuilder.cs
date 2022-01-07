@@ -113,7 +113,7 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
     ProcessEntityWithContentSegments(summary, element);
   }
     
-  private static void ExecuteActionOverChildren(XmlElement parent, Action<XmlNode> actionWithNode)
+  private static void ExecuteActionOverChildren([NotNull] XmlElement parent, [NotNull] Action<XmlNode> actionWithNode)
   {
     foreach (var child in parent)
     {
@@ -172,7 +172,10 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
     ProcessParam(element, Name, ourParamFactory);
   }
 
-  private void ProcessParam(XmlElement element, string nameAttrName, Func<IHighlightedText, IParamContentSegment> factory)
+  private void ProcessParam(
+    [NotNull] XmlElement element, 
+    [NotNull] string nameAttrName, 
+    [NotNull] Func<IHighlightedText, IParamContentSegment> factory)
   {
     myVisitedNodes.Add(element);
     var paramName = element.GetAttribute(nameAttrName);
@@ -286,13 +289,13 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
     ProcessEntityWithContentSegments(exceptionSegment, element);
   }
 
-  private static string Present(IDeclaredElement element)
+  private static string Present([NotNull] IDeclaredElement element)
   {
     return DeclaredElementPresenter.Format(
       CSharpLanguage.Instance, XmlDocPresenterUtil.LinkedElementPresentationStyle, element).Text;
   }
   
-  private static string BeautifyCodeEntityId(string id)
+  private static string BeautifyCodeEntityId([NotNull] string id)
   {
     return id[(id.IndexOf(":", StringComparison.Ordinal) + 1)..];
   }
@@ -330,7 +333,7 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
     VisitSeeAlsoMember(element);
   }
 
-  private void VisitSeeAlsoLink(XmlElement element)
+  private void VisitSeeAlsoLink([NotNull] XmlElement element)
   {
     ProcessSeeAlso(element, Href, (referenceRawText, description) =>
     {
@@ -366,13 +369,12 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
   private bool IsTopmostContext() => myContentSegmentsStack.Count == 0 || 
                                      myContentSegmentsStack.Peek().CorrespondingEntity is null;
 
-  private void VisitSeeAlsoMember(XmlElement element)
+  private void VisitSeeAlsoMember([NotNull] XmlElement element)
   {
     ProcessSeeAlso(element, CRef, (referenceRawText, description) =>
     {
       var reference = CreateCodeEntityReference(referenceRawText);
       
-      // ReSharper disable once UsePatternMatching
       var resolveResult = reference.Resolve(myResolveContext) as DeclaredElementResolveResult;
       var declaredElement = resolveResult?.DeclaredElement;
       
@@ -392,7 +394,7 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
     });
   }
   
-  private XmlDocCodeEntityReference CreateCodeEntityReference(string rawValue)
+  private XmlDocCodeEntityReference CreateCodeEntityReference([NotNull] string rawValue)
   {
     return new XmlDocCodeEntityReference(rawValue, myPsiServices, myPsiModule);
   }
@@ -455,7 +457,7 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
     ProcessSee(content, reference, element);
   }
 
-  private void ProcessSee([NotNull] string content, [NotNull] IReference reference, XmlElement element)
+  private void ProcessSee([NotNull] string content, [NotNull] IReference reference, [NotNull] XmlElement element)
   {
     (content, var length) = PreprocessTextWithContext(content, element);
     
@@ -487,7 +489,7 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
     }
   }
 
-  private void ProcessList([NotNull] XmlElement element, string typeOfList)
+  private void ProcessList([NotNull] XmlElement element, [NotNull] string typeOfList)
   {
     ListKind? listKindNullable = typeOfList switch
     {
@@ -574,7 +576,7 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
     }
   }
   
-  private static bool CanInlineCode(string rawCodeText)
+  private static bool CanInlineCode([NotNull] string rawCodeText)
   {
     return !rawCodeText.Contains("\n");
   }
@@ -582,7 +584,7 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
   private record CodeFragment(IHighlightedText PreliminaryText, int HighlightingRequestId);
   
   [NotNull]
-  private CodeFragment CreateCodeFragment(string text)
+  private CodeFragment CreateCodeFragment([NotNull] string text)
   {
     CodeFragment CreateDefaultFragment() => new(new HighlightedText(text), 0);
     
