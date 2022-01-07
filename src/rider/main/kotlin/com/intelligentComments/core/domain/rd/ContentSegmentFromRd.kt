@@ -7,6 +7,8 @@ import com.intelligentComments.core.settings.RiderIntelligentCommentsSettingsPro
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.jetbrains.rd.ide.model.*
+import com.jetbrains.rd.platform.diagnostics.logAssertion
+import com.jetbrains.rd.platform.util.getLogger
 import com.jetbrains.rd.util.reactive.Property
 import com.jetbrains.rd.util.string.printToString
 import java.awt.Image
@@ -287,13 +289,22 @@ class CodeSegmentFromRd(
   parent: Parentable?,
   project: Project
 ) : ContentSegmentFromRd(rdCodeSegment, parent), CodeSegment {
+  companion object {
+    private val logger = getLogger<CodeSegmentFromRd>()
+  }
+
   private val highlightingHost = project.service<CodeFragmentHighlightingHost>()
 
   override val code = Property(rdCodeSegment.code.toIdeaHighlightedText(project, this))
 
   init {
     highlightingHost.requestFullHighlighting(this, rdCodeSegment.highlightingRequestId) {
-      code.set(it)
+      val previousCodeText = code.value.text
+      if (it.text == previousCodeText) {
+        code.set(it)
+      } else {
+        logger.logAssertion("Expected the code text to be the same: $previousCodeText VS ${it.text}")
+      }
     }
   }
 }

@@ -5,12 +5,14 @@ using System.Threading.Tasks;
 using JetBrains.Annotations;
 using JetBrains.Application.Threading;
 using JetBrains.Application.Threading.Tasks;
+using JetBrains.DataFlow;
 using JetBrains.DocumentModel;
 using JetBrains.Lifetimes;
 using JetBrains.ProjectModel;
 using JetBrains.Rd.Tasks;
 using JetBrains.RdBackend.Common.Features;
 using JetBrains.RdBackend.Common.Features.Documents;
+using JetBrains.RdBackend.Common.Features.ProjectModel;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
 using JetBrains.ReSharper.Psi.Files;
@@ -36,8 +38,8 @@ public class CodeFragmentHighlightingManager
   [NotNull] private readonly SandboxesCache mySandboxesCache;
   [NotNull] private readonly IShellLocks myShellLocks;
   [NotNull] private readonly IPsiServices myPsiServices;
+  [NotNull] private readonly RiderSolutionLoadStateMonitor mySolutionLoadStateMonitor;
   [NotNull] private readonly IDictionary<int, CodeHighlightingRequest> myRequests;
-  [NotNull] private readonly DocumentHostBase myDocumentHostBase;
 
 
   private volatile int myCurrentId;
@@ -49,83 +51,91 @@ public class CodeFragmentHighlightingManager
     [NotNull] ILogger logger,
     [NotNull] SandboxesCache sandboxesCache,
     [NotNull] IShellLocks shellLocks,
-    [NotNull] IPsiServices psiServices)
+    [NotNull] IPsiServices psiServices,
+    [NotNull] RiderSolutionLoadStateMonitor solutionLoadStateMonitor)
   {
     myLifetime = lifetime;
     myLogger = logger;
     mySandboxesCache = sandboxesCache;
     myShellLocks = shellLocks;
     myPsiServices = psiServices;
+    mySolutionLoadStateMonitor = solutionLoadStateMonitor;
     myRequests = new Dictionary<int, CodeHighlightingRequest>();
-
-    myDocumentHostBase = DocumentHostBase.GetInstance(solution);
-
+    
     var rdCommentsModel = solution.GetSolution().GetProtocolSolution().GetRdCommentsModel();
-    rdCommentsModel.HighlightCode.Set(ServeCodeHighlightingRequest);
+    rdCommentsModel.HighlightCode.Set((lt, request) =>
+    {
+      var task = new RdTask<RdHighlightedText>();
+      mySolutionLoadStateMonitor.SolutionLoadedAndProjectModelCachesReady.WhenTrueOnce(lt, () =>
+      {
+        myShellLocks.QueueReadLock(lt, $"{nameof(CodeFragmentHighlightingManager)}::ServingRequest", () =>
+        {
+          ServeCodeHighlightingRequest(task, request);
+        });
+      });
+
+      return task;
+    });
   }
 
-
-  [NotNull]
-  private RdTask<RdHighlightedText> ServeCodeHighlightingRequest(Lifetime lifetime, RdCodeHighlightingRequest rdRequest)
+  
+  private void ServeCodeHighlightingRequest(
+    [NotNull] RdTask<RdHighlightedText> task, 
+    [NotNull] RdCodeHighlightingRequest rdRequest)
   {
     myShellLocks.AssertMainThread();
     var id = rdRequest.Id;
 
-    using (ReadLockCookie.Create())
+    void LogErrorAndSetNull(string message)
     {
-      if (TryGetRequest(id) is not { } request)
-      {
-        return RdTask<RdHighlightedText>.Successful(null);
-      }
+      myLogger.Error(message);
+      task.Set((RdHighlightedText) null);
+      RemoveRequest(id);
+    }
+    
+    if (TryGetRequest(id) is not { } request)
+    {
+      LogErrorAndSetNull($"Failed to get request for id: {id}");
+      return;
+    }
 
-      var task = new RdTask<RdHighlightedText>();
-      void LogErrorAndSetNull(string message)
+    if (TryCreateSandboxSourceFile(id, request) is not var (sourceFile, startOffset, endOffset))
+    {
+      LogErrorAndSetNull($"Failed to create sandbox for {id}");
+      return;
+    }
+
+    myPsiServices.Files.ExecuteAfterCommitAllDocuments(() =>
+    {
+      using (ReadLockCookie.Create())
       {
-        myLogger.Error(message);
-        task.Set((RdHighlightedText)null);
+        if (sourceFile.GetPrimaryPsiFile() is not { } file)
+        {
+          LogErrorAndSetNull($"Primary PSI file was null for {sourceFile}");
+          return;
+        }
+
+        var range = new TreeTextRange(new TreeOffset(startOffset), new TreeOffset(endOffset));
+        if (request.Operations.TryFind(file, range) is not { } candidate)
+        {
+          LogErrorAndSetNull($"Failed to find block for file with text: {file.GetText()}");
+          return;
+        }
+
+        var codeHighlighter = LanguageManager.Instance.GetService<IFullCodeHighlighter>(file.Language);
+
+        var text = HighlightedText.CreateEmptyText();
+        var additionalData = new UserDataHolder();
+        additionalData.PutData(CodeHighlightingKeys.SandboxDocumentId, sourceFile.ProjectFile.GetPersistentID());
+        additionalData.PutData(CodeHighlightingKeys.OriginalDocument, request.Document);
+        var context = new CodeHighlightingContext(text, additionalData);
+
+        candidate.ProcessThisAndDescendants(codeHighlighter, context);
+
+        task.Set(text.ToRdHighlightedText());
         RemoveRequest(id);
       }
-
-      if (TryCreateSandboxSourceFile(id, request) is not var (sourceFile, startOffset, endOffset))
-      {
-        LogErrorAndSetNull($"Failed to create sandbox for {id}");
-        return task;
-      }
-
-      myPsiServices.Files.ExecuteAfterCommitAllDocuments(() =>
-      {
-        using (ReadLockCookie.Create())
-        {
-          if (sourceFile.GetPrimaryPsiFile() is not { } file)
-          {
-            LogErrorAndSetNull($"Primary PSI file was null for {sourceFile}");
-            return;
-          }
-
-          var range = new TreeTextRange(new TreeOffset(startOffset), new TreeOffset(endOffset));
-          if (request.Operations.TryFind(file, range) is not { } candidate)
-          {
-            LogErrorAndSetNull($"Failed to find block for file with text: {file.GetText()}");
-            return;
-          }
-
-          var codeHighlighter = LanguageManager.Instance.GetService<IFullCodeHighlighter>(file.Language);
-
-          var text = HighlightedText.CreateEmptyText();
-          var additionalData = new UserDataHolder();
-          additionalData.PutData(CodeHighlightingKeys.SandboxDocumentId, sourceFile.ProjectFile.GetPersistentID());
-          additionalData.PutData(CodeHighlightingKeys.OriginalDocument, request.Document);
-          var context = new CodeHighlightingContext(text, additionalData);
-
-          candidate.ProcessThisAndDescendants(codeHighlighter, context);
-
-          task.Set(text.ToRdHighlightedText());
-          RemoveRequest(id);
-        }
-      });
-
-      return task;
-    }
+    });
   }
   
   private CodeHighlightingRequest TryGetRequest(int id)
