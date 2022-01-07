@@ -25,6 +25,11 @@ class TextUtil {
       return editorImpl.getFontMetrics(Font.PLAIN).font.deriveFont(size)
     }
 
+    fun getItalicFont(editorImpl: EditorImpl): Font {
+      val size = editorImpl.project?.service<RiderIntelligentCommentsSettingsProvider>()?.fontSize?.value ?: 12f
+      return editorImpl.getFontMetrics(Font.ITALIC).font.deriveFont(size)
+    }
+
     fun getBoldFont(editorImpl: EditorImpl): Font {
       val size = editorImpl.project?.service<RiderIntelligentCommentsSettingsProvider>()?.boldFontSize?.value ?: 14f
       return getFont(editorImpl).deriveFont(Font.BOLD).deriveFont(size)
@@ -39,6 +44,7 @@ class TextUtil {
       return when (highlighterUiModel?.style) {
         Font.PLAIN -> editorImpl.contentComponent.getFontMetrics(getFont(editorImpl))
         Font.BOLD -> editorImpl.contentComponent.getFontMetrics(getBoldFont(editorImpl))
+        Font.ITALIC -> editorImpl.contentComponent.getFontMetrics(getItalicFont(editorImpl))
         else -> editorImpl.contentComponent.getFontMetrics(getFont(editorImpl))
       }
     }

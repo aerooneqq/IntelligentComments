@@ -89,10 +89,17 @@ public static class CommentsUtil
       ISummarySegment summarySegment => summarySegment.ToRdSummary(),
       ITableSegment tableSegment => tableSegment.ToRdTable(),
       ICodeSegment codeSegment => codeSegment.ToRdCodeSegment(),
+      IValueSegment valueSegment => valueSegment.ToRdValue(),
       _ => throw new ArgumentOutOfRangeException(segment.GetType().Name)
     };
   }
 
+  private static RdValueSegment ToRdValue(this IValueSegment valueSegment)
+  {
+    return new RdValueSegment(valueSegment.ContentSegments.ToRdContentSegments());
+  }
+  
+  [NotNull]
   private static RdCodeContentSegment ToRdCodeSegment(this ICodeSegment segment)
   {
     return new RdCodeContentSegment(segment.Code.ToRdHighlightedText(), segment.HighlightingRequestId);
@@ -275,6 +282,7 @@ public static class CommentsUtil
     {
       FontStyle.Bold => RdFontStyle.Bold,
       FontStyle.Regular => RdFontStyle.Regular,
+      FontStyle.Italic => RdFontStyle.Italic,
       _ => throw new ArgumentOutOfRangeException(nameof(fontStyle))
     };
 
@@ -307,12 +315,15 @@ public static class CommentsUtil
     var items = new List<RdListItem>();
     foreach (var item in listSegment.Items)
     {
-      var header = item.Header.ContentSegments.Segments.Count > 0 ? item.Header.ContentSegments.ToRdContentSegments() : null;
-      var description = item.Content.ContentSegments.Segments.Count > 0
+      var rdHeader = item.Header is { } header && header.ContentSegments.Segments.Count > 0 
+        ? item.Header.ContentSegments.ToRdContentSegments() 
+        : null;
+      
+      var rdDescription = item.Content is { } content && content.ContentSegments.Segments.Count > 0
         ? item.Content.ContentSegments.ToRdContentSegments()
         : null;
       
-      items.Add(new RdListItem(header, description));
+      items.Add(new RdListItem(rdHeader, rdDescription));
     }
 
     return new RdListSegment(listSegment.ListKind, items);

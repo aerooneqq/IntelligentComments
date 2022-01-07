@@ -15,7 +15,7 @@ public interface IContentSegments
 
 public interface IEntityWithContentSegments : IContentSegment
 {
-  [NotNull] public IContentSegments ContentSegments { get; }
+  [NotNull] IContentSegments ContentSegments { get; }
 }
 
 public interface IRemarksSegment : IEntityWithContentSegments
@@ -28,10 +28,14 @@ public interface ISummarySegment : IEntityWithContentSegments
 
 public interface IExceptionSegment : IEntityWithContentSegments
 {
-  IHighlightedText ExceptionName { get; }
+  [NotNull] IHighlightedText ExceptionName { get; }
 }
 
 public interface IExampleSegment : IEntityWithContentSegments
+{
+}
+
+public interface IValueSegment : IEntityWithContentSegments
 {
 }
 
@@ -43,8 +47,8 @@ public interface IListSegment : IContentSegment
 
 public interface IListItem
 {
-  IEntityWithContentSegments Header { get; }
-  IEntityWithContentSegments Content { get; }
+  [CanBeNull] IEntityWithContentSegments Header { get; }
+  [CanBeNull] IEntityWithContentSegments Content { get; }
 }
 
 public interface ITableSegment : IContentSegment
@@ -76,5 +80,5 @@ public record TableCellProperties(
 public interface ICodeSegment : IContentSegment
 {
   public int HighlightingRequestId { get; }
-  IHighlightedText Code { get; }
+  [NotNull] IHighlightedText Code { get; }
 }

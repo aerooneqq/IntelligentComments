@@ -105,6 +105,16 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
     return commentsStorage.getComment(commentIdentifier, document)
   }
 
+  fun reRenderAllComments(editor: EditorImpl) {
+    commentsStorage.recreateAllCommentsFor(editor)
+    for (comment in commentsStorage.getAllComments(editor)) {
+      val state = commentsStateManager.getExistingCommentState(editor, comment.commentIdentifier) ?: continue
+      if (state.isInRenderMode) {
+        toggleRenderMode(comment.commentIdentifier, editor, state)
+      }
+    }
+  }
+
   private fun toggleRenderMode(commentId: CommentIdentifier, editor: EditorImpl, state: CommentState) {
     application.assertIsDispatchThread()
 

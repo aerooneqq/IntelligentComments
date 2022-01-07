@@ -24,6 +24,13 @@ public class EntityWithContentSegments : IEntityWithContentSegments
   }
 }
 
+public class ValueSegment : EntityWithContentSegments, IValueSegment
+{
+  public ValueSegment([NotNull] IContentSegments contentSegments) : base(contentSegments)
+  {
+  }
+}
+
 public class RemarksContentSegment : EntityWithContentSegments, IRemarksSegment
 {
   public RemarksContentSegment([NotNull] IContentSegments contentSegments) : base(contentSegments)

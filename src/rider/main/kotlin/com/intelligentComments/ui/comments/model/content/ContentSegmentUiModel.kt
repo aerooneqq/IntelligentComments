@@ -24,6 +24,7 @@ import com.intelligentComments.ui.comments.model.content.summary.GroupedSummaryU
 import com.intelligentComments.ui.comments.model.content.summary.SummaryUiModel
 import com.intelligentComments.ui.comments.model.content.table.TableContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.text.TextContentSegmentUiModel
+import com.intelligentComments.ui.comments.model.content.value.ValueUiModel
 import com.intelligentComments.ui.util.HashUtil
 import com.intellij.openapi.project.Project
 
@@ -57,13 +58,9 @@ abstract class ContentSegmentUiModel(
         is ExampleContentSegment -> ExampleSegmentUiModel(project, parent, segment)
         is SummaryContentSegment -> SummaryUiModel(project, parent, segment)
         is CodeSegment -> CodeSegmentUiModel(project, parent, segment)
+        is ValueSegment -> ValueUiModel(project, parent, segment)
         else -> throw IllegalArgumentException(segment.javaClass.name)
       }
     }
-  }
-
-
-  override fun calculateStateHash(): Int {
-    return HashUtil.hashCode(segment.hashCode())
   }
 }

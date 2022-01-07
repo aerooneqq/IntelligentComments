@@ -28,6 +28,7 @@ class AttributedCharsIterator(
     attributes[TextAttribute.WEIGHT] = highlighter.weight
     attributes[TextAttribute.FONT] = when (highlighter.style) {
       Font.BOLD -> TextUtil.getBoldFont(editorImpl)
+      Font.ITALIC -> TextUtil.getItalicFont(editorImpl)
       else -> TextUtil.getFont(editorImpl)
     }
   }

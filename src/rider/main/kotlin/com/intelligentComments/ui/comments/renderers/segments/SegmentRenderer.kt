@@ -21,6 +21,7 @@ import com.intelligentComments.ui.comments.model.content.seeAlso.SeeAlsoUiModel
 import com.intelligentComments.ui.comments.model.content.summary.GroupedSummaryUiModel
 import com.intelligentComments.ui.comments.model.content.table.TableContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.text.TextContentSegmentUiModel
+import com.intelligentComments.ui.comments.model.content.value.ValueUiModel
 import com.intelligentComments.ui.core.RectangleModelBuildContributor
 import com.intelligentComments.ui.core.Renderer
 
@@ -49,6 +50,7 @@ interface SegmentRenderer : Renderer, RectangleModelBuildContributor {
         is GroupedRemarksUiModel -> GroupedRemarksRenderer(segment)
         is ExampleSegmentUiModel -> ExampleSegmentRenderer(segment)
         is CodeSegmentUiModel -> CodeSegmentRenderer(segment)
+        is ValueUiModel -> ValueSegmentRenderer(segment)
         else -> throw IllegalArgumentException(segment.toString())
       }
     }

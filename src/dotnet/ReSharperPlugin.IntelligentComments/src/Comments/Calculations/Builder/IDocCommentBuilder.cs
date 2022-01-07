@@ -254,6 +254,13 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
     ProcessEntityWithContentSegments(remarksSegment, element);
   }
 
+  public override void VisitValue(XmlElement element)
+  {
+    myVisitedNodes.Add(element);
+    var valueSegment = new ValueSegment(ContentSegments.CreateEmpty());
+    ProcessEntityWithContentSegments(valueSegment, element);
+  }
+
   public override void VisitException(XmlElement element)
   {
     myVisitedNodes.Add(element);

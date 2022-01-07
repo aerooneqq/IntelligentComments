@@ -1,11 +1,10 @@
 package com.intelligentComments.core.comments
 
-import com.intelligentComments.core.changes.Change
-import com.intelligentComments.core.changes.ChangeListener
-import com.intelligentComments.core.changes.ChangeManager
-import com.intelligentComments.core.changes.RenderAffectedCommentChange
+import com.intelligentComments.core.changes.*
 import com.intelligentComments.ui.comments.renderers.RendererWithRectangleModel
 import com.intellij.openapi.components.service
+import com.intellij.openapi.editor.CustomFoldRegion
+import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.impl.EditorImpl
 import com.intellij.openapi.project.Project
 import com.jetbrains.rd.platform.util.idea.LifetimedService
@@ -21,15 +20,25 @@ class RiderCommentsUpdater(project: Project) : LifetimedProjectComponent(project
     project.service<ChangeManager>().addListener(componentLifetime, this)
   }
 
-
   override fun handleChange(change: Change) {
     if (change is RenderAffectedCommentChange) {
       for ((_, editor) in textControlHost.openedEditors) {
         val folding = controller.getFolding(change.id, editor as EditorImpl)
-        val renderer = folding?.renderer as? RendererWithRectangleModel ?: return
-        renderer.invalidateRectangleModel(editor)
-        folding.repaint()
+        updateFolding(editor, folding)
       }
     }
+
+    if (change is ThemeChange) {
+      for ((_, editor) in textControlHost.openedEditors) {
+        controller.reRenderAllComments(editor as EditorImpl)
+      }
+    }
+  }
+
+  private fun updateFolding(editor: Editor, folding: CustomFoldRegion?) {
+    val renderer = folding?.renderer as? RendererWithRectangleModel ?: return
+    renderer.invalidateRectangleModel(editor as EditorImpl)
+    folding.update()
+    folding.repaint()
   }
 }

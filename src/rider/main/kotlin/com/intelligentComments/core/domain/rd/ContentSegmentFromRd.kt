@@ -32,6 +32,7 @@ open class ContentSegmentFromRd(
         is RdExampleSegment -> ExampleFromRd(contentSegment, parent, project)
         is RdSummarySegment -> SummaryContentSegmentFromRd(contentSegment, parent, project)
         is RdCodeContentSegment -> CodeSegmentFromRd(contentSegment, parent, project)
+        is RdValueSegment -> ValueContentSegmentFromRd(contentSegment, parent, project)
         else -> throw IllegalArgumentException(contentSegment.toString())
       }
     }
@@ -62,6 +63,13 @@ class SummaryContentSegmentFromRd(
   override val content: ContentSegments = ContentSegmentsFromRd(rdSummary.content, this, project)
 }
 
+class ValueContentSegmentFromRd(
+  segment: RdValueSegment,
+  parent: Parentable?,
+  project: Project
+) : ContentSegmentFromRd(segment, parent), ValueSegment {
+  override val content: ContentSegments =  ContentSegmentsFromRd(segment.content, this, project)
+}
 class TextContentSegmentFromRd(
   segment: RdTextSegment,
   parent: Parentable?,
@@ -69,7 +77,6 @@ class TextContentSegmentFromRd(
 ) : ContentSegmentFromRd(segment, parent), TextContentSegment {
   override val highlightedText: HighlightedText = segment.text.toIdeaHighlightedText(project, this)
 }
-
 
 fun RdHighlightedText.toIdeaHighlightedText(project: Project, parent: Parentable?): HighlightedText {
   return HighlightedTextImpl(

@@ -33,7 +33,9 @@ abstract class RendererWithRectangleModel(
   abstract val yDelta: Int
 
 
-  fun invalidateRectangleModel(editorImpl: EditorImpl) = rectangleModelHolder.revalidate(editorImpl, xDelta, yDelta)
+  fun invalidateRectangleModel(editorImpl: EditorImpl) {
+    rectangleModelHolder.revalidate(editorImpl, xDelta, yDelta)
+  }
 
   final override fun calcHeightInPixels(foldRegion: CustomFoldRegion): Int {
     application.assertIsDispatchThread()

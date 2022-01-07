@@ -8,12 +8,13 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 public enum FontStyle
 {
   Regular,
-  Bold
+  Bold,
+  Italic
 }
 
 public record TextHighlighterAttributes(FontStyle FontStyle, bool Underline, double FontWeight)
 {
-  [NotNull] public static TextHighlighterAttributes DefaultAttributes = new(FontStyle.Regular, false, 400);
+  [NotNull] public static TextHighlighterAttributes DefaultAttributes { get; } = new(FontStyle.Italic, false, 400);
 }
 
 public record TextHighlighter(

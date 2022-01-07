@@ -3,7 +3,10 @@ package com.intelligentComments.core.domain.rd
 import com.intelligentComments.core.domain.core.*
 import com.intelligentComments.ui.comments.model.IntelligentCommentUiModel
 import com.intelligentComments.ui.comments.renderers.IntelligentCommentsRenderer
+import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.EditorCustomElementRenderer
+import com.intellij.openapi.editor.RangeMarker
+import com.intellij.openapi.editor.impl.EditorImpl
 import com.intellij.openapi.editor.markup.RangeHighlighter
 import com.intellij.openapi.project.Project
 import com.jetbrains.rd.ide.model.RdIntelligentComment
@@ -11,7 +14,7 @@ import com.jetbrains.rd.ide.model.RdIntelligentComment
 class IntelligentCommentFromRd(
   private val rdComment: RdIntelligentComment,
   private val project: Project,
-  highlighter: RangeHighlighter
+  highlighter: RangeMarker
 ) : CommentFromRd(rdComment, project, highlighter), IntelligentComment {
 
   override val allAuthors: Collection<CommentAuthor> = createAuthors()
@@ -42,5 +45,9 @@ class IntelligentCommentFromRd(
 
   override fun isValid(): Boolean {
     return super.isValid()
+  }
+
+  override fun recreate(editor: Editor): CommentBase {
+    TODO("Not yet implemented")
   }
 }

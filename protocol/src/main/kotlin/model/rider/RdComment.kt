@@ -72,6 +72,8 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
 
   val RdExampleSegment = structdef extends RdSegmentWithContent { }
 
+  val RdValueSegment = structdef extends RdSegmentWithContent { }
+
   val RdCodeContentSegment = structdef extends RdContentSegment {
     field("Code", RdHighlightedText)
     field("HighlightingRequestId", PredefinedType.int)
@@ -228,8 +230,9 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
   }
 
   val RdFontStyle = enum {
-    +"Regular"
-    +"Bold"
+    + "Regular"
+    + "Bold"
+    + "Italic"
   }
 
   val RdToDo = basestruct {

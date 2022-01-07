@@ -1,5 +1,6 @@
 package com.intelligentComments.core.domain.rd
 
+import com.intelligentComments.core.comments.EditorsColorsChangeListener
 import com.intelligentComments.core.domain.core.*
 import com.intelligentComments.ui.colors.ColorName
 import com.intelligentComments.ui.colors.ColorsProvider
@@ -80,6 +81,7 @@ fun RdTextAttributes.toIntelligentCommentsAttributes(): TextAttributesImpl {
   val style = when (fontStyle) {
     RdFontStyle.Regular -> Font.PLAIN
     RdFontStyle.Bold -> Font.BOLD
+    RdFontStyle.Italic -> Font.ITALIC
     else -> Font.PLAIN
   }
 

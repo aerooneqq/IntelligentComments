@@ -39,7 +39,7 @@ public class CSharpCodeHighlightingRequestBuilder : ICodeHighlightingRequestBuil
     [NotNull] CSharpCodeHighlightingContext context)
   {
     var node = factory.CreateFile(rawCodeText);
-    return HasAnyErrorElements(node) ? null : new(node, new CSharpTypeDeclarationNodeOperations(node.GetText(), context));
+    return new(node, new CSharpTypeDeclarationNodeOperations(node.GetText(), context));
   }
 
   private CSharpCodeHighlightingContext CreateContext(ITreeNode commentOwner)
@@ -58,10 +58,5 @@ public class CSharpCodeHighlightingRequestBuilder : ICodeHighlightingRequestBuil
     }
 
     return null;
-  }
-
-  public CodeHighlightingRequest CreateRequest(IFile file, ITreeNode commentOwner, ITreeNode code)
-  {
-    return file is not ICSharpFile cSharpFile ? null : CreateRequest(cSharpFile, commentOwner, code);
   }
 }

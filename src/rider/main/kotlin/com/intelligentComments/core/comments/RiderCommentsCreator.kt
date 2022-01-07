@@ -4,6 +4,7 @@ import com.intelligentComments.core.domain.core.DocComment
 import com.intelligentComments.core.domain.impl.ContentProcessingStrategyImpl
 import com.intelligentComments.core.domain.rd.DocCommentFromRd
 import com.intellij.openapi.components.service
+import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.RangeMarker
 import com.intellij.openapi.editor.impl.EditorImpl
 import com.jetbrains.rd.ide.model.RdDocComment
@@ -17,7 +18,7 @@ class RiderCommentsCreator {
 
   fun tryCreateDocComment(
     rdDocComment: RdDocComment,
-    editor: EditorImpl,
+    editor: Editor,
     commentRange: RangeMarker
   ) : DocComment? {
     val project = editor.project

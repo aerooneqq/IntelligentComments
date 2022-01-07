@@ -34,5 +34,8 @@
     <component>
       <implementation-class>com.intelligentComments.core.comments.RiderCommentsUpdater</implementation-class>
     </component>
+    <component>
+      <implementation-class>com.intelligentComments.core.comments.EditorsColorsChangeListener</implementation-class>
+    </component>
   </project-components>
 </idea-plugin>

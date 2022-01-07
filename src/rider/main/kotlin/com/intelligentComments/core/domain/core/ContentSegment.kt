@@ -27,6 +27,8 @@ interface EntityWithContentSegments : ContentSegment {
   val content: ContentSegments
 }
 
+interface ValueSegment : EntityWithContentSegments
+
 interface ParagraphContentSegment : EntityWithContentSegments
 
 interface SummaryContentSegment : EntityWithContentSegments

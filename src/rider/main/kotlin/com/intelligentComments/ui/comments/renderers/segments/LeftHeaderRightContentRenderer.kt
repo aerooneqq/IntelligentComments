@@ -2,6 +2,7 @@ package com.intelligentComments.ui.comments.renderers.segments
 
 import com.intelligentComments.core.settings.RiderIntelligentCommentsSettingsProvider
 import com.intelligentComments.ui.comments.model.ModelWithContent
+import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intelligentComments.ui.comments.model.content.ContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.GroupedUiModel
 import com.intelligentComments.ui.comments.model.highlighters.HighlightedTextUiWrapper
@@ -23,7 +24,8 @@ abstract class LeftHeaderRightContentRenderer(
   private val renderHeader: Boolean = true
 ) : SegmentRenderer {
   companion object {
-    private const val deltaBetweenNameAndDescription = 10
+    private const val deltaBetweenFirstLevelHeaderAndSecondLevel = 10
+    private const val deltaBetweenSecondLevelHeaderAndContent = 5
   }
 
 
@@ -41,7 +43,7 @@ abstract class LeftHeaderRightContentRenderer(
       }
     }
 
-    val xDelta = additionalRenderInfo.topmostLeftIndent + deltaBetweenNameAndDescription
+    val xDelta = additionalRenderInfo.topmostLeftIndent + calculateHeaderContentDelta()
     val adjustedRect = if (shouldDrawHeader) {
       Rectangle(rect).apply {
         x += xDelta
@@ -51,10 +53,51 @@ abstract class LeftHeaderRightContentRenderer(
       rect
     }
 
+    if (content.isEmpty()) {
+      return Rectangle(rect).apply {
+        if (shouldDrawHeader) {
+          y += calculateHeaderHeightInternal(editorImpl)
+        }
+      }
+    }
+
     return ContentSegmentsUtil.renderSegments(content, g, adjustedRect, editorImpl, rectanglesModel).apply {
       x -= if (shouldDrawHeader) xDelta else 0
       y += ContentSegmentsUtil.deltaBetweenSegments
     }
+  }
+
+  private fun calculateHeaderContentDelta(): Int {
+    if (isSecondLevelHeader()) {
+      return deltaBetweenSecondLevelHeaderAndContent
+    }
+
+    return deltaBetweenFirstLevelHeaderAndSecondLevel
+  }
+
+  private fun isSecondLevelHeader(): Boolean {
+    val parent = getMeaningfulParent() ?: return false
+
+    var headersCount = 0
+    var current: UiInteractionModelBase? = parent
+    while (current != null) {
+      if (isHeader(current)) {
+        ++headersCount
+      }
+
+      current = current.parent
+    }
+
+    return headersCount == 1
+  }
+
+  private fun isHeader(model: UiInteractionModelBase): Boolean {
+    return model is ContentSegmentUiModel && SegmentRenderer.getRendererFor(model) is LeftHeaderRightContentRenderer
+  }
+
+  private fun getMeaningfulParent(): UiInteractionModelBase? {
+    if (content.isEmpty()) return null
+    return content.first().parent?.parent?.parent
   }
 
   private fun shouldDrawHeader(editorImpl: EditorImpl): Boolean {
@@ -64,7 +107,7 @@ abstract class LeftHeaderRightContentRenderer(
       return true
     }
 
-    val parent = content.first().parent?.parent?.parent
+    val parent = getMeaningfulParent()
     var current = parent
     while (current != null) {
       if (current is ContentSegmentUiModel && SegmentRenderer.getRendererFor(current) is LeftHeaderRightContentRenderer) {
@@ -112,7 +155,7 @@ abstract class LeftHeaderRightContentRenderer(
 
     if (shouldDrawHeader(editorImpl)) {
       width = additionalRenderInfo.topmostLeftIndent
-      width += deltaBetweenNameAndDescription
+      width += calculateHeaderContentDelta()
     }
 
     width += ContentSegmentsUtil.calculateContentWidth(content, editorImpl, additionalRenderInfo)
@@ -122,7 +165,7 @@ abstract class LeftHeaderRightContentRenderer(
   override fun accept(context: RectangleModelBuildContext) {
     ContentSegmentsUtil.accept(context.createCopy(Rectangle(context.rect).apply {
       x += if (shouldDrawHeader(context.editorImpl)) {
-        deltaBetweenNameAndDescription + context.additionalRenderInfo.topmostLeftIndent
+        calculateHeaderContentDelta() + context.additionalRenderInfo.topmostLeftIndent
       } else {
         0
       }

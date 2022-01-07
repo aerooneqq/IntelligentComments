@@ -23,7 +23,6 @@ class ListSegmentRenderer(private val model: ListContentSegmentUiModel) : Segmen
   companion object {
     private const val deltaBetweenListHeaderAndContent = 2
     const val leftIndentForListContent = 15
-    const val bulletRadius = 6
   }
 
 
@@ -99,7 +98,7 @@ class ListSegmentRenderer(private val model: ListContentSegmentUiModel) : Segmen
       is ListContentSegmentUiModel,
       is TextContentSegmentUiModel -> {
         if (model.listKind == ListSegmentKind.Bullet) {
-          drawBullet(g, rect, fontMetrics)
+          drawBullet(g, editorImpl, rect, fontMetrics)
         } else if (model.listKind == ListSegmentKind.Number) {
           drawNumber(g, rect, editorImpl, index)
         }
@@ -109,12 +108,15 @@ class ListSegmentRenderer(private val model: ListContentSegmentUiModel) : Segmen
 
   private fun drawBullet(
     g: Graphics,
+    editorImpl: EditorImpl,
     rect: Rectangle,
     fontMetrics: FontMetrics
   ) {
     val bulletColor = model.project.service<ColorsProvider>().getColorFor(Colors.ListItemBulletBackgroundColor)
+    val textHeight = TextUtil.getTextHeight(editorImpl, null)
+    val bulletRadius = textHeight / 2
     UpdatedGraphicsCookie(g, color = bulletColor).use {
-      g.fillOval(rect.x - 11, rect.y + fontMetrics.descent + fontMetrics.ascent / 4, bulletRadius, bulletRadius)
+      g.fillOval(rect.x - 5 * bulletRadius / 3 , rect.y + bulletRadius / 2 + fontMetrics.descent / 2 - 1, bulletRadius, bulletRadius)
     }
   }
 

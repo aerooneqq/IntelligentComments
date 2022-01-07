@@ -11,6 +11,19 @@ open class DocumentCommentsStorage {
   private val comments = HashMap<Document, CommentsIdentifierStorage<CommentBase>>()
 
 
+  fun recreateAllCommentsFor(editor: Editor) {
+    val storage = comments[editor.document] ?: return
+    val allComments = storage.getAllKeysAndValues().map { it.second.recreate(editor) }
+    storage.clear()
+    for (comment in allComments) {
+      storage.add(comment.commentIdentifier, comment)
+    }
+  }
+
+  fun getAllComments(editor: Editor): Collection<CommentBase> {
+    return comments[editor.document]?.getAllKeysAndValues()?.map { it.second } ?: emptyList()
+  }
+
   fun getComment(commentIdentifier: CommentIdentifier, document: Document): CommentBase? {
     val documentComments = comments[document]
     val comment = documentComments?.getWithAdditionalSearch(commentIdentifier)

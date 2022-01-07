@@ -1,18 +1,19 @@
-package com.intelligentComments.ui.comments.model.content.summary
+package com.intelligentComments.ui.comments.model.content.value
 
 import com.intelligentComments.core.domain.core.SummaryContentSegment
+import com.intelligentComments.core.domain.core.ValueSegment
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intelligentComments.ui.comments.model.content.ContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.ContentSegmentsUiModel
 import com.intelligentComments.ui.util.HashUtil
 import com.intellij.openapi.project.Project
 
-class SummaryUiModel(
+class ValueUiModel(
   project: Project,
   parent: UiInteractionModelBase?,
-  summary: SummaryContentSegment
-) : ContentSegmentUiModel(project, parent, summary) {
-  val content = ContentSegmentsUiModel(project, this, summary.content)
+  value: ValueSegment,
+) : ContentSegmentUiModel(project, parent, value) {
+  val content = ContentSegmentsUiModel(project, this, value.content)
 
   override fun calculateStateHash(): Int {
     return HashUtil.hashCode(content.calculateStateHash())

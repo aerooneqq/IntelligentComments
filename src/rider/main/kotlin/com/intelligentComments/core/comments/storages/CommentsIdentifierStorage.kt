@@ -10,6 +10,11 @@ class CommentsIdentifierStorage<T> {
   private val startOffsetsToComments = BidirectionalMap<Int, CommentIdentifier>()
   private val endOffsetsToComments = BidirectionalMap<Int, CommentIdentifier>()
 
+  fun clear() {
+    storage.clear()
+    startOffsetsToComments.clear()
+    endOffsetsToComments.clear()
+  }
 
   fun get(commentIdentifier: CommentIdentifier) = storage[commentIdentifier]
 
