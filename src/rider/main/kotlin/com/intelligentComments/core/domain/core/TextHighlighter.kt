@@ -16,12 +16,15 @@ interface TextHighlighter : UniqueEntity, Parentable {
   val references: Collection<Reference>
 
   fun shift(delta: Int): TextHighlighter
+
+  fun shiftInplace(delta: Int)
+  fun extendEnd(delta: Int)
 }
 
 class TextHighlighterImpl(
   parent: Parentable?,
-  override val startOffset: Int,
-  override val endOffset: Int,
+  startOffset: Int,
+  endOffset: Int,
   override val textColor: Color,
   override val references: Collection<Reference> = emptyList(),
   override val attributes: TextAttributes = TextAttributesImpl.defaultAttributes,
@@ -31,6 +34,12 @@ class TextHighlighterImpl(
 
   override var parent: Parentable? = parent
     internal set
+
+  override var startOffset: Int = startOffset
+    private set
+
+  override var endOffset: Int = endOffset
+    private set
 
   override fun shift(delta: Int): TextHighlighter {
     return TextHighlighterImpl(
@@ -43,6 +52,15 @@ class TextHighlighterImpl(
       backgroundStyle,
       mouseInOutAnimation,
     )
+  }
+
+  override fun extendEnd(delta: Int) {
+    endOffset += delta
+  }
+
+  override fun shiftInplace(delta: Int) {
+    startOffset += delta
+    endOffset += delta
   }
 }
 

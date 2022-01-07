@@ -6,6 +6,7 @@ interface HighlightedText : Parentable {
 
   fun mergeWith(other: HighlightedText): HighlightedText
   fun mergeWith(rawText: String): HighlightedText
+  fun ensureThatAllLinesAreNoLongerThan(maxLineLength: Int)
 }
 
 class HighlightedTextImpl : HighlightedText {
@@ -63,5 +64,63 @@ class HighlightedTextImpl : HighlightedText {
   override fun mergeWith(rawText: String): HighlightedText {
     text += rawText
     return this
+  }
+
+  override fun ensureThatAllLinesAreNoLongerThan(maxLineLength: Int) {
+    val indicesOfLineBreaks = mutableListOf(0)
+    for (i in text.indices) {
+      if (text[i] == '\n') {
+        indicesOfLineBreaks.add(i)
+      }
+    }
+
+    indicesOfLineBreaks.add(text.length - 1)
+    val positionsOfAdditionalLineBreaks = mutableListOf<Int>()
+
+    var index = 0
+    while (index < indicesOfLineBreaks.size - 1) {
+      val left = indicesOfLineBreaks[index]
+      val right = indicesOfLineBreaks[index + 1]
+      val lineLength = right - left
+      if (lineLength <= maxLineLength) {
+        ++index
+        continue
+      }
+
+      var i = left + maxLineLength
+      while (i > left) {
+        if (text[i] == ' ') {
+          positionsOfAdditionalLineBreaks.add(i)
+          indicesOfLineBreaks.add(index, i)
+          ++index
+          break
+        }
+
+        --i
+      }
+
+      if (i == left) {
+        i = left + maxLineLength
+        while (i < right) {
+          if (text[i] == ' ') {
+            positionsOfAdditionalLineBreaks.add(i)
+            indicesOfLineBreaks.add(i)
+            ++index
+            break
+          }
+
+          ++i
+        }
+      }
+
+      ++index
+    }
+
+    val sb = StringBuilder(text)
+    for (i in positionsOfAdditionalLineBreaks.indices) {
+      sb[positionsOfAdditionalLineBreaks[i]] = '\n'
+    }
+
+    text = sb.toString()
   }
 }
