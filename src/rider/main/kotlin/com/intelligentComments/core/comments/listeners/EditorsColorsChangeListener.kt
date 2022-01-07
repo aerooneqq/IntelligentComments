@@ -1,4 +1,4 @@
-package com.intelligentComments.core.comments
+package com.intelligentComments.core.comments.listeners
 
 import com.intelligentComments.core.changes.ChangeManager
 import com.intelligentComments.core.changes.ThemeChange

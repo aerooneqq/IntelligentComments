@@ -142,9 +142,9 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
     ExecuteActionOverChildren(element, Visit);
   }
   
-  private TextProcessingResult PreprocessTextWithContext(string text, XmlNode context)
+  private static TextProcessingResult PreprocessTextWithContext([NotNull] string text, [NotNull] XmlNode context)
   {
-    return CommentsBuilderUtil.PreprocessTextWithContext(text, context, IsTopmostContext());
+    return CommentsBuilderUtil.PreprocessTextWithContext(text, context);
   }
   
   private static bool ElementHasOneTextChild([NotNull] XmlElement element, [NotNull] out string value)
@@ -542,10 +542,12 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
   private void ProcessTable([NotNull] XmlElement element)
   {
     var table = new TableSegment(null);
-    ExecuteActionOverTermsAndDescriptions(element, (termSegments, descriptionSegments) =>
+    ExecuteActionOverTermsAndDescriptions(element, (term, description) =>
     {
-      var termCell = new TableCell(termSegments.ContentSegments, TableCellProperties.DefaultProperties);
-      var descriptionCell = new TableCell(descriptionSegments.ContentSegments, TableCellProperties.DefaultProperties);
+      var termContentSegments = term?.ContentSegments ?? ContentSegments.CreateEmpty();
+      var descriptionSegments = description?.ContentSegments ?? ContentSegments.CreateEmpty();
+      var termCell = new TableCell(termContentSegments, TableCellProperties.DefaultProperties);
+      var descriptionCell = new TableCell(descriptionSegments, TableCellProperties.DefaultProperties);
       var row = new TableSegmentRow();
       row.Cells.Add(termCell);
       row.Cells.Add(descriptionCell);
@@ -560,10 +562,21 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
     myVisitedNodes.Add(element);
     if (ElementHasOneTextChild(element, out var text))
     {
+      if (CanInlineCode(text))
+      {
+        VisitC(element);
+        return;
+      }
+      
       var codeFragment = CreateCodeFragment(text);
       var codeSegment = new CodeSegment(codeFragment.PreliminaryText, codeFragment.HighlightingRequestId);
       ExecuteWithTopmostContentSegments(metadata => metadata.ContentSegments.Segments.Add(codeSegment));
     }
+  }
+  
+  private static bool CanInlineCode(string rawCodeText)
+  {
+    return !rawCodeText.Contains("\n");
   }
 
   private record CodeFragment(IHighlightedText PreliminaryText, int HighlightingRequestId);

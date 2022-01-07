@@ -1,10 +1,8 @@
 package com.intelligentComments.core.domain.rd
 
-import com.intelligentComments.core.comments.EditorsColorsChangeListener
 import com.intelligentComments.core.domain.core.*
 import com.intelligentComments.ui.colors.ColorName
 import com.intelligentComments.ui.colors.ColorsProvider
-import com.intellij.ide.ui.LafManager
 import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.colors.EditorColorsManager
 import com.intellij.openapi.project.Project

@@ -9,16 +9,6 @@ internal record struct TextProcessingResult(string ProcessedText, int EffectiveL
 
 internal static class CommentsBuilderUtil
 {
-  [NotNull] private static readonly ISet<char> ourCharsWithNoNeedToAddSpaceAfter = new HashSet<char>
-  {
-    '(', '[', '{',
-  };
-  
-  [NotNull] private static readonly ISet<char> ourCharsWithNoNeedToAddSpaceBefore = new HashSet<char>
-  {
-    ')', ']', '}'
-  };
-  
   [NotNull] private static readonly ISet<char> ourWhitespaceChars = new HashSet<char> { ' ', '\n', '\r', '\t' };
 
 
@@ -52,27 +42,17 @@ internal static class CommentsBuilderUtil
       text = text.Replace("  ", " ");
     }
 
-    return text.Replace("\n ", "\n").Replace(" \n", "\n");
+    return text.Replace("\n\n", "\n").Replace("\n ", "\n").Replace(" \n", "\n");
   }
   
-  internal static TextProcessingResult PreprocessTextWithContext(
-    [NotNull] string text, [NotNull] XmlNode context, bool isTopmostContext)
+  internal static TextProcessingResult PreprocessTextWithContext([NotNull] string text, [NotNull] XmlNode context)
   {
-    if (isTopmostContext)
-    {
-      var processedText = PreprocessText(text, null);
-      return new TextProcessingResult(processedText, processedText.Length);
-    }
-    
     var nextSibling = context.NextSibling;
 
     char? trailingCharToAdd = null;
     if (nextSibling is not XmlText xmlText)
     {
-      if (!(text.Length > 0 && ourCharsWithNoNeedToAddSpaceAfter.Contains(text[^1])))
-      {
-        trailingCharToAdd = ' ';
-      }
+      trailingCharToAdd = ' ';
     }
     else
     {
