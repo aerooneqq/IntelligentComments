@@ -1,12 +1,12 @@
 package com.intelligentComments.ui.comments.model.tickets
 
 import com.intelligentComments.core.domain.core.*
+import com.intelligentComments.core.domain.impl.HighlightedTextImpl
 import com.intelligentComments.ui.colors.Colors
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intelligentComments.ui.comments.model.highlighters.HighlightedTextUiWrapper
 import com.intelligentComments.ui.util.HashUtil
 import com.intellij.openapi.project.Project
-import java.awt.Color
 
 class TicketUiModel(
   private val ticket: Ticket,

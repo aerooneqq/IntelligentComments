@@ -15,7 +15,7 @@ class IntelligentCommentContentUiModel(
   val segments: Collection<ContentSegmentUiModel> = mySegments
 
   init {
-    for (segment in content.segments) mySegments.add(ContentSegmentUiModel.getFrom(project, this, segment))
+    for (segment in content.content.segments) mySegments.add(ContentSegmentUiModel.getFrom(project, this, segment))
   }
 
 

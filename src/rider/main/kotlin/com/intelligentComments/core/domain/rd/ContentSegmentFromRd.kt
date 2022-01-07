@@ -2,6 +2,8 @@ package com.intelligentComments.core.domain.rd
 
 import com.intelligentComments.core.comments.codeHighlighting.CodeFragmentHighlightingHost
 import com.intelligentComments.core.domain.core.*
+import com.intelligentComments.core.domain.impl.HighlightedTextImpl
+import com.intelligentComments.core.settings.RiderIntelligentCommentsSettingsProvider
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.jetbrains.rd.ide.model.*
@@ -39,37 +41,55 @@ open class ContentSegmentFromRd(
   }
 }
 
+open class EntityWithContentSegmentsFromRd(
+  entity: RdSegmentWithContent,
+  override val parent: Parentable?,
+  project: Project
+) : ContentSegmentFromRd(entity, parent), EntityWithContentSegments {
+  override val content: ContentSegments = ContentSegmentsFromRd(entity.content, this, project)
+}
+
 class ContentSegmentsFromRd(
   contentSegments: RdContentSegments,
   override val parent: Parentable?,
   project: Project
 ) : ContentSegments {
-  override val segments = contentSegments.content.map { ContentSegmentFromRd.getFrom(it, this, project) }
+  private val myCachedSegments: MutableList<ContentSegment> = contentSegments.content.mapNotNull {
+    val segment = ContentSegmentFromRd.getFrom(it, this, project)
+    val showEmptyContent = project.service<RiderIntelligentCommentsSettingsProvider>().showEmptyContent.value
+    if (segment is EntityWithContentSegments && segment.content.segments.isEmpty() && !showEmptyContent) {
+      return@mapNotNull null
+    }
+
+    return@mapNotNull segment
+  }.toMutableList()
+
+  override val segments
+    get() = myCachedSegments
+
+  override fun processSegments(strategy: ContentProcessingStrategy) {
+    strategy.process(myCachedSegments)
+  }
 }
 
 class ParagraphContentSegmentFromRd(
   paragraph: RdParagraphSegment,
   parent: Parentable?,
   project: Project
-) : ContentSegmentFromRd(paragraph, parent), ParagraphContentSegment {
-  override val content: ContentSegments = ContentSegmentsFromRd(paragraph.content, this, project)
-}
+) : EntityWithContentSegmentsFromRd(paragraph, parent, project), ParagraphContentSegment
 
 class SummaryContentSegmentFromRd(
   rdSummary: RdSummarySegment,
   parent: Parentable?,
   project: Project
-) : ContentSegmentFromRd(rdSummary, parent), SummaryContentSegment {
-  override val content: ContentSegments = ContentSegmentsFromRd(rdSummary.content, this, project)
-}
+) : EntityWithContentSegmentsFromRd(rdSummary, parent, project), SummaryContentSegment
 
 class ValueContentSegmentFromRd(
   segment: RdValueSegment,
   parent: Parentable?,
   project: Project
-) : ContentSegmentFromRd(segment, parent), ValueSegment {
-  override val content: ContentSegments =  ContentSegmentsFromRd(segment.content, this, project)
-}
+) : EntityWithContentSegmentsFromRd(segment, parent, project), ValueSegment
+
 class TextContentSegmentFromRd(
   segment: RdTextSegment,
   parent: Parentable?,
@@ -188,51 +208,42 @@ class ParameterFromRd(
   rdParam: RdParam,
   parent: Parentable?,
   project: Project
-) : ContentSegmentFromRd(rdParam, parent), ParameterSegment {
+) : EntityWithContentSegmentsFromRd(rdParam, parent, project), ParameterSegment {
   override val name = rdParam.name.toIdeaHighlightedText(project, this)
-  override val content: ContentSegments = ContentSegmentsFromRd(rdParam.content, this, project)
 }
 
 class TypeParamFromRd(
   rdTypeParam: RdTypeParam,
   parent: Parentable?,
   project: Project
-) : ContentSegmentFromRd(rdTypeParam, parent), TypeParamSegment {
+) : EntityWithContentSegmentsFromRd(rdTypeParam, parent, project), TypeParamSegment {
   override val name = rdTypeParam.name.toIdeaHighlightedText(project, this)
-  override val content: ContentSegments = ContentSegmentsFromRd(rdTypeParam.content, this, project)
 }
 
 class ReturnFromRd(
   rdReturn: RdReturnSegment,
   parent: Parentable?,
   project: Project
-) : ContentSegmentFromRd(rdReturn, parent), ReturnSegment {
-  override val content: ContentSegments = ContentSegmentsFromRd(rdReturn.content, this, project)
-}
+) : EntityWithContentSegmentsFromRd(rdReturn, parent, project), ReturnSegment
 
 class ExampleFromRd(
   rdExample: RdExampleSegment,
   parent: Parentable?,
   project: Project
-) : ContentSegmentFromRd(rdExample, parent), ExampleContentSegment {
-  override val content: ContentSegments = ContentSegmentsFromRd(rdExample.content, this, project)
-}
+) : EntityWithContentSegmentsFromRd(rdExample, parent, project), ExampleContentSegment
 
 class RemarksSegmentFromRd(
   rdRemarksSection: RdRemarksSegment,
   parent: Parentable?,
   project: Project
-) : ContentSegmentFromRd(rdRemarksSection, parent), RemarksSegment {
-  override val content: ContentSegments = ContentSegmentsFromRd(rdRemarksSection.content, this, project)
-}
+) : EntityWithContentSegmentsFromRd(rdRemarksSection, parent, project), RemarksSegment
 
 class ExceptionSegmentFromRd(
   rdExceptionSegment: RdExceptionsSegment,
   parent: Parentable?,
   project: Project
-) : ContentSegmentFromRd(rdExceptionSegment, parent), ExceptionSegment {
+) : EntityWithContentSegmentsFromRd(rdExceptionSegment, parent, project), ExceptionSegment {
   override val name: HighlightedText = rdExceptionSegment.name.toIdeaHighlightedText(project, this)
-  override val content: ContentSegments = ContentSegmentsFromRd(rdExceptionSegment.content, this, project)
 }
 
 open class SeeAlsoSegmentFromRd(

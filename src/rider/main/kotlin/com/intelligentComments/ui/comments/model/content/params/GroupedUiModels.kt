@@ -3,6 +3,7 @@ package com.intelligentComments.ui.comments.model.content.params
 import com.intelligentComments.core.domain.core.*
 import com.intelligentComments.core.domain.impl.GroupedParamSegments
 import com.intelligentComments.core.domain.impl.GroupedTypeParamSegments
+import com.intelligentComments.core.domain.impl.HighlightedTextImpl
 import com.intelligentComments.ui.colors.ColorName
 import com.intelligentComments.ui.colors.Colors
 import com.intelligentComments.ui.colors.ColorsProvider

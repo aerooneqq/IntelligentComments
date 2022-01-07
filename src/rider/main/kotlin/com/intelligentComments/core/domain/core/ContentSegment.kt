@@ -3,11 +3,7 @@ package com.intelligentComments.core.domain.core
 import com.jetbrains.rd.util.reactive.Property
 import java.awt.Image
 
-interface IntelligentCommentContent : UniqueEntity, Parentable {
-  val segments: Collection<ContentSegment>
-
-  fun processSegments(strategy: ContentProcessingStrategy)
-}
+interface IntelligentCommentContent : EntityWithContentSegments
 
 interface ContentProcessingStrategy {
   fun process(segments: MutableList<ContentSegment>)
@@ -21,6 +17,8 @@ interface ContentSegment : Parentable, UniqueEntity
 
 interface ContentSegments : Parentable {
   val segments: Collection<ContentSegment>
+
+  fun processSegments(strategy: ContentProcessingStrategy)
 }
 
 interface EntityWithContentSegments : ContentSegment {

@@ -6,8 +6,6 @@ import com.intelligentComments.ui.comments.renderers.IntelligentCommentsRenderer
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.EditorCustomElementRenderer
 import com.intellij.openapi.editor.RangeMarker
-import com.intellij.openapi.editor.impl.EditorImpl
-import com.intellij.openapi.editor.markup.RangeHighlighter
 import com.intellij.openapi.project.Project
 import com.jetbrains.rd.ide.model.RdIntelligentComment
 
@@ -29,7 +27,7 @@ class IntelligentCommentFromRd(
     return rdComment.authors?.map { AuthorFromRd(it) } ?: emptyList()
   }
 
-  private fun createContent(project: Project) = IntelligentCommentContentFromRd(rdComment.content, this, project)
+  private fun createContent(project: Project) = IntelligentCommentContentFromRd(rdComment.content!!, this, project)
   private fun createReferences(): List<ReferenceFromRd> =
     rdComment.references?.map { ReferenceFromRd.getFrom(project, it) } ?: emptyList()
 

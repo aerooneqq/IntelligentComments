@@ -1,12 +1,12 @@
 package com.intelligentComments.ui.comments.model.content
 
 import com.intelligentComments.core.domain.core.*
+import com.intelligentComments.core.domain.impl.HighlightedTextImpl
 import com.intelligentComments.core.settings.RiderIntelligentCommentsSettingsProvider
 import com.intelligentComments.ui.colors.ColorName
 import com.intelligentComments.ui.colors.Colors
 import com.intelligentComments.ui.colors.ColorsProvider
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
-import com.intelligentComments.ui.comments.model.content.seeAlso.GroupedSeeAlsoUiModel
 import com.intelligentComments.ui.comments.model.content.text.TextContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.highlighters.HighlightedTextUiWrapper
 import com.intelligentComments.ui.util.HashUtil

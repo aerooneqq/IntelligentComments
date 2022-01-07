@@ -1,13 +1,13 @@
 package com.intelligentComments.ui.comments.model.sections
 
 import com.intelligentComments.core.domain.core.*
+import com.intelligentComments.core.domain.impl.HighlightedTextImpl
 import com.intelligentComments.ui.colors.Colors
 import com.intelligentComments.ui.comments.model.ExpandableUiModel
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intelligentComments.ui.comments.model.highlighters.HighlightedTextUiWrapper
 import com.intellij.openapi.editor.event.EditorMouseEvent
 import com.intellij.openapi.project.Project
-import java.awt.Color
 import javax.swing.Icon
 
 class SectionHeaderUiModel(

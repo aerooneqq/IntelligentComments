@@ -6,7 +6,7 @@ import com.intelligentComments.core.domain.rd.DocCommentFromRd
 import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.RangeMarker
-import com.intellij.openapi.editor.impl.EditorImpl
+import com.intellij.openapi.project.Project
 import com.jetbrains.rd.ide.model.RdDocComment
 import com.jetbrains.rd.platform.diagnostics.logAssertion
 import com.jetbrains.rd.platform.util.getLogger
@@ -27,9 +27,17 @@ class RiderCommentsCreator {
       return null
     }
 
+    return createDocComment(rdDocComment, project, commentRange)
+  }
+
+  fun createDocComment(
+    rdDocComment: RdDocComment,
+    project: Project,
+    commentRange: RangeMarker
+  ) : DocComment {
     val docComment = DocCommentFromRd(rdDocComment, project, commentRange)
     val segmentsPreprocessingStrategy = project.service<ContentProcessingStrategyImpl>()
-    docComment.content.processSegments(segmentsPreprocessingStrategy)
+    docComment.content.content.processSegments(segmentsPreprocessingStrategy)
     return docComment
   }
 }

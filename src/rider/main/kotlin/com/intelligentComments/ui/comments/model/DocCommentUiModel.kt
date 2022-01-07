@@ -21,7 +21,7 @@ class DocCommentUiModel(
 
 
   init {
-    val segments = docComment.content.segments.map { ContentSegmentUiModel.getFrom(project, this, it) }
+    val segments = docComment.content.content.segments.map { ContentSegmentUiModel.getFrom(project, this, it) }
     content = segments
     contentSection = SectionUiModel(project, this, segments)
   }
