@@ -16,7 +16,7 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Daemon;
   TransmitUpdates = true)]
 public class DocCommentFoldingHighlighting : CodeFoldingHighlighting
 {
-  public const string DocCommentAttributeId = "IntelligentCommentsDocCommentFolding";
+  private const string DocCommentAttributeId = "IntelligentCommentsDocCommentFolding";
     
   public static DocCommentFoldingHighlighting Create(IDocComment comment)
   {

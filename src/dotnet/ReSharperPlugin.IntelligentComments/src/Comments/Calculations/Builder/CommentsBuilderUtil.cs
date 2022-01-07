@@ -9,6 +9,11 @@ internal record struct TextProcessingResult(string ProcessedText, int EffectiveL
 
 internal static class CommentsBuilderUtil
 {
+  [NotNull] private static readonly ISet<char> ourCharsWithNoNeedToAddSpaceAfter = new HashSet<char>
+  {
+    '(', '[', '{',
+  };
+  
   [NotNull] private static readonly ISet<char> ourWhitespaceChars = new HashSet<char> { ' ', '\n', '\r', '\t' };
 
 
@@ -52,7 +57,10 @@ internal static class CommentsBuilderUtil
     char? trailingCharToAdd = null;
     if (nextSibling is not XmlText xmlText)
     {
-      trailingCharToAdd = ' ';
+      if (!(text.Length > 0 && ourCharsWithNoNeedToAddSpaceAfter.Contains(text[^1])))
+      {
+        trailingCharToAdd = ' ';
+      }
     }
     else
     {

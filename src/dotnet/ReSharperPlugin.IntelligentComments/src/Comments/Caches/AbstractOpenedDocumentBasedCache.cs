@@ -19,18 +19,17 @@ public abstract class AbstractOpenedDocumentBasedCache<TId, TValue> where TValue
   protected AbstractOpenedDocumentBasedCache(
     Lifetime lifetime,
     [NotNull] ITextControlManager textControlManager,
-    [NotNull] IShellLocks shellLocks)
+    [NotNull] IThreading threading)
   {
     myFilesPerDocument = new Dictionary<IDocument, IDictionary<TId, TValue>>();
     textControlManager.TextControls.AddRemove.Advise(lifetime, args =>
     {
-      shellLocks.Queue(lifetime, $"{GetType().Name}::InvalidatingCache", () =>
+      threading.Queue(lifetime, $"{GetType().Name}::InvalidatingCache", () =>
       {
         if (args.IsRemoving)
         {
           lock (mySyncObject)
           {
-            //ToDo: Invalidate after daemon invalidation
             var allOpenedDocuments = textControlManager.TextControls.Select(editor => editor.Document).ToSet();
             var documentsToRemove = myFilesPerDocument.Keys.ToSet().Except(allOpenedDocuments);
             foreach (var document in documentsToRemove)
