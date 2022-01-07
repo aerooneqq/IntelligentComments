@@ -9,6 +9,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.ui.popup.PopupFactoryImpl
 import com.jetbrains.rd.ide.model.*
+import com.jetbrains.rd.platform.util.application
 import com.jetbrains.rd.platform.util.getLogger
 import com.jetbrains.rd.platform.util.idea.LifetimedService
 import com.jetbrains.rdclient.document.textControlId
@@ -29,6 +30,8 @@ class CommentClickDocHost(private val project: Project) : LifetimedService() {
   private val psiDocumentManager = PsiDocumentManager.getInstance(project)
   private val quickDocHost = FrontendQuickDocHost.getInstance(project)
 
+  private var myCurrentReference: Reference? = null
+
 
   fun tryRequestHoverDoc(
     commentIdentifier: CommentIdentifier,
@@ -36,6 +39,13 @@ class CommentClickDocHost(private val project: Project) : LifetimedService() {
     editor: Editor,
     contextPoint: Point,
   ) {
+    application.assertIsDispatchThread()
+
+    if (myCurrentReference == reference) {
+      myCurrentReference = null
+      return
+    }
+
     val rdReference = reference.toRdReference(project)
     if (rdReference !is RdCodeEntityReference && rdReference !is RdProxyReference) {
       logger.error("Expected RdCodeEntityReference or RdProxyReference, got $rdReference for ${commentIdentifier.moniker}")
@@ -60,6 +70,7 @@ class CommentClickDocHost(private val project: Project) : LifetimedService() {
         y += additionalYDelta
       })
 
+      myCurrentReference = reference
       documentationManager.showJavaDocInfo(editor, contextElement, null, true) {
         val sessions = quickDocModel.quickDocSessions
         if (sessions.containsKey(sessionId)) {
