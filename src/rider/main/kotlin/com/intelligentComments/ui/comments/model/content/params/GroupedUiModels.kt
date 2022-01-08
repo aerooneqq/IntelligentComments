@@ -24,6 +24,9 @@ class GroupedParamsUiModel(
     object : ContentSegments {
       override val segments = listOf(it)
       override val parent: Parentable = model
+
+      override fun processSegments(strategy: ContentProcessingStrategy) {
+      }
     }
   },
   getGroupedParamsSectionHeader(project, groupedParamsSectionName, Colors.ParamsSectionHeaderBackgroundColor, model)
@@ -61,6 +64,9 @@ class GroupedTypeParamsUiModel(
     object : ContentSegments {
       override val segments = listOf(it)
       override val parent: Parentable = model
+
+      override fun processSegments(strategy: ContentProcessingStrategy) {
+      }
     }
   },
   getGroupedParamsSectionHeader(project, groupedTypeParamsSectionName, Colors.TypeParamNameBackgroundColor, model)

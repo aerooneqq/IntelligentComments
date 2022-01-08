@@ -61,9 +61,12 @@ abstract class LeftHeaderRightContentRenderer(
       }
     }
 
-    return ContentSegmentsUtil.renderSegments(content, g, adjustedRect, editorImpl, rectanglesModel).apply {
+    ContentSegmentsUtil.renderSegments(content, g, adjustedRect, editorImpl, rectanglesModel).apply {
       x -= if (shouldDrawHeader) xDelta else 0
-      y += ContentSegmentsUtil.deltaBetweenSegments
+    }
+
+    return Rectangle(rect).apply {
+      y += calculateExpectedHeightInPixels(editorImpl, additionalRenderInfo)
     }
   }
 
@@ -100,7 +103,7 @@ abstract class LeftHeaderRightContentRenderer(
     return content.first().parent?.parent?.parent
   }
 
-  private fun shouldDrawHeader(editorImpl: EditorImpl): Boolean {
+  protected fun shouldDrawHeader(editorImpl: EditorImpl): Boolean {
     if (!renderHeader) return false
 
     if (content.isEmpty()) {
@@ -141,8 +144,7 @@ abstract class LeftHeaderRightContentRenderer(
   ): Int {
     val nameHeight = if (shouldDrawHeader(editorImpl)) calculateHeaderHeightInternal(editorImpl) else 0
 
-    val delta = ContentSegmentsUtil.deltaBetweenSegments
-    val contentHeight = ContentSegmentsUtil.calculateContentHeight(content, editorImpl, additionalRenderInfo) + delta
+    val contentHeight = ContentSegmentsUtil.calculateContentHeight(content, editorImpl, additionalRenderInfo)
 
     return max(nameHeight, contentHeight)
   }
@@ -207,7 +209,10 @@ open class LeftTextHeaderAndRightContentRenderer(
   }
 
   override fun accept(context: RectangleModelBuildContext) {
-    TextUtil.createRectanglesForHighlightedText(header, context)
+    if (shouldDrawHeader(context.editorImpl)) {
+      TextUtil.createRectanglesForHighlightedText(header, context)
+    }
+
     super.accept(context)
   }
 }
