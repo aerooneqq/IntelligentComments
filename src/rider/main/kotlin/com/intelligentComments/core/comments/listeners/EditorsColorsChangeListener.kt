@@ -6,7 +6,7 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.colors.EditorColorsListener
 import com.intellij.openapi.editor.colors.EditorColorsManager
 import com.intellij.openapi.project.Project
-import com.jetbrains.rd.platform.util.application
+import com.intellij.util.application
 import com.jetbrains.rd.platform.util.subscribe
 import com.jetbrains.rdclient.util.idea.LifetimedProjectComponent
 

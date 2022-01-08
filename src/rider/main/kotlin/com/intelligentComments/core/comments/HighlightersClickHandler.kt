@@ -6,7 +6,7 @@ import com.intelligentComments.core.domain.core.*
 import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
-import com.jetbrains.rd.platform.util.application
+import com.intellij.util.application
 import com.jetbrains.rd.platform.util.getLogger
 import java.awt.Point
 

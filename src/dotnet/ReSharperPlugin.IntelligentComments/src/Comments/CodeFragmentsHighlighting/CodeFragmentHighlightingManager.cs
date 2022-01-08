@@ -7,7 +7,6 @@ using JetBrains.Application.Threading;
 using JetBrains.Application.Threading.Tasks;
 using JetBrains.DataFlow;
 using JetBrains.DocumentModel;
-using JetBrains.Lifetimes;
 using JetBrains.ProjectModel;
 using JetBrains.Rd.Tasks;
 using JetBrains.RdBackend.Common.Features;
@@ -33,12 +32,10 @@ public class CodeFragmentHighlightingManager
 {
   [NotNull] private readonly object mySyncObject = new();
 
-  private readonly Lifetime myLifetime;
   [NotNull] private readonly ILogger myLogger;
   [NotNull] private readonly SandboxesCache mySandboxesCache;
   [NotNull] private readonly IShellLocks myShellLocks;
   [NotNull] private readonly IPsiServices myPsiServices;
-  [NotNull] private readonly RiderSolutionLoadStateMonitor mySolutionLoadStateMonitor;
   [NotNull] private readonly IDictionary<int, CodeHighlightingRequest> myRequests;
 
 
@@ -46,7 +43,6 @@ public class CodeFragmentHighlightingManager
 
 
   public CodeFragmentHighlightingManager(
-    Lifetime lifetime,
     [NotNull] ISolution solution,
     [NotNull] ILogger logger,
     [NotNull] SandboxesCache sandboxesCache,
@@ -54,19 +50,17 @@ public class CodeFragmentHighlightingManager
     [NotNull] IPsiServices psiServices,
     [NotNull] RiderSolutionLoadStateMonitor solutionLoadStateMonitor)
   {
-    myLifetime = lifetime;
     myLogger = logger;
     mySandboxesCache = sandboxesCache;
     myShellLocks = shellLocks;
     myPsiServices = psiServices;
-    mySolutionLoadStateMonitor = solutionLoadStateMonitor;
     myRequests = new Dictionary<int, CodeHighlightingRequest>();
     
     var rdCommentsModel = solution.GetSolution().GetProtocolSolution().GetRdCommentsModel();
     rdCommentsModel.HighlightCode.Set((lt, request) =>
     {
       var task = new RdTask<RdHighlightedText>();
-      mySolutionLoadStateMonitor.SolutionLoadedAndProjectModelCachesReady.WhenTrueOnce(lt, () =>
+      solutionLoadStateMonitor.SolutionLoadedAndProjectModelCachesReady.WhenTrueOnce(lt, () =>
       {
         myShellLocks.QueueReadLock(lt, $"{nameof(CodeFragmentHighlightingManager)}::ServingRequest", () =>
         {

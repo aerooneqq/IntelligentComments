@@ -8,8 +8,8 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.ui.popup.PopupFactoryImpl
+import com.intellij.util.application
 import com.jetbrains.rd.ide.model.*
-import com.jetbrains.rd.platform.util.application
 import com.jetbrains.rd.platform.util.getLogger
 import com.jetbrains.rd.platform.util.idea.LifetimedService
 import com.jetbrains.rdclient.document.textControlId

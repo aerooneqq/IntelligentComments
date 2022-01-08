@@ -9,6 +9,7 @@ using JetBrains.RdBackend.Common.Features.Documents;
 using JetBrains.RdBackend.Common.Features.Languages;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Files.SandboxFiles;
+using JetBrains.Rider.Backend.Features.Documents;
 using JetBrains.Rider.Model;
 using JetBrains.TextControl;
 using JetBrains.Util;
@@ -32,15 +33,17 @@ public class SandboxesCache : AbstractOpenedDocumentBasedCache<string, SandboxFi
   [NotNull] private readonly ISolution mySolution;
   [NotNull] private readonly IShellLocks myShellLocks;
   [NotNull] private readonly ISandboxDocumentsHelper myHelper;
+  [NotNull] private readonly RiderDocumentHost myDocumentHost;
 
-  
+
   public SandboxesCache(
     Lifetime lifetime,
     [NotNull] ILogger logger,
     ISolution solution,
     [NotNull] ITextControlManager textControlManager, 
     [NotNull] IShellLocks shellLocks,
-    [NotNull] ISandboxDocumentsHelper helper) 
+    [NotNull] ISandboxDocumentsHelper helper,
+    [NotNull] RiderDocumentHost documentHost) 
     : base(lifetime, textControlManager, shellLocks)
   {
     myLifetime = lifetime;
@@ -48,6 +51,7 @@ public class SandboxesCache : AbstractOpenedDocumentBasedCache<string, SandboxFi
     mySolution = solution;
     myShellLocks = shellLocks;
     myHelper = helper;
+    myDocumentHost = documentHost;
   }
   
   
@@ -92,7 +96,7 @@ public class SandboxesCache : AbstractOpenedDocumentBasedCache<string, SandboxFi
       highlightingLifetime, 
       riderDocument,
       sandboxFile,
-      DocumentHostBase.GetInstance(sandboxFile.GetSolution()));
+      myDocumentHost);
 
     var sourceFile = riderDocument.GetPsiSourceFile(mySolution);
     if (sourceFile is not SandboxPsiSourceFile sandboxPsiSourceFile)

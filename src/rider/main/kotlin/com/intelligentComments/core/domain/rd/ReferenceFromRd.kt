@@ -1,13 +1,12 @@
 package com.intelligentComments.core.domain.rd
 
 import com.intelligentComments.core.domain.core.*
-import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
 import com.jetbrains.rd.ide.model.*
 import com.jetbrains.rdclient.document.FrontendDocumentHost
-import com.jetbrains.rdclient.document.getDocumentId
+import com.jetbrains.rdclient.document.getFirstDocumentId
 import com.jetbrains.rdclient.util.idea.toIdeaRange
 import com.jetbrains.rdclient.util.idea.toRdTextRange
 
@@ -61,7 +60,7 @@ fun Reference.toRdReference(project: Project): RdReference {
     is XmlDocCodeEntityReference -> RdXmlDocCodeEntityReference(rawValue)
     is SandboxCodeEntityReference -> RdSandboxCodeEntityReference(
       sandboxFileId,
-      originalDocument?.getDocumentId(project),
+      originalDocument?.getFirstDocumentId(project),
       range.toRdTextRange(),
       rawValue
     )

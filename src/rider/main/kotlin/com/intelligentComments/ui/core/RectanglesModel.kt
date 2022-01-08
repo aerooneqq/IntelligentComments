@@ -5,7 +5,7 @@ import com.intelligentComments.ui.util.RectanglesModelBuildResult
 import com.intelligentComments.ui.util.RectanglesModelUtil
 import com.intellij.openapi.editor.event.EditorMouseEvent
 import com.intellij.openapi.editor.impl.EditorImpl
-import com.jetbrains.rd.platform.util.application
+import com.intellij.util.application
 import com.jetbrains.rd.util.getOrCreate
 import java.awt.Rectangle
 

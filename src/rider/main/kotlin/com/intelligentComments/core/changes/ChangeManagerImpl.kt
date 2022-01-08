@@ -1,7 +1,7 @@
 package com.intelligentComments.core.changes
 
 import com.intellij.openapi.project.Project
-import com.jetbrains.rd.platform.util.application
+import com.intellij.util.application
 import com.jetbrains.rd.util.addUnique
 import com.jetbrains.rd.util.lifetime.Lifetime
 

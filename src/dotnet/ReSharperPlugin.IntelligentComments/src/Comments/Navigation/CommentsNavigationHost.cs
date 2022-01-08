@@ -9,6 +9,7 @@ using JetBrains.RdBackend.Common.Features.Documents;
 using JetBrains.RdBackend.Common.Features.Services;
 using JetBrains.ReSharper.Feature.Services.Navigation;
 using JetBrains.ReSharper.Psi;
+using JetBrains.Rider.Backend.Features.Documents;
 using JetBrains.Rider.Model;
 using JetBrains.Util;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
@@ -34,7 +35,8 @@ public class CommentsNavigationHost
     [NotNull] ISolution solution,
     [NotNull] IDeclaredElementNavigationService navigationService,
     [NotNull] IShellLocks shellLocks,
-    [NotNull] RdReferenceConverter rdReferenceConverter)
+    [NotNull] RdReferenceConverter rdReferenceConverter,
+    [NotNull] RiderDocumentHost documentHost)
   {
     myLifetime = lifetime;
     myLogger = logger;
@@ -42,7 +44,7 @@ public class CommentsNavigationHost
     myNavigationService = navigationService;
     myShellLocks = shellLocks;
     myRdReferenceConverter = rdReferenceConverter;
-    myDocumentHostBase = DocumentHostBase.GetInstance(solution);
+    myDocumentHostBase = documentHost;
     
     solution.GetProtocolSolution().GetRdCommentsModel().PerformNavigation.Set(HandleNavigationRequest);
   }

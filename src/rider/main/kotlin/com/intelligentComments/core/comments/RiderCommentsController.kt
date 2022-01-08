@@ -17,10 +17,10 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.impl.EditorImpl
 import com.intellij.openapi.project.Project
 import com.intellij.psi.impl.source.tree.injected.changesHandler.range
+import com.intellij.util.application
 import com.jetbrains.rd.platform.diagnostics.logAssertion
-import com.jetbrains.rd.platform.util.application
 import com.jetbrains.rd.platform.util.getLogger
-import com.jetbrains.rdclient.document.getDocumentId
+import com.jetbrains.rdclient.document.getFirstDocumentId
 import com.jetbrains.rdclient.editors.FrontendTextControlHost
 import com.jetbrains.rdclient.util.idea.LifetimedProjectComponent
 import com.jetbrains.rider.document.RiderDocumentHost
@@ -70,7 +70,7 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
   }
 
   private fun updateRenderModeToMatchState(commentIdentifier: CommentIdentifier, document: Document, state: CommentState) {
-    val documentId = document.getDocumentId(project) ?: return
+    val documentId = document.getFirstDocumentId(project) ?: return
     for (editor in textControlHost.getAllEditors(documentId)) {
       editor as? EditorImpl ?: continue
       if (!state.isInRenderMode) {

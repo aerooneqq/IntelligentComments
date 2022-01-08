@@ -3,6 +3,7 @@ using JetBrains.ProjectModel;
 using JetBrains.RdBackend.Common.Features.Documents;
 using JetBrains.RdBackend.Common.Features.Util.Ranges;
 using JetBrains.ReSharper.Psi;
+using JetBrains.Rider.Backend.Features.Documents;
 using JetBrains.Rider.Backend.Features.TextControls;
 using JetBrains.Rider.Model;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
@@ -21,12 +22,13 @@ public class RdReferenceConverter
   public RdReferenceConverter(
     [NotNull] ISolution solution,
     [NotNull] RiderTextControlHost textControlHost,
-    IPsiServices psiServices)
+    [NotNull] IPsiServices psiServices,
+    [NotNull] RiderDocumentHost documentHost)
   {
     mySolution = solution;
     myTextControlHost = textControlHost;
     myPsiServices = psiServices;
-    myDocumentHostBase = DocumentHostBase.GetInstance(mySolution);
+    myDocumentHostBase = documentHost;
   }
   
   

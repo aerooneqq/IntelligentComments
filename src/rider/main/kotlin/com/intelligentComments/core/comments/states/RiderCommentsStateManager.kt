@@ -11,11 +11,11 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
+import com.intellij.util.application
 import com.intellij.util.xmlb.annotations.Attribute
 import com.intellij.util.xmlb.annotations.Tag
 import com.intellij.util.xmlb.annotations.XCollection
 import com.jetbrains.rd.platform.diagnostics.logAssertion
-import com.jetbrains.rd.platform.util.application
 import com.jetbrains.rd.util.getOrCreate
 import com.jetbrains.rdclient.editors.getPsiFile
 

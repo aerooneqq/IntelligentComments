@@ -17,10 +17,12 @@ import com.intellij.openapi.editor.impl.EditorImpl
 import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.openapi.editor.markup.TextAttributes
 import com.intellij.openapi.util.use
+import com.intellij.util.application
 import com.intellij.util.text.CharArrayUtil
-import com.jetbrains.rd.platform.util.application
 import java.awt.Graphics
+import java.awt.Graphics2D
 import java.awt.Rectangle
+import java.awt.geom.Rectangle2D
 
 abstract class RendererWithRectangleModel(
   private val baseModel: CommentUiModelBase
@@ -103,8 +105,8 @@ abstract class RendererWithRectangleModel(
 
   final override fun paint(
     region: CustomFoldRegion,
-    g: Graphics,
-    targetRegion: Rectangle,
+    g: Graphics2D,
+    targetRegion: Rectangle2D,
     textAttributes: TextAttributes
   ) {
     doPaint(region.editor as? EditorImpl ?: return, g, targetRegion, textAttributes)
@@ -113,7 +115,7 @@ abstract class RendererWithRectangleModel(
   private fun doPaint(
     editor: EditorImpl,
     g: Graphics,
-    targetRegion: Rectangle,
+    targetRegion: Rectangle2D,
     textAttributes: TextAttributes
   ) {
     application.assertIsDispatchThread()
@@ -122,9 +124,10 @@ abstract class RendererWithRectangleModel(
     val colorsProvider = project.service<ColorsProvider>()
     val defaultTextColor = colorsProvider.getColorFor(Colors.TextDefaultColor)
 
-    UpdatedRectCookie(targetRegion, xDelta = xDelta + rectModelXDelta, yDelta = yDelta + rectModelYDelta).use {
+    val rect = targetRegion.bounds
+    UpdatedRectCookie(rect, xDelta = xDelta + rectModelXDelta, yDelta = yDelta + rectModelYDelta).use {
       UpdatedGraphicsCookie(g, defaultTextColor, TextUtil.getFont(editor)).use {
-        paintInternal(editor, g, targetRegion, textAttributes, colorsProvider)
+        paintInternal(editor, g, rect, textAttributes, colorsProvider)
       }
     }
 
