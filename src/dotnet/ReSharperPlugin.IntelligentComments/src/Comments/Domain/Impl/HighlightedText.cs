@@ -23,17 +23,20 @@ public class HighlightedText : IHighlightedText
   public IList<TextHighlighter> Highlighters => myHighlighters;
 
 
-  public HighlightedText(string text) : this(text, EmptyList<TextHighlighter>.Enumerable)
+  public HighlightedText([NotNull] string text) : this(text, EmptyList<TextHighlighter>.Enumerable)
   {
   }
 
-  public HighlightedText(string text, IEnumerable<TextHighlighter> highlighters)
+  public HighlightedText([NotNull] string text, [NotNull] IEnumerable<TextHighlighter> highlighters)
   {
     Text = text;
     myHighlighters = highlighters.ToList();
   }
 
-  public HighlightedText(string text, TextHighlighter highlighter) : this(text, new[] { highlighter })
+  public HighlightedText(
+    [NotNull] string text, 
+    [CanBeNull] TextHighlighter highlighter) 
+    : this(text, highlighter is { } ? new[] { highlighter } : EmptyList<TextHighlighter>.Enumerable)
   {
   }
 

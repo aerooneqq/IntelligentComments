@@ -24,8 +24,8 @@ abstract class LeftHeaderRightContentRenderer(
   private val renderHeader: Boolean = true
 ) : SegmentRenderer {
   companion object {
-    private const val deltaBetweenFirstLevelHeaderAndSecondLevel = 10
-    private const val deltaBetweenSecondLevelHeaderAndContent = 5
+    private const val deltaBetweenFirstLevelHeaderAndSecondLevel = 15
+    private const val deltaBetweenSecondLevelHeaderAndContent = 10
   }
 
 

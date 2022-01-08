@@ -6,7 +6,6 @@ using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.TextControl.DocumentMarkup;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
-using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.References;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Calculations;
 

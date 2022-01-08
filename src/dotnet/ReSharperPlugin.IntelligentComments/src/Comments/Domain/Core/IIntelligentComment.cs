@@ -15,7 +15,6 @@ public interface ICommentBase
 public interface IGroupOfLineComments : ICommentBase
 {
   [NotNull] ITextContentSegment Text { get; }
-  
 }
 
 public interface IDocComment : ICommentBase

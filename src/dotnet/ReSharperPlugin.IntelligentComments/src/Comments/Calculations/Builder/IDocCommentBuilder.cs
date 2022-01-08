@@ -5,7 +5,6 @@ using System.Xml;
 using JetBrains.Annotations;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Feature.Services.Daemon.Attributes;
-using JetBrains.ReSharper.I18n.Services;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.ReSharper.Psi.Modules;

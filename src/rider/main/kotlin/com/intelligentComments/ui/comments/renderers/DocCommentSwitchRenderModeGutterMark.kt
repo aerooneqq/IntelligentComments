@@ -10,6 +10,7 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.impl.EditorImpl
 import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.openapi.project.Project
+import com.jetbrains.rdclient.daemon.highlighters.gutterMarks.MergableGutterIconRenderer
 import com.jetbrains.rider.util.idea.Editor
 import javax.swing.Icon
 
@@ -17,7 +18,7 @@ class DocCommentSwitchRenderModeGutterMark(
   private val comment: CommentBase,
   private val editorImpl: EditorImpl,
   project: Project
-) : GutterIconRenderer() {
+) : GutterIconRenderer(), MergableGutterIconRenderer {
   private val controller = project.getComponent(RiderCommentsController::class.java)
   private val commentsStatesManager = project.service<RiderCommentsStateManager>()
 
@@ -45,6 +46,10 @@ class DocCommentSwitchRenderModeGutterMark(
       false -> "Go to render mode"
       else -> ""
     }
+
+  override fun getWeight(): Int {
+    return Int.MAX_VALUE
+  }
 
   override fun getClickAction(): AnAction = object : AnAction() {
     override fun actionPerformed(e: AnActionEvent) {

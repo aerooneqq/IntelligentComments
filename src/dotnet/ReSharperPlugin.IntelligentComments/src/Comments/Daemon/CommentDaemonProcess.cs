@@ -32,7 +32,7 @@ public class CommentDaemonProcess : IDaemonStageProcess
     var result = new List<HighlightingInfo>();
     foreach (var file in files)
     {
-      var commentsCollector = new XmlDocsProcessor();
+      var commentsCollector = new CommentsProcessor();
       file.ProcessThisAndDescendants(commentsCollector);
       foreach (var comment in commentsCollector.Comments)
       {
