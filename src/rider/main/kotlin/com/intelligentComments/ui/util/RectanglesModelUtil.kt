@@ -17,6 +17,8 @@ import com.intelligentComments.ui.core.Renderer
 import com.intellij.openapi.editor.impl.EditorImpl
 import java.awt.Rectangle
 
+data class RectanglesModelBuildResult(val model: RectanglesModel, val xShift: Int, val yShift: Int)
+
 class RectanglesModelUtil {
   companion object {
     const val deltaBetweenHeaderAndContent = 5
@@ -28,7 +30,7 @@ class RectanglesModelUtil {
       model: UiInteractionModelBase,
       xDelta: Int,
       yDelta: Int
-    ): RectanglesModel {
+    ): RectanglesModelBuildResult {
       return when (model) {
         is IntelligentCommentUiModel -> buildRectanglesModel(editorImpl, model, xDelta, yDelta)
         is DocCommentUiModel -> buildRectanglesModel(editorImpl, model,  model.contentSection, xDelta, yDelta)
@@ -43,17 +45,34 @@ class RectanglesModelUtil {
       contentSection: SectionUiModel<ContentSegmentUiModel>,
       xDelta: Int,
       yDelta: Int
-    ): RectanglesModel {
+    ): RectanglesModelBuildResult {
       val context = createRectanglesBuildContext(xDelta, yDelta, editorImpl)
 
       val renderer = SegmentsRenderer.getRendererFor(contentSection)
       renderer.accept(context)
 
       addTopmostModel(context, xDelta, yDelta, model)
-      return context.rectanglesModel.apply {
+
+      val delta = shiftRectanglesYIfNeeded(editorImpl, context)
+      context.rectanglesModel.apply {
         setSize(context.widthAndHeight.width, context.widthAndHeight.height)
         seal()
       }
+
+      return RectanglesModelBuildResult(context.rectanglesModel, 0, delta)
+    }
+
+    private fun shiftRectanglesYIfNeeded(editorImpl: EditorImpl, context: RectangleModelBuildContext): Int {
+      val height = context.widthAndHeight.height
+      val lineHeight = editorImpl.lineHeight
+
+      if (height < lineHeight) {
+        val delta = lineHeight - height
+        context.rectanglesModel.shiftAllRectanglesY(delta)
+        return delta
+      }
+
+      return 0
     }
 
     private fun addTopmostModel(
@@ -89,7 +108,7 @@ class RectanglesModelUtil {
       intelligentComment: IntelligentCommentUiModel,
       xDelta: Int,
       yDelta: Int
-    ): RectanglesModel {
+    ): RectanglesModelBuildResult {
       val context = createRectanglesBuildContext(xDelta, yDelta, editorImpl)
 
       CommentAuthorsRenderer.getRendererFor(intelligentComment.authorsSection.content).accept(context)
@@ -109,10 +128,12 @@ class RectanglesModelUtil {
 
       addTopmostModel(context, xDelta, yDelta, intelligentComment)
 
-      return context.rectanglesModel.apply {
+      val model = context.rectanglesModel.apply {
         setSize(context.widthAndHeight.width, context.widthAndHeight.height)
         seal()
       }
+
+      return RectanglesModelBuildResult(model, 0, 0)
     }
 
     fun addDeltaBetweenSections(rect: Rectangle) {

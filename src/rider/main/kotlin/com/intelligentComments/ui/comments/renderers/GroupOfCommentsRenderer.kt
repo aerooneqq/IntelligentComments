@@ -18,7 +18,7 @@ class GroupOfCommentsRenderer(private val model: GroupOfLineCommentsUiModel) : R
     textAttributes: TextAttributes,
     colorsProvider: ColorsProvider
   ) {
-    val rectanglesModel = getOrCreateRectanglesModel(editorImpl)
+    val rectanglesModel = revalidateRectanglesModel(editorImpl)
     val renderer = SegmentsRenderer.getRendererFor(model.contentSection)
     renderer.render(g, targetRegion, editorImpl, rectanglesModel, RenderAdditionalInfo.emptyInstance)
   }

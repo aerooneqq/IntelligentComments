@@ -3,6 +3,7 @@ using System.Linq;
 using JetBrains.Annotations;
 using JetBrains.DocumentModel;
 using JetBrains.ReSharper.Psi;
+using JetBrains.ReSharper.Psi.CodeStyle;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Util;
@@ -50,10 +51,12 @@ public class XmlDocsProcessor : IRecursiveElementProcessor
       }
       case ICSharpCommentNode { CommentType: CommentType.END_OF_LINE_COMMENT } commentNode:
       {
+        if (!CanProcessLineComment(commentNode)) return;
+        
         var groupOfLineComments = CollectLineComments(commentNode);
         myVisitedComments.AddRange(groupOfLineComments);
-
-        var text = string.Join("\n", groupOfLineComments.Select(comment => CommentsBuilderUtil.PreprocessText(comment.CommentText, '\n')));
+        
+        var text = string.Join("\n", groupOfLineComments.Select(comment => CommentsBuilderUtil.PreprocessText(comment.CommentText, null)));
         var startOffset = groupOfLineComments.First().GetDocumentRange().StartOffset;
         var endOffset = groupOfLineComments.Last().GetDocumentRange().EndOffset;
         var range = new DocumentRange(startOffset, endOffset);
@@ -64,7 +67,23 @@ public class XmlDocsProcessor : IRecursiveElementProcessor
       }
     }
   }
+
+  private static bool CanProcessLineComment([NotNull] ICSharpCommentNode commentNode)
+  {
+    var formatter = commentNode.GetCodeFormatter();
+    var current = commentNode.PrevSibling;
+    while (current is { })
+    {
+      if (!current.IsWhitespaceToken()) return false;
+      if (formatter?.IsNewLine(current) ?? current.GetText() == "\n") return true;
+      
+      current = current.PrevSibling;
+    }
+
+    return true;
+  }
   
+  [NotNull]
   private static IReadOnlyList<ICSharpCommentNode> CollectLineComments([NotNull] ICSharpCommentNode firstComment)
   {
     var comments = new List<ICSharpCommentNode> { firstComment };

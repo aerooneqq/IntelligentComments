@@ -25,6 +25,9 @@ import java.awt.Rectangle
 abstract class RendererWithRectangleModel(
   private val baseModel: CommentUiModelBase
 ) : EditorCustomElementRenderer, CustomFoldRegionRenderer {
+  private var rectModelXDelta = 0
+  private var rectModelYDelta = 0
+
   private val rectangleModelHolder = RectanglesModelHolder(baseModel)
   private var myXDelta = -1
 
@@ -53,7 +56,7 @@ abstract class RendererWithRectangleModel(
     get() = rectangleModelHolder.model
 
   fun invalidateRectangleModel(editorImpl: EditorImpl) {
-    rectangleModelHolder.revalidate(editorImpl, xDelta, yDelta)
+    revalidateRectanglesModel(editorImpl)
   }
 
   final override fun calcHeightInPixels(foldRegion: CustomFoldRegion): Int {
@@ -71,17 +74,22 @@ abstract class RendererWithRectangleModel(
     return calculateExpectedWith(inlay.editor as EditorImpl)
   }
 
-  private fun calculateExpectedWith(editorImpl: EditorImpl) = getOrCreateRectanglesModel(editorImpl).width
+  private fun calculateExpectedWith(editorImpl: EditorImpl) = revalidateRectanglesModel(editorImpl).width
 
   final override fun calcHeightInPixels(inlay: Inlay<*>): Int {
     application.assertIsDispatchThread()
     return calculateExpectedHeight(inlay.editor as EditorImpl)
   }
 
-  private fun calculateExpectedHeight(editorImpl: EditorImpl) = getOrCreateRectanglesModel(editorImpl).height
+  private fun calculateExpectedHeight(editorImpl: EditorImpl) = revalidateRectanglesModel(editorImpl).height
 
-  protected fun getOrCreateRectanglesModel(editorImpl: EditorImpl): RectanglesModel {
-    return rectangleModelHolder.revalidate(editorImpl, xDelta, yDelta)
+  protected fun revalidateRectanglesModel(editorImpl: EditorImpl): RectanglesModel {
+    val buildResult = rectangleModelHolder.revalidate(editorImpl, xDelta, yDelta)
+
+    rectModelXDelta = buildResult.xShift
+    rectModelYDelta = buildResult.yShift
+
+    return buildResult.model
   }
 
   final override fun paint(
@@ -114,7 +122,7 @@ abstract class RendererWithRectangleModel(
     val colorsProvider = project.service<ColorsProvider>()
     val defaultTextColor = colorsProvider.getColorFor(Colors.TextDefaultColor)
 
-    UpdatedRectCookie(targetRegion, xDelta = xDelta, yDelta = yDelta).use {
+    UpdatedRectCookie(targetRegion, xDelta = xDelta + rectModelXDelta, yDelta = yDelta + rectModelYDelta).use {
       UpdatedGraphicsCookie(g, defaultTextColor, TextUtil.getFont(editor)).use {
         paintInternal(editor, g, targetRegion, textAttributes, colorsProvider)
       }
@@ -135,8 +143,8 @@ abstract class RendererWithRectangleModel(
     colorsProvider: ColorsProvider
   )
 
-  override fun calcGutterIconRenderer(region: CustomFoldRegion): GutterIconRenderer? = doCalculateGutterIconRenderer(region.editor as EditorImpl)
-  override fun calcGutterIconRenderer(inlay: Inlay<*>): GutterIconRenderer? = doCalculateGutterIconRenderer(inlay.editor as EditorImpl)
+  override fun calcGutterIconRenderer(region: CustomFoldRegion) = doCalculateGutterIconRenderer(region.editor as EditorImpl)
+  override fun calcGutterIconRenderer(inlay: Inlay<*>) = doCalculateGutterIconRenderer(inlay.editor as EditorImpl)
 
   private fun doCalculateGutterIconRenderer(editorImpl: EditorImpl): GutterIconRenderer? {
     val project = editorImpl.project ?: return null

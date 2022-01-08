@@ -19,6 +19,8 @@ internal static class CommentsBuilderUtil
 
   public static string PreprocessText([NotNull] string text, char? trailingCharToAdd)
   {
+    if (text.Length == 0) return text;
+    
     var sb = new StringBuilder(text);
     while (ourWhitespaceChars.Contains(sb[0]))
     {
