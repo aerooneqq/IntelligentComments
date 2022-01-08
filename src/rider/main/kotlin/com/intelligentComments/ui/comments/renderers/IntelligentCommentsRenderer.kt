@@ -96,8 +96,4 @@ class IntelligentCommentsRenderer(private val model: IntelligentCommentUiModel) 
     val model = getOrCreateRectanglesModel(editorImpl)
     return renderer.render(g, rect, editorImpl, model, RenderAdditionalInfo.emptyInstance)
   }
-
-  override fun doCalculateGutterIconRenderer(editorImpl: EditorImpl): GutterIconRenderer? {
-    return null
-  }
 }

@@ -52,3 +52,11 @@ interface CommentBase : UniqueEntity, Parentable {
 
   fun recreate(editor: Editor): CommentBase
 }
+
+interface DocComment : CommentBase {
+  val content: IntelligentCommentContent
+}
+
+interface GroupOfLineComments : CommentBase {
+  val text: TextContentSegment
+}

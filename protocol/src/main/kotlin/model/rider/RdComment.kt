@@ -9,9 +9,9 @@ import com.jetbrains.rider.model.nova.ide.SolutionModel.TextControlId
 
 @Suppress("unused")
 object RdCommentsModel : Ext(SolutionModel.Solution) {
-  val RdDocCommentFoldingModel = structdef extends SolutionModel.HighlighterModel {
+  val RdCommentFoldingModel = structdef extends SolutionModel.HighlighterModel {
     field("CommentIdentifier", PredefinedType.int)
-    field("DocComment", RdDocComment)
+    field("Comment", RdComment)
   }
 
   val RdDocumentComments = structdef {
@@ -21,6 +21,10 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
   val RdComment = basestruct {
     field("CommentIdentifier", PredefinedType.int)
     field("Range", SolutionModel.RdTextRange)
+  }
+
+  val RdGroupOfLineComments = structdef extends RdComment {
+    field("Text", RdTextSegment)
   }
 
   val RdDocComment = structdef extends RdComment {

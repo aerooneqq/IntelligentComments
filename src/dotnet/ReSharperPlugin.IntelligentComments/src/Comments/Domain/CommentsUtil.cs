@@ -23,45 +23,47 @@ public static class CommentsUtil
     {
       IIntelligentComment intelligentComment => ToRdComment(intelligentComment),
       IDocComment docComment => ToRdComment(docComment),
+      IGroupOfLineComments groupOfLineComments => groupOfLineComments.ToRdComment(),
       _ => throw new ArgumentOutOfRangeException(commentBase.GetType().Name)
     };
   }
 
-  [NotNull]
-  private static RdComment ToRdComment(this IDocComment docComment)
+  private static RdGroupOfLineComments ToRdComment([NotNull] this IGroupOfLineComments groupOfLineComments)
+  {
+    var id = groupOfLineComments.CreateIdentifier();
+    return new RdGroupOfLineComments(groupOfLineComments.Text.ToRdTextSegment(), id, groupOfLineComments.GetRange());
+  }
+  
+  private static RdTextRange GetRange(this ICommentBase comment)
+  {
+    var (startOffset, endOffset) = comment.Range;
+    return new RdTextRange(startOffset.Offset, endOffset.Offset);
+  }
+
+  private static RdComment ToRdComment([NotNull] this IDocComment docComment)
   {
     var content = docComment.Content.ToRdContent();
-    var node = docComment.CommentOwnerPointer.GetTreeNode();
-    Assertion.AssertNotNull(node, "node != null");
-
-    var (startOffset, endOffset) = node.GetDocumentRange();
-    var rdRange = new RdTextRange(startOffset.Offset, endOffset.Offset);
-    return new RdDocComment(content, docComment.CreateIdentifier(), rdRange);
+    return new RdDocComment(content, docComment.CreateIdentifier(), docComment.GetRange());
   }
 
   [NotNull]
-  private static RdComment ToRdComment(this IIntelligentComment comment)
+  private static RdComment ToRdComment([NotNull] this IIntelligentComment comment)
   {
     var content = comment.Content.ToRdContent();
-    var node = comment.CommentOwnerPointer.GetTreeNode();
-    Assertion.AssertNotNull(node, "node != null");
-
     var authors = new List<RdIntelligentCommentAuthor> { new("Aero", DateTime.Now) };
-    var (startOffset, endOffset) = node.GetDocumentRange();
-    var rdRange = new RdTextRange(startOffset.Offset, endOffset.Offset);
     var identifier = comment.CreateIdentifier();
-      
-    return new RdIntelligentComment(authors, DateTime.Now, content, null, null, null, null, identifier, rdRange);
+
+    return new RdIntelligentComment(authors, DateTime.Now, content, null, null, null, null, identifier, comment.GetRange());
   }
 
   [NotNull]
-  private static RdIntelligentCommentContent ToRdContent(this IIntelligentCommentContent content)
+  private static RdIntelligentCommentContent ToRdContent([NotNull] this IIntelligentCommentContent content)
   {
     return new RdIntelligentCommentContent(content.ContentSegments.ToRdContentSegments());
   }
 
   [NotNull]
-  private static RdContentSegments ToRdContentSegments(this IContentSegments contentSegments)
+  private static RdContentSegments ToRdContentSegments([NotNull] this IContentSegments contentSegments)
   {
     var contentSegmentsList = new List<RdContentSegment>();
     foreach (var contentSegment in contentSegments.Segments)
@@ -73,7 +75,7 @@ public static class CommentsUtil
   }
 
   [NotNull]
-  private static RdContentSegment ToRdContentSegment(this IContentSegment segment)
+  private static RdContentSegment ToRdContentSegment([NotNull] this IContentSegment segment)
   {
     return segment switch
     {
@@ -94,13 +96,13 @@ public static class CommentsUtil
     };
   }
 
-  private static RdValueSegment ToRdValue(this IValueSegment valueSegment)
+  private static RdValueSegment ToRdValue([NotNull] this IValueSegment valueSegment)
   {
     return new RdValueSegment(valueSegment.ContentSegments.ToRdContentSegments());
   }
-  
+
   [NotNull]
-  private static RdCodeContentSegment ToRdCodeSegment(this ICodeSegment segment)
+  private static RdCodeContentSegment ToRdCodeSegment([NotNull] this ICodeSegment segment)
   {
     return new RdCodeContentSegment(segment.Code.ToRdHighlightedText(), segment.HighlightingRequestId);
   }
@@ -122,7 +124,7 @@ public static class CommentsUtil
       {
         cells.Add(new RdTableCell(cell.Content.ToRdContentSegments(), cell.Properties?.ToRdTableCellProperties()));
       }
-      
+
       rows.Add(new RdTableRow(cells));
     }
 
@@ -155,13 +157,15 @@ public static class CommentsUtil
   [NotNull]
   private static RdSeeAlsoLinkContentSegment ToRdSeeAlso([NotNull] this ISeeAlsoLinkContentSegment seeAlso)
   {
-    return new RdSeeAlsoLinkContentSegment(seeAlso.Reference.ToRdReference(), seeAlso.HighlightedText.ToRdHighlightedText());
+    return new RdSeeAlsoLinkContentSegment(seeAlso.Reference.ToRdReference(),
+      seeAlso.HighlightedText.ToRdHighlightedText());
   }
 
   [NotNull]
   private static RdSeeAlsoMemberContentSegment ToRdSeeAlso([NotNull] this ISeeAlsoMemberContentSegment seeAlso)
   {
-    return new RdSeeAlsoMemberContentSegment(seeAlso.Reference.ToRdReference(), seeAlso.HighlightedText.ToRdHighlightedText());
+    return new RdSeeAlsoMemberContentSegment(seeAlso.Reference.ToRdReference(),
+      seeAlso.HighlightedText.ToRdHighlightedText());
   }
 
   [NotNull]
@@ -214,25 +218,26 @@ public static class CommentsUtil
   {
     return new RdHttpLinkReference(reference.RawValue);
   }
-  
+
   [NotNull]
   private static RdExceptionsSegment ToRdExceptionSegment([NotNull] this IExceptionSegment segment)
   {
-    return new RdExceptionsSegment(segment.ExceptionName.ToRdHighlightedText(), null, segment.ContentSegments.ToRdContentSegments());
+    return new RdExceptionsSegment(segment.ExceptionName.ToRdHighlightedText(), null,
+      segment.ContentSegments.ToRdContentSegments());
   }
-    
+
   [NotNull]
   private static RdRemarksSegment ToRdRemarks([NotNull] this IRemarksSegment remarksSegment)
   {
     return new RdRemarksSegment(remarksSegment.ContentSegments.ToRdContentSegments());
   }
-  
+
   [NotNull]
   private static RdReturnSegment ToRdReturn([NotNull] this IReturnContentSegment returnContentSegment)
   {
     return new RdReturnSegment(returnContentSegment.ContentSegments.ToRdContentSegments());
   }
-    
+
   [NotNull]
   private static RdParam ToRdParam([NotNull] this IParamContentSegment param)
   {
@@ -315,14 +320,14 @@ public static class CommentsUtil
     var items = new List<RdListItem>();
     foreach (var item in listSegment.Items)
     {
-      var rdHeader = item.Header is { } header && header.ContentSegments.Segments.Count > 0 
-        ? item.Header.ContentSegments.ToRdContentSegments() 
+      var rdHeader = item.Header is { } header && header.ContentSegments.Segments.Count > 0
+        ? item.Header.ContentSegments.ToRdContentSegments()
         : null;
-      
+
       var rdDescription = item.Content is { } content && content.ContentSegments.Segments.Count > 0
         ? item.Content.ContentSegments.ToRdContentSegments()
         : null;
-      
+
       items.Add(new RdListItem(rdHeader, rdDescription));
     }
 

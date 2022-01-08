@@ -1,25 +1,24 @@
-using JetBrains.ReSharper.Psi;
-using JetBrains.ReSharper.Psi.Tree;
+using JetBrains.DocumentModel;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.Content;
-using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.Content;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Domain.Impl;
 
-public record DocCommentBase(
-  IIntelligentCommentContent Content,
-  ITreeNodePointer<ITreeNode> CommentOwnerPointer) : ICommentBase
+public record CommentBase(DocumentRange Range) : ICommentBase
 {
   public int CreateIdentifier()
   {
-    return CommentOwnerPointer.GetTreeNode().GetDocumentRange().TextRange.GetHashCode();
+    return Range.TextRange.GetHashCode();
   }
 }
 
-public record DocComment(
-  IIntelligentCommentContent Content,
-  ITreeNodePointer<ITreeNode> CommentOwnerPointer) : DocCommentBase(Content, CommentOwnerPointer), IDocComment;
+public record DocCommentBase(IIntelligentCommentContent Content, DocumentRange Range) : CommentBase(Range);
+
+public record DocComment(IIntelligentCommentContent Content, DocumentRange Range) : DocCommentBase(Content, Range), IDocComment;
 
 public record IntelligentComment(
-  ITreeNodePointer<ITreeNode> CommentOwnerPointer,
-  IIntelligentCommentContent Content) : DocCommentBase(Content, CommentOwnerPointer), IIntelligentComment;
+  DocumentRange Range,
+  IIntelligentCommentContent Content
+) : DocCommentBase(Content, Range), IIntelligentComment;
+
+public record GroupOfLineComments(ITextContentSegment Text, DocumentRange Range) : CommentBase(Range), IGroupOfLineComments; 

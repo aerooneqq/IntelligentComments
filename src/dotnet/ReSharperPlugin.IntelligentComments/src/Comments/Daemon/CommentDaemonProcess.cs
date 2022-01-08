@@ -15,12 +15,12 @@ using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Daemon;
 
-public class DocCommentDaemonProcess : IDaemonStageProcess
+public class CommentDaemonProcess : IDaemonStageProcess
 {
   public IDaemonProcess DaemonProcess { get; }
 
 
-  public DocCommentDaemonProcess([NotNull] IDaemonProcess process)
+  public CommentDaemonProcess([NotNull] IDaemonProcess process)
   {
     DaemonProcess = process;
   }
@@ -34,10 +34,9 @@ public class DocCommentDaemonProcess : IDaemonStageProcess
     {
       var commentsCollector = new XmlDocsProcessor();
       file.ProcessThisAndDescendants(commentsCollector);
-      foreach (var comment in commentsCollector.Comments.SafeOfType<IDocComment>())
+      foreach (var comment in commentsCollector.Comments)
       {
-        var range = comment.CommentOwnerPointer.GetTreeNode().GetDocumentRange();
-        result.Add(new HighlightingInfo(range, DocCommentFoldingHighlighting.Create(comment)));
+        result.Add(new HighlightingInfo(comment.Range, CommentFoldingHighlighting.Create(comment)));
       }
     }
 

@@ -2,7 +2,7 @@ package com.intelligentComments.ui.comments.renderers
 
 import com.intelligentComments.core.comments.RiderCommentsController
 import com.intelligentComments.core.comments.states.RiderCommentsStateManager
-import com.intelligentComments.core.domain.core.DocComment
+import com.intelligentComments.core.domain.core.CommentBase
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -14,7 +14,7 @@ import com.jetbrains.rider.util.idea.Editor
 import javax.swing.Icon
 
 class DocCommentSwitchRenderModeGutterMark(
-  private val docComment: DocComment,
+  private val comment: CommentBase,
   private val editorImpl: EditorImpl,
   project: Project
 ) : GutterIconRenderer() {
@@ -23,15 +23,15 @@ class DocCommentSwitchRenderModeGutterMark(
 
 
   override fun equals(other: Any?): Boolean {
-    return other is DocCommentSwitchRenderModeGutterMark && docComment == other.docComment
+    return other is DocCommentSwitchRenderModeGutterMark && comment == other.comment
   }
 
   override fun hashCode(): Int {
-    return docComment.hashCode()
+    return comment.hashCode()
   }
 
   override fun getIcon(): Icon {
-    return when(commentsStatesManager.isInRenderMode(editorImpl, docComment.commentIdentifier)) {
+    return when(commentsStatesManager.isInRenderMode(editorImpl, comment.commentIdentifier)) {
       true -> AllIcons.Gutter.JavadocEdit
       false -> AllIcons.Gutter.JavadocRead
       else -> AllIcons.Gutter.Unique
@@ -40,7 +40,7 @@ class DocCommentSwitchRenderModeGutterMark(
 
   override fun getAlignment(): Alignment = Alignment.LEFT
   override fun getTooltipText(): String =
-    when (commentsStatesManager.isInRenderMode(editorImpl, docComment.commentIdentifier)) {
+    when (commentsStatesManager.isInRenderMode(editorImpl, comment.commentIdentifier)) {
       true -> "Go to edit mode"
       false -> "Go to render mode"
       else -> ""
@@ -49,7 +49,7 @@ class DocCommentSwitchRenderModeGutterMark(
   override fun getClickAction(): AnAction = object : AnAction() {
     override fun actionPerformed(e: AnActionEvent) {
       e.dataContext.Editor?.let { editor ->
-        controller.toggleModeChange(docComment.commentIdentifier, editor as EditorImpl)
+        controller.toggleModeChange(comment.commentIdentifier, editor as EditorImpl)
       }
     }
   }

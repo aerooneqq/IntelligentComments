@@ -17,7 +17,7 @@ internal static class CommentsBuilderUtil
   [NotNull] private static readonly ISet<char> ourWhitespaceChars = new HashSet<char> { ' ', '\n', '\r', '\t' };
 
 
-  private static string PreprocessText([NotNull] string text, char? trailingCharToAdd)
+  public static string PreprocessText([NotNull] string text, char? trailingCharToAdd)
   {
     var sb = new StringBuilder(text);
     while (ourWhitespaceChars.Contains(sb[0]))

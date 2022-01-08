@@ -90,7 +90,7 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
       }
       
       var content = new IntelligentCommentContent(topmostContentSegments.ContentSegments);
-      return new DocComment(content, myComment.CreatePointer());
+      return new DocComment(content, myComment.GetDocumentRange());
     }
     catch (Exception ex)
     {

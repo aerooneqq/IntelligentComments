@@ -2,7 +2,7 @@ package com.intelligentComments.ui.comments.renderers
 
 import com.intelligentComments.ui.colors.Colors
 import com.intelligentComments.ui.colors.ColorsProvider
-import com.intelligentComments.ui.comments.model.UiInteractionModelBase
+import com.intelligentComments.ui.comments.model.CommentUiModelBase
 import com.intelligentComments.ui.core.RectanglesModel
 import com.intelligentComments.ui.core.RectanglesModelHolder
 import com.intelligentComments.ui.util.TextUtil
@@ -17,21 +17,40 @@ import com.intellij.openapi.editor.impl.EditorImpl
 import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.openapi.editor.markup.TextAttributes
 import com.intellij.openapi.util.use
+import com.intellij.util.text.CharArrayUtil
 import com.jetbrains.rd.platform.util.application
 import java.awt.Graphics
 import java.awt.Rectangle
 
 abstract class RendererWithRectangleModel(
-  model: UiInteractionModelBase
+  private val baseModel: CommentUiModelBase
 ) : EditorCustomElementRenderer, CustomFoldRegionRenderer {
-  private val rectangleModelHolder = RectanglesModelHolder(model)
+  private val rectangleModelHolder = RectanglesModelHolder(baseModel)
+  private var myXDelta = -1
+
+  open val xDelta: Int
+    get() {
+      var currentDelta = myXDelta
+      if (currentDelta != -1) return currentDelta
+
+      val document = baseModel.editor.document
+      val nextLineNumber = document.getLineNumber(baseModel.comment.rangeMarker.endOffset) + 1
+      currentDelta = if (nextLineNumber < document.lineCount) {
+        val lineStartOffset = document.getLineStartOffset(nextLineNumber)
+        val contentStartOffset = CharArrayUtil.shiftForward(document.immutableCharSequence, lineStartOffset, " \t\n")
+        baseModel.editor.offsetToXY(contentStartOffset, false, true).x
+      } else {
+        baseModel.editor.insets.left
+      }
+
+      myXDelta = currentDelta
+      return currentDelta
+    }
+
+  open val yDelta: Int = 0
 
   val rectanglesModel
     get() = rectangleModelHolder.model
-
-  abstract val xDelta: Int
-  abstract val yDelta: Int
-
 
   fun invalidateRectangleModel(editorImpl: EditorImpl) {
     rectangleModelHolder.revalidate(editorImpl, xDelta, yDelta)
@@ -119,5 +138,8 @@ abstract class RendererWithRectangleModel(
   override fun calcGutterIconRenderer(region: CustomFoldRegion): GutterIconRenderer? = doCalculateGutterIconRenderer(region.editor as EditorImpl)
   override fun calcGutterIconRenderer(inlay: Inlay<*>): GutterIconRenderer? = doCalculateGutterIconRenderer(inlay.editor as EditorImpl)
 
-  protected abstract fun doCalculateGutterIconRenderer(editorImpl: EditorImpl): GutterIconRenderer?
+  private fun doCalculateGutterIconRenderer(editorImpl: EditorImpl): GutterIconRenderer? {
+    val project = editorImpl.project ?: return null
+    return DocCommentSwitchRenderModeGutterMark(baseModel.comment, editorImpl, project)
+  }
 }

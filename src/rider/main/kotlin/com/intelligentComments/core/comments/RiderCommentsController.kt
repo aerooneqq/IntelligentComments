@@ -4,11 +4,9 @@ import com.intelligentComments.core.comments.listeners.CommentsEditorsListenersM
 import com.intelligentComments.core.comments.states.CommentState
 import com.intelligentComments.core.comments.states.RiderCommentsStateManager
 import com.intelligentComments.core.comments.storages.DocumentCommentsWithFoldingsStorage
-import com.intelligentComments.core.domain.core.CommentBase
-import com.intelligentComments.core.domain.core.CommentIdentifier
-import com.intelligentComments.core.domain.core.DocComment
-import com.intelligentComments.core.domain.core.IntelligentComment
+import com.intelligentComments.core.domain.core.*
 import com.intelligentComments.ui.comments.model.DocCommentUiModel
+import com.intelligentComments.ui.comments.model.GroupOfLineCommentsUiModel
 import com.intelligentComments.ui.comments.model.IntelligentCommentUiModel
 import com.intelligentComments.ui.comments.renderers.DocCommentRenderer
 import com.intellij.openapi.components.service
@@ -151,7 +149,7 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
       if (oldFolding != null && oldFolding is CustomFoldRegion && oldFolding.renderer is DocCommentRenderer) {
         val oldFoldingRenderer = oldFolding.renderer
         if (oldFoldingRenderer is DocCommentRenderer) {
-          val oldComment = oldFoldingRenderer.model.docComment
+          val oldComment = oldFoldingRenderer.model.comment
           commentsStorage.removeFolding(oldComment.commentIdentifier, editor)
           foldingModel.removeFoldRegion(oldFolding)
         }
@@ -175,6 +173,7 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
     return when (comment) {
       is DocComment -> DocCommentUiModel(comment, project, editor).renderer
       is IntelligentComment -> IntelligentCommentUiModel(project, comment).renderer
+      is GroupOfLineComments -> GroupOfLineCommentsUiModel(comment, project, editor).renderer
       else -> throw IllegalArgumentException(comment.javaClass.name)
     }
   }

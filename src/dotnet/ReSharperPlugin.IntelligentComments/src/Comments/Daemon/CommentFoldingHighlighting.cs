@@ -14,27 +14,27 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Daemon;
   EffectType = EffectType.FOLDING, 
   GroupId = IntelligentCommentsHighlightings.GroupId, 
   TransmitUpdates = true)]
-public class DocCommentFoldingHighlighting : CodeFoldingHighlighting
+public class CommentFoldingHighlighting : CodeFoldingHighlighting
 {
   private const string DocCommentAttributeId = "IntelligentCommentsDocCommentFolding";
     
-  public static DocCommentFoldingHighlighting Create(IDocComment comment)
+  public static CommentFoldingHighlighting Create(ICommentBase comment)
   {
-    return new DocCommentFoldingHighlighting(
+    return new CommentFoldingHighlighting(
       comment,
       DocCommentAttributeId,
       string.Empty,
-      comment.CommentOwnerPointer.GetTreeNode().GetDocumentRange(),
+      comment.Range,
       true,
       (int) CodeFoldingPriorities.HIGHER_FOLDING_PRIORITY);
   }
   
   
-  public IDocComment Comment { get; }
+  public ICommentBase Comment { get; }
   
   
-  public DocCommentFoldingHighlighting(
-    IDocComment comment,
+  public CommentFoldingHighlighting(
+    ICommentBase comment,
     string attributeId, 
     string placeholderText, 
     DocumentRange range, 

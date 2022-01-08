@@ -30,24 +30,24 @@ public class DocCommentsFoldingHighlightersCreator : IRiderHighlighterModelCreat
 
   public bool Accept(IHighlighter highlighter)
   {
-    return highlighter.UserData is DocCommentFoldingHighlighting;
+    return highlighter.UserData is CommentFoldingHighlighting;
   }
 
   public HighlighterModel CreateModel(long id, DocumentVersion documentVersion, IHighlighter highlighter, int shift)
   {
-    var docCommentFoldingHighlighting = highlighter.UserData as DocCommentFoldingHighlighting;
+    var docCommentFoldingHighlighting = highlighter.UserData as CommentFoldingHighlighting;
     Assertion.Assert(docCommentFoldingHighlighting is { }, "docCommentFoldingHighlighting is { }");
       
     var model = myDefaultCreator.CreateModel(id, documentVersion, highlighter, shift);
     Assertion.Assert(model is { }, "model is { }");
 
     var commentIdentifier = highlighter.Range.GetHashCode();
-    var rdDocComment = docCommentFoldingHighlighting.Comment.ToRdComment() as RdDocComment;
-    Assertion.Assert(rdDocComment is { }, "rdDocComment is { }");
+    var rdComment = docCommentFoldingHighlighting.Comment.ToRdComment();
+    Assertion.Assert(rdComment is { }, "rdDocComment is { }");
       
-    return new RdDocCommentFoldingModel(
+    return new RdCommentFoldingModel(
       commentIdentifier,
-      rdDocComment,
+      rdComment,
       model.Layer,
       model.IsExactRange,
       model.DocumentVersion,

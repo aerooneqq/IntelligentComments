@@ -1,8 +1,11 @@
 package com.intelligentComments.ui.util
 
 import com.intelligentComments.ui.comments.model.DocCommentUiModel
+import com.intelligentComments.ui.comments.model.GroupOfLineCommentsUiModel
 import com.intelligentComments.ui.comments.model.IntelligentCommentUiModel
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
+import com.intelligentComments.ui.comments.model.content.ContentSegmentUiModel
+import com.intelligentComments.ui.comments.model.sections.SectionUiModel
 import com.intelligentComments.ui.comments.renderers.authors.CommentAuthorsRenderer
 import com.intelligentComments.ui.comments.renderers.invariants.InvariantsRenderer
 import com.intelligentComments.ui.comments.renderers.references.ReferencesRenderer
@@ -28,20 +31,22 @@ class RectanglesModelUtil {
     ): RectanglesModel {
       return when (model) {
         is IntelligentCommentUiModel -> buildRectanglesModel(editorImpl, model, xDelta, yDelta)
-        is DocCommentUiModel -> buildRectanglesModel(editorImpl, model, xDelta, yDelta)
+        is DocCommentUiModel -> buildRectanglesModel(editorImpl, model,  model.contentSection, xDelta, yDelta)
+        is GroupOfLineCommentsUiModel -> buildRectanglesModel(editorImpl, model, model.contentSection, xDelta, yDelta)
         else -> throw IllegalArgumentException(model.toString())
       }
     }
 
     private fun buildRectanglesModel(
       editorImpl: EditorImpl,
-      model: DocCommentUiModel,
+      model: UiInteractionModelBase,
+      contentSection: SectionUiModel<ContentSegmentUiModel>,
       xDelta: Int,
       yDelta: Int
     ): RectanglesModel {
       val context = createRectanglesBuildContext(xDelta, yDelta, editorImpl)
 
-      val renderer = SegmentsRenderer.getRendererFor(model.contentSection)
+      val renderer = SegmentsRenderer.getRendererFor(contentSection)
       renderer.accept(context)
 
       addTopmostModel(context, xDelta, yDelta, model)

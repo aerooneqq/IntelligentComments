@@ -9,15 +9,14 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.impl.source.tree.injected.changesHandler.range
 
 class DocCommentUiModel(
-  val docComment: DocComment,
+  docComment: DocComment,
   project: Project,
-  val editor: Editor
-) : UiInteractionModelBase(project, null), RootUiModel, ModelWithContent {
+  editor: Editor
+) : CommentUiModelBase(docComment, project, editor) {
   override val renderer = DocCommentRenderer(this)
   override val content: Collection<ContentSegmentUiModel>
 
   val contentSection: SectionUiModel<ContentSegmentUiModel>
-  val underlyingTextRange = docComment.rangeMarker.range
 
 
   init {

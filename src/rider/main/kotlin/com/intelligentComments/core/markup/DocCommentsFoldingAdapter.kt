@@ -2,17 +2,15 @@ package com.intelligentComments.core.markup
 
 import com.intelligentComments.core.comments.RiderCommentsController
 import com.intelligentComments.core.comments.RiderCommentsCreator
-import com.intelligentComments.core.domain.rd.DocCommentFromRd
 import com.intelligentComments.core.utils.toGreedy
 import com.intelligentComments.ui.comments.renderers.DocCommentSwitchRenderModeGutterMark
 import com.intellij.openapi.components.service
-import com.intellij.openapi.components.serviceIfCreated
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.ex.RangeHighlighterEx
 import com.intellij.openapi.editor.impl.EditorImpl
 import com.intellij.openapi.project.Project
 import com.intellij.psi.impl.source.tree.injected.changesHandler.range
-import com.jetbrains.rd.ide.model.RdDocCommentFoldingModel
+import com.jetbrains.rd.ide.model.RdCommentFoldingModel
 import com.jetbrains.rd.util.lifetime.Lifetime
 import com.jetbrains.rdclient.daemon.FrontendMarkupAdapterListener
 import com.jetbrains.rdclient.daemon.highlighters.MarkupListenerAggregator
@@ -34,7 +32,7 @@ class DocCommentsFoldingAdapter(private val editor: EditorImpl) : FrontendMarkup
   companion object {
     private fun executeOverDocHighlighters(
       highlighters: List<RangeHighlighterEx>,
-      action: (RangeHighlighterEx, RdDocCommentFoldingModel) -> Unit
+      action: (RangeHighlighterEx, RdCommentFoldingModel) -> Unit
     ) {
       for (highlighter in highlighters) {
         val foldingModel = highlighter.getUserData(DocCommentModelKey)
@@ -68,10 +66,10 @@ class DocCommentsFoldingAdapter(private val editor: EditorImpl) : FrontendMarkup
         val marker = highlighter.document.createRangeMarker(highlighter.range)
         marker.toGreedy()
 
-        val docComment = commentsCreator.tryCreateDocComment(model.docComment, editor, marker) ?: return@executeOverDocHighlighters
-        controller.addComment(editor, docComment)
+        val comment = commentsCreator.tryCreateComment(model.comment, editor, marker) ?: return@executeOverDocHighlighters
+        controller.addComment(editor, comment)
 
-        highlighter.gutterIconRenderer = DocCommentSwitchRenderModeGutterMark(docComment, editor, it)
+        highlighter.gutterIconRenderer = DocCommentSwitchRenderModeGutterMark(comment, editor, it)
         highlighter.isGreedyToLeft = true
         highlighter.isGreedyToRight = true
       }

@@ -24,9 +24,11 @@ import javax.swing.Icon
 
 class IntelligentCommentUiModel(
   project: Project,
-  val comment: IntelligentComment
-) : UiInteractionModelBase(project, null), RootUiModel {
+  comment: IntelligentComment
+) : CommentUiModelBase(comment, project, null!!), RootUiModel {
   override val renderer = IntelligentCommentsRenderer(this)
+  override val content: Collection<ContentSegmentUiModel>
+    get() = TODO("Not yet implemented")
 
   val authorsSection: SectionUiModel<AuthorUiModel>
   val contentSection: SectionWithHeaderUiModel<ContentSegmentUiModel>
