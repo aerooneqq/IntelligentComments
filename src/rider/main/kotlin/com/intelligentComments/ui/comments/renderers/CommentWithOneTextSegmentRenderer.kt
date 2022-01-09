@@ -1,7 +1,7 @@
 package com.intelligentComments.ui.comments.renderers
 
 import com.intelligentComments.ui.colors.ColorsProvider
-import com.intelligentComments.ui.comments.model.GroupOfLineCommentsUiModel
+import com.intelligentComments.ui.comments.model.CommentWithOneTextSegmentUiModel
 import com.intelligentComments.ui.comments.renderers.segments.SegmentsRenderer
 import com.intelligentComments.ui.util.RenderAdditionalInfo
 import com.intellij.openapi.editor.impl.EditorImpl
@@ -9,7 +9,7 @@ import com.intellij.openapi.editor.markup.TextAttributes
 import java.awt.Graphics
 import java.awt.Rectangle
 
-class GroupOfCommentsRenderer(private val model: GroupOfLineCommentsUiModel) : RendererWithRectangleModel(model) {
+class CommentWithOneTextSegmentRenderer(private val model: CommentWithOneTextSegmentUiModel) : RendererWithRectangleModel(model) {
 
   override fun paintInternal(
     editorImpl: EditorImpl,

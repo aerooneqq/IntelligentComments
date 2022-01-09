@@ -2,9 +2,12 @@ package com.intelligentComments.core.comments
 
 import com.intelligentComments.core.domain.core.CommentBase
 import com.intelligentComments.core.domain.core.DocComment
+import com.intelligentComments.core.domain.core.GroupOfLineComments
+import com.intelligentComments.core.domain.core.MultilineComment
 import com.intelligentComments.core.domain.impl.ContentProcessingStrategyImpl
 import com.intelligentComments.core.domain.rd.DocCommentFromRd
 import com.intelligentComments.core.domain.rd.GroupOfLineCommentsFromRd
+import com.intelligentComments.core.domain.rd.MultilineCommentFromRd
 import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.RangeMarker
@@ -12,7 +15,7 @@ import com.intellij.openapi.project.Project
 import com.jetbrains.rd.ide.model.RdComment
 import com.jetbrains.rd.ide.model.RdDocComment
 import com.jetbrains.rd.ide.model.RdGroupOfLineComments
-import com.jetbrains.rd.platform.diagnostics.logAssertion
+import com.jetbrains.rd.ide.model.RdMultilineComment
 import com.jetbrains.rd.platform.util.getLogger
 
 class RiderCommentsCreator {
@@ -27,24 +30,11 @@ class RiderCommentsCreator {
     commentRange: RangeMarker
   ) : CommentBase? {
     return when(rdComment) {
-      is RdDocComment -> tryCreateDocComment(rdComment, editor, commentRange)
-      is RdGroupOfLineComments -> GroupOfLineCommentsFromRd(rdComment, editor.project!!, commentRange)
+      is RdDocComment -> createDocComment(rdComment, editor.project ?: return null, commentRange)
+      is RdGroupOfLineComments -> createGroupOfLinesComment(rdComment, editor.project ?: return null, commentRange)
+      is RdMultilineComment -> createMultilineComments(rdComment, editor.project ?: return null, commentRange)
       else -> throw IllegalArgumentException(rdComment.javaClass.name)
     }
-  }
-
-  fun tryCreateDocComment(
-    rdDocComment: RdDocComment,
-    editor: Editor,
-    commentRange: RangeMarker
-  ) : DocComment? {
-    val project = editor.project
-    if (project == null) {
-      logger.logAssertion("Project was null for $editor")
-      return null
-    }
-
-    return createDocComment(rdDocComment, project, commentRange)
   }
 
   fun createDocComment(
@@ -56,5 +46,21 @@ class RiderCommentsCreator {
     val segmentsPreprocessingStrategy = project.service<ContentProcessingStrategyImpl>()
     docComment.content.content.processSegments(segmentsPreprocessingStrategy)
     return docComment
+  }
+
+  fun createGroupOfLinesComment(
+    rdGroupOfLineComments: RdGroupOfLineComments,
+    project: Project,
+    commentRange: RangeMarker
+  ) : GroupOfLineComments {
+    return GroupOfLineCommentsFromRd(rdGroupOfLineComments, project, commentRange)
+  }
+
+  fun createMultilineComments(
+    rdMultilineComment: RdMultilineComment,
+    project: Project,
+    commentRange: RangeMarker
+  ) : MultilineComment {
+    return MultilineCommentFromRd(rdMultilineComment, project, commentRange)
   }
 }

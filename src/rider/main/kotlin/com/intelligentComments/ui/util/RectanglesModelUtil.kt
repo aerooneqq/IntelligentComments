@@ -1,7 +1,7 @@
 package com.intelligentComments.ui.util
 
+import com.intelligentComments.ui.comments.model.CommentWithOneTextSegmentUiModel
 import com.intelligentComments.ui.comments.model.DocCommentUiModel
-import com.intelligentComments.ui.comments.model.GroupOfLineCommentsUiModel
 import com.intelligentComments.ui.comments.model.IntelligentCommentUiModel
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intelligentComments.ui.comments.model.content.ContentSegmentUiModel
@@ -34,7 +34,7 @@ class RectanglesModelUtil {
       return when (model) {
         is IntelligentCommentUiModel -> buildRectanglesModel(editorImpl, model, xDelta, yDelta)
         is DocCommentUiModel -> buildRectanglesModel(editorImpl, model,  model.contentSection, xDelta, yDelta)
-        is GroupOfLineCommentsUiModel -> buildRectanglesModel(editorImpl, model, model.contentSection, xDelta, yDelta)
+        is CommentWithOneTextSegmentUiModel -> buildRectanglesModel(editorImpl, model, model.contentSection, xDelta, yDelta)
         else -> throw IllegalArgumentException(model.toString())
       }
     }

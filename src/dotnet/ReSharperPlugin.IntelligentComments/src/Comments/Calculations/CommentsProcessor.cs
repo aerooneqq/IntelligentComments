@@ -1,17 +1,11 @@
 using System.Collections.Generic;
-using System.Linq;
 using JetBrains.Annotations;
-using JetBrains.DocumentModel;
-using JetBrains.ReSharper.Feature.Services.Daemon.Attributes;
 using JetBrains.ReSharper.Psi;
-using JetBrains.ReSharper.Psi.CodeStyle;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Util;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Builder;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
-using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl;
-using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.Content;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Calculations;
 
@@ -40,28 +34,56 @@ public class CommentsProcessor : IRecursiveElementProcessor
     {
       case IDocCommentBlock docCommentBlock:
       {
-        var builder = new DocCommentBuilder(docCommentBlock);
-
-        if (builder.Build() is { } comment)
-        {
-          myComments.Add(comment);
-        }
-
-        myVisitedComments.Add(docCommentBlock);
+        ProcessDocCommentBlock(docCommentBlock);
         break;
       }
       case ICSharpCommentNode { CommentType: CommentType.END_OF_LINE_COMMENT } commentNode:
       {
-        var builder = new GroupOfLineCommentsBuilder(commentNode);
-
-        if (builder.Build() is { } buildResult)
-        {
-          myComments.Add(buildResult.GroupOfLineComments);
-          myVisitedComments.AddRange(buildResult.CommentNodes);
-        }
-        
+        ProcessLineComment(commentNode);
         break;
       }
+      case ICSharpCommentNode { CommentType: CommentType.MULTILINE_COMMENT } commentNode:
+      {
+        ProcessMultilineComment(commentNode);
+        break;
+      }
+    }
+  }
+
+  private void ProcessDocCommentBlock([NotNull] IDocCommentBlock docCommentBlock)
+  {
+    var builder = new DocCommentBuilder(docCommentBlock);
+
+    if (builder.Build() is { } comment)
+    {
+      myComments.Add(comment);
+    }
+
+    myVisitedComments.Add(docCommentBlock);
+  }
+
+  private void ProcessLineComment([NotNull] ICSharpCommentNode commentNode)
+  {
+    var builder = new GroupOfLineCommentsBuilder(commentNode);
+
+    myVisitedComments.Add(commentNode);
+    
+    if (builder.Build() is var (groupOfLineComments, includedCommentsNodes))
+    {
+      myComments.Add(groupOfLineComments);
+      myVisitedComments.AddRange(includedCommentsNodes);
+    }
+  }
+
+  private void ProcessMultilineComment([NotNull] ICSharpCommentNode commentNode)
+  {
+    var builder = new MultilineCommentsBuilder(commentNode);
+    
+    myVisitedComments.Add(commentNode);
+    
+    if (builder.Build() is { } multilineComment)
+    {
+      myComments.Add(multilineComment);
     }
   }
 

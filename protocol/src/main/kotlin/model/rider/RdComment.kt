@@ -31,6 +31,10 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
     field("Content", RdIntelligentCommentContent.nullable).optional
   }
 
+  val RdMultilineComment = structdef extends RdComment {
+    field("Text", RdTextSegment)
+  }
+
   val RdIntelligentComment = structdef extends RdComment {
     field("Authors", immutableList(RdIntelligentCommentAuthor).nullable).optional
     field("Date", PredefinedType.dateTime)

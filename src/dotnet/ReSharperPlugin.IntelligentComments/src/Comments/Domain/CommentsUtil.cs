@@ -24,26 +24,37 @@ public static class CommentsUtil
       IIntelligentComment intelligentComment => ToRdComment(intelligentComment),
       IDocComment docComment => ToRdComment(docComment),
       IGroupOfLineComments groupOfLineComments => groupOfLineComments.ToRdComment(),
+      IMultilineComment multilineComment => multilineComment.ToRdComment(),
       _ => throw new ArgumentOutOfRangeException(commentBase.GetType().Name)
     };
   }
 
+  [NotNull]
+  private static RdMultilineComment ToRdComment([NotNull] this IMultilineComment multilineComment)
+  {
+    var id = multilineComment.CreateIdentifier();
+    return new RdMultilineComment(multilineComment.Text.ToRdTextSegment(), id, multilineComment.GetRdRange());
+  }
+
+  [NotNull]
   private static RdGroupOfLineComments ToRdComment([NotNull] this IGroupOfLineComments groupOfLineComments)
   {
     var id = groupOfLineComments.CreateIdentifier();
-    return new RdGroupOfLineComments(groupOfLineComments.Text.ToRdTextSegment(), id, groupOfLineComments.GetRange());
+    return new RdGroupOfLineComments(groupOfLineComments.Text.ToRdTextSegment(), id, groupOfLineComments.GetRdRange());
   }
   
-  private static RdTextRange GetRange(this ICommentBase comment)
+  [NotNull]
+  private static RdTextRange GetRdRange([NotNull] this ICommentBase comment)
   {
     var (startOffset, endOffset) = comment.Range;
     return new RdTextRange(startOffset.Offset, endOffset.Offset);
   }
 
+  [NotNull]
   private static RdComment ToRdComment([NotNull] this IDocComment docComment)
   {
     var content = docComment.Content.ToRdContent();
-    return new RdDocComment(content, docComment.CreateIdentifier(), docComment.GetRange());
+    return new RdDocComment(content, docComment.CreateIdentifier(), docComment.GetRdRange());
   }
 
   [NotNull]
@@ -53,7 +64,7 @@ public static class CommentsUtil
     var authors = new List<RdIntelligentCommentAuthor> { new("Aero", DateTime.Now) };
     var identifier = comment.CreateIdentifier();
 
-    return new RdIntelligentComment(authors, DateTime.Now, content, null, null, null, null, identifier, comment.GetRange());
+    return new RdIntelligentComment(authors, DateTime.Now, content, null, null, null, null, identifier, comment.GetRdRange());
   }
 
   [NotNull]

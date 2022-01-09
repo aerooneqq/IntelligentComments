@@ -5,8 +5,8 @@ import com.intelligentComments.core.comments.states.CommentState
 import com.intelligentComments.core.comments.states.RiderCommentsStateManager
 import com.intelligentComments.core.comments.storages.DocumentCommentsWithFoldingsStorage
 import com.intelligentComments.core.domain.core.*
+import com.intelligentComments.ui.comments.model.CommentWithOneTextSegmentUiModel
 import com.intelligentComments.ui.comments.model.DocCommentUiModel
-import com.intelligentComments.ui.comments.model.GroupOfLineCommentsUiModel
 import com.intelligentComments.ui.comments.model.IntelligentCommentUiModel
 import com.intelligentComments.ui.comments.renderers.RendererWithRectangleModel
 import com.intellij.openapi.components.service
@@ -173,7 +173,7 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
     return when (comment) {
       is DocComment -> DocCommentUiModel(comment, project, editor).renderer
       is IntelligentComment -> IntelligentCommentUiModel(project, comment).renderer
-      is GroupOfLineComments -> GroupOfLineCommentsUiModel(comment, project, editor).renderer
+      is CommentWithOneTextSegment -> CommentWithOneTextSegmentUiModel(comment, project, editor).renderer
       else -> throw IllegalArgumentException(comment.javaClass.name)
     }
   }

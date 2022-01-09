@@ -13,7 +13,7 @@ public class RiderDocFoldingHighlightersSuppressor : IRiderHighlighterSuppressor
   {
     return highlighter.UserData is CodeFoldingHighlighting
     {
-      AttributeId: CodeFoldingAttributes.DOCUMENTATION_COMMENTS_FOLDING_ATTRIBUTE
+      AttributeId: CodeFoldingAttributes.DOCUMENTATION_COMMENTS_FOLDING_ATTRIBUTE or CodeFoldingAttributes.COMMENTS_FOLDING_ATTRIBUTE
     };
   }
 }

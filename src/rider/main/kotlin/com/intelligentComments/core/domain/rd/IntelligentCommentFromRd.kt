@@ -41,10 +41,6 @@ class IntelligentCommentFromRd(
     return IntelligentCommentsRenderer(IntelligentCommentUiModel(project, this))
   }
 
-  override fun isValid(): Boolean {
-    return super.isValid()
-  }
-
   override fun recreate(editor: Editor): CommentBase {
     TODO("Not yet implemented")
   }

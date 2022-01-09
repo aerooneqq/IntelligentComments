@@ -21,4 +21,6 @@ public record IntelligentComment(
   IIntelligentCommentContent Content
 ) : DocCommentBase(Content, Range), IIntelligentComment;
 
-public record GroupOfLineComments(ITextContentSegment Text, DocumentRange Range) : CommentBase(Range), IGroupOfLineComments; 
+public record GroupOfLineComments(ITextContentSegment Text, DocumentRange Range) : CommentBase(Range), IGroupOfLineComments;
+
+public record MultilineComment(ITextContentSegment Text, DocumentRange Range) : CommentBase(Range), IMultilineComment;

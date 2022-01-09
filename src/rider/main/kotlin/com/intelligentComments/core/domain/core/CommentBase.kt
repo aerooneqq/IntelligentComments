@@ -2,14 +2,10 @@ package com.intelligentComments.core.domain.core
 
 import com.intelligentComments.core.utils.DocumentUtils
 import com.intelligentComments.ui.util.HashUtil
-import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.RangeMarker
-import com.intellij.openapi.editor.impl.EditorImpl
 import com.intellij.openapi.project.Project
-import com.intellij.psi.PsiDocumentManager
-import com.intellij.psi.PsiElement
 
 
 class CommentIdentifier(val moniker: String, val rangeMarker: RangeMarker) : Comparable<CommentIdentifier> {
@@ -57,6 +53,9 @@ interface DocComment : CommentBase {
   val content: IntelligentCommentContent
 }
 
-interface GroupOfLineComments : CommentBase {
+interface CommentWithOneTextSegment : CommentBase {
   val text: TextContentSegment
 }
+
+interface GroupOfLineComments : CommentWithOneTextSegment
+interface MultilineComment : CommentWithOneTextSegment

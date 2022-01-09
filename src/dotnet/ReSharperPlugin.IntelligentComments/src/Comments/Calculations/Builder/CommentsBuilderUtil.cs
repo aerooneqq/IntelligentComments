@@ -22,12 +22,12 @@ internal static class CommentsBuilderUtil
     if (text.Length == 0) return text;
     
     var sb = new StringBuilder(text);
-    while (ourWhitespaceChars.Contains(sb[0]))
+    while (sb.Length > 0 && ourWhitespaceChars.Contains(sb[0]))
     {
       sb.Remove(0, 1);
     }
-      
-    while (ourWhitespaceChars.Contains(sb[^1]))
+    
+    while (sb.Length > 0 && ourWhitespaceChars.Contains(sb[^1]))
     {
       sb.Remove(sb.Length - 1, 1);
     }

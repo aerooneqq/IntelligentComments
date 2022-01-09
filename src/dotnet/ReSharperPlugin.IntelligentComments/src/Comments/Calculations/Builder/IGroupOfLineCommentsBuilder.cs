@@ -50,10 +50,10 @@ public class GroupOfLineCommentsBuilder : IGroupOfLineCommentsBuilder
   }
 
   [NotNull]
-  private IHighlightedText CreateTextFrom([NotNull] IEnumerable<ICSharpCommentNode> commentNodes)
+  private IHighlightedText CreateTextFrom([NotNull] IReadOnlyList<ICSharpCommentNode> commentNodes)
   {
     var texts = commentNodes.Select(comment => CommentsBuilderUtil.PreprocessText(comment.CommentText, null));
-    var text = string.Join("\n", texts);
+    var text = CommentsBuilderUtil.PreprocessText(string.Join("\n", texts), null);
 
     var highlighter = myHighlightersProvider?.TryGetReSharperHighlighter(myCommentAttributeId, text.Length);
 
@@ -63,7 +63,7 @@ public class GroupOfLineCommentsBuilder : IGroupOfLineCommentsBuilder
   [NotNull]
   private static IGroupOfLineComments CreateCommentFrom(
     [NotNull] IHighlightedText highlightedText,
-    [NotNull] IEnumerable<ICSharpCommentNode> groupOfLineComments)
+    [NotNull] IReadOnlyList<ICSharpCommentNode> groupOfLineComments)
   {
     var startOffset = groupOfLineComments.First().GetDocumentRange().StartOffset;
     var endOffset = groupOfLineComments.Last().GetDocumentRange().EndOffset;
