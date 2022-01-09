@@ -8,7 +8,7 @@ import com.intelligentComments.core.domain.core.*
 import com.intelligentComments.ui.comments.model.DocCommentUiModel
 import com.intelligentComments.ui.comments.model.GroupOfLineCommentsUiModel
 import com.intelligentComments.ui.comments.model.IntelligentCommentUiModel
-import com.intelligentComments.ui.comments.renderers.DocCommentRenderer
+import com.intelligentComments.ui.comments.renderers.RendererWithRectangleModel
 import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.CustomFoldRegion
 import com.intellij.openapi.editor.CustomFoldRegionRenderer
@@ -146,10 +146,10 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
 
     foldingModel.runBatchFoldingOperation {
       val oldFolding = foldingModel.getFoldRegion(foldStartOffset, foldEndOffset)
-      if (oldFolding != null && oldFolding is CustomFoldRegion && oldFolding.renderer is DocCommentRenderer) {
+      if (oldFolding != null && oldFolding is CustomFoldRegion && oldFolding.renderer is RendererWithRectangleModel) {
         val oldFoldingRenderer = oldFolding.renderer
-        if (oldFoldingRenderer is DocCommentRenderer) {
-          val oldComment = oldFoldingRenderer.model.comment
+        if (oldFoldingRenderer is RendererWithRectangleModel) {
+          val oldComment = oldFoldingRenderer.baseModel.comment
           commentsStorage.removeFolding(oldComment.commentIdentifier, editor)
           foldingModel.removeFoldRegion(oldFolding)
         }

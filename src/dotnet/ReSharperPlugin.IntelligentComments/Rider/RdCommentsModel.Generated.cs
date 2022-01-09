@@ -94,7 +94,7 @@ namespace JetBrains.Rider.Model
     public static  CtxWriteDelegate<RdHighlightedText> WriteRdHighlightedTextNullable = RdHighlightedText.Write.NullableClass();
     public static  CtxWriteDelegate<int?> WriteIntNullable = JetBrains.Rd.Impl.Serializers.WriteInt.NullableStruct();
     
-    protected override long SerializationHash => -8810125033595522805L;
+    protected override long SerializationHash => -8986476680558155088L;
     
     protected override Action<ISerializers> Register => RegisterDeclaredTypesSerializers;
     public static void RegisterDeclaredTypesSerializers(ISerializers serializers)
@@ -4190,12 +4190,12 @@ namespace JetBrains.Rider.Model
   {
     //fields
     //public fields
-    [NotNull] public RdExternalReference Reference {get; private set;}
+    [NotNull] public RdReference Reference {get; private set;}
     
     //private fields
     //primary constructor
     public RdSeeAlsoLinkContentSegment(
-      [NotNull] RdExternalReference reference,
+      [NotNull] RdReference reference,
       [NotNull] RdHighlightedText description
     ) : base (
       description
@@ -4212,7 +4212,7 @@ namespace JetBrains.Rider.Model
     public static new CtxReadDelegate<RdSeeAlsoLinkContentSegment> Read = (ctx, reader) => 
     {
       var description = RdHighlightedText.Read(ctx, reader);
-      var reference = RdExternalReference.Read(ctx, reader);
+      var reference = RdReference.Read(ctx, reader);
       var _result = new RdSeeAlsoLinkContentSegment(reference, description);
       return _result;
     };
@@ -4220,7 +4220,7 @@ namespace JetBrains.Rider.Model
     public static new CtxWriteDelegate<RdSeeAlsoLinkContentSegment> Write = (ctx, writer, value) => 
     {
       RdHighlightedText.Write(ctx, writer, value.Description);
-      RdExternalReference.Write(ctx, writer, value.Reference);
+      RdReference.Write(ctx, writer, value.Reference);
     };
     
     //constants
@@ -4278,12 +4278,12 @@ namespace JetBrains.Rider.Model
   {
     //fields
     //public fields
-    [NotNull] public RdCodeEntityReference Reference {get; private set;}
+    [NotNull] public RdReference Reference {get; private set;}
     
     //private fields
     //primary constructor
     public RdSeeAlsoMemberContentSegment(
-      [NotNull] RdCodeEntityReference reference,
+      [NotNull] RdReference reference,
       [NotNull] RdHighlightedText description
     ) : base (
       description
@@ -4300,7 +4300,7 @@ namespace JetBrains.Rider.Model
     public static new CtxReadDelegate<RdSeeAlsoMemberContentSegment> Read = (ctx, reader) => 
     {
       var description = RdHighlightedText.Read(ctx, reader);
-      var reference = RdCodeEntityReference.Read(ctx, reader);
+      var reference = RdReference.Read(ctx, reader);
       var _result = new RdSeeAlsoMemberContentSegment(reference, description);
       return _result;
     };
@@ -4308,7 +4308,7 @@ namespace JetBrains.Rider.Model
     public static new CtxWriteDelegate<RdSeeAlsoMemberContentSegment> Write = (ctx, writer, value) => 
     {
       RdHighlightedText.Write(ctx, writer, value.Description);
-      RdCodeEntityReference.Write(ctx, writer, value.Reference);
+      RdReference.Write(ctx, writer, value.Reference);
     };
     
     //constants

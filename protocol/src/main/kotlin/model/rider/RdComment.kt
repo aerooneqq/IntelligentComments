@@ -88,11 +88,11 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
   }
 
   val RdSeeAlsoMemberContentSegment = structdef extends RdSeeAlsoContentSegment {
-    field("Reference", RdCodeEntityReference)
+    field("Reference", RdReference)
   }
 
   val RdSeeAlsoLinkContentSegment = structdef extends RdSeeAlsoContentSegment {
-    field("Reference", RdExternalReference)
+    field("Reference", RdReference)
   }
 
   val RdExceptionsSegment = structdef extends RdSegmentWithContent {

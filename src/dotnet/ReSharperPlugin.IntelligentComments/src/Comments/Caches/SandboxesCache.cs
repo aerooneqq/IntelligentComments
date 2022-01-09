@@ -19,7 +19,7 @@ using ReSharperPlugin.IntelligentComments.Comments.CodeFragmentsHighlighting;
 namespace ReSharperPlugin.IntelligentComments.Comments.Caches;
 
 public record SandboxFileInfo(
-  [NotNull] LifetimeDefinition LifetimeDefinition, 
+  [NotNull] LifetimeDefinition LifetimeDefinition,
   [NotNull] SandboxPsiSourceFile SandboxPsiSourceFile,
   [NotNull] IDictionary<int, TextRange> TextHashesToOffset);
 

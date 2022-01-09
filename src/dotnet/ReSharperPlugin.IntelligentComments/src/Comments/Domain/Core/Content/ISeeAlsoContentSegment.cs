@@ -11,10 +11,8 @@ public interface ISeeAlsoContentSegment : IContentSegment
 
 public interface ISeeAlsoMemberContentSegment : ISeeAlsoContentSegment
 {
-  [NotNull] public new ICodeEntityReference Reference { get; }
 }
 
 public interface ISeeAlsoLinkContentSegment : ISeeAlsoContentSegment
 {
-  [NotNull] public new IExternalReference Reference { get; }
 }

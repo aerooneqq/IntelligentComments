@@ -71,35 +71,17 @@ public abstract class SeeAlsoContentSegment : ISeeAlsoContentSegment
 
 public class SeeAlsoMemberContentSegment : SeeAlsoContentSegment, ISeeAlsoMemberContentSegment 
 {
-  [NotNull] private readonly ICodeEntityReference myReference;
-
-  
-  ICodeEntityReference ISeeAlsoMemberContentSegment.Reference => myReference;
-  
-  
-  public SeeAlsoMemberContentSegment(
-    [NotNull] IHighlightedText highlightedText, 
-    [NotNull] ICodeEntityReference reference) 
+  public SeeAlsoMemberContentSegment([NotNull] IHighlightedText highlightedText, [NotNull] IReference reference) 
     : base(highlightedText, reference)
   {
-    myReference = reference;
   }
 }
 
 public class SeeAlsoLinkContentSegment : SeeAlsoContentSegment, ISeeAlsoLinkContentSegment
 {
-  [NotNull] private readonly IExternalReference myReference;
-
-
-  IExternalReference ISeeAlsoLinkContentSegment.Reference => myReference;
-  
-  
-  public SeeAlsoLinkContentSegment(
-    [NotNull] IHighlightedText highlightedText, 
-    [NotNull] IExternalReference reference) 
+  public SeeAlsoLinkContentSegment([NotNull] IHighlightedText highlightedText, [NotNull] IExternalReference reference) 
     : base(highlightedText, reference)
   {
-    myReference = reference;
   }
 }
 

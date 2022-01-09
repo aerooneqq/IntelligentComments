@@ -20,7 +20,7 @@ data class RenderAdditionalInfo(
 
 class ContentSegmentsUtil {
   companion object {
-    const val deltaBetweenSegments = 3
+    const val deltaBetweenSegments = 8
 
     fun renderSegments(
       contentSegments: Collection<ContentSegmentUiModel>,

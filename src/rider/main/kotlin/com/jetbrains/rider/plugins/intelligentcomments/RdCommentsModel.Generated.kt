@@ -99,7 +99,7 @@ class RdCommentsModel private constructor(
         private val __RdHighlightedTextNullableSerializer = RdHighlightedText.nullable()
         private val __IntNullableSerializer = FrameworkMarshallers.Int.nullable()
         
-        const val serializationHash = -8810125033595522805L
+        const val serializationHash = -8986476680558155088L
         
     }
     override val serializersOwner: ISerializersOwner get() = RdCommentsModel
@@ -3245,7 +3245,7 @@ class RdSeeAlsoContentSegment_Unknown (
  * #### Generated from [RdComment.kt:94]
  */
 class RdSeeAlsoLinkContentSegment (
-    val reference: RdExternalReference,
+    val reference: RdReference,
     description: RdHighlightedText
 ) : RdSeeAlsoContentSegment (
     description
@@ -3258,7 +3258,7 @@ class RdSeeAlsoLinkContentSegment (
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdSeeAlsoLinkContentSegment  {
             val description = RdHighlightedText.read(ctx, buffer)
-            val reference = ctx.serializers.readPolymorphic<RdExternalReference>(ctx, buffer, RdExternalReference)
+            val reference = ctx.serializers.readPolymorphic<RdReference>(ctx, buffer, RdReference)
             return RdSeeAlsoLinkContentSegment(reference, description)
         }
         
@@ -3312,7 +3312,7 @@ class RdSeeAlsoLinkContentSegment (
  * #### Generated from [RdComment.kt:90]
  */
 class RdSeeAlsoMemberContentSegment (
-    val reference: RdCodeEntityReference,
+    val reference: RdReference,
     description: RdHighlightedText
 ) : RdSeeAlsoContentSegment (
     description
@@ -3325,7 +3325,7 @@ class RdSeeAlsoMemberContentSegment (
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdSeeAlsoMemberContentSegment  {
             val description = RdHighlightedText.read(ctx, buffer)
-            val reference = ctx.serializers.readPolymorphic<RdCodeEntityReference>(ctx, buffer, RdCodeEntityReference)
+            val reference = ctx.serializers.readPolymorphic<RdReference>(ctx, buffer, RdReference)
             return RdSeeAlsoMemberContentSegment(reference, description)
         }
         

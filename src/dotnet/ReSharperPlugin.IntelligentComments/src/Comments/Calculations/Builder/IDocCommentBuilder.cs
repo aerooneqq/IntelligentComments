@@ -13,6 +13,7 @@ using JetBrains.ReSharper.Psi.Util;
 using JetBrains.Rider.Model;
 using JetBrains.Util;
 using JetBrains.Util.Logging;
+using ReSharperPlugin.IntelligentComments.Comments.Caches;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.CodeHighlighting;
 using ReSharperPlugin.IntelligentComments.Comments.CodeFragmentsHighlighting;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
@@ -54,6 +55,7 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
   [NotNull] private readonly string myDocCommentAttributeId;
   [NotNull] private readonly string myParamAttributeId;
   [NotNull] private readonly string myTypeParamAttributeId;
+  [NotNull] private readonly ReferencesCache myReferencesCache;
 
 
   public DocCommentBuilder([NotNull] IDocCommentBlock comment)
@@ -64,6 +66,7 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
     myComment = comment;
     myContentSegmentsStack = new Stack<ContentSegmentsMetadata>();
     myCodeFragmentHighlightingManager = comment.GetSolution().GetComponent<CodeFragmentHighlightingManager>();
+    myReferencesCache = comment.GetSolution().GetComponent<ReferencesCache>();
     myPsiServices = myComment.GetPsiServices();
     myPsiModule = myComment.GetPsiModule();
     myVisitedNodes = new HashSet<XmlNode>();
@@ -393,9 +396,11 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
     });
   }
   
-  private XmlDocCodeEntityReference CreateCodeEntityReference([NotNull] string rawValue)
+  private IReference CreateCodeEntityReference([NotNull] string rawValue)
   {
-    return new XmlDocCodeEntityReference(rawValue, myPsiServices, myPsiModule);
+    var realReference = new XmlDocCodeEntityReference(rawValue, myPsiServices, myPsiModule);
+    var referenceId = myReferencesCache.AddReference(myResolveContext.Document, realReference);
+    return new ProxyReference(referenceId);
   }
 
   public override void VisitTypeParam(XmlElement element)
@@ -462,8 +467,8 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
     
     var highlighter = reference switch
     {
-      ICodeEntityReference codeEntityReference => 
-        myHighlightersProvider.GetReSharperSeeCodeEntityHighlighter(0, length, codeEntityReference, myResolveContext),
+      ICodeEntityReference or IProxyReference => 
+        myHighlightersProvider.GetReSharperSeeCodeEntityHighlighter(0, length, reference, myResolveContext),
       IHttpReference => myHighlightersProvider.GetSeeHttpLinkHighlighter(0, length),
       ILangWordReference => myHighlightersProvider.GetSeeLangWordHighlighter(0, length),
       _ => throw new ArgumentOutOfRangeException(reference.GetType().Name)

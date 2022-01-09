@@ -81,14 +81,9 @@ public class ClickDocHost
         LogErrorAndSetNull($"Declared element was null for {request.PrintToString()}");
         return;
       }
-
-      if (reference is IProxyReference proxyReference)
-      {
-        reference = myReferencesCache.TryGetValue(textControl.Document, proxyReference.RealReferenceId)?.Reference;
-      }
-
+      
       var resolveContext = new ResolveContextImpl(mySolution, textControl.Document);
-      if (reference?.Resolve(resolveContext) is not DeclaredElementResolveResult { DeclaredElement: { } declaredElement })
+      if (reference.Resolve(resolveContext) is not DeclaredElementResolveResult { DeclaredElement: { } declaredElement })
       {
         LogErrorAndSetNull($"Declared element was null for {request.PrintToString()}");
         return;

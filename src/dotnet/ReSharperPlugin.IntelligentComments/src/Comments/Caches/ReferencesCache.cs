@@ -26,6 +26,7 @@ public class ReferencesCache : AbstractOpenedDocumentBasedCache<int, ReferenceIn
   {
   }
 
+  
   public int AddReference(IDocument document, IReference reference) => Add(document, new ReferenceInfo(reference));
 
   protected override void BeforeRemoval(IDocument document, IEnumerable<ReferenceInfo> values)

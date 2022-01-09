@@ -25,7 +25,7 @@ import java.awt.Rectangle
 import java.awt.geom.Rectangle2D
 
 abstract class RendererWithRectangleModel(
-  private val baseModel: CommentUiModelBase
+  val baseModel: CommentUiModelBase
 ) : EditorCustomElementRenderer, CustomFoldRegionRenderer {
   private var rectModelXDelta = 0
   private var rectModelYDelta = 0
