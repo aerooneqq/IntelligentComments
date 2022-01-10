@@ -39,9 +39,9 @@ abstract class RendererWithRectangleModel(
       if (currentDelta != -1) return currentDelta
 
       val document = baseModel.editor.document
-      val nextLineNumber = document.getLineNumber(baseModel.comment.rangeMarker.endOffset) + 1
-      currentDelta = if (nextLineNumber < document.lineCount) {
-        val lineStartOffset = document.getLineStartOffset(nextLineNumber)
+      val lineNumber = document.getLineNumber(baseModel.comment.rangeMarker.startOffset)
+      currentDelta = if (lineNumber < document.lineCount) {
+        val lineStartOffset = document.getLineStartOffset(lineNumber)
         val contentStartOffset = CharArrayUtil.shiftForward(document.immutableCharSequence, lineStartOffset, " \t\n")
         baseModel.editor.offsetToXY(contentStartOffset, false, true).x
       } else {
