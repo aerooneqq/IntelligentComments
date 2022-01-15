@@ -1,40 +1,25 @@
 package com.intelligentComments.core.comments.storages
 
 import com.intelligentComments.core.domain.core.CommentIdentifier
-import com.intellij.util.containers.BidirectionalMap
-import java.util.*
+import com.intellij.openapi.editor.RangeMarker
 
 
 class CommentsIdentifierStorage<T> {
-  private val storage = TreeMap<CommentIdentifier, T>()
-  private val startOffsetsToComments = BidirectionalMap<Int, CommentIdentifier>()
-  private val endOffsetsToComments = BidirectionalMap<Int, CommentIdentifier>()
+  private val storage = HashMap<RangeMarker, T>()
+
+
+  fun remove(commentIdentifier: CommentIdentifier) {
+    storage.remove(commentIdentifier.rangeMarker)
+  }
 
   fun clear() {
     storage.clear()
-    startOffsetsToComments.clear()
-    endOffsetsToComments.clear()
   }
 
-  fun get(commentIdentifier: CommentIdentifier) = storage[commentIdentifier]
+  fun get(commentIdentifier: CommentIdentifier) = storage[commentIdentifier.rangeMarker]
 
   fun getWithAdditionalSearch(commentIdentifier: CommentIdentifier): T? {
-    val existingValue = get(commentIdentifier)
-    if (existingValue != null) return existingValue
-
-    var id = startOffsetsToComments[commentIdentifier.rangeMarker.startOffset]
-
-    if (id != null) {
-      return storage[id]
-    }
-
-    id = startOffsetsToComments[commentIdentifier.rangeMarker.endOffset]
-
-    if (id != null) {
-      return storage[id]
-    }
-
-    return null
+    return get(commentIdentifier)
   }
 
   fun getOrCreate(commentIdentifier: CommentIdentifier, creator: (CommentIdentifier) -> T): T {
@@ -47,40 +32,17 @@ class CommentsIdentifierStorage<T> {
   }
 
   fun add(commentIdentifier: CommentIdentifier, value: T) {
-    val startOffset = commentIdentifier.rangeMarker.startOffset
-    val endOffset = commentIdentifier.rangeMarker.endOffset
-
-    if (commentIdentifier in storage) {
-      addNewCommentInternal(commentIdentifier, value)
-    } else {
-      var oldId: CommentIdentifier? = null
-      if (startOffset in startOffsetsToComments) {
-        oldId = startOffsetsToComments[startOffset]
-      } else if (endOffset in endOffsetsToComments) {
-        oldId = endOffsetsToComments[endOffset]
-      }
-
-      if (oldId != null) {
-        addNewCommentInternal(oldId, value)
-      } else {
-        addNewCommentInternal(commentIdentifier, value)
-      }
-    }
+    addNewCommentInternal(commentIdentifier.rangeMarker, value)
   }
 
   private fun addNewCommentInternal(
-    key: CommentIdentifier,
+    key: RangeMarker,
     value: T
   ) {
-    startOffsetsToComments.removeValue(key)
-    endOffsetsToComments.removeValue(key)
-
     storage[key] = value
-    startOffsetsToComments[key.rangeMarker.startOffset] = key
-    endOffsetsToComments[key.rangeMarker.endOffset] = key
   }
 
-  fun getAllKeysAndValues(): Collection<Pair<CommentIdentifier, T>> {
+  fun getAllKeysAndValues(): Collection<Pair<RangeMarker, T>> {
     return storage.toList()
   }
 }

@@ -399,7 +399,7 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
   private IReference CreateCodeEntityReference([NotNull] string rawValue)
   {
     var realReference = new XmlDocCodeEntityReference(rawValue, myPsiServices, myPsiModule);
-    int referenceId = myReferencesCache.AddReference(myResolveContext.Document, realReference);
+    int referenceId = myReferencesCache.AddReferenceIfNotPresent(myResolveContext.Document, realReference);
     return new ProxyReference(referenceId);
   }
 

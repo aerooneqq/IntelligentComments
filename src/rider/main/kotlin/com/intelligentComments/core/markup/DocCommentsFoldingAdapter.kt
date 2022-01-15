@@ -2,13 +2,16 @@ package com.intelligentComments.core.markup
 
 import com.intelligentComments.core.comments.RiderCommentsController
 import com.intelligentComments.core.comments.RiderCommentsCreator
-import com.intelligentComments.core.utils.toGreedy
+import com.intelligentComments.core.domain.core.CommentBase
 import com.intelligentComments.ui.comments.renderers.DocCommentSwitchRenderModeGutterMark
 import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.Document
+import com.intellij.openapi.editor.RangeMarker
 import com.intellij.openapi.editor.ex.RangeHighlighterEx
 import com.intellij.openapi.editor.impl.EditorImpl
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.Key
+import com.intellij.openapi.util.TextRange
 import com.intellij.psi.impl.source.tree.injected.changesHandler.range
 import com.jetbrains.rd.ide.model.RdCommentFoldingModel
 import com.jetbrains.rd.util.lifetime.Lifetime
@@ -30,6 +33,8 @@ class DocCommentsFoldingAggregator(
 
 class DocCommentsFoldingAdapter(private val editor: EditorImpl) : FrontendMarkupAdapterListener {
   companion object {
+    private val commentKey = Key<CommentBase>("HighlightersComment")
+
     private fun executeOverDocHighlighters(
       highlighters: List<RangeHighlighterEx>,
       action: (RangeHighlighterEx, RdCommentFoldingModel) -> Unit
@@ -43,11 +48,14 @@ class DocCommentsFoldingAdapter(private val editor: EditorImpl) : FrontendMarkup
     }
   }
 
+  private val deletedCommentsRangeMarkersCache = CommentsRangeMarkersCache()
+
 
   override fun afterAdded(highlighter: RangeHighlighterEx) {
   }
 
   override fun afterUpdated(highlighter: RangeHighlighterEx) {
+
   }
 
   override fun attributesChanged(
@@ -63,16 +71,26 @@ class DocCommentsFoldingAdapter(private val editor: EditorImpl) : FrontendMarkup
       val commentsCreator = it.service<RiderCommentsCreator>()
 
       executeOverDocHighlighters(highlighters) { highlighter, model ->
-        val marker = highlighter.document.createRangeMarker(highlighter.range)
-        marker.toGreedy()
+        val marker = getRangeMarkerFor(highlighter.range, highlighter.document)
+        marker.isGreedyToRight = true
 
         val comment = commentsCreator.tryCreateComment(model.comment, editor, marker) ?: return@executeOverDocHighlighters
         controller.addComment(editor, comment)
 
+        highlighter.putUserData(commentKey, comment)
         highlighter.gutterIconRenderer = DocCommentSwitchRenderModeGutterMark(comment, editor, it)
-        highlighter.toGreedy()
+        highlighter.isGreedyToRight = true
       }
     }
+
+    deletedCommentsRangeMarkersCache.invalidate()
+  }
+
+  private fun getRangeMarkerFor(range: TextRange, document: Document): RangeMarker {
+    val deletedRangeMarker = deletedCommentsRangeMarkersCache.tryGetFor(range)
+    if (deletedRangeMarker != null) return deletedRangeMarker
+
+    return document.createRangeMarker(range)
   }
 
   override fun attributesChanged(
@@ -84,6 +102,18 @@ class DocCommentsFoldingAdapter(private val editor: EditorImpl) : FrontendMarkup
   }
 
   override fun beforeBulkRemove(highlighters: List<RangeHighlighterEx>) {
+    editor.project?.let {
+      val controller = it.getComponent(RiderCommentsController::class.java) ?: return
+      executeOverDocHighlighters(highlighters) { highlighter, _ ->
+        val existingComment = highlighter.getUserData(commentKey)
+
+        if (existingComment != null) {
+          highlighter.putUserData(commentKey, null)
+          controller.removeComment(existingComment, editor)
+          deletedCommentsRangeMarkersCache.store(existingComment.rangeMarker)
+        }
+      }
+    }
   }
 
   override fun beforeRemoved(highlighter: RangeHighlighterEx) {

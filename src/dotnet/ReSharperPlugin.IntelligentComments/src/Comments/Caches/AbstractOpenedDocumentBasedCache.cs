@@ -26,19 +26,18 @@ public abstract class AbstractOpenedDocumentBasedCache<TId, TValue> where TValue
     {
       threading.Queue(lifetime, $"{GetType().Name}::InvalidatingCache", () =>
       {
-        if (args.IsRemoving)
+        if (!args.IsRemoving) return;
+        
+        lock (mySyncObject)
         {
-          lock (mySyncObject)
+          ISet<IDocument> allOpenedDocuments = textControlManager.TextControls.Select(editor => editor.Document).ToSet();
+          IEnumerable<IDocument> documentsToRemove = myFilesPerDocument.Keys.ToSet().Except(allOpenedDocuments);
+          foreach (IDocument document in documentsToRemove)
           {
-            ISet<IDocument> allOpenedDocuments = textControlManager.TextControls.Select(editor => editor.Document).ToSet();
-            IEnumerable<IDocument> documentsToRemove = myFilesPerDocument.Keys.ToSet().Except(allOpenedDocuments);
-            foreach (IDocument document in documentsToRemove)
+            if (myFilesPerDocument.TryGetValue(document, out IDictionary<TId, TValue> documentEntities))
             {
-              if (myFilesPerDocument.TryGetValue(document, out IDictionary<TId, TValue> documentEntities))
-              {
-                BeforeRemoval(document, documentEntities.Values);
-                myFilesPerDocument.Remove(document);
-              }
+              BeforeRemoval(document, documentEntities.Values);
+              myFilesPerDocument.Remove(document);
             }
           }
         }

@@ -34,6 +34,12 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
   private val listenersManager = project.service<CommentsEditorsListenersManager>()
 
 
+  fun removeComment(comment: CommentBase, editor: EditorImpl) {
+    val (_, _, foldStartOffset, foldEndOffset) = getFoldingInfo(comment, editor) ?: return
+    removeFoldRegion(editor, foldStartOffset, foldEndOffset)
+    commentsStorage.removeComment(editor.document, comment.commentIdentifier)
+  }
+
   fun getFolding(commentIdentifier: CommentIdentifier, editor: EditorImpl): CustomFoldRegion? {
     return commentsStorage.getFolding(commentIdentifier, editor)
   }
@@ -133,17 +139,8 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
     }
   }
 
-  private fun renderComment(comment: CommentBase, editor: EditorImpl) {
+  private fun removeFoldRegion(editor: EditorImpl, foldStartOffset: Int, foldEndOffset: Int) {
     val foldingModel = editor.foldingModel
-    val startOffset = comment.rangeMarker.startOffset
-    val endOffset = comment.rangeMarker.endOffset
-    val document = editor.document
-
-    val foldStartLine = document.getLineNumber(startOffset)
-    val foldEndLine = document.getLineNumber(endOffset)
-    val foldStartOffset = document.getLineStartOffset(foldStartLine)
-    val foldEndOffset = document.getLineEndOffset(foldEndLine)
-
     foldingModel.runBatchFoldingOperation {
       val oldFolding = foldingModel.getFoldRegion(foldStartOffset, foldEndOffset)
       if (oldFolding != null && oldFolding is CustomFoldRegion && oldFolding.renderer is RendererWithRectangleModel) {
@@ -155,7 +152,29 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
         }
       }
     }
+  }
 
+  data class FoldingInfo(val foldStartLine: Int, val foldEndLine: Int, val foldStartOffset: Int, val foldEndOffset: Int)
+
+  private fun getFoldingInfo(comment: CommentBase, editor: EditorImpl): FoldingInfo? {
+    if (!comment.rangeMarker.isValid) return null
+    val startOffset = comment.rangeMarker.startOffset
+    val endOffset = comment.rangeMarker.endOffset
+    val document = editor.document
+
+    val foldStartLine = document.getLineNumber(startOffset)
+    val foldEndLine = document.getLineNumber(endOffset)
+    val foldStartOffset = document.getLineStartOffset(foldStartLine)
+    val foldEndOffset = document.getLineEndOffset(foldEndLine)
+
+    return FoldingInfo(foldStartLine, foldEndLine, foldStartOffset, foldEndOffset)
+  }
+
+  private fun renderComment(comment: CommentBase, editor: EditorImpl) {
+    val (foldStartLine, foldEndLine, foldStartOffset, foldEndOffset) = getFoldingInfo(comment, editor) ?: return
+    removeFoldRegion(editor, foldStartOffset, foldEndOffset)
+
+    val foldingModel = editor.foldingModel
     foldingModel.runBatchFoldingOperation {
       val renderer = getCommentFoldingRenderer(comment, editor)
       val folding = foldingModel.addCustomLinesFolding(foldStartLine, foldEndLine, renderer)

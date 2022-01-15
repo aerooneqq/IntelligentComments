@@ -11,6 +11,7 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
+import com.intellij.refactoring.suggested.range
 import com.intellij.util.application
 import com.intellij.util.xmlb.annotations.Attribute
 import com.intellij.util.xmlb.annotations.Tag
@@ -30,6 +31,12 @@ class RiderCommentsStateManager(project: Project) : PersistentStateComponent<Sol
   private val states: MutableMap<EditorId, CommentsIdentifierStorage<CommentState>> = HashMap()
 
 
+  fun clearState(editor: Editor, commentIdentifier: CommentIdentifier) {
+    application.assertIsDispatchThread()
+    val editorComments = states[editor.getEditorId()] ?: return
+    editorComments.remove(commentIdentifier)
+  }
+
   fun restoreOrCreateCommentState(editor: Editor, commentIdentifier: CommentIdentifier): CommentState {
     application.assertIsDispatchThread()
     val editorId = editor.getEditorId() ?: return CommentState.defaultInstance
@@ -43,7 +50,13 @@ class RiderCommentsStateManager(project: Project) : PersistentStateComponent<Sol
       if (persistentState != null) {
         persistentState
       } else {
-        val isInRenderMode = settingsProvider.commentsDisplayKind.value == CommentsDisplayKind.Render
+        var isInRenderMode = settingsProvider.commentsDisplayKind.value == CommentsDisplayKind.Render
+
+        val caretOffset = editor.caretModel.offset
+        if (commentIdentifier.rangeMarker.range?.grown(1)?.contains(caretOffset) == true) {
+          isInRenderMode = false
+        }
+
         CommentState(isInRenderMode)
       }
     }
@@ -103,12 +116,12 @@ class RiderCommentsStateManager(project: Project) : PersistentStateComponent<Sol
     val snapshots = mutableListOf<CommentStateSnapshot>()
 
     for ((editorId, comments) in states) {
-      for ((commentId, state) in comments.getAllKeysAndValues()) {
+      for ((rangeMarker, state) in comments.getAllKeysAndValues()) {
         snapshots.add(CommentStateSnapshot().apply {
           moniker = editorId.moniker
           tabOrder = editorId.tabOrder
-          startOffset = commentId.rangeMarker.startOffset
-          endOffset = commentId.rangeMarker.endOffset
+          startOffset = rangeMarker.startOffset
+          endOffset = rangeMarker.endOffset
           isInRenderMode = state.isInRenderMode
         })
       }

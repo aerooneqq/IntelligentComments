@@ -46,7 +46,8 @@ public class MultilineCommentsBuilder : IMultilineCommentsBuilder
 
       return CommentsBuilderUtil.PreprocessText(line, null);
     }).Join("\n");
-    
+
+    text = CommentsBuilderUtil.PreprocessText(text, null);
     TextHighlighter highlighter = myHighlightersProvider.TryGetReSharperHighlighter(myCommentAttributeId, text.Length);
     var highlightedText = new HighlightedText(text, highlighter);
     var textSegment = new TextContentSegment(highlightedText);
