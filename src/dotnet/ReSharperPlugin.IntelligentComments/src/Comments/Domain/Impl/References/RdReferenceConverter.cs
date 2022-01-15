@@ -1,8 +1,10 @@
 using JetBrains.Annotations;
+using JetBrains.DocumentModel;
 using JetBrains.ProjectModel;
 using JetBrains.RdBackend.Common.Features.Documents;
 using JetBrains.RdBackend.Common.Features.Util.Ranges;
 using JetBrains.ReSharper.Psi;
+using JetBrains.ReSharper.Psi.Modules;
 using JetBrains.Rider.Backend.Features.Documents;
 using JetBrains.Rider.Backend.Features.TextControls;
 using JetBrains.Rider.Model;
@@ -54,14 +56,14 @@ public class RdReferenceConverter
       return null;
     }
     
-    var document = textControl.Document;
+    IDocument document = textControl.Document;
     if (document.GetPsiSourceFile(mySolution) is not { } sourceFile)
     {
       return null;
     }
     
-    var module = sourceFile.PsiModule;
-    var rawName = reference.RawValue;
+    IPsiModule module = sourceFile.PsiModule;
+    string rawName = reference.RawValue;
     return new XmlDocCodeEntityReference(rawName, myPsiServices, module);
   }
   
@@ -70,7 +72,7 @@ public class RdReferenceConverter
   {
     if (reference.OriginalDocumentId is null) return null;
     
-    var document = myDocumentHostBase.TryGetHostDocument(reference.OriginalDocumentId);
+    RiderDocument document = myDocumentHostBase.TryGetHostDocument(reference.OriginalDocumentId);
     if (document is null) return null;
 
     return new SandBoxCodeEntityReference(

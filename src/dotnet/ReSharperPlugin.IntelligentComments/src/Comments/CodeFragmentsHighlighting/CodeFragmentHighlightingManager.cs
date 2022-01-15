@@ -56,7 +56,7 @@ public class CodeFragmentHighlightingManager
     myPsiServices = psiServices;
     myRequests = new Dictionary<int, CodeHighlightingRequest>();
     
-    var rdCommentsModel = solution.GetSolution().GetProtocolSolution().GetRdCommentsModel();
+    RdCommentsModel rdCommentsModel = solution.GetSolution().GetProtocolSolution().GetRdCommentsModel();
     rdCommentsModel.HighlightCode.Set((lt, request) =>
     {
       var task = new RdTask<RdHighlightedText>();
@@ -78,7 +78,7 @@ public class CodeFragmentHighlightingManager
     [NotNull] RdCodeHighlightingRequest rdRequest)
   {
     myShellLocks.AssertMainThread();
-    var id = rdRequest.Id;
+    int id = rdRequest.Id;
 
     void LogErrorAndSetNull(string message)
     {
@@ -136,7 +136,7 @@ public class CodeFragmentHighlightingManager
   {
     lock (mySyncObject)
     {
-      if (!myRequests.TryGetValue(id, out var request))
+      if (!myRequests.TryGetValue(id, out CodeHighlightingRequest request))
       {
         myLogger.Error($"Failed to get highlighting request for {id}");
         return null;
@@ -158,7 +158,7 @@ public class CodeFragmentHighlightingManager
   {
     lock (mySyncObject)
     {
-      var nextId = GetNextId();
+      int nextId = GetNextId();
       if (nextId == 0)
       {
         nextId = GetNextId();

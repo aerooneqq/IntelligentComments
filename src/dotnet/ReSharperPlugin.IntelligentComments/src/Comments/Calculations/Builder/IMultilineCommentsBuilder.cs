@@ -1,5 +1,6 @@
 using System.Linq;
 using JetBrains.Annotations;
+using JetBrains.DocumentModel;
 using JetBrains.ReSharper.Feature.Services.Daemon.Attributes;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
@@ -35,7 +36,7 @@ public class MultilineCommentsBuilder : IMultilineCommentsBuilder
   
   public IMultilineComment Build()
   {
-    var text = CommentsBuilderUtil.PreprocessText(myCommentNode.CommentText, null);
+    string text = CommentsBuilderUtil.PreprocessText(myCommentNode.CommentText, null);
     text = text.Split('\n').Select(line =>
     {
       if (line.StartsWith(Star))
@@ -46,10 +47,10 @@ public class MultilineCommentsBuilder : IMultilineCommentsBuilder
       return CommentsBuilderUtil.PreprocessText(line, null);
     }).Join("\n");
     
-    var highlighter = myHighlightersProvider.TryGetReSharperHighlighter(myCommentAttributeId, text.Length);
+    TextHighlighter highlighter = myHighlightersProvider.TryGetReSharperHighlighter(myCommentAttributeId, text.Length);
     var highlightedText = new HighlightedText(text, highlighter);
     var textSegment = new TextContentSegment(highlightedText);
-    var range = myCommentNode.GetDocumentRange();
+    DocumentRange range = myCommentNode.GetDocumentRange();
 
     return new MultilineComment(textSegment, range);
   }

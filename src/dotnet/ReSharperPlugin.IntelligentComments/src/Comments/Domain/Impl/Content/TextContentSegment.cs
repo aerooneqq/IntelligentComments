@@ -30,7 +30,7 @@ public class TextContentSegment : ITextContentSegment
   private void AssertOverlappingHighlighters()
   {
     int lastRightRange = -1;
-    foreach (var highlighter in Text.Highlighters)
+    foreach (TextHighlighter highlighter in Text.Highlighters)
     {
       Assertion.Assert(highlighter.StartOffset >= lastRightRange, "highlighter.StartOffset > lastRightRange");
       lastRightRange = highlighter.EndOffset;

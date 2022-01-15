@@ -34,12 +34,11 @@ class RiderCommentsStateManager(project: Project) : PersistentStateComponent<Sol
     application.assertIsDispatchThread()
     val editorId = editor.getEditorId() ?: return CommentState.defaultInstance
 
-    val persistentState = getPersistentState(editorId, commentIdentifier)
-
     val editorCommentsStates = states.getOrCreate(editorId) { CommentsIdentifierStorage() }
     val existingState = editorCommentsStates.getWithAdditionalSearch(commentIdentifier)
     if (existingState != null) return existingState
 
+    val persistentState = getPersistentState(editorId, commentIdentifier)
     return editorCommentsStates.getOrCreate(commentIdentifier) {
       if (persistentState != null) {
         persistentState

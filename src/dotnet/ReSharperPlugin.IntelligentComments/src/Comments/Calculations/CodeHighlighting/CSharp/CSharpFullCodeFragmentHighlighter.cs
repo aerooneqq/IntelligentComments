@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
+using JetBrains.DocumentModel;
 using JetBrains.ProjectModel;
 using JetBrains.RdBackend.Common.Features.SyntaxHighlighting.CSharp;
 using JetBrains.ReSharper.Daemon.CSharp.Stages;
@@ -43,17 +44,17 @@ public class CSharpFullCodeFragmentHighlighter : CodeHighlighterBase, IFullCodeH
   {
     if (element.NodeType == CSharpTokenType.IDENTIFIER)
     {
-      var references = element.Parent.GetReferences();
+      ReferenceCollection references = element.Parent.GetReferences();
       
       var consumer = new MyHighlightingsConsumer();
       myCSharpIdentifierHighlighter.Highlight(element, consumer, references);
       
       if (consumer.Highlightings.Count > 0)
       {
-        var highlighting = consumer.Highlightings.First().Highlighting;
+        IHighlighting highlighting = consumer.Highlightings.First().Highlighting;
         if (highlighting is ICustomAttributeIdHighlighting { AttributeId: { } attributeId })
         {
-          var text = element.GetText();
+          string text = element.GetText();
           
           TextHighlighter highlighter;
           if (TryGetReferenceFrom(element, references, context) is { } codeEntityReference)
@@ -63,8 +64,8 @@ public class CSharpFullCodeFragmentHighlighter : CodeHighlighterBase, IFullCodeH
             
             if (highlighter is { })
             {
-              var originalDocument = context.AdditionalData.GetData(CodeHighlightingKeys.OriginalDocument);
-              var id = element.GetSolution().GetComponent<ReferencesCache>().AddReference(originalDocument, codeEntityReference);
+              IDocument originalDocument = context.AdditionalData.GetData(CodeHighlightingKeys.OriginalDocument);
+              int id = element.GetSolution().GetComponent<ReferencesCache>().AddReference(originalDocument, codeEntityReference);
               highlighter = highlighter with { References = new[] { new ProxyReference(id) } };
             }
           }
@@ -88,14 +89,14 @@ public class CSharpFullCodeFragmentHighlighter : CodeHighlighterBase, IFullCodeH
     [NotNull] IEnumerable<IReference> references, 
     [NotNull] CodeHighlightingContext context)
   {
-    foreach (var reference in references)
+    foreach (IReference reference in references)
     {
       try
       {
-        var resolveResult = reference.Resolve().DeclaredElement;
-        var sandboxDocId = context.AdditionalData.GetData(CodeHighlightingKeys.SandboxDocumentId);
-        var originalDocument = context.AdditionalData.GetData(CodeHighlightingKeys.OriginalDocument);
-        var textRange = node.GetDocumentRange().TextRange;
+        IDeclaredElement resolveResult = reference.Resolve().DeclaredElement;
+        string sandboxDocId = context.AdditionalData.GetData(CodeHighlightingKeys.SandboxDocumentId);
+        IDocument originalDocument = context.AdditionalData.GetData(CodeHighlightingKeys.OriginalDocument);
+        TextRange textRange = node.GetDocumentRange().TextRange;
 
         if (resolveResult is null || sandboxDocId is null || originalDocument is null) return null;
         

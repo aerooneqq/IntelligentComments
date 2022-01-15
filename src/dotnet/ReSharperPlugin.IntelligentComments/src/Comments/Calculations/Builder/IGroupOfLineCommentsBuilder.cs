@@ -42,20 +42,19 @@ public class GroupOfLineCommentsBuilder : IGroupOfLineCommentsBuilder
   {
     if (!CanProcessLineComment()) return null;
     
-    var groupOfLineComments = CollectLineComments();
-    var highlightedText = CreateTextFrom(groupOfLineComments);
-    var comment = CreateCommentFrom(highlightedText, groupOfLineComments); 
-      
+    IReadOnlyList<ICSharpCommentNode> groupOfLineComments = CollectLineComments();
+    IHighlightedText highlightedText = CreateTextFrom(groupOfLineComments);
+    IGroupOfLineComments comment = CreateCommentFrom(highlightedText, groupOfLineComments);
     return new GroupOfLineCommentsBuildResult(comment, groupOfLineComments);
   }
 
   [NotNull]
   private IHighlightedText CreateTextFrom([NotNull] IReadOnlyList<ICSharpCommentNode> commentNodes)
   {
-    var texts = commentNodes.Select(comment => CommentsBuilderUtil.PreprocessText(comment.CommentText, null));
-    var text = CommentsBuilderUtil.PreprocessText(string.Join("\n", texts), null);
+    IEnumerable<string> texts = commentNodes.Select(comment => CommentsBuilderUtil.PreprocessText(comment.CommentText, null));
+    string text = CommentsBuilderUtil.PreprocessText(string.Join("\n", texts), null);
 
-    var highlighter = myHighlightersProvider?.TryGetReSharperHighlighter(myCommentAttributeId, text.Length);
+    TextHighlighter highlighter = myHighlightersProvider?.TryGetReSharperHighlighter(myCommentAttributeId, text.Length);
 
     return new HighlightedText(text, highlighter);
   }
@@ -65,16 +64,16 @@ public class GroupOfLineCommentsBuilder : IGroupOfLineCommentsBuilder
     [NotNull] IHighlightedText highlightedText,
     [NotNull] IReadOnlyList<ICSharpCommentNode> groupOfLineComments)
   {
-    var startOffset = groupOfLineComments.First().GetDocumentRange().StartOffset;
-    var endOffset = groupOfLineComments.Last().GetDocumentRange().EndOffset;
+    DocumentOffset startOffset = groupOfLineComments.First().GetDocumentRange().StartOffset;
+    DocumentOffset endOffset = groupOfLineComments.Last().GetDocumentRange().EndOffset;
     var range = new DocumentRange(startOffset, endOffset);
     return new GroupOfLineComments(new TextContentSegment(highlightedText), range);
   }
   
   private bool CanProcessLineComment()
   {
-    var formatter = myStartCommentNode.GetCodeFormatter();
-    var current = myStartCommentNode.PrevSibling;
+    ICodeFormatter formatter = myStartCommentNode.GetCodeFormatter();
+    ITreeNode current = myStartCommentNode.PrevSibling;
     while (current is { })
     {
       if (!current.IsWhitespaceToken()) return false;
@@ -90,7 +89,7 @@ public class GroupOfLineCommentsBuilder : IGroupOfLineCommentsBuilder
   private IReadOnlyList<ICSharpCommentNode> CollectLineComments()
   {
     var comments = new List<ICSharpCommentNode> { myStartCommentNode };
-    var currentNode = myStartCommentNode.NextSibling;
+    ITreeNode currentNode = myStartCommentNode.NextSibling;
     
     while (currentNode is { })
     {

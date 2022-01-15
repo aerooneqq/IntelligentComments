@@ -3,6 +3,7 @@ using JetBrains.DocumentModel;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Files;
+using JetBrains.ReSharper.Psi.Files.SandboxFiles;
 using JetBrains.ReSharper.Psi.Modules;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.ReSharper.Psi.Util;
@@ -31,7 +32,7 @@ public class XmlDocCodeEntityReference : ReferenceBase, IXmlDocCodeEntityReferen
   
   public override ResolveResult Resolve(IResolveContext context)
   {
-    var declaredElement = XMLDocUtil.ResolveId(myServices, RawValue, myModule, true);
+    IDeclaredElement declaredElement = XMLDocUtil.ResolveId(myServices, RawValue, myModule, true);
     return new DeclaredElementResolveResult(declaredElement);
   }
 }
@@ -65,12 +66,12 @@ public class SandBoxCodeEntityReference : ReferenceBase, ISandBoxCodeEntityRefer
   {
     if (myAlreadyResolvedElement is { }) return new DeclaredElementResolveResult(myAlreadyResolvedElement);
 
-    var solution = context.Solution;
-    var sourceFile = solution.GetComponent<SandboxesCache>().TryGetSandboxPsiSourceFile(OriginalDocument, SandboxDocumentId);
+    ISolution solution = context.Solution;
+    SandboxPsiSourceFile sourceFile = solution.GetComponent<SandboxesCache>().TryGetSandboxPsiSourceFile(OriginalDocument, SandboxDocumentId);
 
     var range = new TreeTextRange(new TreeOffset(Range.StartOffset), new TreeOffset(Range.EndOffset));
-    var node = sourceFile?.GetPrimaryPsiFile()?.FindNodeAt(range);
-    var declaredElement = node?.Parent?.GetReferences().FirstOrDefault()?.Resolve().DeclaredElement;
+    ITreeNode node = sourceFile?.GetPrimaryPsiFile()?.FindNodeAt(range);
+    IDeclaredElement declaredElement = node?.Parent?.GetReferences().FirstOrDefault()?.Resolve().DeclaredElement;
     return new DeclaredElementResolveResult(declaredElement);
   }
 }

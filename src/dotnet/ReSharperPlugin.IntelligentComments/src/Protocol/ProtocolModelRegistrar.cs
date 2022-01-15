@@ -1,5 +1,6 @@
 using JetBrains.Application;
 using JetBrains.ProjectModel;
+using JetBrains.Rd;
 using JetBrains.RdBackend.Common.Features;
 using JetBrains.Rider.Model;
 
@@ -10,7 +11,7 @@ public class ProtocolModelRegistrar
 {
   public ProtocolModelRegistrar(ISolution solution)
   {
-    var protoSerializers = solution.GetProtocolSolution().Proto.Serializers;
+    ISerializers protoSerializers = solution.GetProtocolSolution().Proto.Serializers;
     protoSerializers.RegisterToplevelOnce(typeof(RdCommentsModel), RdCommentsModel.RegisterDeclaredTypesSerializers);
   }
 }

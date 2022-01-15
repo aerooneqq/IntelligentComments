@@ -1,7 +1,10 @@
 using JetBrains.Annotations;
 using JetBrains.ReSharper.Daemon.SyntaxHighlighting;
 using JetBrains.ReSharper.Psi.CSharp.Parsing;
+using JetBrains.ReSharper.Psi.ExtensionsAPI.Tree;
+using JetBrains.ReSharper.Psi.Parsing;
 using JetBrains.ReSharper.Psi.Tree;
+using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.CodeHighlighting;
@@ -29,7 +32,7 @@ public abstract class CodeHighlighterBase
   {
     if (!AcceptNode(element)) return;
 
-    var nodeType = element.NodeType;
+    NodeType nodeType = element.NodeType;
     if (nodeType == CSharpTokenType.WHITE_SPACE)
     {
       context.Text.Add(new HighlightedText(element.GetText()));
@@ -46,12 +49,12 @@ public abstract class CodeHighlighterBase
   {
     if (element is ITokenNode token)
     {
-      var type = token.GetTokenType();
-      var attributeId = SyntaxHighlightingProcessor.GetAttributeId(type);
+      TokenNodeType type = token.GetTokenType();
+      string attributeId = SyntaxHighlightingProcessor.GetAttributeId(type);
       if (attributeId is { })
       {
-        var text = element.GetText();
-        var highlighter = HighlightersProvider.TryGetReSharperHighlighter(attributeId, text.Length);
+        string text = element.GetText();
+        TextHighlighter highlighter = HighlightersProvider.TryGetReSharperHighlighter(attributeId, text.Length);
         context.Text.Add(highlighter is { } ? new HighlightedText(text, highlighter) : new HighlightedText(text));
         return true;
       }

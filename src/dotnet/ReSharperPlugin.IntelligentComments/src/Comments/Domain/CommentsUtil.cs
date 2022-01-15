@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using JetBrains.Diagnostics;
+using JetBrains.DocumentModel;
 using JetBrains.RdBackend.Common.Features.Documents;
 using JetBrains.RdBackend.Common.Features.Util.Ranges;
 using JetBrains.ReSharper.Psi.Tree;
@@ -32,37 +33,37 @@ public static class CommentsUtil
   [NotNull]
   private static RdMultilineComment ToRdComment([NotNull] this IMultilineComment multilineComment)
   {
-    var id = multilineComment.CreateIdentifier();
+    int id = multilineComment.CreateIdentifier();
     return new RdMultilineComment(multilineComment.Text.ToRdTextSegment(), id, multilineComment.GetRdRange());
   }
 
   [NotNull]
   private static RdGroupOfLineComments ToRdComment([NotNull] this IGroupOfLineComments groupOfLineComments)
   {
-    var id = groupOfLineComments.CreateIdentifier();
+    int id = groupOfLineComments.CreateIdentifier();
     return new RdGroupOfLineComments(groupOfLineComments.Text.ToRdTextSegment(), id, groupOfLineComments.GetRdRange());
   }
   
   [NotNull]
   private static RdTextRange GetRdRange([NotNull] this ICommentBase comment)
   {
-    var (startOffset, endOffset) = comment.Range;
+    (DocumentOffset startOffset, DocumentOffset endOffset) = comment.Range;
     return new RdTextRange(startOffset.Offset, endOffset.Offset);
   }
 
   [NotNull]
   private static RdComment ToRdComment([NotNull] this IDocComment docComment)
   {
-    var content = docComment.Content.ToRdContent();
+    RdIntelligentCommentContent content = docComment.Content.ToRdContent();
     return new RdDocComment(content, docComment.CreateIdentifier(), docComment.GetRdRange());
   }
 
   [NotNull]
   private static RdComment ToRdComment([NotNull] this IIntelligentComment comment)
   {
-    var content = comment.Content.ToRdContent();
+    RdIntelligentCommentContent content = comment.Content.ToRdContent();
     var authors = new List<RdIntelligentCommentAuthor> { new("Aero", DateTime.Now) };
-    var identifier = comment.CreateIdentifier();
+    int identifier = comment.CreateIdentifier();
 
     return new RdIntelligentComment(authors, DateTime.Now, content, null, null, null, null, identifier, comment.GetRdRange());
   }
@@ -77,7 +78,7 @@ public static class CommentsUtil
   private static RdContentSegments ToRdContentSegments([NotNull] this IContentSegments contentSegments)
   {
     var contentSegmentsList = new List<RdContentSegment>();
-    foreach (var contentSegment in contentSegments.Segments)
+    foreach (IContentSegment contentSegment in contentSegments.Segments)
     {
       contentSegmentsList.Add(contentSegment.ToRdContentSegment());
     }
@@ -128,10 +129,10 @@ public static class CommentsUtil
   private static RdTableSegment ToRdTable([NotNull] this ITableSegment table)
   {
     var rows = new List<RdTableRow>();
-    foreach (var row in table.Rows)
+    foreach (ITableSegmentRow row in table.Rows)
     {
       var cells = new List<RdTableCell>();
-      foreach (var cell in row.Cells)
+      foreach (ITableCell cell in row.Cells)
       {
         cells.Add(new RdTableCell(cell.Content.ToRdContentSegments(), cell.Properties?.ToRdTableCellProperties()));
       }
@@ -268,7 +269,7 @@ public static class CommentsUtil
   [NotNull]
   public static RdHighlightedText ToRdHighlightedText([NotNull] this IHighlightedText text)
   {
-    var rdHighlighters = text.Highlighters.Select(highlighter => highlighter.ToRdHighlighter()).ToList();
+    List<RdTextHighlighter> rdHighlighters = text.Highlighters.Select(highlighter => highlighter.ToRdHighlighter()).ToList();
     return new RdHighlightedText(text.Text, rdHighlighters);
   }
 
@@ -329,13 +330,13 @@ public static class CommentsUtil
   private static RdListSegment ToRdList([NotNull] this IListSegment listSegment)
   {
     var items = new List<RdListItem>();
-    foreach (var item in listSegment.Items)
+    foreach (IListItem item in listSegment.Items)
     {
-      var rdHeader = item.Header is { } header && header.ContentSegments.Segments.Count > 0
+      RdContentSegments rdHeader = item.Header is { } header && header.ContentSegments.Segments.Count > 0
         ? item.Header.ContentSegments.ToRdContentSegments()
         : null;
 
-      var rdDescription = item.Content is { } content && content.ContentSegments.Segments.Count > 0
+      RdContentSegments rdDescription = item.Content is { } content && content.ContentSegments.Segments.Count > 0
         ? item.Content.ContentSegments.ToRdContentSegments()
         : null;
 

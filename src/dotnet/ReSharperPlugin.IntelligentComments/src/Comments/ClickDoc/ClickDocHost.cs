@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using JetBrains.Annotations;
 using JetBrains.Application.DataContext;
 using JetBrains.Application.Threading;
@@ -14,7 +15,6 @@ using JetBrains.Rider.Backend.Features.QuickDoc;
 using JetBrains.Rider.Backend.Features.TextControls;
 using JetBrains.Rider.Model;
 using JetBrains.Util;
-using ReSharperPlugin.IntelligentComments.Comments.Caches;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.References;
 
@@ -30,7 +30,6 @@ public class ClickDocHost
   [NotNull] private readonly IShellLocks myShellLocks;
   [NotNull] private readonly RiderTextControlHost myTextControlHost;
   [NotNull] private readonly DataContexts myDataContexts;
-  [NotNull] private readonly ReferencesCache myReferencesCache;
   [NotNull] private readonly RdReferenceConverter myRdReferenceConverter;
 
 
@@ -41,8 +40,7 @@ public class ClickDocHost
     [NotNull] QuickDocHost quickDocHost,
     [NotNull] IShellLocks shellLocks,
     [NotNull] RiderTextControlHost textControlHost, 
-    [NotNull] DataContexts dataContexts, 
-    [NotNull] ReferencesCache referencesCache,
+    [NotNull] DataContexts dataContexts,
     [NotNull] RdReferenceConverter rdReferenceConverter)
   {
     myLifetime = lifetime;
@@ -52,13 +50,13 @@ public class ClickDocHost
     myShellLocks = shellLocks;
     myTextControlHost = textControlHost;
     myDataContexts = dataContexts;
-    myReferencesCache = referencesCache;
     myRdReferenceConverter = rdReferenceConverter;
 
     solution.GetProtocolSolution().GetRdCommentsModel().RequestClickDoc.Set(HandleClickDocRequest);
   }
   
   
+  [NotNull]
   private RdTask<int?> HandleClickDocRequest(Lifetime lifetime, RdCommentClickDocRequest request)
   {
     var task = new RdTask<int?>();
@@ -90,15 +88,15 @@ public class ClickDocHost
       }
 
       const string name = $"{nameof(ClickDocHost)}::DataRule";
-      var dataRules = DataRules
+      IList<IDataRule> dataRules = DataRules
         .AddRule(name, ProjectModelDataConstants.SOLUTION, declaredElement.GetSolution())
         .AddRule(name, PsiDataConstants.DECLARED_ELEMENTS, declaredElement.ToDeclaredElementsDataConstant())
         .AddRule(name, DocumentModelDataConstants.DOCUMENT, textControl.Document);
 
-      var dataContext = myDataContexts.CreateWithDataRules(myLifetime, dataRules);
+      IDataContext dataContext = myDataContexts.CreateWithDataRules(myLifetime, dataRules);
       
-      using var _ = CompilationContextCookie.GetExplicitUniversalContextIfNotSet();
-      var sessionId = myQuickDocHost.ExecuteSession(dataContext);
+      using CompilationContextCookie _ = CompilationContextCookie.GetExplicitUniversalContextIfNotSet();
+      int? sessionId = myQuickDocHost.ExecuteSession(dataContext);
       task.Set(sessionId);
     });
     

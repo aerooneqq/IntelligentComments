@@ -28,13 +28,13 @@ public class CommentDaemonProcess : IDaemonStageProcess
   
   public void Execute(Action<DaemonStageResult> committer)
   {
-    var files = DaemonProcess.SourceFile.GetPsiFiles<CSharpLanguage>();
+    IEnumerable<IFile> files = DaemonProcess.SourceFile.GetPsiFiles<CSharpLanguage>();
     var result = new List<HighlightingInfo>();
-    foreach (var file in files)
+    foreach (IFile file in files)
     {
       var commentsCollector = new CommentsProcessor();
       file.ProcessThisAndDescendants(commentsCollector);
-      foreach (var comment in commentsCollector.Comments)
+      foreach (ICommentBase comment in commentsCollector.Comments)
       {
         result.Add(new HighlightingInfo(comment.Range, CommentFoldingHighlighting.Create(comment)));
       }

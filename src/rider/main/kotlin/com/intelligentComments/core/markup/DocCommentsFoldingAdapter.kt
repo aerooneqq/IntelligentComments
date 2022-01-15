@@ -70,8 +70,7 @@ class DocCommentsFoldingAdapter(private val editor: EditorImpl) : FrontendMarkup
         controller.addComment(editor, comment)
 
         highlighter.gutterIconRenderer = DocCommentSwitchRenderModeGutterMark(comment, editor, it)
-        highlighter.isGreedyToLeft = true
-        highlighter.isGreedyToRight = true
+        highlighter.toGreedy()
       }
     }
   }

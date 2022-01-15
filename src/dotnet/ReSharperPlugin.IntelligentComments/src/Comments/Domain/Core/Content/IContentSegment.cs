@@ -73,7 +73,7 @@ public record TableCellProperties(
   RdVerticalAlignment VerticalAlignment,
   bool IsHeader)
 {
-  public static TableCellProperties DefaultProperties { get; } =
+  [NotNull] public static TableCellProperties DefaultProperties { get; } =
     new(RdHorizontalAlignment.Center, RdVerticalAlignment.Center, false);
 }
 

@@ -43,9 +43,9 @@ public class HighlightedText : IHighlightedText
 
   public void Add(IHighlightedText other)
   {
-    var length = Text.Length;
+    int length = Text.Length;
 
-    var newHighlighters = other.Highlighters
+    List<TextHighlighter> newHighlighters = other.Highlighters
       .Select(h => h with { StartOffset = h.StartOffset + length, EndOffset = h.EndOffset + length })
       .ToList();
     
@@ -65,7 +65,7 @@ public class HighlightedText : IHighlightedText
       ++removedCharsFromStartCount;
     }
 
-    var newHighlighters = myHighlighters
+    List<TextHighlighter> newHighlighters = myHighlighters
       .Select(h => h with { StartOffset = h.StartOffset - removedCharsFromStartCount })
       .Where(h => h.IsValid())
       .ToList();

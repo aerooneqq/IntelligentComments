@@ -66,23 +66,23 @@ public class SandboxesCache : AbstractOpenedDocumentBasedCache<string, SandboxFi
     [NotNull] CodeHighlightingRequest request)
   {
     myShellLocks.AssertMainThread();
-    var lifetimeDef = myLifetime.CreateNested();
-    var highlightingLifetime = lifetimeDef.Lifetime;
+    LifetimeDefinition lifetimeDef = myLifetime.CreateNested();
+    Lifetime highlightingLifetime = lifetimeDef.Lifetime;
     if (request.Document.GetData(DocumentHostBase.DocumentIdKey) is not { } documentId)
     {
       myLogger.Error($"Failed to get documentId for {request.Document.Moniker}");
       return null;
     }
     
-    var sandBoxInfo = CreateSandboxInfo(request, documentId);
-    var sandboxFile = myHelper.GetOrCreateSandboxProjectFile(documentId, sandBoxInfo, highlightingLifetime);
+    SandboxInfo sandBoxInfo = CreateSandboxInfo(request, documentId);
+    IProjectFile sandboxFile = myHelper.GetOrCreateSandboxProjectFile(documentId, sandBoxInfo, highlightingLifetime);
     
     if (TryGetValue(originalDocument, originalDocument.Moniker) is { } existingSandboxFileInfo)
     {
       return AddTextIfNeededAndGetFragment(existingSandboxFileInfo, request);
     }
     
-    var document = sandboxFile.GetDocument();
+    IDocument document = sandboxFile.GetDocument();
     if (document is not RiderDocument riderDocument)
     {
       myLogger.LogAssertion($"Got unexpected document for {sandboxFile}: {document}");
@@ -98,14 +98,14 @@ public class SandboxesCache : AbstractOpenedDocumentBasedCache<string, SandboxFi
       sandboxFile,
       myDocumentHost);
 
-    var sourceFile = riderDocument.GetPsiSourceFile(mySolution);
+    IPsiSourceFile sourceFile = riderDocument.GetPsiSourceFile(mySolution);
     if (sourceFile is not SandboxPsiSourceFile sandboxPsiSourceFile)
     {
       myLogger.LogAssertion($"Got unexpected sourceFile for {sandboxFile}: {sourceFile}");
       return null;
     }
 
-    var endOffset = riderDocument.GetTextLength();
+    int endOffset = riderDocument.GetTextLength();
     var idToOffsets = new Dictionary<int, TextRange>
     {
       [request.CalculateTextHash()] = new(0, endOffset)
@@ -121,16 +121,16 @@ public class SandboxesCache : AbstractOpenedDocumentBasedCache<string, SandboxFi
     [NotNull] SandboxFileInfo sandboxFileInfo,
     [NotNull] CodeHighlightingRequest request)
   {
-    var (_, sandboxPsiSourceFile, textHashesToOffset) = sandboxFileInfo;
-    if (textHashesToOffset.TryGetValue(request.CalculateTextHash(), out var existingRange))
+    (_, SandboxPsiSourceFile sandboxPsiSourceFile, IDictionary<int, TextRange> textHashesToOffset) = sandboxFileInfo;
+    if (textHashesToOffset.TryGetValue(request.CalculateTextHash(), out TextRange existingRange))
     {
       return new SandboxCodeFragmentInfo(sandboxPsiSourceFile, existingRange.StartOffset, existingRange.EndOffset);
     }
     
-    var sandboxDocument = sandboxPsiSourceFile.Document;
-    var startOffset = sandboxDocument.GetTextLength();
-    var createdText = request.Text;
-    var endOffset = startOffset + createdText.Length;
+    IDocument sandboxDocument = sandboxPsiSourceFile.Document;
+    int startOffset = sandboxDocument.GetTextLength();
+    string createdText = request.Text;
+    int endOffset = startOffset + createdText.Length;
     
     sandboxDocument.InsertText(startOffset, createdText);
     
@@ -141,7 +141,7 @@ public class SandboxesCache : AbstractOpenedDocumentBasedCache<string, SandboxFi
   
   private static SandboxInfo CreateSandboxInfo(CodeHighlightingRequest request, RdDocumentId rdDocumentId)
   {
-    var documentText = request.Text;
+    string documentText = request.Text;
     return new SandboxInfo(
       rdDocumentId,
       documentText,
@@ -168,7 +168,7 @@ public class SandboxesCache : AbstractOpenedDocumentBasedCache<string, SandboxFi
   protected override void BeforeRemoval(IDocument document, IEnumerable<SandboxFileInfo> values)
   {
     myShellLocks.AssertMainThread();
-    foreach (var value in values)
+    foreach (SandboxFileInfo value in values)
     {
       value.LifetimeDefinition.Terminate();
     }

@@ -54,7 +54,7 @@ internal static class CommentsBuilderUtil
   
   internal static TextProcessingResult PreprocessTextWithContext([NotNull] string text, [NotNull] XmlNode context)
   {
-    var nextSibling = context.NextSibling;
+    XmlNode nextSibling = context.NextSibling;
 
     char? trailingCharToAdd = null;
     if (nextSibling is not XmlText xmlText)
@@ -66,7 +66,7 @@ internal static class CommentsBuilderUtil
     }
     else
     {
-      foreach (var c in xmlText.Value)
+      foreach (char c in xmlText.Value)
       {
         if (c == '\n')
         {
