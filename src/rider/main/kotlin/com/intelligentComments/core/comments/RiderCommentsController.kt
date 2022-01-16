@@ -34,11 +34,6 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
   private val listenersManager = project.service<CommentsEditorsListenersManager>()
 
 
-  fun removeComment(comment: CommentBase, editor: EditorImpl) {
-    val (_, _, foldStartOffset, foldEndOffset) = getFoldingInfo(comment, editor) ?: return
-    removeFoldRegion(editor, foldStartOffset, foldEndOffset)
-    commentsStorage.removeComment(editor.document, comment.commentIdentifier)
-  }
 
   fun getFolding(commentIdentifier: CommentIdentifier, editor: EditorImpl): CustomFoldRegion? {
     return commentsStorage.getFolding(commentIdentifier, editor)

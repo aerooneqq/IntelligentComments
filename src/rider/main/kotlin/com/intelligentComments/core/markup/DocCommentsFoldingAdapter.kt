@@ -103,13 +103,11 @@ class DocCommentsFoldingAdapter(private val editor: EditorImpl) : FrontendMarkup
 
   override fun beforeBulkRemove(highlighters: List<RangeHighlighterEx>) {
     editor.project?.let {
-      val controller = it.getComponent(RiderCommentsController::class.java) ?: return
       executeOverDocHighlighters(highlighters) { highlighter, _ ->
         val existingComment = highlighter.getUserData(commentKey)
 
         if (existingComment != null) {
           highlighter.putUserData(commentKey, null)
-          controller.removeComment(existingComment, editor)
           deletedCommentsRangeMarkersCache.store(existingComment.rangeMarker)
         }
       }
