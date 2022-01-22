@@ -1,7 +1,7 @@
 package com.intelligentComments.ui.comments.renderers
 
 import com.intelligentComments.ui.comments.model.content.ContentSegmentUiModel
-import com.intelligentComments.ui.comments.renderers.segments.SegmentRenderer
+import com.intelligentComments.ui.comments.model.content.ContentSegmentsUiModel
 import com.intelligentComments.ui.core.RectangleModelBuildContext
 import com.intelligentComments.ui.core.RectangleModelBuildContributor
 import com.intelligentComments.ui.core.RectanglesModel
@@ -11,11 +11,18 @@ import com.intelligentComments.ui.util.RenderAdditionalInfo
 import com.intellij.openapi.editor.impl.EditorImpl
 import java.awt.Graphics
 import java.awt.Rectangle
-import java.lang.Integer.max
 
-open class ContentSegmentsRenderer(
+open class ContentSegmentsRenderer : Renderer, RectangleModelBuildContributor {
   private val segments: Collection<ContentSegmentUiModel>
-) : Renderer, RectangleModelBuildContributor {
+
+
+  constructor(segments: Collection<ContentSegmentUiModel>) {
+    this.segments = segments
+  }
+
+  constructor(segments: ContentSegmentsUiModel) : this(segments.contentSection.content)
+
+
   override fun render(
     g: Graphics,
     rect: Rectangle,

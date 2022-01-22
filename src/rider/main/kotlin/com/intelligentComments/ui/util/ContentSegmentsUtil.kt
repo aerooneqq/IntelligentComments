@@ -1,6 +1,7 @@
 package com.intelligentComments.ui.util
 
 import com.intelligentComments.ui.comments.model.content.ContentSegmentUiModel
+import com.intelligentComments.ui.comments.model.content.ContentSegmentsUiModel
 import com.intelligentComments.ui.comments.renderers.segments.LeftHeaderRightContentRenderer
 import com.intelligentComments.ui.comments.renderers.segments.SegmentRenderer
 import com.intelligentComments.ui.core.RectangleModelBuildContext
@@ -21,6 +22,15 @@ data class RenderAdditionalInfo(
 class ContentSegmentsUtil {
   companion object {
     const val deltaBetweenSegments = 8
+
+
+    fun renderSegments(
+      contentSegmentsUiModel: ContentSegmentsUiModel,
+      g: Graphics,
+      rect: Rectangle,
+      editorImpl: EditorImpl,
+      rectanglesModel: RectanglesModel
+    ): Rectangle = renderSegments(contentSegmentsUiModel.contentSection.content, g, rect, editorImpl, rectanglesModel)
 
     fun renderSegments(
       contentSegments: Collection<ContentSegmentUiModel>,
@@ -68,6 +78,12 @@ class ContentSegmentsUtil {
     }
 
     fun calculateContentHeight(
+      contentSegments: ContentSegmentsUiModel,
+      editorImpl: EditorImpl,
+      additionalInfo: RenderAdditionalInfo
+    ): Int = calculateContentHeight(contentSegments.contentSection.content, editorImpl, additionalInfo)
+
+    fun calculateContentHeight(
       contentSegments: Collection<ContentSegmentUiModel>,
       editorImpl: EditorImpl,
       additionalInfo: RenderAdditionalInfo
@@ -79,6 +95,12 @@ class ContentSegmentsUtil {
 
       return height - deltaBetweenSegments
     }
+
+    fun calculateContentWidth(
+      contentSegments: ContentSegmentsUiModel,
+      editorImpl: EditorImpl,
+      additionalInfo: RenderAdditionalInfo
+    ): Int = calculateContentWidth(contentSegments.contentSection.content, editorImpl, additionalInfo)
 
     fun calculateContentWidth(
       contentSegments: Collection<ContentSegmentUiModel>,

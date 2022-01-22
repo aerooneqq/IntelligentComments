@@ -6,7 +6,6 @@ import com.intellij.openapi.editor.CustomFoldRegion
 import com.intellij.openapi.editor.Editor
 import com.jetbrains.rd.util.getOrCreate
 import java.util.*
-import kotlin.collections.HashMap
 
 class DocumentCommentsWithFoldingsStorage : DocumentCommentsStorage() {
   private val foldings = HashMap<Editor, TreeMap<CommentIdentifier, CustomFoldRegion>>()

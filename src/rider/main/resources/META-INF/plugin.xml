@@ -22,9 +22,13 @@
     <projectService serviceImplementation="com.intelligentComments.core.comments.navigation.CommentsNavigationHost" />
 
     <rdclient.highlighterModelSupport implementation="com.intelligentComments.core.markup.DocCommentsFoldingHighlightersSupport" />
+
   </extensions>
 
   <project-components>
+    <component>
+      <implementation-class>com.intelligentComments.core.comments.RiderCommentsPushToHintController</implementation-class>
+    </component>
     <component>
       <implementation-class>com.intelligentComments.core.comments.RiderCommentsController</implementation-class>
     </component>

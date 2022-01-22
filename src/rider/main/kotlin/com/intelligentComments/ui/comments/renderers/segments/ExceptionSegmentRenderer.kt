@@ -4,4 +4,4 @@ import com.intelligentComments.ui.comments.model.content.exceptions.ExceptionUiM
 
 class ExceptionSegmentRenderer(
   model: ExceptionUiModel
-) : LeftTextHeaderAndRightContentRenderer(model.name, model.content.content), SegmentRenderer
+) : LeftTextHeaderAndRightContentRenderer(model.name, model.content.contentSection.content), SegmentRenderer

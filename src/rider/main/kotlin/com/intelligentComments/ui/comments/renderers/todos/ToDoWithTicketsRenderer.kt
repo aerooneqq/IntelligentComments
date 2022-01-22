@@ -100,12 +100,12 @@ class ToDoWithTicketsRenderer(private val todo: ToDoWithTicketsUiModel) :
     editorImpl: EditorImpl,
     rectanglesModel: RectanglesModel
   ): Rectangle {
-    return ContentSegmentsUtil.renderSegments(todo.description.content, g, rect, editorImpl, rectanglesModel)
+    return ContentSegmentsUtil.renderSegments(todo.description, g, rect, editorImpl, rectanglesModel)
   }
 
   override fun calculateContentHeight(editorImpl: EditorImpl, additionalRenderInfo: RenderAdditionalInfo): Int {
     val ticketsHeaderHeight = calculateTicketsHeight(editorImpl) + heightDelta
-    val contentHeight = ContentSegmentsUtil.calculateContentHeight(todo.description.content, editorImpl, additionalRenderInfo) + heightDelta
+    val contentHeight = ContentSegmentsUtil.calculateContentHeight(todo.description, editorImpl, additionalRenderInfo) + heightDelta
     return ticketsHeaderHeight + contentHeight
   }
 
@@ -114,13 +114,13 @@ class ToDoWithTicketsRenderer(private val todo: ToDoWithTicketsUiModel) :
   }
 
   override fun calculateContentWidth(editorImpl: EditorImpl, additionalRenderInfo: RenderAdditionalInfo): Int {
-    return ContentSegmentsUtil.calculateContentWidth(todo.description.content, editorImpl, additionalRenderInfo)
+    return ContentSegmentsUtil.calculateContentWidth(todo.description, editorImpl, additionalRenderInfo)
   }
 
   override fun acceptContent(context: RectangleModelBuildContext) {
     val currentRect = acceptForTickets(context)
 
-    for (segment in todo.description.content) {
+    for (segment in todo.description.contentSection.content) {
       val renderer = SegmentRenderer.getRendererFor(segment)
       val rect = Rectangle(currentRect).apply {
         width = renderer.calculateExpectedWidthInPixels(context.editorImpl, context.additionalRenderInfo)

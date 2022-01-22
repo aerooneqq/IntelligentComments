@@ -6,22 +6,20 @@ import com.intelligentComments.ui.comments.model.sections.SectionUiModel
 import com.intelligentComments.ui.comments.renderers.DocCommentRenderer
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
-import com.intellij.psi.impl.source.tree.injected.changesHandler.range
 
 class DocCommentUiModel(
   docComment: DocComment,
   project: Project,
   editor: Editor
 ) : CommentUiModelBase(docComment, project, editor) {
-  override val renderer = DocCommentRenderer(this)
-  override val content: Collection<ContentSegmentUiModel>
+  override val renderer
+    get() = DocCommentRenderer(this)
 
-  val contentSection: SectionUiModel<ContentSegmentUiModel>
+  override val contentSection: SectionUiModel<ContentSegmentUiModel>
 
 
   init {
     val segments = docComment.content.content.segments.map { ContentSegmentUiModel.getFrom(project, this, it) }
-    content = segments
     contentSection = SectionUiModel(project, this, segments)
   }
 

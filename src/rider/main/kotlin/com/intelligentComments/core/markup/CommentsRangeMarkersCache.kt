@@ -6,7 +6,7 @@ import com.intellij.psi.impl.source.tree.injected.changesHandler.range
 import com.intellij.util.application
 
 class CommentsRangeMarkersCache {
-  data class RangeMarkerWithStamp(val rangeMarker: RangeMarker, val stamp: Int)
+  private data class RangeMarkerWithStamp(val rangeMarker: RangeMarker, val stamp: Int)
 
 
   private var myStamp: Int = 0

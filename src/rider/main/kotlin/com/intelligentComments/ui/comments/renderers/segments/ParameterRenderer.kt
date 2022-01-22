@@ -4,4 +4,4 @@ import com.intelligentComments.ui.comments.model.content.params.AbstractParamete
 
 class ParameterRenderer(
   model: AbstractParameterUiModel
-) : LeftTextHeaderAndRightContentRenderer(model.name, model.description.content)
+) : LeftTextHeaderAndRightContentRenderer(model.name, model.description)

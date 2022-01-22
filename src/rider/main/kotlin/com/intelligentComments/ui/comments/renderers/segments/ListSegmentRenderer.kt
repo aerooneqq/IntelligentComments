@@ -57,8 +57,8 @@ class ListSegmentRenderer(private val model: ListContentSegmentUiModel) : Segmen
     val description = item.description
 
     val listContent = mutableListOf<ContentSegmentUiModel>()
-    if (header != null) listContent.addAll(header.content)
-    if (description != null) listContent.addAll(description.content)
+    if (header != null) listContent.addAll(header.contentSection.content)
+    if (description != null) listContent.addAll(description.contentSection.content)
     return listContent
   }
 

@@ -90,7 +90,7 @@ fun getFirstLevelHeader(
   val returnBackgroundColor = colorsProvider.getColorFor(backgroundColorKey)
 
   val length = text.length
-  val highlighter = CommonsHighlightersFactory.getWithRoundedBackgroundRect(null, textColor, returnBackgroundColor, length)
+  val highlighter = CommonsHighlightersFactory.createWithRoundedBackgroundRect(null, textColor, returnBackgroundColor, length)
 
   return HighlightedTextImpl(text, parent, listOf(highlighter))
 }

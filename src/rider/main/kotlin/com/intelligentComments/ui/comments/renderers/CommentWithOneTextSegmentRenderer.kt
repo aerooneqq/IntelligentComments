@@ -2,8 +2,7 @@ package com.intelligentComments.ui.comments.renderers
 
 import com.intelligentComments.ui.colors.ColorsProvider
 import com.intelligentComments.ui.comments.model.CommentWithOneTextSegmentUiModel
-import com.intelligentComments.ui.comments.renderers.segments.SegmentsRenderer
-import com.intelligentComments.ui.util.RenderAdditionalInfo
+import com.intelligentComments.ui.util.SectionModelUtil
 import com.intellij.openapi.editor.impl.EditorImpl
 import com.intellij.openapi.editor.markup.TextAttributes
 import java.awt.Graphics
@@ -19,7 +18,6 @@ class CommentWithOneTextSegmentRenderer(private val model: CommentWithOneTextSeg
     colorsProvider: ColorsProvider
   ) {
     val rectanglesModel = revalidateRectanglesModel(editorImpl)
-    val renderer = SegmentsRenderer.getRendererFor(model.contentSection)
-    renderer.render(g, targetRegion, editorImpl, rectanglesModel, RenderAdditionalInfo.emptyInstance)
+    SectionModelUtil.renderSection(g, targetRegion, editorImpl, rectanglesModel, model.contentSection)
   }
 }

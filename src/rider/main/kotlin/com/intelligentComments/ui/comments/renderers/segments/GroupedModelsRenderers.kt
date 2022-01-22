@@ -14,24 +14,24 @@ class GroupedSeeAlsoRenderer(
 
 class GroupedReturnsRenderer(
   model: GroupedReturnUiModel
-) : LeftTextHeaderAndRightContentRenderer(model.header, model.content.content)
+) : LeftTextHeaderAndRightContentRenderer(model.header, model.content)
 
 class GroupedParamsRenderer(
   model: GroupedParamsUiModel
-) : LeftTextHeaderAndRightContentRenderer(model.header, model.content.content)
+) : LeftTextHeaderAndRightContentRenderer(model.header, model.content)
 
 class GroupedTypeParamsRenderer(
   model: GroupedTypeParamsUiModel
-) : LeftTextHeaderAndRightContentRenderer(model.header, model.content.content)
+) : LeftTextHeaderAndRightContentRenderer(model.header, model.content)
 
 class GroupedExceptionsRenderer(
   model: GroupedExceptionUiModel
-) : LeftTextHeaderAndRightContentRenderer(model.header, model.content.content)
+) : LeftTextHeaderAndRightContentRenderer(model.header, model.content)
 
 class GroupedSummariesRenderer(
   model: GroupedSummaryUiModel
-) : LeftTextHeaderAndRightContentRenderer(model.header, model.content.content, false)
+) : LeftTextHeaderAndRightContentRenderer(model.header, model.content, false)
 
 class GroupedRemarksRenderer(
   model: GroupedRemarksUiModel
-) : LeftTextHeaderAndRightContentRenderer(model.header, model.content.content)
+) : LeftTextHeaderAndRightContentRenderer(model.header, model.content)

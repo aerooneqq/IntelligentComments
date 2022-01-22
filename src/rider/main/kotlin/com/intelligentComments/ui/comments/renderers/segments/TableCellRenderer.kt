@@ -37,7 +37,7 @@ class TableCellRenderer(private val cell: TableCellUiModel) : Renderer, Rectangl
 
     val adjustedRect = calculateRectForCellContent(rect, editorImpl, additionalRenderInfo)
     return ContentSegmentsUtil.renderSegments(
-      cell.contentSegments.content,
+      cell.contentSegments.contentSection.content,
       g,
       adjustedRect,
       editorImpl,
@@ -77,7 +77,7 @@ class TableCellRenderer(private val cell: TableCellUiModel) : Renderer, Rectangl
     editorImpl: EditorImpl,
     additionalRenderInfo: RenderAdditionalInfo
   ): Int {
-    val height = ContentSegmentsUtil.calculateContentHeight(cell.contentSegments.content, editorImpl, additionalRenderInfo)
+    val height = ContentSegmentsUtil.calculateContentHeight(cell.contentSegments, editorImpl, additionalRenderInfo)
     return height + 2 * cellMargin
   }
 
@@ -85,7 +85,7 @@ class TableCellRenderer(private val cell: TableCellUiModel) : Renderer, Rectangl
     editorImpl: EditorImpl,
     additionalRenderInfo: RenderAdditionalInfo
   ): Int {
-    val width = ContentSegmentsUtil.calculateContentWidth(cell.contentSegments.content, editorImpl, additionalRenderInfo)
+    val width = ContentSegmentsUtil.calculateContentWidth(cell.contentSegments, editorImpl, additionalRenderInfo)
     return width + 2 * cellMargin
   }
 
@@ -93,7 +93,7 @@ class TableCellRenderer(private val cell: TableCellUiModel) : Renderer, Rectangl
     val rect = calculateRectForCellContent(context.rect, context.editorImpl, context.additionalRenderInfo)
 
     val editorImpl = context.editorImpl
-    for (cellContent in cell.contentSegments.content) {
+    for (cellContent in cell.contentSegments.contentSection.content) {
       val renderer = SegmentRenderer.getRendererFor(cellContent)
       val width = renderer.calculateExpectedWidthInPixels(editorImpl, context.additionalRenderInfo)
       val height = renderer.calculateExpectedHeightInPixels(editorImpl, context.additionalRenderInfo)

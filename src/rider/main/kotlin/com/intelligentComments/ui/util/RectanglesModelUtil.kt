@@ -1,9 +1,6 @@
 package com.intelligentComments.ui.util
 
-import com.intelligentComments.ui.comments.model.CommentWithOneTextSegmentUiModel
-import com.intelligentComments.ui.comments.model.DocCommentUiModel
-import com.intelligentComments.ui.comments.model.IntelligentCommentUiModel
-import com.intelligentComments.ui.comments.model.UiInteractionModelBase
+import com.intelligentComments.ui.comments.model.*
 import com.intelligentComments.ui.comments.model.content.ContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.sections.SectionUiModel
 import com.intelligentComments.ui.comments.renderers.authors.CommentAuthorsRenderer
@@ -35,6 +32,7 @@ class RectanglesModelUtil {
         is IntelligentCommentUiModel -> buildRectanglesModel(editorImpl, model, xDelta, yDelta)
         is DocCommentUiModel -> buildRectanglesModel(editorImpl, model,  model.contentSection, xDelta, yDelta)
         is CommentWithOneTextSegmentUiModel -> buildRectanglesModel(editorImpl, model, model.contentSection, xDelta, yDelta)
+        is CollapsedCommentUiModel -> buildRectanglesModel(editorImpl, model, model.contentSection, xDelta, yDelta)
         else -> throw IllegalArgumentException(model.toString())
       }
     }

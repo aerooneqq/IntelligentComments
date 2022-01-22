@@ -5,6 +5,7 @@ import com.intelligentComments.ui.colors.ColorName
 import com.intelligentComments.ui.colors.ColorsProvider
 import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.colors.EditorColorsManager
+import com.intellij.openapi.editor.markup.TextAttributes
 import com.intellij.openapi.project.Project
 import com.jetbrains.ide.model.highlighterRegistration.IdeaTextAttributesKey
 import com.jetbrains.rd.ide.model.*
@@ -44,14 +45,17 @@ private fun RdTextHighlighter.toIdeaHighlighterFromReSharper(
   project: Project,
   parent: Parentable?,
 ): TextHighlighter {
-  val scheme = EditorColorsManager.getInstance().globalScheme
-  val key = IdeaTextAttributesKey(null, this.key)
-
-  val host = TextAttributesRegistrationHost.getInstance()
-  val textAttributes = host.getTextAttributes(key, scheme) ?: return toIdeaHighlighterInternal(project, parent, null)
-
+  val textAttributes = tryGetTextAttributes(key) ?: return toIdeaHighlighterInternal(project, parent, null)
   val textColor = textAttributes.foregroundColor?.darker() ?: return toIdeaHighlighterInternal(project, parent, null)
   return toIdeaHighlighterInternal(project, parent, textColor)
+}
+
+fun tryGetTextAttributes(key: String): TextAttributes? {
+  val scheme = EditorColorsManager.getInstance().globalScheme
+  val key = IdeaTextAttributesKey(null, key)
+
+  val host = TextAttributesRegistrationHost.getInstance()
+  return host.getTextAttributes(key, scheme)
 }
 
 class BackgroundStyleFromRd(rdBackgroundStyle: RdBackgroundStyle) : BackgroundStyle {

@@ -45,7 +45,7 @@ private fun getGroupedParamsSectionHeader(
   val textColor = colorsProvider.getColorFor(Colors.TextInSectionsRectanglesHeadersColor)
   val paramBackgroundColor = colorsProvider.getColorFor(backgroundColor)
 
-  val highlighter = CommonsHighlightersFactory.getWithRoundedBackgroundRect(
+  val highlighter = CommonsHighlightersFactory.createWithRoundedBackgroundRect(
     null, textColor, paramBackgroundColor, sectionName.length
   )
 

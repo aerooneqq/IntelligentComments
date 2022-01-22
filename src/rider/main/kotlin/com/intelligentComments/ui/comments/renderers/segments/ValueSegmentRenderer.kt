@@ -5,4 +5,4 @@ import com.intelligentComments.ui.comments.renderers.ContentSegmentsRenderer
 
 class ValueSegmentRenderer(
   model: ValueUiModel
-) : ContentSegmentsRenderer(model.content.content), SegmentRenderer
+) : ContentSegmentsRenderer(model.content), SegmentRenderer

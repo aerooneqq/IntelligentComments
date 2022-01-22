@@ -14,8 +14,6 @@ import com.intelligentComments.ui.comments.model.todo.ToDoUiModel
 import com.intelligentComments.ui.comments.renderers.IntelligentCommentsRenderer
 import com.intelligentComments.ui.util.HashUtil
 import com.intellij.icons.AllIcons
-import com.intellij.openapi.editor.CustomFoldRegionRenderer
-import com.intellij.openapi.editor.EditorCustomElementRenderer
 import com.intellij.openapi.editor.event.EditorMouseEvent
 import com.intellij.openapi.project.Project
 import com.intellij.util.ui.UIUtil
@@ -27,11 +25,9 @@ class IntelligentCommentUiModel(
   comment: IntelligentComment
 ) : CommentUiModelBase(comment, project, null!!), RootUiModel {
   override val renderer = IntelligentCommentsRenderer(this)
-  override val content: Collection<ContentSegmentUiModel>
-    get() = TODO("Not yet implemented")
 
   val authorsSection: SectionUiModel<AuthorUiModel>
-  val contentSection: SectionWithHeaderUiModel<ContentSegmentUiModel>
+  override val contentSection: SectionWithHeaderUiModel<ContentSegmentUiModel>
   val referencesSection: SectionWithHeaderUiModel<ReferenceUiModel>
   val invariantsSection: SectionWithHeaderUiModel<InvariantUiModel>
   val todosSection: SectionWithHeaderUiModel<ToDoUiModel>

@@ -31,11 +31,20 @@ class HighlightedTextImpl : HighlightedText {
     text: String,
     parent: Parentable?,
     highlighters: Collection<TextHighlighter>?
-  ) {
+  ) : this(text, parent) {
     attachHighlighters(highlighters)
     myHighlighters.addAll(highlighters ?: listOf())
-    this.text = text
-    this.parent = parent
+  }
+
+  constructor(
+    text: String,
+    parent: Parentable?,
+    highlighter: TextHighlighter?
+  ) : this(text, parent) {
+    if (highlighter != null) {
+      attachHighlighter(highlighter)
+      myHighlighters.add(highlighter)
+    }
   }
 
 
@@ -43,9 +52,13 @@ class HighlightedTextImpl : HighlightedText {
     if (highlighters == null) return
 
     for (highlighter in highlighters) {
-      highlighter as TextHighlighterImpl
-      highlighter.parent = this
+      attachHighlighter(highlighter)
     }
+  }
+
+  private fun attachHighlighter(highlighter: TextHighlighter?) {
+    highlighter as TextHighlighterImpl
+    highlighter.parent = this
   }
 
 

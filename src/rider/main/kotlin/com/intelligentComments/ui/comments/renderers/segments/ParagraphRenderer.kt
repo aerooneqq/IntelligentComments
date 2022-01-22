@@ -2,7 +2,6 @@ package com.intelligentComments.ui.comments.renderers.segments
 
 import com.intelligentComments.ui.comments.model.content.paragraphs.ParagraphUiModel
 import com.intelligentComments.ui.comments.renderers.ContentSegmentsRenderer
-import com.intelligentComments.ui.core.RectangleModelBuildContext
 import com.intelligentComments.ui.core.RectanglesModel
 import com.intelligentComments.ui.util.RenderAdditionalInfo
 import com.intelligentComments.ui.util.UpdatedRectCookie
@@ -11,7 +10,7 @@ import com.intellij.openapi.util.use
 import java.awt.Graphics
 import java.awt.Rectangle
 
-class ParagraphRendererImpl(private val model: ParagraphUiModel) : ContentSegmentsRenderer(model.content.content),
+class ParagraphRendererImpl(model: ParagraphUiModel) : ContentSegmentsRenderer(model.content),
   SegmentRenderer {
   companion object {
     private const val leftDelta = 0

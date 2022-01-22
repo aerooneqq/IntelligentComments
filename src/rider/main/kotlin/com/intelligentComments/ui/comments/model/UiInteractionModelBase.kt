@@ -4,6 +4,7 @@ import com.intelligentComments.ui.colors.ColorName
 import com.intelligentComments.ui.colors.Colors
 import com.intelligentComments.ui.colors.ColorsProvider
 import com.intelligentComments.ui.comments.model.content.ContentSegmentUiModel
+import com.intelligentComments.ui.comments.model.sections.SectionUiModel
 import com.intelligentComments.ui.comments.renderers.RendererWithRectangleModel
 import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.event.EditorMouseEvent
@@ -65,5 +66,5 @@ interface ExpandableUiModel {
 }
 
 interface ModelWithContent {
-  val content: Collection<ContentSegmentUiModel>
+  val contentSection: SectionUiModel<ContentSegmentUiModel>
 }

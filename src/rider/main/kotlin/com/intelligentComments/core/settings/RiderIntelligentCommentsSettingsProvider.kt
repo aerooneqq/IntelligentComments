@@ -4,6 +4,7 @@ import com.jetbrains.rd.platform.util.idea.LifetimedService
 import com.jetbrains.rd.util.reactive.Property
 
 enum class CommentsDisplayKind {
+  Hide,
   Render,
   Code
 }
@@ -29,7 +30,7 @@ interface RiderIntelligentCommentsSettingsProvider {
 }
 
 class RiderIntelligentCommentsSettingsProviderImpl : LifetimedService(), RiderIntelligentCommentsSettingsProvider {
-  override val commentsDisplayKind: Property<CommentsDisplayKind> = Property(CommentsDisplayKind.Render)
+  override val commentsDisplayKind: Property<CommentsDisplayKind> = Property(CommentsDisplayKind.Hide)
   override val groupingDelimiter: Property<String> = Property("\n")
   override val groupSeeAlso: Property<Boolean> = Property(true)
   override val groupReturns: Property<Boolean> = Property(true)

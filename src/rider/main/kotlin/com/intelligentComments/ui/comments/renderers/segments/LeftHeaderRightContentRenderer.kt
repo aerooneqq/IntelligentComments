@@ -4,6 +4,7 @@ import com.intelligentComments.core.settings.RiderIntelligentCommentsSettingsPro
 import com.intelligentComments.ui.comments.model.ModelWithContent
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intelligentComments.ui.comments.model.content.ContentSegmentUiModel
+import com.intelligentComments.ui.comments.model.content.ContentSegmentsUiModel
 import com.intelligentComments.ui.comments.model.content.GroupedUiModel
 import com.intelligentComments.ui.comments.model.highlighters.HighlightedTextUiWrapper
 import com.intelligentComments.ui.core.RectangleModelBuildContext
@@ -120,7 +121,7 @@ abstract class LeftHeaderRightContentRenderer(
       current = current.parent
     }
 
-    val singleContent = parent is ModelWithContent && parent.content.size == 1
+    val singleContent = parent is ModelWithContent && parent.contentSection.content.size == 1
     val settings = editorImpl.project?.service<RiderIntelligentCommentsSettingsProvider>()
     val canOmitHeader = !(settings?.showFirstLevelHeaderWhenOneElement?.value ?: return true)
 
@@ -175,11 +176,25 @@ abstract class LeftHeaderRightContentRenderer(
   }
 }
 
-open class LeftTextHeaderAndRightContentRenderer(
-  private val header: HighlightedTextUiWrapper,
-  content: Collection<ContentSegmentUiModel>,
-  renderHeader: Boolean = true
-) : LeftHeaderRightContentRenderer(content, renderHeader) {
+open class LeftTextHeaderAndRightContentRenderer : LeftHeaderRightContentRenderer {
+  private val header: HighlightedTextUiWrapper
+
+
+  constructor(
+    header: HighlightedTextUiWrapper,
+    content: Collection<ContentSegmentUiModel>,
+    renderHeader: Boolean = true
+  ) : super(content, renderHeader) {
+    this.header = header
+  }
+
+  constructor(
+    header: HighlightedTextUiWrapper,
+    segments: ContentSegmentsUiModel,
+    renderHeader: Boolean = true
+  ) : this(header, segments.contentSection.content, renderHeader)
+
+
   override fun calculateHeaderWidthInternal(editorImpl: EditorImpl): Int {
     return TextUtil.getTextWidthWithHighlighters(editorImpl, header)
   }

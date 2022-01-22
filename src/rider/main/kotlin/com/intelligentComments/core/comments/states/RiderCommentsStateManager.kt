@@ -50,14 +50,14 @@ class RiderCommentsStateManager(project: Project) : PersistentStateComponent<Sol
       if (persistentState != null) {
         persistentState
       } else {
-        var isInRenderMode = settingsProvider.commentsDisplayKind.value == CommentsDisplayKind.Render
+        var displayKind = settingsProvider.commentsDisplayKind.value
 
         val caretOffset = editor.caretModel.offset
         if (commentIdentifier.rangeMarker.range?.grown(1)?.contains(caretOffset) == true) {
-          isInRenderMode = false
+          displayKind = CommentsDisplayKind.Code
         }
 
-        CommentState(isInRenderMode)
+        CommentState(displayKind)
       }
     }
   }
@@ -90,7 +90,11 @@ class RiderCommentsStateManager(project: Project) : PersistentStateComponent<Sol
     return EditorId(psiFile.virtualFile.path)
   }
 
-  fun changeRenderMode(editor: Editor, commentIdentifier: CommentIdentifier): CommentState? {
+  fun changeDisplayKind(
+    editor: Editor,
+    commentIdentifier: CommentIdentifier,
+    displayKind: CommentsDisplayKind
+  ): CommentState? {
     application.assertIsDispatchThread()
     val existingState = tryGetCommentState(editor, commentIdentifier)
     if (existingState == null) {
@@ -98,7 +102,7 @@ class RiderCommentsStateManager(project: Project) : PersistentStateComponent<Sol
       return null
     }
 
-    existingState.changeRenderMode()
+    existingState.changeDisplayKind(displayKind)
     return existingState
   }
 
@@ -109,7 +113,7 @@ class RiderCommentsStateManager(project: Project) : PersistentStateComponent<Sol
       return null
     }
 
-    return state.isInRenderMode
+    return state.displayKind != CommentsDisplayKind.Code
   }
 
   override fun getState(): SolutionCommentsState {
@@ -122,7 +126,7 @@ class RiderCommentsStateManager(project: Project) : PersistentStateComponent<Sol
           tabOrder = editorId.tabOrder
           startOffset = rangeMarker.startOffset
           endOffset = rangeMarker.endOffset
-          isInRenderMode = state.isInRenderMode
+          displayKind = state.displayKind
         })
       }
     }
@@ -157,6 +161,6 @@ class CommentStateSnapshot {
   @Attribute("tabOrder") var tabOrder: Int = EditorId.emptyInstance.tabOrder
   @Attribute("startOffset") var startOffset: Int = 0
   @Attribute("endOffset") var endOffset: Int = 0
-  @Attribute("isInRenderMode") var isInRenderMode: Boolean = false
+  @Attribute("displayKind") var displayKind: CommentsDisplayKind = CommentsDisplayKind.Code
   @Attribute("lastRelativeCaretPositionWithinComment") var lastRelativeCaretPositionWithinComment: Int = 0
 }

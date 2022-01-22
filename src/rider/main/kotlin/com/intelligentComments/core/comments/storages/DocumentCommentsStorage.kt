@@ -11,8 +11,9 @@ open class DocumentCommentsStorage {
   private val comments = HashMap<Document, CommentsIdentifierStorage<CommentBase>>()
 
 
-  fun removeComment(document: Document, commentIdentifier: CommentIdentifier) {
-    comments[document]?.remove(commentIdentifier)
+  fun findNearestCommentTo(editor: Editor, offset: Int): CommentBase? {
+    val documentComments = comments[editor.document] ?: return null
+    return documentComments.findNearestLeftToOffset(offset)
   }
 
   fun recreateAllCommentsFor(editor: Editor) {

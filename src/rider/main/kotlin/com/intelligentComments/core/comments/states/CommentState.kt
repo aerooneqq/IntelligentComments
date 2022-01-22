@@ -1,5 +1,7 @@
 package com.intelligentComments.core.comments.states
 
+import com.intelligentComments.core.settings.CommentsDisplayKind
+
 class CommentState {
   companion object {
     val defaultInstance = CommentState()
@@ -8,23 +10,24 @@ class CommentState {
 
   constructor()
 
-  constructor(isInRenderMode: Boolean) {
-    this.isInRenderMode = isInRenderMode
+  constructor(displayKind: CommentsDisplayKind) {
+    this.displayKind = displayKind
   }
 
   constructor(snapshot: CommentStateSnapshot) {
-    isInRenderMode = snapshot.isInRenderMode
+    displayKind = snapshot.displayKind
     lastRelativeCaretOffsetWithinComment = snapshot.lastRelativeCaretPositionWithinComment
   }
 
 
-  var isInRenderMode = false
+  var displayKind = CommentsDisplayKind.Render
     private set
 
   var lastRelativeCaretOffsetWithinComment = 0
+  val isInRenderMode: Boolean
+    get() = displayKind != CommentsDisplayKind.Code
 
-
-  fun changeRenderMode() {
-    isInRenderMode = !isInRenderMode
+  fun changeDisplayKind(displayKind: CommentsDisplayKind) {
+    this.displayKind = displayKind
   }
 }

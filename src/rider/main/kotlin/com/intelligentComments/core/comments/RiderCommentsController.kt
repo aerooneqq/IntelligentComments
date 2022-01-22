@@ -5,9 +5,13 @@ import com.intelligentComments.core.comments.states.CommentState
 import com.intelligentComments.core.comments.states.RiderCommentsStateManager
 import com.intelligentComments.core.comments.storages.DocumentCommentsWithFoldingsStorage
 import com.intelligentComments.core.domain.core.*
+import com.intelligentComments.core.settings.CommentsDisplayKind
+import com.intelligentComments.core.settings.RiderIntelligentCommentsSettingsProvider
+import com.intelligentComments.ui.comments.model.CollapsedCommentUiModel
 import com.intelligentComments.ui.comments.model.CommentWithOneTextSegmentUiModel
 import com.intelligentComments.ui.comments.model.DocCommentUiModel
 import com.intelligentComments.ui.comments.model.IntelligentCommentUiModel
+import com.intelligentComments.ui.comments.renderers.CollapsedCommentRenderer
 import com.intelligentComments.ui.comments.renderers.RendererWithRectangleModel
 import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.CustomFoldRegion
@@ -20,6 +24,8 @@ import com.intellij.psi.impl.source.tree.injected.changesHandler.range
 import com.intellij.util.application
 import com.jetbrains.rd.platform.diagnostics.logAssertion
 import com.jetbrains.rd.platform.util.getLogger
+import com.jetbrains.rd.util.lifetime.Lifetime
+import com.jetbrains.rd.util.lifetime.onTermination
 import com.jetbrains.rdclient.document.getFirstDocumentId
 import com.jetbrains.rdclient.editors.FrontendTextControlHost
 import com.jetbrains.rdclient.util.idea.LifetimedProjectComponent
@@ -32,8 +38,12 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
   private val commentsStateManager = project.getService(RiderCommentsStateManager::class.java)
   private val textControlHost = FrontendTextControlHost.getInstance(project)
   private val listenersManager = project.service<CommentsEditorsListenersManager>()
+  private val settings = project.service<RiderIntelligentCommentsSettingsProvider>()
 
 
+  fun findNearestCommentToCurrentOffset(editor: EditorImpl): CommentBase? {
+    return commentsStorage.findNearestCommentTo(editor, editor.caretModel.offset)
+  }
 
   fun getFolding(commentIdentifier: CommentIdentifier, editor: EditorImpl): CustomFoldRegion? {
     return commentsStorage.getFolding(commentIdentifier, editor)
@@ -54,9 +64,27 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
     updateRenderModeToMatchState(comment.commentIdentifier, editor.document, state)
   }
 
-  fun toggleModeChange(commentIdentifier: CommentIdentifier, editor: EditorImpl) {
-    application.assertIsDispatchThread()
+  fun toggleModeChange(
+    commentIdentifier: CommentIdentifier,
+    editor: EditorImpl
+  ) {
+    executeWithCurrentState(commentIdentifier, editor) { commentState ->
+      val newDisplayKind = if (commentState.isInRenderMode) {
+        CommentsDisplayKind.Code
+      } else {
+        settings.commentsDisplayKind.value
+      }
 
+      changeStateAndUpdateComment(editor, commentIdentifier, newDisplayKind)
+    }
+  }
+
+  private fun executeWithCurrentState(
+    commentIdentifier: CommentIdentifier,
+    editor: EditorImpl,
+    action: (CommentState) -> Unit
+  ) {
+    application.assertIsDispatchThread()
     val comment = getComment(commentIdentifier, editor.document) ?: return
     val commentState = commentsStateManager.getExistingCommentState(editor, comment.commentIdentifier)
     if (commentState == null) {
@@ -64,9 +92,30 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
       return
     }
 
-    val changedState = commentsStateManager.changeRenderMode(editor, comment.commentIdentifier)
+    action(commentState)
+  }
+
+  private fun changeStateAndUpdateComment(
+    editor: EditorImpl,
+    commentIdentifier: CommentIdentifier,
+    newDisplayKind: CommentsDisplayKind
+  ) {
+    val changedState = commentsStateManager.changeDisplayKind(editor, commentIdentifier, newDisplayKind)
     if (changedState != null) {
       updateRenderModeToMatchState(commentIdentifier, editor.document, changedState)
+    }
+  }
+
+  fun displayInRenderMode(comment: CommentBase, editor: EditorImpl, lifetime: Lifetime) {
+    lifetime.executeIfAlive {
+      val id = comment.commentIdentifier
+      executeWithCurrentState(id, editor) { state ->
+        val cachedKind = state.displayKind
+        changeStateAndUpdateComment(editor, id, CommentsDisplayKind.Render)
+        lifetime.onTermination {
+          changeStateAndUpdateComment(editor, id, cachedKind)
+        }
+      }
     }
   }
 
@@ -121,7 +170,7 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
 
     if (correspondingComment != null) {
       cacheCaretOffset(correspondingComment, state, editor)
-      renderComment(correspondingComment, editor)
+      renderComment(correspondingComment, editor, state)
     }
   }
 
@@ -165,13 +214,17 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
     return FoldingInfo(foldStartLine, foldEndLine, foldStartOffset, foldEndOffset)
   }
 
-  private fun renderComment(comment: CommentBase, editor: EditorImpl) {
+  private fun renderComment(
+    comment: CommentBase,
+    editor: EditorImpl,
+    state: CommentState
+  ) {
     val (foldStartLine, foldEndLine, foldStartOffset, foldEndOffset) = getFoldingInfo(comment, editor) ?: return
     removeFoldRegion(editor, foldStartOffset, foldEndOffset)
 
     val foldingModel = editor.foldingModel
     foldingModel.runBatchFoldingOperation {
-      val renderer = getCommentFoldingRenderer(comment, editor)
+      val renderer = getCommentFoldingRenderer(comment, editor, state)
       val folding = foldingModel.addCustomLinesFolding(foldStartLine, foldEndLine, renderer)
 
       if (folding == null) {
@@ -183,7 +236,16 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
     }
   }
 
-  private fun getCommentFoldingRenderer(comment: CommentBase, editor: Editor): CustomFoldRegionRenderer {
+  private fun getCommentFoldingRenderer(
+    comment: CommentBase,
+    editor: Editor,
+    state: CommentState
+  ): CustomFoldRegionRenderer {
+    if (state.displayKind == CommentsDisplayKind.Hide) {
+      val collapsedUiModel = CollapsedCommentUiModel(comment, project, editor)
+      return CollapsedCommentRenderer(collapsedUiModel)
+    }
+
     return when (comment) {
       is DocComment -> DocCommentUiModel(comment, project, editor).renderer
       is IntelligentComment -> IntelligentCommentUiModel(project, comment).renderer

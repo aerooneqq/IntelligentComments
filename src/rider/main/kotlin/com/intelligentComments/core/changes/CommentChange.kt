@@ -2,7 +2,8 @@ package com.intelligentComments.core.changes
 
 import com.intelligentComments.core.domain.core.CommentIdentifier
 import com.intelligentComments.core.domain.core.HighlightedText
-import java.util.UUID
+import com.intelligentComments.core.settings.CommentsDisplayKind
+import java.util.*
 
 interface RenderAffectedCommentChange {
   val id: CommentIdentifier
@@ -14,4 +15,9 @@ class CodeHighlightersChange(
   id: CommentIdentifier,
   val uuid: UUID,
   val newText: HighlightedText
+) : RenderAffectedCommentChange, CommentChange(id)
+
+class CommentDisplayKindChange(
+  id: CommentIdentifier,
+  newDisplayKind: CommentsDisplayKind,
 ) : RenderAffectedCommentChange, CommentChange(id)
