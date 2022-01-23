@@ -10,8 +10,9 @@ import com.intellij.openapi.util.use
 import java.awt.Graphics
 import java.awt.Rectangle
 
-class ParagraphRendererImpl(model: ParagraphUiModel) : ContentSegmentsRenderer(model.content),
-  SegmentRenderer {
+class ParagraphRendererImpl(
+  model: ParagraphUiModel
+) : ContentSegmentsRenderer(model.content), SegmentRenderer {
   companion object {
     private const val leftDelta = 0
   }

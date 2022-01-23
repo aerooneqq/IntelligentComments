@@ -19,6 +19,7 @@ import com.intelligentComments.ui.comments.model.content.`return`.ReturnUiModel
 import com.intelligentComments.ui.comments.model.content.seeAlso.GroupedSeeAlsoUiModel
 import com.intelligentComments.ui.comments.model.content.seeAlso.SeeAlsoUiModel
 import com.intelligentComments.ui.comments.model.content.summary.GroupedSummaryUiModel
+import com.intelligentComments.ui.comments.model.content.summary.SummaryUiModel
 import com.intelligentComments.ui.comments.model.content.table.TableContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.text.TextContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.value.ValueUiModel
@@ -40,6 +41,7 @@ interface SegmentRenderer : Renderer, RectangleModelBuildContributor {
         is ReturnUiModel -> ReturnSegmentRenderer(segment)
         is RemarksUiModel -> RemarksSegmentRenderer(segment)
         is ExceptionUiModel -> ExceptionSegmentRenderer(segment)
+        is SummaryUiModel -> SummarySegmentRenderer(segment)
         is SeeAlsoUiModel -> SeeAlsoSegmentRenderer.getFor(segment)
         is GroupedSeeAlsoUiModel -> GroupedSeeAlsoRenderer(segment)
         is GroupedReturnUiModel -> GroupedReturnsRenderer(segment)

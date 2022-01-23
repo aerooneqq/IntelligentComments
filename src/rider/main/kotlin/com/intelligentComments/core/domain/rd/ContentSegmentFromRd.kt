@@ -58,7 +58,7 @@ class ContentSegmentsFromRd(
 ) : ContentSegments {
   private val myCachedSegments: MutableList<ContentSegment> = contentSegments.content.mapNotNull {
     val segment = ContentSegmentFromRd.getFrom(it, this, project)
-    val showEmptyContent = project.service<RiderIntelligentCommentsSettingsProvider>().showEmptyContent.value
+    val showEmptyContent = RiderIntelligentCommentsSettingsProvider.getInstance().showEmptyContent.value
     if (segment is EntityWithContentSegments && segment.content.segments.isEmpty() && !showEmptyContent) {
       return@mapNotNull null
     }

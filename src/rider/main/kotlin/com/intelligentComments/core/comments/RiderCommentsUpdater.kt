@@ -2,12 +2,10 @@ package com.intelligentComments.core.comments
 
 import com.intelligentComments.core.changes.*
 import com.intelligentComments.ui.comments.renderers.RendererWithRectangleModel
-import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.CustomFoldRegion
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.impl.EditorImpl
 import com.intellij.openapi.project.Project
-import com.jetbrains.rd.platform.util.idea.LifetimedService
 import com.jetbrains.rdclient.editors.FrontendTextControlHost
 import com.jetbrains.rdclient.util.idea.LifetimedProjectComponent
 
@@ -17,8 +15,9 @@ class RiderCommentsUpdater(project: Project) : LifetimedProjectComponent(project
 
 
   init {
-    project.service<ChangeManager>().addListener(componentLifetime, this)
+    ChangeManager.getInstance().addListener(componentLifetime, this)
   }
+
 
   override fun handleChange(change: Change) {
     if (change is RenderAffectedCommentChange) {
@@ -28,7 +27,7 @@ class RiderCommentsUpdater(project: Project) : LifetimedProjectComponent(project
       }
     }
 
-    if (change is ThemeChange) {
+    if (change is ThemeChange || change is SettingsChange) {
       for ((_, editor) in textControlHost.openedEditors) {
         controller.reRenderAllComments(editor as EditorImpl)
       }

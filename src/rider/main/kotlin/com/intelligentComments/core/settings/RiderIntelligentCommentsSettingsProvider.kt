@@ -1,5 +1,6 @@
 package com.intelligentComments.core.settings
 
+import com.intellij.openapi.application.ApplicationManager
 import com.jetbrains.rd.platform.util.idea.LifetimedService
 import com.jetbrains.rd.util.reactive.Property
 
@@ -10,6 +11,13 @@ enum class CommentsDisplayKind {
 }
 
 interface RiderIntelligentCommentsSettingsProvider {
+  companion object {
+    fun getInstance(): RiderIntelligentCommentsSettingsProvider {
+      return ApplicationManager.getApplication().getService(RiderIntelligentCommentsSettingsProvider::class.java)
+    }
+  }
+
+
   val commentsDisplayKind: Property<CommentsDisplayKind>
   val groupingDelimiter: Property<String>
   val groupSeeAlso: Property<Boolean>
@@ -18,9 +26,8 @@ interface RiderIntelligentCommentsSettingsProvider {
   val groupSummaries: Property<Boolean>
   val groupParams: Property<Boolean>
   val groupExceptions: Property<Boolean>
-  val groupSummary: Property<Boolean>
-  val showEmptyContent: Property<Boolean>
 
+  val showEmptyContent: Property<Boolean>
   val showFirstLevelHeaderWhenOneElement: Property<Boolean>
 
   val fontSize: Property<Float>
@@ -38,10 +45,10 @@ class RiderIntelligentCommentsSettingsProviderImpl : LifetimedService(), RiderIn
   override val groupSummaries: Property<Boolean> = Property(true)
   override val groupParams: Property<Boolean> = Property(true)
   override val groupExceptions: Property<Boolean> = Property(true)
-  override val groupSummary: Property<Boolean> = Property(true)
-  override val showEmptyContent: Property<Boolean> = Property(false)
 
+  override val showEmptyContent: Property<Boolean> = Property(false)
   override val showFirstLevelHeaderWhenOneElement: Property<Boolean> = Property(false)
+
   override val fontSize: Property<Float> = Property(12f)
   override val boldFontSize: Property<Float> = Property(14f)
 

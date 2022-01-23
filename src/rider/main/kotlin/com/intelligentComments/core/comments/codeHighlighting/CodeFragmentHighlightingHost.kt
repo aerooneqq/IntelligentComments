@@ -6,7 +6,6 @@ import com.intelligentComments.core.domain.core.CodeSegment
 import com.intelligentComments.core.domain.core.HighlightedText
 import com.intelligentComments.core.domain.core.tryFindComment
 import com.intelligentComments.core.domain.rd.toIdeaHighlightedText
-import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.jetbrains.rd.ide.model.RdCodeHighlightingRequest
 import com.jetbrains.rd.ide.model.rdCommentsModel
@@ -15,7 +14,7 @@ import com.jetbrains.rider.projectView.solution
 
 class CodeFragmentHighlightingHost(private val project: Project) : LifetimedService() {
   private val model = project.solution.rdCommentsModel
-  private val changeManager = project.service<ChangeManager>()
+  private val changeManager = ChangeManager.getInstance()
 
 
   fun requestFullHighlighting(

@@ -36,7 +36,7 @@ open class GroupedContentWithTextUiModel(
   init {
     val unitedDescription = HighlightedTextImpl.createEmpty(groupedModel)
     if (textSegmentsToMerge.isNotEmpty()) {
-      val delimiter = project.service<RiderIntelligentCommentsSettingsProvider>().groupingDelimiter.value
+      val delimiter = RiderIntelligentCommentsSettingsProvider.getInstance().groupingDelimiter.value
       unitedDescription.mergeWith(textSegmentsToMerge.first())
       for (index in 1 until textSegmentsToMerge.size) {
         unitedDescription.mergeWith(delimiter).mergeWith(textSegmentsToMerge[index])

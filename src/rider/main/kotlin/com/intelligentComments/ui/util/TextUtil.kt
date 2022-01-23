@@ -5,7 +5,6 @@ import com.intelligentComments.ui.comments.model.highlighters.HighlightedTextUiW
 import com.intelligentComments.ui.comments.model.highlighters.HighlighterUiModel
 import com.intelligentComments.ui.core.AttributedCharsIterator
 import com.intelligentComments.ui.core.RectangleModelBuildContext
-import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.impl.EditorImpl
 import com.intellij.openapi.util.use
 import com.intellij.util.Range
@@ -21,17 +20,17 @@ import kotlin.test.assertNotNull
 class TextUtil {
   companion object {
     fun getFont(editorImpl: EditorImpl): Font {
-      val size = editorImpl.project?.service<RiderIntelligentCommentsSettingsProvider>()?.fontSize?.value ?: 12f
+      val size = RiderIntelligentCommentsSettingsProvider.getInstance().fontSize.value
       return editorImpl.getFontMetrics(Font.PLAIN).font.deriveFont(size)
     }
 
     fun getItalicFont(editorImpl: EditorImpl): Font {
-      val size = editorImpl.project?.service<RiderIntelligentCommentsSettingsProvider>()?.fontSize?.value ?: 12f
+      val size = RiderIntelligentCommentsSettingsProvider.getInstance().fontSize.value
       return editorImpl.getFontMetrics(Font.ITALIC).font.deriveFont(size)
     }
 
     fun getBoldFont(editorImpl: EditorImpl): Font {
-      val size = editorImpl.project?.service<RiderIntelligentCommentsSettingsProvider>()?.boldFontSize?.value ?: 14f
+      val size = RiderIntelligentCommentsSettingsProvider.getInstance().boldFontSize.value
       return getFont(editorImpl).deriveFont(Font.BOLD).deriveFont(size)
     }
 

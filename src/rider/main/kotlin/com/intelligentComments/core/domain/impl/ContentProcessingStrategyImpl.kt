@@ -2,7 +2,6 @@ package com.intelligentComments.core.domain.impl
 
 import com.intelligentComments.core.domain.core.*
 import com.intelligentComments.core.settings.RiderIntelligentCommentsSettingsProvider
-import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 
 class ContentProcessingStrategyImpl(private val project: Project) : ContentProcessingStrategy {
@@ -12,7 +11,7 @@ class ContentProcessingStrategyImpl(private val project: Project) : ContentProce
   }
 
   private fun preprocessSegments(segments: MutableList<ContentSegment>) {
-    val settings = project.service<RiderIntelligentCommentsSettingsProvider>()
+    val settings = RiderIntelligentCommentsSettingsProvider.getInstance()
 
     groupSeeAlsoIfNeeded(settings, segments)
     groupReturnsIfNeeded(settings, segments)
@@ -81,7 +80,7 @@ class ContentProcessingStrategyImpl(private val project: Project) : ContentProce
     settings: RiderIntelligentCommentsSettingsProvider,
     segments: MutableList<ContentSegment>
   ) {
-    if (!settings.groupSummary.value) return
+    if (!settings.groupSummaries.value) return
     groupSegmentsOfType<SummaryContentSegment>(segments) { GroupedSummarySegments(it, segments.first().parent) }
   }
 

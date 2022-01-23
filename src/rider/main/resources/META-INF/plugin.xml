@@ -6,24 +6,34 @@
   <depends>com.intellij.modules.rider</depends>
 
   <extensions defaultExtensionNs="com.intellij">
+    <applicationService serviceImplementation="com.intelligentComments.core.changes.ChangeManagerImpl"
+                        serviceInterface="com.intelligentComments.core.changes.ChangeManager" />
+    <applicationService serviceImplementation="com.intelligentComments.core.settings.RiderIntelligentCommentsSettingsProviderImpl"
+                        serviceInterface="com.intelligentComments.core.settings.RiderIntelligentCommentsSettingsProvider" />
+    <applicationConfigurable instance="com.intelligentComments.core.settings.RiderCommentsConfigurable"
+                             groupId="tools"
+                             id="intelligentCommentsSettings" />
+
     <projectService serviceInterface="com.intelligentComments.ui.colors.ColorsProvider"
                     serviceImplementation="com.intelligentComments.ui.colors.ColorsProviderImpl"/>
-    <projectService serviceImplementation="com.intelligentComments.core.settings.RiderIntelligentCommentsSettingsProviderImpl"
-                    serviceInterface="com.intelligentComments.core.settings.RiderIntelligentCommentsSettingsProvider" />
     <projectService serviceImplementation="com.intelligentComments.core.comments.states.RiderCommentsStateManager" />
     <projectService serviceImplementation="com.intelligentComments.core.domain.impl.ContentProcessingStrategyImpl" />
     <projectService serviceImplementation="com.intelligentComments.core.comments.RiderCommentsCreator" />
     <projectService serviceImplementation="com.intelligentComments.core.comments.listeners.CommentsEditorsListenersManager" />
-    <projectService serviceImplementation="com.intelligentComments.core.changes.ChangeManagerImpl"
-                    serviceInterface="com.intelligentComments.core.changes.ChangeManager" />
+
     <projectService serviceImplementation="com.intelligentComments.core.comments.codeHighlighting.CodeFragmentHighlightingHost" />
     <projectService serviceImplementation="com.intelligentComments.core.comments.HighlightersClickHandler" />
     <projectService serviceImplementation="com.intelligentComments.core.comments.docs.CommentClickDocHost" />
     <projectService serviceImplementation="com.intelligentComments.core.comments.navigation.CommentsNavigationHost" />
 
     <rdclient.highlighterModelSupport implementation="com.intelligentComments.core.markup.DocCommentsFoldingHighlightersSupport" />
-
   </extensions>
+
+  <application-components>
+    <component>
+      <implementation-class>com.intelligentComments.core.settings.RiderCommentsSettings</implementation-class>
+    </component>
+  </application-components>
 
   <project-components>
     <component>

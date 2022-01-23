@@ -1,11 +1,10 @@
 package com.intelligentComments.core.changes
 
-import com.intellij.openapi.project.Project
 import com.intellij.util.application
 import com.jetbrains.rd.util.addUnique
 import com.jetbrains.rd.util.lifetime.Lifetime
 
-class ChangeManagerImpl(project: Project) : ChangeManager {
+class ChangeManagerImpl : ChangeManager {
   private val listeners = mutableListOf<ChangeListener>()
 
 

@@ -1,5 +1,6 @@
 package com.intelligentComments.core.changes
 
+import com.intellij.openapi.application.ApplicationManager
 import com.jetbrains.rd.util.lifetime.Lifetime
 
 interface ChangeListener {
@@ -7,6 +8,11 @@ interface ChangeListener {
 }
 
 interface ChangeManager {
+  companion object {
+    fun getInstance(): ChangeManager = ApplicationManager.getApplication().getService(ChangeManager::class.java)
+  }
+
+
   fun dispatch(change: Change)
   fun addListener(lifetime: Lifetime, listener: ChangeListener)
 }

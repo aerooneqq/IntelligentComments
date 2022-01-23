@@ -13,7 +13,6 @@ import com.intelligentComments.ui.util.ContentSegmentsUtil
 import com.intelligentComments.ui.util.RenderAdditionalInfo
 import com.intelligentComments.ui.util.TextUtil
 import com.intelligentComments.ui.util.UpdatedRectCookie
-import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.impl.EditorImpl
 import com.intellij.openapi.util.use
 import java.awt.Graphics
@@ -122,7 +121,7 @@ abstract class LeftHeaderRightContentRenderer(
     }
 
     val singleContent = parent is ModelWithContent && parent.contentSection.content.size == 1
-    val settings = editorImpl.project?.service<RiderIntelligentCommentsSettingsProvider>()
+    val settings = RiderIntelligentCommentsSettingsProvider.getInstance()
     val canOmitHeader = !(settings?.showFirstLevelHeaderWhenOneElement?.value ?: return true)
 
     return !(canOmitHeader && singleContent)

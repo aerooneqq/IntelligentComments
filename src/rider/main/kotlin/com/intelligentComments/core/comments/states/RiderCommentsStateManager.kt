@@ -1,5 +1,9 @@
 package com.intelligentComments.core.comments.states
 
+import com.intelligentComments.core.changes.Change
+import com.intelligentComments.core.changes.ChangeListener
+import com.intelligentComments.core.changes.ChangeManager
+import com.intelligentComments.core.changes.SettingsChange
 import com.intelligentComments.core.comments.storages.CommentsIdentifierStorage
 import com.intelligentComments.core.domain.core.CommentIdentifier
 import com.intelligentComments.core.settings.CommentsDisplayKind
@@ -7,7 +11,6 @@ import com.intelligentComments.core.settings.RiderIntelligentCommentsSettingsPro
 import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
-import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
@@ -19,17 +22,44 @@ import com.intellij.util.xmlb.annotations.XCollection
 import com.jetbrains.rd.platform.diagnostics.logAssertion
 import com.jetbrains.rd.util.getOrCreate
 import com.jetbrains.rdclient.editors.getPsiFile
+import com.jetbrains.rdclient.util.idea.LifetimedProjectComponent
 
 @State(
   name = "SolutionCommentsState",
   storages = [Storage("CommentsStates.xml")]
 )
-class RiderCommentsStateManager(project: Project) : PersistentStateComponent<SolutionCommentsState> {
+class RiderCommentsStateManager(
+  project: Project
+) : LifetimedProjectComponent(project), PersistentStateComponent<SolutionCommentsState>, ChangeListener {
   private val logger = Logger.getInstance(RiderCommentsStateManager::class.java)
-  private val settingsProvider = project.service<RiderIntelligentCommentsSettingsProvider>()
+  private val settingsProvider = RiderIntelligentCommentsSettingsProvider.getInstance()
   private val loadedStates: MutableMap<EditorId, MutableMap<LoadedCommentIdentifier, CommentState>> = HashMap()
   private val states: MutableMap<EditorId, CommentsIdentifierStorage<CommentState>> = HashMap()
 
+
+  init {
+    ChangeManager.getInstance().addListener(componentLifetime, this)
+  }
+
+
+  override fun handleChange(change: Change) {
+    if (change is SettingsChange) {
+      val displayKindChange = change.changes[settingsProvider.commentsDisplayKind] ?: return
+      val newValue = displayKindChange.newValue as? CommentsDisplayKind ?: return
+
+      updateAllStates {
+        newValue
+      }
+    }
+  }
+
+  private fun updateAllStates(newDisplayKindCalculator: (CommentsDisplayKind) -> CommentsDisplayKind) {
+    for ((_, editorStates) in states) {
+      for ((_, state) in editorStates.getAllKeysAndValues()) {
+        state.changeDisplayKind(newDisplayKindCalculator(state.displayKind))
+      }
+    }
+  }
 
   fun clearState(editor: Editor, commentIdentifier: CommentIdentifier) {
     application.assertIsDispatchThread()
