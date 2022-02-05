@@ -2,7 +2,6 @@ package com.intelligentComments.core.markup
 
 import com.intellij.openapi.editor.RangeMarker
 import com.intellij.openapi.util.TextRange
-import com.intellij.psi.impl.source.tree.injected.changesHandler.range
 import com.intellij.util.application
 
 class CommentsRangeMarkersCache {
@@ -11,37 +10,52 @@ class CommentsRangeMarkersCache {
 
   private var myStamp: Int = 0
 
+  private val syncObject = Any()
   private val itemLifeTime = 5
-  private val cachedDeletedCommentsRanges = HashMap<Int, RangeMarkerWithStamp>()
+  private val cachedRangesInfos = mutableListOf<RangeMarkerWithStamp>()
 
 
   fun store(rangeMarker: RangeMarker) {
-    application.assertIsDispatchThread()
+    synchronized(syncObject) {
+      cachedRangesInfos.add(RangeMarkerWithStamp(rangeMarker, myStamp))
+    }
+  }
 
-    cachedDeletedCommentsRanges[rangeMarker.range.hashCode()] = RangeMarkerWithStamp(rangeMarker, myStamp)
+  fun invalidateAndSort() {
+    application.assertIsNonDispatchThread()
+    synchronized(syncObject) {
+      invalidate()
+      cachedRangesInfos.sortBy { it.rangeMarker.startOffset }
+    }
   }
 
   fun tryGetFor(textRange: TextRange): RangeMarker? {
-    application.assertIsDispatchThread()
+    synchronized(syncObject) {
+      val index = cachedRangesInfos.binarySearch { it.rangeMarker.startOffset - textRange.startOffset }
+      if (index >= 0) {
+        val marker = cachedRangesInfos[index].rangeMarker
+        cachedRangesInfos.removeAt(index)
 
-    val markerInfo = cachedDeletedCommentsRanges.remove(textRange.hashCode())
-    if (markerInfo?.rangeMarker?.isValid != true) return null
-    return markerInfo.rangeMarker
+        if (!marker.isValid || marker.endOffset != textRange.endOffset) return null
+        return marker
+      }
+
+      return null
+    }
   }
 
-  fun invalidate() {
-    application.assertIsDispatchThread()
-
+  private fun invalidate() {
     ++myStamp
-    val itemsToRemove = mutableSetOf<Int>()
-    for ((hash, info) in cachedDeletedCommentsRanges) {
+    val itemsToRemove = mutableListOf<Int>()
+    for (index in cachedRangesInfos.indices) {
+      val info = cachedRangesInfos[index]
       if (!info.rangeMarker.isValid || info.stamp - myStamp > itemLifeTime) {
-        itemsToRemove.add(hash)
+        itemsToRemove.add(index)
       }
     }
 
-    for (hash in itemsToRemove) {
-      cachedDeletedCommentsRanges.remove(hash)
+    for (index in itemsToRemove.reversed()) {
+      cachedRangesInfos.removeAt(index)
     }
   }
 }

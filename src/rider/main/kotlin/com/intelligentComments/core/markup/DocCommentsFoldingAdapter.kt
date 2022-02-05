@@ -13,6 +13,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.impl.source.tree.injected.changesHandler.range
+import com.intellij.util.application
 import com.jetbrains.rd.ide.model.RdCommentFoldingModel
 import com.jetbrains.rd.util.lifetime.Lifetime
 import com.jetbrains.rdclient.daemon.FrontendMarkupAdapterListener
@@ -48,14 +49,14 @@ class DocCommentsFoldingAdapter(private val editor: EditorImpl) : FrontendMarkup
     }
   }
 
-  private val deletedCommentsRangeMarkersCache = CommentsRangeMarkersCache()
+
+  private val rangeMarkerCache = CommentsRangeMarkersCache()
 
 
   override fun afterAdded(highlighter: RangeHighlighterEx) {
   }
 
   override fun afterUpdated(highlighter: RangeHighlighterEx) {
-
   }
 
   override fun attributesChanged(
@@ -67,27 +68,32 @@ class DocCommentsFoldingAdapter(private val editor: EditorImpl) : FrontendMarkup
 
   override fun afterBulkAdd(highlighters: List<RangeHighlighterEx>) {
     editor.project?.let {
-      val controller = it.getComponent(RiderCommentsController::class.java) ?: return
-      val commentsCreator = it.service<RiderCommentsCreator>()
+      application.executeOnPooledThread {
+        val controller = it.getComponent(RiderCommentsController::class.java) ?: return@executeOnPooledThread
+        val commentsCreator = it.service<RiderCommentsCreator>()
 
-      executeOverDocHighlighters(highlighters) { highlighter, model ->
-        val marker = getRangeMarkerFor(highlighter.range, highlighter.document)
-        marker.isGreedyToRight = true
+        rangeMarkerCache.invalidateAndSort()
 
-        val comment = commentsCreator.tryCreateComment(model.comment, editor, marker) ?: return@executeOverDocHighlighters
-        controller.addComment(editor, comment)
+        application.invokeLater {
+          executeOverDocHighlighters(highlighters) { highlighter, model ->
+            val marker = getRangeMarkerFor(highlighter.range, highlighter.document)
+            marker.isGreedyToRight = true
 
-        highlighter.putUserData(commentKey, comment)
-        highlighter.gutterIconRenderer = DocCommentSwitchRenderModeGutterMark(comment, editor, it)
-        highlighter.isGreedyToRight = true
+            val comment = commentsCreator.tryCreateComment(model.comment, editor, marker)
+            comment ?: return@executeOverDocHighlighters
+            controller.addComment(editor, comment)
+
+            highlighter.putUserData(commentKey, comment)
+            highlighter.gutterIconRenderer = DocCommentSwitchRenderModeGutterMark(comment, editor, it)
+            highlighter.isGreedyToRight = true
+          }
+        }
       }
     }
-
-    deletedCommentsRangeMarkersCache.invalidate()
   }
 
   private fun getRangeMarkerFor(range: TextRange, document: Document): RangeMarker {
-    val deletedRangeMarker = deletedCommentsRangeMarkersCache.tryGetFor(range)
+    val deletedRangeMarker = rangeMarkerCache.tryGetFor(range)
     if (deletedRangeMarker != null) return deletedRangeMarker
 
     return document.createRangeMarker(range)
@@ -108,7 +114,7 @@ class DocCommentsFoldingAdapter(private val editor: EditorImpl) : FrontendMarkup
 
         if (existingComment != null) {
           highlighter.putUserData(commentKey, null)
-          deletedCommentsRangeMarkersCache.store(existingComment.rangeMarker)
+          rangeMarkerCache.store(existingComment.rangeMarker)
         }
       }
     }

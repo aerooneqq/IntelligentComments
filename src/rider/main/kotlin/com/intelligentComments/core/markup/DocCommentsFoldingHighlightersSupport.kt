@@ -14,7 +14,7 @@ class DocCommentsFoldingHighlightersSupport(private val project: Project) : IPro
     lifetime: Lifetime,
     markupModel: RdMarkupModel,
     document: Document
-  ): IProtocolHighlighterModelHandler? {
+  ): IProtocolHighlighterModelHandler {
     val manager = MarkupListenerManager.getInstance(project)
     manager.attachAggregator(lifetime, DocCommentsFoldingAggregator(project, document))
     return DocCommentsFoldingHandler()
