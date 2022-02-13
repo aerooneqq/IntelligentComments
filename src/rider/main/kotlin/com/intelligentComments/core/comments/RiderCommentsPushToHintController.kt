@@ -21,7 +21,7 @@ class RiderCommentsPushToHintController(project: Project) : LifetimedProjectComp
     val controller = project.getComponent(RiderCommentsController::class.java)
     val textControlHost = FrontendTextControlHost.getInstance(project)
 
-    var lifetimes = SequentialLifetimes(componentLifetime)
+    val lifetimes = SequentialLifetimes(componentLifetime)
     bothKeysPressed.change.advise(componentLifetime) { pressed ->
       if (!pressed) {
         lifetimes.terminateCurrent()

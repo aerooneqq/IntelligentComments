@@ -33,14 +33,22 @@ abstract class UiInteractionModelBase(
       colorsProvider.getColorFor(backgroundColorKey)
     }
 
-  open fun handleMouseIn(e: EditorMouseEvent): Boolean {
+  fun handleMouseIn(e: EditorMouseEvent): Boolean {
     myMouseIn = true
-    return true
+    return handleMouseInInternal(e)
   }
 
-  open fun handleMouseOut(e: EditorMouseEvent): Boolean {
+  protected open fun handleMouseInInternal(e: EditorMouseEvent): Boolean = true
+
+  fun handleMouseOut(e: EditorMouseEvent): Boolean {
     myMouseIn = false
-    return true
+    return handleMouseOutInternal(e)
+  }
+
+  protected open fun handleMouseOutInternal(e: EditorMouseEvent): Boolean = true
+
+  open fun handleLongMousePresence(e: EditorMouseEvent): Boolean {
+    return false
   }
 
   open fun handleClick(e: EditorMouseEvent): Boolean {

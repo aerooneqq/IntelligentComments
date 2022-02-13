@@ -73,12 +73,12 @@ class IntelligentCommentUiModel(
     return HeaderTextInfo("$name: ", "$name (click to expand)")
   }
 
-  override fun handleMouseIn(e: EditorMouseEvent): Boolean {
+  override fun handleMouseInInternal(e: EditorMouseEvent): Boolean {
     UIUtil.setCursor(e.editor.contentComponent, Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR))
     return false
   }
 
-  override fun handleMouseOut(e: EditorMouseEvent): Boolean {
+  override fun handleMouseOutInternal(e: EditorMouseEvent): Boolean {
     UIUtil.setCursor(e.editor.contentComponent, Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR))
     return false
   }

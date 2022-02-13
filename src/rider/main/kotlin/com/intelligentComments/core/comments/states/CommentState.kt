@@ -27,7 +27,7 @@ class CommentState {
   val isInRenderMode: Boolean
     get() = displayKind != CommentsDisplayKind.Code
 
-  fun changeDisplayKind(displayKind: CommentsDisplayKind) {
+  fun setDisplayKind(displayKind: CommentsDisplayKind) {
     this.displayKind = displayKind
   }
 }

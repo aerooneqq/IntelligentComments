@@ -35,7 +35,7 @@ class HighlighterUiModel(
   var backgroundStyle = highlighter.backgroundStyle
   var underline = highlighter.attributes.underline
 
-  override fun handleMouseIn(e: EditorMouseEvent): Boolean = applyMouseInOutAnimation(true)
+  override fun handleMouseInInternal(e: EditorMouseEvent): Boolean = applyMouseInOutAnimation(true)
 
   private fun applyMouseInOutAnimation(mouseIn: Boolean): Boolean {
     val result = highlighter.mouseInOutAnimation?.applyTo(this, mouseIn)
@@ -47,7 +47,7 @@ class HighlighterUiModel(
     return false
   }
 
-  override fun handleMouseOut(e: EditorMouseEvent): Boolean = applyMouseInOutAnimation(false)
+  override fun handleMouseOutInternal(e: EditorMouseEvent): Boolean = applyMouseInOutAnimation(false)
 
   override fun handleClick(e: EditorMouseEvent): Boolean {
     if (e.mouseEvent.isControlDown || (SystemInfo.isMac && e.mouseEvent.isMetaDown)) {

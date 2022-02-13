@@ -16,7 +16,6 @@
 
     <projectService serviceInterface="com.intelligentComments.ui.colors.ColorsProvider"
                     serviceImplementation="com.intelligentComments.ui.colors.ColorsProviderImpl"/>
-    <projectService serviceImplementation="com.intelligentComments.core.comments.states.RiderCommentsStateManager" />
     <projectService serviceImplementation="com.intelligentComments.core.domain.impl.ContentProcessingStrategyImpl" />
     <projectService serviceImplementation="com.intelligentComments.core.comments.RiderCommentsCreator" />
     <projectService serviceImplementation="com.intelligentComments.core.comments.listeners.CommentsEditorsListenersManager" />
@@ -25,9 +24,20 @@
     <projectService serviceImplementation="com.intelligentComments.core.comments.HighlightersClickHandler" />
     <projectService serviceImplementation="com.intelligentComments.core.comments.docs.CommentClickDocHost" />
     <projectService serviceImplementation="com.intelligentComments.core.comments.navigation.CommentsNavigationHost" />
-
+    <projectService serviceImplementation="com.intelligentComments.core.comments.docs.CommentsHoverDocManager" />
+    
     <rdclient.highlighterModelSupport implementation="com.intelligentComments.core.markup.DocCommentsFoldingHighlightersSupport" />
+
   </extensions>
+
+  <actions>
+    <action class="com.intelligentComments.core.actions.HideOrRenderCommentsInEditorAction"
+            id="HideOrRenderComments">
+      <keyboard-shortcut first-keystroke="control shift A" keymap="$default" />
+      <keyboard-shortcut first-keystroke="control shift A" keymap="Mac OS X" />
+      <keyboard-shortcut first-keystroke="control shift A" keymap="Mac OS X 10.5+" />
+    </action>
+  </actions>
 
   <application-components>
     <component>
@@ -36,6 +46,9 @@
   </application-components>
 
   <project-components>
+    <component>
+      <implementation-class>com.intelligentComments.core.comments.states.RiderCommentsStateManager</implementation-class>
+    </component>
     <component>
       <implementation-class>com.intelligentComments.core.comments.RiderCommentsPushToHintController</implementation-class>
     </component>

@@ -7,6 +7,7 @@ import com.intellij.openapi.editor.event.EditorMouseEvent
 import com.intellij.openapi.editor.impl.EditorImpl
 import com.intellij.util.application
 import com.jetbrains.rd.util.getOrCreate
+import java.awt.Point
 import java.awt.Rectangle
 
 class RectanglesModelHolder(private val uiModel: UiInteractionModelBase) {
@@ -88,14 +89,34 @@ class RectanglesModel {
     sealed = true
   }
 
-  fun dispatchMouseMove(e: EditorMouseEvent, inlayBounds: Rectangle): Boolean {
+  fun dispatchLongMousePresence(e: EditorMouseEvent, inlayBounds: Rectangle): Boolean {
     application.assertIsDispatchThread()
 
-    val adjustedPoint = e.mouseEvent.point.apply {
+    val adjustedPoint = adjustPoint(e, inlayBounds)
+    var anyUiChange = false
+
+    executeWithRectangleAndModels { rect, model ->
+      if (rect.contains(adjustedPoint)) {
+        if (model.handleLongMousePresence(e)) {
+          anyUiChange = true
+        }
+      }
+    }
+
+    return anyUiChange
+  }
+
+  private fun adjustPoint(e: EditorMouseEvent, inlayBounds: Rectangle): Point {
+    return e.mouseEvent.point.apply {
       x -= inlayBounds.x
       y -= inlayBounds.y
     }
+  }
 
+  fun dispatchMouseMove(e: EditorMouseEvent, inlayBounds: Rectangle): Boolean {
+    application.assertIsDispatchThread()
+
+    val adjustedPoint = adjustPoint(e, inlayBounds)
     var anyUiChange = false
 
     executeWithRectangleAndModels { rect, model ->

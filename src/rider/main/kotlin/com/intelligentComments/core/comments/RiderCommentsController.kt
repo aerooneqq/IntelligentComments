@@ -7,10 +7,7 @@ import com.intelligentComments.core.comments.storages.DocumentCommentsWithFoldin
 import com.intelligentComments.core.domain.core.*
 import com.intelligentComments.core.settings.CommentsDisplayKind
 import com.intelligentComments.core.settings.RiderIntelligentCommentsSettingsProvider
-import com.intelligentComments.ui.comments.model.CollapsedCommentUiModel
-import com.intelligentComments.ui.comments.model.CommentWithOneTextSegmentUiModel
-import com.intelligentComments.ui.comments.model.DocCommentUiModel
-import com.intelligentComments.ui.comments.model.IntelligentCommentUiModel
+import com.intelligentComments.ui.comments.model.*
 import com.intelligentComments.ui.comments.renderers.CollapsedCommentRenderer
 import com.intelligentComments.ui.comments.renderers.RendererWithRectangleModel
 import com.intellij.openapi.components.service
@@ -69,13 +66,24 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
     editor: EditorImpl
   ) {
     executeWithCurrentState(commentIdentifier, editor) { commentState ->
-      val newDisplayKind = if (commentState.isInRenderMode) {
+      val newDisplayKind = if (commentState.displayKind == CommentsDisplayKind.Hide) {
         CommentsDisplayKind.Code
       } else {
         settings.commentsDisplayKind.value
       }
 
       changeStateAndUpdateComment(editor, commentIdentifier, newDisplayKind)
+    }
+  }
+
+  fun changeStatesForAllCommentsInEditor(
+    editor: EditorImpl,
+    transform: (CommentsDisplayKind) -> CommentsDisplayKind
+  ) {
+    val comments = commentsStorage.getAllComments(editor)
+    for (comment in comments) {
+      val actualState = commentsStateManager.changeDisplayKind(editor, comment.commentIdentifier, transform) ?: continue
+      updateCommentToMatchState(comment.commentIdentifier, editor.document, actualState)
     }
   }
 
@@ -259,11 +267,16 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
       return CollapsedCommentRenderer(collapsedUiModel)
     }
 
-    return when (comment) {
-      is DocComment -> DocCommentUiModel(comment, project, editor).renderer
-      is IntelligentComment -> IntelligentCommentUiModel(project, comment).renderer
-      is CommentWithOneTextSegment -> CommentWithOneTextSegmentUiModel(comment, project, editor).renderer
-      else -> throw IllegalArgumentException(comment.javaClass.name)
-    }
+    val model = comment.createCommentUiModel(project, editor as EditorImpl)
+    return model.renderer
+  }
+}
+
+fun CommentBase.createCommentUiModel(project: Project, editor: EditorImpl): CommentUiModelBase {
+  return when (val comment = this) {
+    is DocComment -> DocCommentUiModel(comment, project, editor)
+    is IntelligentComment -> IntelligentCommentUiModel(project, comment)
+    is CommentWithOneTextSegment -> CommentWithOneTextSegmentUiModel(comment, project, editor)
+    else -> throw IllegalArgumentException(comment.javaClass.name)
   }
 }

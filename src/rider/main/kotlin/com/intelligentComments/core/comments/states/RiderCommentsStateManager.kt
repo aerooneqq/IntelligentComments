@@ -56,7 +56,7 @@ class RiderCommentsStateManager(
   private fun updateAllStates(newDisplayKindCalculator: (CommentsDisplayKind) -> CommentsDisplayKind) {
     for ((_, editorStates) in states) {
       for ((_, state) in editorStates.getAllKeysAndValues()) {
-        state.changeDisplayKind(newDisplayKindCalculator(state.displayKind))
+        state.setDisplayKind(newDisplayKindCalculator(state.displayKind))
       }
     }
   }
@@ -126,14 +126,35 @@ class RiderCommentsStateManager(
     displayKind: CommentsDisplayKind
   ): CommentState? {
     application.assertIsDispatchThread()
+    return executeWithCurrentState(editor, commentIdentifier) {
+      it.setDisplayKind(displayKind)
+    }
+  }
+
+  private fun executeWithCurrentState(
+    editor: Editor,
+    commentIdentifier: CommentIdentifier,
+    action: (CommentState) -> Unit
+  ): CommentState? {
     val existingState = tryGetCommentState(editor, commentIdentifier)
     if (existingState == null) {
       logger.logAssertion("Trying to change render mode of a comment with not registered state ${editor.getEditorId()} $commentIdentifier")
       return null
     }
 
-    existingState.changeDisplayKind(displayKind)
+    action(existingState)
     return existingState
+  }
+
+  fun changeDisplayKind(
+    editor: Editor,
+    commentIdentifier: CommentIdentifier,
+    transform: (CommentsDisplayKind) -> CommentsDisplayKind
+  ): CommentState? {
+    application.assertIsDispatchThread()
+    return executeWithCurrentState(editor, commentIdentifier) {
+      it.setDisplayKind(transform(it.displayKind))
+    }
   }
 
   fun isInRenderMode(editor: Editor, commentIdentifier: CommentIdentifier): Boolean? {

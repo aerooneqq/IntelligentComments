@@ -112,6 +112,13 @@ abstract class RendererWithRectangleModel(
     doPaint(region.editor as? EditorImpl ?: return, g, targetRegion, textAttributes)
   }
 
+  fun paint(
+    editorImpl: EditorImpl,
+    g: Graphics2D,
+    targetRegion: Rectangle2D,
+    textAttributes: TextAttributes
+  ) = doPaint(editorImpl, g, targetRegion, textAttributes)
+
   private fun doPaint(
     editor: EditorImpl,
     g: Graphics,
