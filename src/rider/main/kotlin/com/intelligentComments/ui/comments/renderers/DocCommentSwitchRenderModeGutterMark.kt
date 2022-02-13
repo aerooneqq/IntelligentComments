@@ -6,7 +6,6 @@ import com.intelligentComments.core.domain.core.CommentBase
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.impl.EditorImpl
 import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.openapi.project.Project
@@ -20,7 +19,7 @@ class DocCommentSwitchRenderModeGutterMark(
   project: Project
 ) : GutterIconRenderer(), MergableGutterIconRenderer {
   private val controller = project.getComponent(RiderCommentsController::class.java)
-  private val commentsStatesManager = project.service<RiderCommentsStateManager>()
+  private val commentsStatesManager = project.getComponent(RiderCommentsStateManager::class.java)
 
 
   override fun equals(other: Any?): Boolean {
