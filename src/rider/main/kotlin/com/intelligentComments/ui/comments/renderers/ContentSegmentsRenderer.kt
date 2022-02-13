@@ -8,7 +8,7 @@ import com.intelligentComments.ui.core.RectanglesModel
 import com.intelligentComments.ui.core.Renderer
 import com.intelligentComments.ui.util.ContentSegmentsUtil
 import com.intelligentComments.ui.util.RenderAdditionalInfo
-import com.intellij.openapi.editor.impl.EditorImpl
+import com.intellij.openapi.editor.Editor
 import java.awt.Graphics
 import java.awt.Rectangle
 
@@ -26,25 +26,25 @@ open class ContentSegmentsRenderer : Renderer, RectangleModelBuildContributor {
   override fun render(
     g: Graphics,
     rect: Rectangle,
-    editorImpl: EditorImpl,
+    editor: Editor,
     rectanglesModel: RectanglesModel,
     additionalRenderInfo: RenderAdditionalInfo
   ): Rectangle {
-    return ContentSegmentsUtil.renderSegments(segments, g, rect, editorImpl, rectanglesModel)
+    return ContentSegmentsUtil.renderSegments(segments, g, rect, editor, rectanglesModel)
   }
 
   override fun calculateExpectedHeightInPixels(
-    editorImpl: EditorImpl,
+    editor: Editor,
     additionalRenderInfo: RenderAdditionalInfo
   ): Int {
-    return ContentSegmentsUtil.calculateContentHeight(segments, editorImpl, additionalRenderInfo)
+    return ContentSegmentsUtil.calculateContentHeight(segments, editor, additionalRenderInfo)
   }
 
   override fun calculateExpectedWidthInPixels(
-    editorImpl: EditorImpl,
+    editor: Editor,
     additionalRenderInfo: RenderAdditionalInfo
   ): Int {
-    return ContentSegmentsUtil.calculateContentWidth(segments, editorImpl, additionalRenderInfo)
+    return ContentSegmentsUtil.calculateContentWidth(segments, editor, additionalRenderInfo)
   }
 
   override fun accept(context: RectangleModelBuildContext) {

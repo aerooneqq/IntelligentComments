@@ -10,7 +10,7 @@ import com.intelligentComments.ui.core.RectanglesModel
 import com.intelligentComments.ui.core.Renderer
 import com.intelligentComments.ui.util.RectanglesModelUtil
 import com.intelligentComments.ui.util.RenderAdditionalInfo
-import com.intellij.openapi.editor.impl.EditorImpl
+import com.intellij.openapi.editor.Editor
 import java.awt.Graphics
 import java.awt.Rectangle
 import kotlin.math.max
@@ -31,7 +31,7 @@ class ReferencesRendererImpl(private val section: SectionWithHeaderUiModel<Refer
   override fun renderContent(
     g: Graphics,
     rect: Rectangle,
-    editorImpl: EditorImpl,
+    editor: Editor,
     rectanglesModel: RectanglesModel,
     additionalRenderInfo: RenderAdditionalInfo
   ): Rectangle {
@@ -39,7 +39,7 @@ class ReferencesRendererImpl(private val section: SectionWithHeaderUiModel<Refer
 
     for (reference in section.content) {
       val renderer = ReferenceRenderer.getRendererFor(reference)
-      adjustedRect = renderer.render(g, adjustedRect, editorImpl, rectanglesModel, additionalRenderInfo)
+      adjustedRect = renderer.render(g, adjustedRect, editor, rectanglesModel, additionalRenderInfo)
       adjustedRect.y += deltaBetweenReferences
     }
 
@@ -47,11 +47,11 @@ class ReferencesRendererImpl(private val section: SectionWithHeaderUiModel<Refer
     return adjustedRect
   }
 
-  override fun calculateContentHeight(editorImpl: EditorImpl, additionalRenderInfo: RenderAdditionalInfo): Int {
+  override fun calculateContentHeight(editor: Editor, additionalRenderInfo: RenderAdditionalInfo): Int {
     var height = 0
 
     for (reference in section.content) {
-      height += ReferenceRenderer.getRendererFor(reference).calculateExpectedHeightInPixels(editorImpl, additionalRenderInfo)
+      height += ReferenceRenderer.getRendererFor(reference).calculateExpectedHeightInPixels(editor, additionalRenderInfo)
       height += deltaBetweenReferences
     }
 
@@ -59,12 +59,12 @@ class ReferencesRendererImpl(private val section: SectionWithHeaderUiModel<Refer
     return height
   }
 
-  override fun calculateContentWidth(editorImpl: EditorImpl, additionalRenderInfo: RenderAdditionalInfo): Int {
+  override fun calculateContentWidth(editor: Editor, additionalRenderInfo: RenderAdditionalInfo): Int {
     var width = 0
 
     for (reference in section.content) {
       val renderer = ReferenceRenderer.getRendererFor(reference)
-      width = max(width, renderer.calculateExpectedWidthInPixels(editorImpl, additionalRenderInfo))
+      width = max(width, renderer.calculateExpectedWidthInPixels(editor, additionalRenderInfo))
     }
 
     return width

@@ -10,7 +10,7 @@ import com.intelligentComments.ui.comments.renderers.segments.SegmentsRenderer
 import com.intelligentComments.ui.comments.renderers.todos.ToDosRenderer
 import com.intelligentComments.ui.util.RenderAdditionalInfo
 import com.intelligentComments.ui.util.UpdatedGraphicsCookie
-import com.intellij.openapi.editor.impl.EditorImpl
+import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.markup.TextAttributes
 import com.intellij.openapi.util.use
 import java.awt.Dimension
@@ -30,7 +30,7 @@ class IntelligentCommentsRenderer(private val model: IntelligentCommentUiModel) 
 
 
   override fun paintInternal(
-    editorImpl: EditorImpl,
+    editor: Editor,
     g: Graphics,
     targetRegion: Rectangle,
     textAttributes: TextAttributes,
@@ -42,11 +42,11 @@ class IntelligentCommentsRenderer(private val model: IntelligentCommentUiModel) 
       adjustedRect = drawLeftLine(g, adjustedRect)
     }
 
-    adjustedRect = drawCommentAuthors(g, adjustedRect, editorImpl)
-    adjustedRect = drawCommentContent(g, adjustedRect, editorImpl)
-    adjustedRect = drawReferences(g, adjustedRect, editorImpl)
-    adjustedRect = drawInvariants(g, adjustedRect, editorImpl)
-    adjustedRect = drawToDos(g, adjustedRect, editorImpl)
+    adjustedRect = drawCommentAuthors(g, adjustedRect, editor)
+    adjustedRect = drawCommentContent(g, adjustedRect, editor)
+    adjustedRect = drawReferences(g, adjustedRect, editor)
+    adjustedRect = drawInvariants(g, adjustedRect, editor)
+    adjustedRect = drawToDos(g, adjustedRect, editor)
   }
 
   private fun adjustContentRect(rect: Rectangle): Rectangle {
@@ -66,33 +66,33 @@ class IntelligentCommentsRenderer(private val model: IntelligentCommentUiModel) 
     )
   }
 
-  private fun drawCommentAuthors(g: Graphics, rect: Rectangle, editorImpl: EditorImpl): Rectangle {
+  private fun drawCommentAuthors(g: Graphics, rect: Rectangle, editor: Editor): Rectangle {
     val renderer = CommentAuthorsRenderer.getRendererFor(model.authorsSection.content)
-    val model = revalidateRectanglesModel(editorImpl)
-    return renderer.render(g, rect, editorImpl, model, RenderAdditionalInfo.emptyInstance)
+    val model = revalidateRectanglesModel(editor)
+    return renderer.render(g, rect, editor, model, RenderAdditionalInfo.emptyInstance)
   }
 
-  private fun drawCommentContent(g: Graphics, rect: Rectangle, editorImpl: EditorImpl): Rectangle {
-    val model = revalidateRectanglesModel(editorImpl)
+  private fun drawCommentContent(g: Graphics, rect: Rectangle, editor: Editor): Rectangle {
+    val model = revalidateRectanglesModel(editor)
     val renderer = SegmentsRenderer.getRendererFor(this.model.contentSection)
-    return renderer.render(g, rect, editorImpl, model, RenderAdditionalInfo.emptyInstance)
+    return renderer.render(g, rect, editor, model, RenderAdditionalInfo.emptyInstance)
   }
 
-  private fun drawReferences(g: Graphics, rect: Rectangle, editorImpl: EditorImpl): Rectangle {
+  private fun drawReferences(g: Graphics, rect: Rectangle, editor: Editor): Rectangle {
     val renderer = ReferencesRenderer.getRendererFor(model.referencesSection)
-    val model = revalidateRectanglesModel(editorImpl)
-    return renderer.render(g, rect, editorImpl, model, RenderAdditionalInfo.emptyInstance)
+    val model = revalidateRectanglesModel(editor)
+    return renderer.render(g, rect, editor, model, RenderAdditionalInfo.emptyInstance)
   }
 
-  private fun drawInvariants(g: Graphics, rect: Rectangle, editorImpl: EditorImpl): Rectangle {
+  private fun drawInvariants(g: Graphics, rect: Rectangle, editor: Editor): Rectangle {
     val renderer = InvariantsRenderer.getRendererFor(model.invariantsSection)
-    val model = revalidateRectanglesModel(editorImpl)
-    return renderer.render(g, rect, editorImpl, model, RenderAdditionalInfo.emptyInstance)
+    val model = revalidateRectanglesModel(editor)
+    return renderer.render(g, rect, editor, model, RenderAdditionalInfo.emptyInstance)
   }
 
-  private fun drawToDos(g: Graphics, rect: Rectangle, editorImpl: EditorImpl): Rectangle {
+  private fun drawToDos(g: Graphics, rect: Rectangle, editor: Editor): Rectangle {
     val renderer = ToDosRenderer.getRendererFor(model.todosSection)
-    val model = revalidateRectanglesModel(editorImpl)
-    return renderer.render(g, rect, editorImpl, model, RenderAdditionalInfo.emptyInstance)
+    val model = revalidateRectanglesModel(editor)
+    return renderer.render(g, rect, editor, model, RenderAdditionalInfo.emptyInstance)
   }
 }

@@ -5,6 +5,7 @@ import com.intelligentComments.ui.comments.model.highlighters.HighlightedTextUiW
 import com.intelligentComments.ui.comments.model.highlighters.HighlighterUiModel
 import com.intelligentComments.ui.core.AttributedCharsIterator
 import com.intelligentComments.ui.core.RectangleModelBuildContext
+import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.impl.EditorImpl
 import com.intellij.openapi.util.use
 import com.intellij.util.Range
@@ -19,19 +20,21 @@ import kotlin.test.assertNotNull
 
 class TextUtil {
   companion object {
-    fun getFont(editorImpl: EditorImpl): Font {
+    fun getFont(editor: Editor): Font {
       val size = RiderIntelligentCommentsSettingsProvider.getInstance().fontSize.value
-      return editorImpl.getFontMetrics(Font.PLAIN).font.deriveFont(size)
+      editor as EditorImpl
+      return editor.getFontMetrics(Font.PLAIN).font.deriveFont(size)
     }
 
-    fun getItalicFont(editorImpl: EditorImpl): Font {
+    fun getItalicFont(editor: Editor): Font {
       val size = RiderIntelligentCommentsSettingsProvider.getInstance().fontSize.value
-      return editorImpl.getFontMetrics(Font.ITALIC).font.deriveFont(size)
+      editor as EditorImpl
+      return editor.getFontMetrics(Font.ITALIC).font.deriveFont(size)
     }
 
-    fun getBoldFont(editorImpl: EditorImpl): Font {
+    fun getBoldFont(editor: Editor): Font {
       val size = RiderIntelligentCommentsSettingsProvider.getInstance().boldFontSize.value
-      return getFont(editorImpl).deriveFont(Font.BOLD).deriveFont(size)
+      return getFont(editor).deriveFont(Font.BOLD).deriveFont(size)
     }
 
     const val backgroundArcDimension = 3
@@ -39,17 +42,17 @@ class TextUtil {
     const val deltaBetweenIconAndTextInHeader = 2
     private const val textHeightAdditionFactor = 0
 
-    fun getFontMetrics(editorImpl: EditorImpl, highlighterUiModel: HighlighterUiModel?): FontMetrics {
+    fun getFontMetrics(editor: Editor, highlighterUiModel: HighlighterUiModel?): FontMetrics {
       return when (highlighterUiModel?.style) {
-        Font.PLAIN -> editorImpl.contentComponent.getFontMetrics(getFont(editorImpl))
-        Font.BOLD -> editorImpl.contentComponent.getFontMetrics(getBoldFont(editorImpl))
-        Font.ITALIC -> editorImpl.contentComponent.getFontMetrics(getItalicFont(editorImpl))
-        else -> editorImpl.contentComponent.getFontMetrics(getFont(editorImpl))
+        Font.PLAIN -> editor.contentComponent.getFontMetrics(getFont(editor))
+        Font.BOLD -> editor.contentComponent.getFontMetrics(getBoldFont(editor))
+        Font.ITALIC -> editor.contentComponent.getFontMetrics(getItalicFont(editor))
+        else -> editor.contentComponent.getFontMetrics(getFont(editor))
       }
     }
 
-    fun getTextWidth(editorImpl: EditorImpl, text: String): Int {
-      val fontMetrics = getFontMetrics(editorImpl, null)
+    fun getTextWidth(editor: Editor, text: String): Int {
+      val fontMetrics = getFontMetrics(editor, null)
       return fontMetrics.stringWidth(text)
     }
 
@@ -59,22 +62,22 @@ class TextUtil {
     }
 
     private fun getTextWidth(
-      editorImpl: EditorImpl,
+      editor: Editor,
       chars: CharArray,
       from: Int,
       to: Int,
       highlighter: HighlighterUiModel?
     ): Int {
-      val fontMetrics = getFontMetrics(editorImpl, highlighter)
+      val fontMetrics = getFontMetrics(editor, highlighter)
       return getTextWidth(fontMetrics, chars, from, to)
     }
 
-    fun getTextWidth(editorImpl: EditorImpl, text: String, highlighter: HighlighterUiModel?): Int {
-      return getFontMetrics(editorImpl, highlighter).stringWidth(text)
+    fun getTextWidth(editor: Editor, text: String, highlighter: HighlighterUiModel?): Int {
+      return getFontMetrics(editor, highlighter).stringWidth(text)
     }
 
     fun getTextWidthWithHighlighters(
-      editorImpl: EditorImpl,
+      editor: Editor,
       text: HighlightedTextUiWrapper
     ): Int {
       val line = text.text
@@ -86,7 +89,7 @@ class TextUtil {
 
       var width = 0
       executeActionOverRanges(charArray, lineHighlighters) { range, model ->
-        width += getTextWidth(editorImpl, charArray, range.from, range.to - 1, model)
+        width += getTextWidth(editor, charArray, range.from, range.to - 1, model)
       }
 
       return width
@@ -94,8 +97,8 @@ class TextUtil {
 
     private fun getTextHeight(fontMetrics: FontMetrics) = fontMetrics.height + textHeightAdditionFactor
 
-    fun getTextHeight(editorImpl: EditorImpl, highlighter: HighlighterUiModel?): Int {
-      var height = getTextHeight(getFontMetrics(editorImpl, highlighter))
+    fun getTextHeight(editor: Editor, highlighter: HighlighterUiModel?): Int {
+      var height = getTextHeight(getFontMetrics(editor, highlighter))
       if (highlighter != null) {
         val backgroundStyle = highlighter.backgroundStyle
         if (backgroundStyle != null && backgroundStyle.roundedRect) {
@@ -109,12 +112,12 @@ class TextUtil {
     fun renderText(
       g: Graphics,
       rect: Rectangle,
-      editorImpl: EditorImpl,
+      editor: Editor,
       text: String,
       delta: Int
     ): Rectangle {
-      val metrics = getFontMetrics(editorImpl, null)
-      val textHeight = getTextHeight(editorImpl, null)
+      val metrics = getFontMetrics(editor, null)
+      val textHeight = getTextHeight(editor, null)
       val adjustedRect = Rectangle(rect.x, rect.y + textHeight, rect.width, rect.height - textHeight)
       g.drawString(text, adjustedRect.x, adjustYCoordinateForTextDraw(adjustedRect.y, metrics))
 
@@ -124,21 +127,21 @@ class TextUtil {
     fun renderTextWithIcon(
       g: Graphics,
       rect: Rectangle,
-      editorImpl: EditorImpl,
+      editor: Editor,
       text: HighlightedTextUiWrapper,
       icon: Icon,
       gapBetweenTextAndIcon: Int,
       delta: Int
     ): Rectangle {
-      val rectHeight = calculateTextHeightWithIcon(editorImpl, icon, text)
-      val contextComponent = editorImpl.contentComponent
+      val rectHeight = calculateTextHeightWithIcon(editor, icon, text)
+      val contextComponent = editor.contentComponent
       icon.paintIcon(contextComponent, g, rect.x, rect.y)
 
       val adjustedRect = Rectangle(rect).apply {
         x += icon.iconWidth + gapBetweenTextAndIcon
       }
 
-      renderLine(g, adjustedRect, editorImpl, text.text, text.highlighters, delta)
+      renderLine(g, adjustedRect, editor, text.text, text.highlighters, delta)
       val finalDelta = rectHeight + delta
       return Rectangle(rect).apply {
         y += finalDelta
@@ -147,33 +150,33 @@ class TextUtil {
     }
 
     fun calculateTextHeightWithIcon(
-      editorImpl: EditorImpl,
+      editor: Editor,
       icon: Icon,
       text: HighlightedTextUiWrapper
     ): Int {
-      val textHeight = getLineHeightWithHighlighters(editorImpl, text.highlighters)
+      val textHeight = getLineHeightWithHighlighters(editor, text.highlighters)
       return max(icon.iconHeight, textHeight)
     }
 
     fun calculateWidthOfTextWithIcon(
-      editorImpl: EditorImpl,
+      editor: Editor,
       icon: Icon,
       gapBetweenTextAndIcon: Int,
       text: HighlightedTextUiWrapper
     ): Int {
-      val textWidth = getTextWidthWithHighlighters(editorImpl, text)
+      val textWidth = getTextWidthWithHighlighters(editor, text)
       return icon.iconWidth + gapBetweenTextAndIcon + textWidth
     }
 
     fun renderLines(
       g: Graphics,
       rect: Rectangle,
-      editorImpl: EditorImpl,
+      editor: Editor,
       lines: List<String>,
       delta: Int
     ): Rectangle {
-      val metrics = getFontMetrics(editorImpl, null)
-      val textHeight = getTextHeight(editorImpl, null)
+      val metrics = getFontMetrics(editor, null)
+      val textHeight = getTextHeight(editor, null)
       var textDelta = textHeight
 
       for (line in lines) {
@@ -188,7 +191,7 @@ class TextUtil {
     fun renderLines(
       g: Graphics,
       rect: Rectangle,
-      editorImpl: EditorImpl,
+      editor: Editor,
       lines: List<String>,
       highlighters: Collection<HighlighterUiModel>,
       delta: Int
@@ -200,7 +203,7 @@ class TextUtil {
         val currentHighlighters = linesHighlighters[i]
         assertNotNull(currentHighlighters, "linesHighlighters[i] != null")
 
-        val lineHeight = getLineHeightWithHighlighters(editorImpl, currentHighlighters)
+        val lineHeight = getLineHeightWithHighlighters(editor, currentHighlighters)
         textDelta += lineHeight
 
         val lineRect = Rectangle(rect).apply {
@@ -208,7 +211,7 @@ class TextUtil {
           height = lineHeight
         }
 
-        renderLineWithHighlighters(g, lineRect, editorImpl, lines[i], currentHighlighters)
+        renderLineWithHighlighters(g, lineRect, editor, lines[i], currentHighlighters)
       }
 
       val finalDelta = textDelta + delta
@@ -218,26 +221,26 @@ class TextUtil {
     fun renderLine(
       g: Graphics,
       rect: Rectangle,
-      editorImpl: EditorImpl,
+      editor: Editor,
       text: HighlightedTextUiWrapper,
       delta: Int
     ): Rectangle {
-      return renderLine(g, rect, editorImpl, text.text, text.highlighters, delta)
+      return renderLine(g, rect, editor, text.text, text.highlighters, delta)
     }
 
     fun renderLine(
       g: Graphics,
       rect: Rectangle,
-      editorImpl: EditorImpl,
+      editor: Editor,
       line: String,
       highlighters: Collection<HighlighterUiModel>,
       delta: Int
     ): Rectangle {
       val rangesWithHighlighters = getLinesHighlighters(listOf(line), highlighters)[0]
       assertNotNull(rangesWithHighlighters, "rangesWithHighlighters != null")
-      val lineHeight = getLineHeightWithHighlighters(editorImpl, rangesWithHighlighters)
+      val lineHeight = getLineHeightWithHighlighters(editor, rangesWithHighlighters)
       UpdatedRectCookie(rect, yDelta = lineHeight, heightDelta = lineHeight).use {
-        renderLineWithHighlighters(g, rect, editorImpl, line, rangesWithHighlighters)
+        renderLineWithHighlighters(g, rect, editor, line, rangesWithHighlighters)
       }
 
       val finalDelta = lineHeight + delta
@@ -245,20 +248,20 @@ class TextUtil {
     }
 
     fun getLineHeightWithHighlighters(
-      editorImpl: EditorImpl,
+      editor: Editor,
       rangesWithHighlighters: Collection<RangeWithHighlighter>
     ): Int {
-      return getLineHeightWithHighlighters(editorImpl, rangesWithHighlighters.map { it.highlighter })
+      return getLineHeightWithHighlighters(editor, rangesWithHighlighters.map { it.highlighter })
     }
 
     fun getLineHeightWithHighlighters(
-      editorImpl: EditorImpl,
+      editor: Editor,
       highlightersModels: List<HighlighterUiModel?>
     ): Int {
-      val heightWithoutHighlighter = getTextHeight(editorImpl, null)
+      val heightWithoutHighlighter = getTextHeight(editor, null)
       var maxHeight = heightWithoutHighlighter
       for (model in highlightersModels) {
-        maxHeight = max(maxHeight, getTextHeight(editorImpl, model))
+        maxHeight = max(maxHeight, getTextHeight(editor, model))
       }
 
       return maxHeight
@@ -267,14 +270,14 @@ class TextUtil {
     private fun renderLineWithHighlighters(
       g: Graphics,
       rect: Rectangle,
-      editorImpl: EditorImpl,
+      editor: Editor,
       line: String,
       rangesWithHighlighters: List<RangeWithHighlighter>
     ) {
       var textLength = 0
       val chars = line.toCharArray()
       executeActionOverRanges(chars, rangesWithHighlighters) { range, model ->
-        textLength += drawText(g, rect, editorImpl, chars, range, textLength, model)
+        textLength += drawText(g, rect, editor, chars, range, textLength, model)
       }
     }
 
@@ -316,7 +319,7 @@ class TextUtil {
     private fun drawText(
       g: Graphics,
       rect: Rectangle,
-      editorImpl: EditorImpl,
+      editor: Editor,
       line: CharArray,
       range: Range<Int>,
       currentTextLength: Int,
@@ -324,9 +327,9 @@ class TextUtil {
     ): Int {
       val from = range.from
       val to = range.to
-      val metrics = getFontMetrics(editorImpl, highlighterModel)
-      var textWidth = getTextWidth(editorImpl, line, from, to - 1, highlighterModel)
-      val textHeight = getTextHeight(editorImpl, highlighterModel)
+      val metrics = getFontMetrics(editor, highlighterModel)
+      var textWidth = getTextWidth(editor, line, from, to - 1, highlighterModel)
+      val textHeight = getTextHeight(editor, highlighterModel)
 
       var xDelta = 0
 
@@ -348,7 +351,7 @@ class TextUtil {
           }
         }
 
-        g.drawString(AttributedCharsIterator(editorImpl, line, from, to, highlighterModel), rect.x + currentTextLength + xDelta, adjustedY)
+        g.drawString(AttributedCharsIterator(editor, line, from, to, highlighterModel), rect.x + currentTextLength + xDelta, adjustedY)
       }
 
       return textWidth
@@ -423,22 +426,22 @@ class TextUtil {
       linesHighlighters: HashMap<Int, List<RangeWithHighlighter>>,
       context: RectangleModelBuildContext
     ) {
-      val editorImpl = context.editorImpl
+      val editor = context.editor
       val rect = context.rect
       var yDelta = 0
-      val project = editorImpl.project
+      val project = editor.project
 
-      assertNotNull(project, "editorImpl.project != null")
+      assertNotNull(project, "editor.project != null")
       for (i in lines.indices) {
         val chars = lines[i].toCharArray()
         val lineHighlighters = linesHighlighters[i]
         assertNotNull(lineHighlighters, "linesHighlighters[i] != null")
 
         var textLength = 0
-        val lineHeight = getLineHeightWithHighlighters(editorImpl, lineHighlighters)
+        val lineHeight = getLineHeightWithHighlighters(editor, lineHighlighters)
         executeActionOverRanges(chars, lineHighlighters) { range, model ->
           val backgroundXDelta = if (model?.backgroundStyle != null) backgroundArcDimension else 0
-          val textWidth = getTextWidth(editorImpl, chars, range.from, range.to - 1, model) + backgroundXDelta
+          val textWidth = getTextWidth(editor, chars, range.from, range.to - 1, model) + backgroundXDelta
 
           if (model != null) {
             val highlighterRect = Rectangle(rect.x + textLength, rect.y + yDelta, textWidth, lineHeight)

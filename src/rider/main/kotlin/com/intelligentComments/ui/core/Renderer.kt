@@ -2,7 +2,7 @@ package com.intelligentComments.ui.core
 
 import com.intelligentComments.ui.util.RenderAdditionalInfo
 import com.intelligentComments.ui.util.WidthAndHeight
-import com.intellij.openapi.editor.impl.EditorImpl
+import com.intellij.openapi.editor.Editor
 import java.awt.Graphics
 import java.awt.Rectangle
 
@@ -10,13 +10,13 @@ interface Renderer {
   fun render(
     g: Graphics,
     rect: Rectangle,
-    editorImpl: EditorImpl,
+    editor: Editor,
     rectanglesModel: RectanglesModel,
     additionalRenderInfo: RenderAdditionalInfo
   ): Rectangle
 
-  fun calculateExpectedHeightInPixels(editorImpl: EditorImpl, additionalRenderInfo: RenderAdditionalInfo): Int
-  fun calculateExpectedWidthInPixels(editorImpl: EditorImpl, additionalRenderInfo: RenderAdditionalInfo): Int
+  fun calculateExpectedHeightInPixels(editor: Editor, additionalRenderInfo: RenderAdditionalInfo): Int
+  fun calculateExpectedWidthInPixels(editor: Editor, additionalRenderInfo: RenderAdditionalInfo): Int
 }
 
 
@@ -24,11 +24,11 @@ data class RectangleModelBuildContext(
   val rectanglesModel: RectanglesModel,
   val widthAndHeight: WidthAndHeight,
   val rect: Rectangle,
-  val editorImpl: EditorImpl,
+  val editor: Editor,
   val additionalRenderInfo: RenderAdditionalInfo = RenderAdditionalInfo.emptyInstance
 ) {
   fun withRectangle(newRectangle: Rectangle): RectangleModelBuildContext {
-    return RectangleModelBuildContext(rectanglesModel, widthAndHeight, newRectangle, editorImpl, additionalRenderInfo)
+    return RectangleModelBuildContext(rectanglesModel, widthAndHeight, newRectangle, editor, additionalRenderInfo)
   }
 
   fun createCopy(): RectangleModelBuildContext {
@@ -36,11 +36,11 @@ data class RectangleModelBuildContext(
   }
 
   fun createCopy(newRectangle: Rectangle): RectangleModelBuildContext {
-    return RectangleModelBuildContext(rectanglesModel, WidthAndHeight(widthAndHeight), newRectangle, editorImpl, additionalRenderInfo)
+    return RectangleModelBuildContext(rectanglesModel, WidthAndHeight(widthAndHeight), newRectangle, editor, additionalRenderInfo)
   }
 
   fun withAdditionalRenderInfo(info: RenderAdditionalInfo): RectangleModelBuildContext {
-    return RectangleModelBuildContext(rectanglesModel, widthAndHeight, rect, editorImpl, info)
+    return RectangleModelBuildContext(rectanglesModel, widthAndHeight, rect, editor, info)
   }
 }
 

@@ -6,6 +6,7 @@ import com.intelligentComments.core.domain.core.CommentBase
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.impl.EditorImpl
 import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.openapi.project.Project
@@ -15,7 +16,7 @@ import javax.swing.Icon
 
 class DocCommentSwitchRenderModeGutterMark(
   private val comment: CommentBase,
-  private val editorImpl: EditorImpl,
+  private val editor: Editor,
   project: Project
 ) : GutterIconRenderer(), MergableGutterIconRenderer {
   private val controller = project.getComponent(RiderCommentsController::class.java)
@@ -31,7 +32,7 @@ class DocCommentSwitchRenderModeGutterMark(
   }
 
   override fun getIcon(): Icon {
-    return when(commentsStatesManager.isInRenderMode(editorImpl, comment.commentIdentifier)) {
+    return when(commentsStatesManager.isInRenderMode(editor, comment.commentIdentifier)) {
       true -> AllIcons.Gutter.JavadocEdit
       false -> AllIcons.Gutter.JavadocRead
       else -> AllIcons.Gutter.Unique
@@ -40,7 +41,7 @@ class DocCommentSwitchRenderModeGutterMark(
 
   override fun getAlignment(): Alignment = Alignment.LEFT
   override fun getTooltipText(): String =
-    when (commentsStatesManager.isInRenderMode(editorImpl, comment.commentIdentifier)) {
+    when (commentsStatesManager.isInRenderMode(editor, comment.commentIdentifier)) {
       true -> "Go to edit mode"
       false -> "Go to render mode"
       else -> ""

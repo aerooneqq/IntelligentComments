@@ -9,10 +9,7 @@ import com.intelligentComments.ui.util.TextUtil
 import com.intelligentComments.ui.util.UpdatedGraphicsCookie
 import com.intelligentComments.ui.util.UpdatedRectCookie
 import com.intellij.openapi.components.service
-import com.intellij.openapi.editor.CustomFoldRegion
-import com.intellij.openapi.editor.CustomFoldRegionRenderer
-import com.intellij.openapi.editor.EditorCustomElementRenderer
-import com.intellij.openapi.editor.Inlay
+import com.intellij.openapi.editor.*
 import com.intellij.openapi.editor.impl.EditorImpl
 import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.openapi.editor.markup.TextAttributes
@@ -57,8 +54,8 @@ abstract class RendererWithRectangleModel(
   val rectanglesModel
     get() = rectangleModelHolder.model
 
-  fun invalidateRectangleModel(editorImpl: EditorImpl) {
-    revalidateRectanglesModel(editorImpl)
+  fun invalidateRectangleModel(editor: Editor) {
+    revalidateRectanglesModel(editor)
   }
 
   final override fun calcHeightInPixels(foldRegion: CustomFoldRegion): Int {
@@ -76,17 +73,17 @@ abstract class RendererWithRectangleModel(
     return calculateExpectedWith(inlay.editor as EditorImpl)
   }
 
-  private fun calculateExpectedWith(editorImpl: EditorImpl) = revalidateRectanglesModel(editorImpl).width
+  private fun calculateExpectedWith(editor: Editor) = revalidateRectanglesModel(editor).width
 
   final override fun calcHeightInPixels(inlay: Inlay<*>): Int {
     application.assertIsDispatchThread()
     return calculateExpectedHeight(inlay.editor as EditorImpl)
   }
 
-  private fun calculateExpectedHeight(editorImpl: EditorImpl) = revalidateRectanglesModel(editorImpl).height
+  private fun calculateExpectedHeight(editor: Editor) = revalidateRectanglesModel(editor).height
 
-  protected fun revalidateRectanglesModel(editorImpl: EditorImpl): RectanglesModel {
-    val buildResult = rectangleModelHolder.revalidate(editorImpl, xDelta, yDelta)
+  protected fun revalidateRectanglesModel(editor: Editor): RectanglesModel {
+    val buildResult = rectangleModelHolder.revalidate(editor, xDelta, yDelta)
 
     rectModelXDelta = buildResult.xShift
     rectModelYDelta = buildResult.yShift
@@ -100,7 +97,7 @@ abstract class RendererWithRectangleModel(
     targetRegion: Rectangle,
     textAttributes: TextAttributes
   ) {
-    doPaint(inlay.editor as? EditorImpl ?: return, g, targetRegion, textAttributes)
+    doPaint(inlay.editor, g, targetRegion, textAttributes)
   }
 
   final override fun paint(
@@ -109,18 +106,18 @@ abstract class RendererWithRectangleModel(
     targetRegion: Rectangle2D,
     textAttributes: TextAttributes
   ) {
-    doPaint(region.editor as? EditorImpl ?: return, g, targetRegion, textAttributes)
+    doPaint(region.editor, g, targetRegion, textAttributes)
   }
 
   fun paint(
-    editorImpl: EditorImpl,
+    editor: Editor,
     g: Graphics2D,
     targetRegion: Rectangle2D,
     textAttributes: TextAttributes
-  ) = doPaint(editorImpl, g, targetRegion, textAttributes)
+  ) = doPaint(editor, g, targetRegion, textAttributes)
 
   private fun doPaint(
-    editor: EditorImpl,
+    editor: Editor,
     g: Graphics,
     targetRegion: Rectangle2D,
     textAttributes: TextAttributes
@@ -146,7 +143,7 @@ abstract class RendererWithRectangleModel(
   }
 
   protected abstract fun paintInternal(
-    editorImpl: EditorImpl,
+    editor: Editor,
     g: Graphics,
     targetRegion: Rectangle,
     textAttributes: TextAttributes,
@@ -156,8 +153,8 @@ abstract class RendererWithRectangleModel(
   override fun calcGutterIconRenderer(region: CustomFoldRegion) = doCalculateGutterIconRenderer(region.editor as EditorImpl)
   override fun calcGutterIconRenderer(inlay: Inlay<*>) = doCalculateGutterIconRenderer(inlay.editor as EditorImpl)
 
-  private fun doCalculateGutterIconRenderer(editorImpl: EditorImpl): GutterIconRenderer? {
-    val project = editorImpl.project ?: return null
-    return DocCommentSwitchRenderModeGutterMark(baseModel.comment, editorImpl, project)
+  private fun doCalculateGutterIconRenderer(editor: Editor): GutterIconRenderer? {
+    val project = editor.project ?: return null
+    return DocCommentSwitchRenderModeGutterMark(baseModel.comment, editor, project)
   }
 }

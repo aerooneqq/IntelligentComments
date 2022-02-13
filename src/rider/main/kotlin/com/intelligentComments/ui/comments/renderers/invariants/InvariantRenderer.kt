@@ -6,7 +6,7 @@ import com.intelligentComments.ui.comments.model.invariants.TextInvariantUiModel
 import com.intelligentComments.ui.core.Renderer
 import com.intelligentComments.ui.util.RenderAdditionalInfo
 import com.intelligentComments.ui.util.UpdatedGraphicsCookie
-import com.intellij.openapi.editor.impl.EditorImpl
+import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.util.use
 import java.awt.Color
 import java.awt.Graphics
@@ -28,7 +28,7 @@ interface InvariantRenderer : Renderer {
     }
   }
 
-  fun calculateWidthWithInvariantInterval(editorImpl: EditorImpl, additionalRendererInfo: RenderAdditionalInfo): Int
+  fun calculateWidthWithInvariantInterval(editor: Editor, additionalRendererInfo: RenderAdditionalInfo): Int
 }
 
 class InvariantRendererUtil {
@@ -36,7 +36,7 @@ class InvariantRendererUtil {
     fun render(
       g: Graphics,
       rect: Rectangle,
-      editorImpl: EditorImpl,
+      editor: Editor,
       borderColor: Color,
       backgroundColor: Color,
       width: Int,
@@ -55,7 +55,7 @@ class InvariantRendererUtil {
 
       if (icon != null) {
         val yDelta = (rect.height - icon.iconHeight) / 2
-        icon.paintIcon(editorImpl.contentComponent, g, newX, rect.y + yDelta)
+        icon.paintIcon(editor.contentComponent, g, newX, rect.y + yDelta)
       }
 
       val xDelta = if (icon == null) 0 else icon.iconWidth + InvariantRenderer.deltaBetweenTextAndIcon

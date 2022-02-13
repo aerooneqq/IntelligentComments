@@ -7,7 +7,7 @@ import com.intelligentComments.ui.core.RectanglesModel
 import com.intelligentComments.ui.util.RectanglesModelUtil
 import com.intelligentComments.ui.util.RenderAdditionalInfo
 import com.intelligentComments.ui.util.TextUtil
-import com.intellij.openapi.editor.impl.EditorImpl
+import com.intellij.openapi.editor.Editor
 import java.awt.Graphics
 import java.awt.Rectangle
 import java.lang.Integer.max
@@ -24,17 +24,17 @@ class ImageSegmentRenderer(private val model: ImageContentSegmentUiModel) : Segm
   override fun render(
     g: Graphics,
     rect: Rectangle,
-    editorImpl: EditorImpl,
+    editor: Editor,
     rectanglesModel: RectanglesModel,
     additionalRenderInfo: RenderAdditionalInfo
   ): Rectangle {
     rect.y += upperDelta
-    val adjustedRect = renderImage(g, rect, editorImpl)
-    return renderImageDescription(g, adjustedRect, editorImpl)
+    val adjustedRect = renderImage(g, rect, editor)
+    return renderImageDescription(g, adjustedRect, editor)
   }
 
-  private fun renderImage(g: Graphics, rect: Rectangle, editorImpl: EditorImpl): Rectangle {
-    val descriptionWidth = calculateDescriptionWidth(editorImpl)
+  private fun renderImage(g: Graphics, rect: Rectangle, editor: Editor): Rectangle {
+    val descriptionWidth = calculateDescriptionWidth(editor)
     val imageWidth = model.imageHolder.width
     val initialX = rect.x
 
@@ -63,11 +63,11 @@ class ImageSegmentRenderer(private val model: ImageContentSegmentUiModel) : Segm
   private fun renderImageDescription(
     g: Graphics,
     rect: Rectangle,
-    editorImpl: EditorImpl
+    editor: Editor
   ): Rectangle {
     val text = model.description
     if (text != null) {
-      val descriptionWidth = calculateDescriptionWidth(editorImpl)
+      val descriptionWidth = calculateDescriptionWidth(editor)
       val imageWidth = model.imageHolder.width
       val initialX = rect.x
 
@@ -79,7 +79,7 @@ class ImageSegmentRenderer(private val model: ImageContentSegmentUiModel) : Segm
         rect
       }
 
-      return TextUtil.renderLine(g, rectForText, editorImpl, text.text, text.highlighters, deltaAfterDescription)
+      return TextUtil.renderLine(g, rectForText, editor, text.text, text.highlighters, deltaAfterDescription)
         .apply {
           x = initialX
         }
@@ -88,44 +88,44 @@ class ImageSegmentRenderer(private val model: ImageContentSegmentUiModel) : Segm
     return rect
   }
 
-  private fun calculateDescriptionWidth(editorImpl: EditorImpl): Int {
+  private fun calculateDescriptionWidth(editor: Editor): Int {
     val description = model.description ?: return 0
-    return TextUtil.getTextWidthWithHighlighters(editorImpl, description)
+    return TextUtil.getTextWidthWithHighlighters(editor, description)
   }
 
-  override fun calculateExpectedHeightInPixels(editorImpl: EditorImpl, additionalRenderInfo: RenderAdditionalInfo): Int {
+  override fun calculateExpectedHeightInPixels(editor: Editor, additionalRenderInfo: RenderAdditionalInfo): Int {
     val imageHeight = imageHolder.height + deltaBetweenImageAndDescription
-    val descriptionHeight = getDescriptionHeight(editorImpl)
+    val descriptionHeight = getDescriptionHeight(editor)
     return upperDelta + imageHeight + descriptionHeight
   }
 
-  private fun getDescriptionHeight(editorImpl: EditorImpl): Int {
+  private fun getDescriptionHeight(editor: Editor): Int {
     val highlighters = model.description?.highlighters
     return if (highlighters != null) {
-      TextUtil.getLineHeightWithHighlighters(editorImpl, highlighters) + deltaAfterDescription
+      TextUtil.getLineHeightWithHighlighters(editor, highlighters) + deltaAfterDescription
     } else {
       0
     }
   }
 
-  private fun getDescriptionWidth(editorImpl: EditorImpl): Int {
+  private fun getDescriptionWidth(editor: Editor): Int {
     val text = model.description
     return if (text != null) {
-      TextUtil.getTextWidthWithHighlighters(editorImpl, text)
+      TextUtil.getTextWidthWithHighlighters(editor, text)
     } else {
       0
     }
   }
 
-  override fun calculateExpectedWidthInPixels(editorImpl: EditorImpl, additionalRenderInfo: RenderAdditionalInfo): Int {
-    return max(imageHolder.width, getDescriptionWidth(editorImpl))
+  override fun calculateExpectedWidthInPixels(editor: Editor, additionalRenderInfo: RenderAdditionalInfo): Int {
+    return max(imageHolder.width, getDescriptionWidth(editor))
   }
 
   override fun accept(context: RectangleModelBuildContext) {
     context.rectanglesModel.addElement(model, Rectangle(context.rect).apply {
       y += upperDelta
-      width = calculateExpectedWidthInPixels(context.editorImpl, context.additionalRenderInfo)
-      height = calculateExpectedHeightInPixels(context.editorImpl, context.additionalRenderInfo)
+      width = calculateExpectedWidthInPixels(context.editor, context.additionalRenderInfo)
+      height = calculateExpectedHeightInPixels(context.editor, context.additionalRenderInfo)
     })
   }
 }

@@ -3,8 +3,8 @@ package com.intelligentComments.ui.core
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intelligentComments.ui.util.RectanglesModelBuildResult
 import com.intelligentComments.ui.util.RectanglesModelUtil
+import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.event.EditorMouseEvent
-import com.intellij.openapi.editor.impl.EditorImpl
 import com.intellij.util.application
 import com.jetbrains.rd.util.getOrCreate
 import java.awt.Point
@@ -18,7 +18,7 @@ class RectanglesModelHolder(private val uiModel: UiInteractionModelBase) {
     get() = previousBuildResult?.model
 
 
-  fun revalidate(editor: EditorImpl, xDelta: Int, yDelta: Int): RectanglesModelBuildResult {
+  fun revalidate(editor: Editor, xDelta: Int, yDelta: Int): RectanglesModelBuildResult {
     application.assertIsDispatchThread()
     val oldBuildResult = previousBuildResult
     val hashCode = uiModel.calculateStateHash()

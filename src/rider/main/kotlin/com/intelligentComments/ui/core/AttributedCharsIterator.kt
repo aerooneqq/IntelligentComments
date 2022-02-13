@@ -2,14 +2,14 @@ package com.intelligentComments.ui.core
 
 import com.intelligentComments.ui.comments.model.highlighters.HighlighterUiModel
 import com.intelligentComments.ui.util.TextUtil
-import com.intellij.openapi.editor.impl.EditorImpl
+import com.intellij.openapi.editor.Editor
 import java.awt.Font
 import java.awt.font.TextAttribute
 import java.text.AttributedCharacterIterator
 import java.text.CharacterIterator
 
 class AttributedCharsIterator(
-  private val editorImpl: EditorImpl,
+  private val editor: Editor,
   private val chars: CharArray,
   private val from: Int,
   private val to: Int,
@@ -27,14 +27,14 @@ class AttributedCharsIterator(
     attributes[TextAttribute.FOREGROUND] = highlighter.textColor
     attributes[TextAttribute.WEIGHT] = highlighter.weight
     attributes[TextAttribute.FONT] = when (highlighter.style) {
-      Font.BOLD -> TextUtil.getBoldFont(editorImpl)
-      Font.ITALIC -> TextUtil.getItalicFont(editorImpl)
-      else -> TextUtil.getFont(editorImpl)
+      Font.BOLD -> TextUtil.getBoldFont(editor)
+      Font.ITALIC -> TextUtil.getItalicFont(editor)
+      else -> TextUtil.getFont(editor)
     }
   }
 
 
-  override fun clone(): Any = AttributedCharsIterator(editorImpl, chars, from, to, highlighter)
+  override fun clone(): Any = AttributedCharsIterator(editor, chars, from, to, highlighter)
   override fun first(): Char = chars[from]
   override fun last(): Char = chars[to - 1]
   override fun current(): Char = chars[current]

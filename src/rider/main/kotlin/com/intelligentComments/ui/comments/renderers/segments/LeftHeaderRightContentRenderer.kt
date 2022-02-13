@@ -13,7 +13,7 @@ import com.intelligentComments.ui.util.ContentSegmentsUtil
 import com.intelligentComments.ui.util.RenderAdditionalInfo
 import com.intelligentComments.ui.util.TextUtil
 import com.intelligentComments.ui.util.UpdatedRectCookie
-import com.intellij.openapi.editor.impl.EditorImpl
+import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.util.use
 import java.awt.Graphics
 import java.awt.Rectangle
@@ -32,14 +32,14 @@ abstract class LeftHeaderRightContentRenderer(
   override fun render(
     g: Graphics,
     rect: Rectangle,
-    editorImpl: EditorImpl,
+    editor: Editor,
     rectanglesModel: RectanglesModel,
     additionalRenderInfo: RenderAdditionalInfo
   ): Rectangle {
-    val shouldDrawHeader = shouldDrawHeader(editorImpl)
+    val shouldDrawHeader = shouldDrawHeader(editor)
     if (shouldDrawHeader) {
       UpdatedRectCookie(rect).use {
-        renderHeader(g, rect, editorImpl, rectanglesModel)
+        renderHeader(g, rect, editor, rectanglesModel)
       }
     }
 
@@ -56,17 +56,17 @@ abstract class LeftHeaderRightContentRenderer(
     if (content.isEmpty()) {
       return Rectangle(rect).apply {
         if (shouldDrawHeader) {
-          y += calculateHeaderHeightInternal(editorImpl)
+          y += calculateHeaderHeightInternal(editor)
         }
       }
     }
 
-    ContentSegmentsUtil.renderSegments(content, g, adjustedRect, editorImpl, rectanglesModel).apply {
+    ContentSegmentsUtil.renderSegments(content, g, adjustedRect, editor, rectanglesModel).apply {
       x -= if (shouldDrawHeader) xDelta else 0
     }
 
     return Rectangle(rect).apply {
-      y += calculateExpectedHeightInPixels(editorImpl, additionalRenderInfo)
+      y += calculateExpectedHeightInPixels(editor, additionalRenderInfo)
     }
   }
 
@@ -103,7 +103,7 @@ abstract class LeftHeaderRightContentRenderer(
     return content.first().parent?.parent?.parent
   }
 
-  protected fun shouldDrawHeader(editorImpl: EditorImpl): Boolean {
+  protected fun shouldDrawHeader(editor: Editor): Boolean {
     if (!renderHeader) return false
 
     if (content.isEmpty()) {
@@ -127,46 +127,46 @@ abstract class LeftHeaderRightContentRenderer(
     return !(canOmitHeader && singleContent)
   }
 
-  fun calculateHeaderWidth(editorImpl: EditorImpl) = calculateHeaderWidthInternal(editorImpl)
+  fun calculateHeaderWidth(editor: Editor) = calculateHeaderWidthInternal(editor)
 
-  protected abstract fun calculateHeaderWidthInternal(editorImpl: EditorImpl): Int
-  protected abstract fun calculateHeaderHeightInternal(editorImpl: EditorImpl): Int
+  protected abstract fun calculateHeaderWidthInternal(editor: Editor): Int
+  protected abstract fun calculateHeaderHeightInternal(editor: Editor): Int
   protected abstract fun renderHeader(
     g: Graphics,
     rect: Rectangle,
-    editorImpl: EditorImpl,
+    editor: Editor,
     rectanglesModel: RectanglesModel
   )
 
   override fun calculateExpectedHeightInPixels(
-    editorImpl: EditorImpl,
+    editor: Editor,
     additionalRenderInfo: RenderAdditionalInfo
   ): Int {
-    val nameHeight = if (shouldDrawHeader(editorImpl)) calculateHeaderHeightInternal(editorImpl) else 0
+    val nameHeight = if (shouldDrawHeader(editor)) calculateHeaderHeightInternal(editor) else 0
 
-    val contentHeight = ContentSegmentsUtil.calculateContentHeight(content, editorImpl, additionalRenderInfo)
+    val contentHeight = ContentSegmentsUtil.calculateContentHeight(content, editor, additionalRenderInfo)
 
     return max(nameHeight, contentHeight)
   }
 
   override fun calculateExpectedWidthInPixels(
-    editorImpl: EditorImpl,
+    editor: Editor,
     additionalRenderInfo: RenderAdditionalInfo
   ): Int {
     var width = 0
 
-    if (shouldDrawHeader(editorImpl)) {
+    if (shouldDrawHeader(editor)) {
       width = additionalRenderInfo.topmostLeftIndent
       width += calculateHeaderContentDelta()
     }
 
-    width += ContentSegmentsUtil.calculateContentWidth(content, editorImpl, additionalRenderInfo)
+    width += ContentSegmentsUtil.calculateContentWidth(content, editor, additionalRenderInfo)
     return width
   }
 
   override fun accept(context: RectangleModelBuildContext) {
     ContentSegmentsUtil.accept(context.createCopy(Rectangle(context.rect).apply {
-      x += if (shouldDrawHeader(context.editorImpl)) {
+      x += if (shouldDrawHeader(context.editor)) {
         calculateHeaderContentDelta() + context.additionalRenderInfo.topmostLeftIndent
       } else {
         0
@@ -194,18 +194,18 @@ open class LeftTextHeaderAndRightContentRenderer : LeftHeaderRightContentRendere
   ) : this(header, segments.contentSection.content, renderHeader)
 
 
-  override fun calculateHeaderWidthInternal(editorImpl: EditorImpl): Int {
-    return TextUtil.getTextWidthWithHighlighters(editorImpl, header)
+  override fun calculateHeaderWidthInternal(editor: Editor): Int {
+    return TextUtil.getTextWidthWithHighlighters(editor, header)
   }
 
-  override fun calculateHeaderHeightInternal(editorImpl: EditorImpl): Int {
-    return TextUtil.getLineHeightWithHighlighters(editorImpl, header.highlighters)
+  override fun calculateHeaderHeightInternal(editor: Editor): Int {
+    return TextUtil.getLineHeightWithHighlighters(editor, header.highlighters)
   }
 
   override fun renderHeader(
     g: Graphics,
     rect: Rectangle,
-    editorImpl: EditorImpl,
+    editor: Editor,
     rectanglesModel: RectanglesModel
   ) {
     val adjustedRect = if (!shouldShiftUpHeader()) {
@@ -214,7 +214,7 @@ open class LeftTextHeaderAndRightContentRenderer : LeftHeaderRightContentRendere
       Rectangle(rect).apply { y -= TextUtil.backgroundArcDimension }
     }
 
-    TextUtil.renderLine(g, adjustedRect, editorImpl, header, 0)
+    TextUtil.renderLine(g, adjustedRect, editor, header, 0)
   }
 
   private fun shouldShiftUpHeader(): Boolean {
@@ -223,7 +223,7 @@ open class LeftTextHeaderAndRightContentRenderer : LeftHeaderRightContentRendere
   }
 
   override fun accept(context: RectangleModelBuildContext) {
-    if (shouldDrawHeader(context.editorImpl)) {
+    if (shouldDrawHeader(context.editor)) {
       TextUtil.createRectanglesForHighlightedText(header, context)
     }
 

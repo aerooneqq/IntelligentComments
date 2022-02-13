@@ -11,7 +11,7 @@ import com.intelligentComments.ui.comments.renderers.todos.ToDosRenderer
 import com.intelligentComments.ui.core.RectangleModelBuildContext
 import com.intelligentComments.ui.core.RectanglesModel
 import com.intelligentComments.ui.core.Renderer
-import com.intellij.openapi.editor.impl.EditorImpl
+import com.intellij.openapi.editor.Editor
 import java.awt.Rectangle
 
 data class RectanglesModelBuildResult(val model: RectanglesModel, val xShift: Int, val yShift: Int)
@@ -23,35 +23,35 @@ class RectanglesModelUtil {
 
 
     fun buildRectanglesModel(
-      editorImpl: EditorImpl,
+      editor: Editor,
       model: UiInteractionModelBase,
       xDelta: Int,
       yDelta: Int
     ): RectanglesModelBuildResult {
       return when (model) {
-        is IntelligentCommentUiModel -> buildRectanglesModel(editorImpl, model, xDelta, yDelta)
-        is DocCommentUiModel -> buildRectanglesModel(editorImpl, model,  model.contentSection, xDelta, yDelta)
-        is CommentWithOneTextSegmentUiModel -> buildRectanglesModel(editorImpl, model, model.contentSection, xDelta, yDelta)
-        is CollapsedCommentUiModel -> buildRectanglesModel(editorImpl, model, model.contentSection, xDelta, yDelta)
+        is IntelligentCommentUiModel -> buildRectanglesModel(editor, model, xDelta, yDelta)
+        is DocCommentUiModel -> buildRectanglesModel(editor, model,  model.contentSection, xDelta, yDelta)
+        is CommentWithOneTextSegmentUiModel -> buildRectanglesModel(editor, model, model.contentSection, xDelta, yDelta)
+        is CollapsedCommentUiModel -> buildRectanglesModel(editor, model, model.contentSection, xDelta, yDelta)
         else -> throw IllegalArgumentException(model.toString())
       }
     }
 
     private fun buildRectanglesModel(
-      editorImpl: EditorImpl,
+      editor: Editor,
       model: UiInteractionModelBase,
       contentSection: SectionUiModel<ContentSegmentUiModel>,
       xDelta: Int,
       yDelta: Int
     ): RectanglesModelBuildResult {
-      val context = createRectanglesBuildContext(xDelta, yDelta, editorImpl)
+      val context = createRectanglesBuildContext(xDelta, yDelta, editor)
 
       val renderer = SegmentsRenderer.getRendererFor(contentSection)
       renderer.accept(context)
 
       addTopmostModel(context, xDelta, yDelta, model)
 
-      val delta = shiftRectanglesYIfNeeded(editorImpl, context)
+      val delta = shiftRectanglesYIfNeeded(editor, context)
       context.rectanglesModel.apply {
         setSize(context.widthAndHeight.width, context.widthAndHeight.height)
         seal()
@@ -60,9 +60,9 @@ class RectanglesModelUtil {
       return RectanglesModelBuildResult(context.rectanglesModel, 0, delta)
     }
 
-    private fun shiftRectanglesYIfNeeded(editorImpl: EditorImpl, context: RectangleModelBuildContext): Int {
+    private fun shiftRectanglesYIfNeeded(editor: Editor, context: RectangleModelBuildContext): Int {
       val height = context.widthAndHeight.height
-      val lineHeight = editorImpl.lineHeight
+      val lineHeight = editor.lineHeight
 
       if (height < lineHeight) {
         val delta = lineHeight - height
@@ -88,12 +88,12 @@ class RectanglesModelUtil {
     private fun createRectanglesBuildContext(
       xDelta: Int,
       yDelta: Int,
-      editorImpl: EditorImpl
+      editor: Editor
     ): RectangleModelBuildContext {
       val widthAndHeight = WidthAndHeight()
       val initialRect = Rectangle(xDelta, yDelta, Int.MAX_VALUE, Int.MAX_VALUE)
       val model = RectanglesModel()
-      return RectangleModelBuildContext(model, widthAndHeight, initialRect, editorImpl)
+      return RectangleModelBuildContext(model, widthAndHeight, initialRect, editor)
     }
 
     private fun updateRectYAndHeight(delta: Int, context: RectangleModelBuildContext) {
@@ -102,12 +102,12 @@ class RectanglesModelUtil {
     }
 
     private fun buildRectanglesModel(
-      editorImpl: EditorImpl,
+      editor: Editor,
       intelligentComment: IntelligentCommentUiModel,
       xDelta: Int,
       yDelta: Int
     ): RectanglesModelBuildResult {
-      val context = createRectanglesBuildContext(xDelta, yDelta, editorImpl)
+      val context = createRectanglesBuildContext(xDelta, yDelta, editor)
 
       CommentAuthorsRenderer.getRendererFor(intelligentComment.authorsSection.content).accept(context)
       updateRectYAndHeight(heightDeltaBetweenSections, context)
@@ -148,8 +148,8 @@ class RectanglesModelUtil {
       context: RectangleModelBuildContext,
       uiInteractionModel: UiInteractionModelBase
     ) {
-      val width = renderer.calculateExpectedWidthInPixels(context.editorImpl, context.additionalRenderInfo)
-      val height = renderer.calculateExpectedHeightInPixels(context.editorImpl, context.additionalRenderInfo)
+      val width = renderer.calculateExpectedWidthInPixels(context.editor, context.additionalRenderInfo)
+      val height = renderer.calculateExpectedHeightInPixels(context.editor, context.additionalRenderInfo)
 
       context.widthAndHeight.updateHeightSum(height)
       context.widthAndHeight.updateWidthMax(width)

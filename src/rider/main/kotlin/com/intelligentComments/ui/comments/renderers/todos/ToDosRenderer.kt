@@ -9,7 +9,7 @@ import com.intelligentComments.ui.core.RectanglesModel
 import com.intelligentComments.ui.core.Renderer
 import com.intelligentComments.ui.util.RectanglesModelUtil
 import com.intelligentComments.ui.util.RenderAdditionalInfo
-import com.intellij.openapi.editor.impl.EditorImpl
+import com.intellij.openapi.editor.Editor
 import java.awt.Graphics
 import java.awt.Rectangle
 import java.lang.Integer.max
@@ -32,14 +32,14 @@ class ToDosRendererImpl(private val section: SectionWithHeaderUiModel<ToDoUiMode
   override fun renderContent(
     g: Graphics,
     rect: Rectangle,
-    editorImpl: EditorImpl,
+    editor: Editor,
     rectanglesModel: RectanglesModel,
     additionalRenderInfo: RenderAdditionalInfo
   ): Rectangle {
     var adjustedRect = Rectangle(rect)
 
     executeActionWithToDosAndRenderers { todo, renderer ->
-      adjustedRect = renderer.render(g, adjustedRect, editorImpl, rectanglesModel, additionalRenderInfo)
+      adjustedRect = renderer.render(g, adjustedRect, editor, rectanglesModel, additionalRenderInfo)
       adjustedRect.y += deltaBetweenToDos
     }
 
@@ -56,24 +56,24 @@ class ToDosRendererImpl(private val section: SectionWithHeaderUiModel<ToDoUiMode
   }
 
   override fun calculateContentWidth(
-    editorImpl: EditorImpl,
+    editor: Editor,
     additionalRenderInfo: RenderAdditionalInfo
   ): Int {
     var width = 0
     executeActionWithToDosAndRenderers { _, renderer ->
-      width = max(width, renderer.calculateExpectedWidthInPixels(editorImpl, additionalRenderInfo))
+      width = max(width, renderer.calculateExpectedWidthInPixels(editor, additionalRenderInfo))
     }
 
     return width
   }
 
   override fun calculateContentHeight(
-    editorImpl: EditorImpl,
+    editor: Editor,
     additionalRenderInfo: RenderAdditionalInfo
   ): Int {
     var height = 0
     executeActionWithToDosAndRenderers { _, renderer ->
-      height += renderer.calculateExpectedHeightInPixels(editorImpl, additionalRenderInfo)
+      height += renderer.calculateExpectedHeightInPixels(editor, additionalRenderInfo)
       height += deltaBetweenToDos
     }
 

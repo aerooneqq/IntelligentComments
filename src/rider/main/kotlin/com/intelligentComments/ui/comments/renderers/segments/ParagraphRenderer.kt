@@ -5,7 +5,7 @@ import com.intelligentComments.ui.comments.renderers.ContentSegmentsRenderer
 import com.intelligentComments.ui.core.RectanglesModel
 import com.intelligentComments.ui.util.RenderAdditionalInfo
 import com.intelligentComments.ui.util.UpdatedRectCookie
-import com.intellij.openapi.editor.impl.EditorImpl
+import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.util.use
 import java.awt.Graphics
 import java.awt.Rectangle
@@ -21,13 +21,13 @@ class ParagraphRendererImpl(
   override fun render(
     g: Graphics,
     rect: Rectangle,
-    editorImpl: EditorImpl,
+    editor: Editor,
     rectanglesModel: RectanglesModel,
     additionalRenderInfo: RenderAdditionalInfo
   ): Rectangle {
     var adjustedRect: Rectangle = rect
     UpdatedRectCookie(rect, xDelta = leftDelta).use {
-      adjustedRect = super.render(g, rect, editorImpl, rectanglesModel, additionalRenderInfo)
+      adjustedRect = super.render(g, rect, editor, rectanglesModel, additionalRenderInfo)
     }
 
     return adjustedRect.apply {
@@ -36,9 +36,9 @@ class ParagraphRendererImpl(
   }
 
   override fun calculateExpectedWidthInPixels(
-    editorImpl: EditorImpl,
+    editor: Editor,
     additionalRenderInfo: RenderAdditionalInfo
   ): Int {
-    return super.calculateExpectedWidthInPixels(editorImpl, additionalRenderInfo) + leftDelta
+    return super.calculateExpectedWidthInPixels(editor, additionalRenderInfo) + leftDelta
   }
 }

@@ -10,7 +10,7 @@ import com.intelligentComments.ui.core.Renderer
 import com.intelligentComments.ui.util.ContentSegmentsUtil
 import com.intelligentComments.ui.util.RenderAdditionalInfo
 import com.intelligentComments.ui.util.UpdatedGraphicsCookie
-import com.intellij.openapi.editor.impl.EditorImpl
+import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.util.use
 import java.awt.Graphics
 import java.awt.Rectangle
@@ -25,7 +25,7 @@ class TableCellRenderer(private val cell: TableCellUiModel) : Renderer, Rectangl
   override fun render(
     g: Graphics,
     rect: Rectangle,
-    editorImpl: EditorImpl,
+    editor: Editor,
     rectanglesModel: RectanglesModel,
     additionalRenderInfo: RenderAdditionalInfo
   ): Rectangle {
@@ -35,23 +35,23 @@ class TableCellRenderer(private val cell: TableCellUiModel) : Renderer, Rectangl
       }
     }
 
-    val adjustedRect = calculateRectForCellContent(rect, editorImpl, additionalRenderInfo)
+    val adjustedRect = calculateRectForCellContent(rect, editor, additionalRenderInfo)
     return ContentSegmentsUtil.renderSegments(
       cell.contentSegments.contentSection.content,
       g,
       adjustedRect,
-      editorImpl,
+      editor,
       rectanglesModel
     )
   }
 
   private fun calculateRectForCellContent(
     rect: Rectangle,
-    editorImpl: EditorImpl,
+    editor: Editor,
     additionalRenderInfo: RenderAdditionalInfo
   ): Rectangle {
-    val allContentHeight = calculateExpectedHeightInPixels(editorImpl, additionalRenderInfo)
-    val allContentWidth = calculateExpectedWidthInPixels(editorImpl, additionalRenderInfo)
+    val allContentHeight = calculateExpectedHeightInPixels(editor, additionalRenderInfo)
+    val allContentWidth = calculateExpectedWidthInPixels(editor, additionalRenderInfo)
     val cellRectWidth = rect.width
     val cellRectHeight = rect.height
 
@@ -74,29 +74,29 @@ class TableCellRenderer(private val cell: TableCellUiModel) : Renderer, Rectangl
   }
 
   override fun calculateExpectedHeightInPixels(
-    editorImpl: EditorImpl,
+    editor: Editor,
     additionalRenderInfo: RenderAdditionalInfo
   ): Int {
-    val height = ContentSegmentsUtil.calculateContentHeight(cell.contentSegments, editorImpl, additionalRenderInfo)
+    val height = ContentSegmentsUtil.calculateContentHeight(cell.contentSegments, editor, additionalRenderInfo)
     return height + 2 * cellMargin
   }
 
   override fun calculateExpectedWidthInPixels(
-    editorImpl: EditorImpl,
+    editor: Editor,
     additionalRenderInfo: RenderAdditionalInfo
   ): Int {
-    val width = ContentSegmentsUtil.calculateContentWidth(cell.contentSegments, editorImpl, additionalRenderInfo)
+    val width = ContentSegmentsUtil.calculateContentWidth(cell.contentSegments, editor, additionalRenderInfo)
     return width + 2 * cellMargin
   }
 
   override fun accept(context: RectangleModelBuildContext) {
-    val rect = calculateRectForCellContent(context.rect, context.editorImpl, context.additionalRenderInfo)
+    val rect = calculateRectForCellContent(context.rect, context.editor, context.additionalRenderInfo)
 
-    val editorImpl = context.editorImpl
+    val editor = context.editor
     for (cellContent in cell.contentSegments.contentSection.content) {
       val renderer = SegmentRenderer.getRendererFor(cellContent)
-      val width = renderer.calculateExpectedWidthInPixels(editorImpl, context.additionalRenderInfo)
-      val height = renderer.calculateExpectedHeightInPixels(editorImpl, context.additionalRenderInfo)
+      val width = renderer.calculateExpectedWidthInPixels(editor, context.additionalRenderInfo)
+      val height = renderer.calculateExpectedHeightInPixels(editor, context.additionalRenderInfo)
 
       val cellSegmentContentRect = Rectangle(rect).apply {
         this.width = width

@@ -8,7 +8,7 @@ import com.intelligentComments.ui.core.Renderer
 import com.intelligentComments.ui.util.RectanglesModelUtil.Companion.heightDeltaBetweenSections
 import com.intelligentComments.ui.util.RenderAdditionalInfo
 import com.intelligentComments.ui.util.TextUtil
-import com.intellij.openapi.editor.impl.EditorImpl
+import com.intellij.openapi.editor.Editor
 import java.awt.Graphics
 import java.awt.Rectangle
 
@@ -34,11 +34,11 @@ class CommentAuthorsRendererImpl(private val authors: Collection<AuthorUiModel>)
   override fun render(
     g: Graphics,
     rect: Rectangle,
-    editorImpl: EditorImpl,
+    editor: Editor,
     rectanglesModel: RectanglesModel,
     additionalRenderInfo: RenderAdditionalInfo
   ): Rectangle {
-    return TextUtil.renderText(g, rect, editorImpl, getText(), heightDeltaBetweenSections)
+    return TextUtil.renderText(g, rect, editor, getText(), heightDeltaBetweenSections)
   }
 
   private fun getText(): String {
@@ -57,22 +57,22 @@ class CommentAuthorsRendererImpl(private val authors: Collection<AuthorUiModel>)
   }
 
   override fun calculateExpectedHeightInPixels(
-    editorImpl: EditorImpl,
+    editor: Editor,
     additionalRenderInfo: RenderAdditionalInfo
   ): Int {
-    return TextUtil.getTextHeight(editorImpl, null)
+    return TextUtil.getTextHeight(editor, null)
   }
 
   override fun calculateExpectedWidthInPixels(
-    editorImpl: EditorImpl,
+    editor: Editor,
     additionalRenderInfo: RenderAdditionalInfo
   ): Int {
-    return TextUtil.getTextWidth(editorImpl, getText())
+    return TextUtil.getTextWidth(editor, getText())
   }
 
   override fun accept(context: RectangleModelBuildContext) {
-    val width = calculateExpectedWidthInPixels(context.editorImpl, context.additionalRenderInfo)
-    val height = calculateExpectedHeightInPixels(context.editorImpl, context.additionalRenderInfo)
+    val width = calculateExpectedWidthInPixels(context.editor, context.additionalRenderInfo)
+    val height = calculateExpectedHeightInPixels(context.editor, context.additionalRenderInfo)
     val interactionModel = authors.first()
     val rect = Rectangle(context.rect.x, context.rect.y, width, height)
 

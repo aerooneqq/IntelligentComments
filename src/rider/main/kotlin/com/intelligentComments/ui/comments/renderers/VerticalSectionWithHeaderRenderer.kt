@@ -15,7 +15,7 @@ import com.intelligentComments.ui.util.TextUtil
 import com.intelligentComments.ui.util.TextUtil.Companion.deltaBetweenIconAndTextInHeader
 import com.intelligentComments.ui.util.UpdatedGraphicsCookie
 import com.intellij.openapi.components.service
-import com.intellij.openapi.editor.impl.EditorImpl
+import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.util.use
 import java.awt.Graphics
 import java.awt.Rectangle
@@ -39,22 +39,22 @@ abstract class VerticalSectionWithHeaderRenderer<T : UiInteractionModelBase>(
   final override fun render(
     g: Graphics,
     rect: Rectangle,
-    editorImpl: EditorImpl,
+    editor: Editor,
     rectanglesModel: RectanglesModel,
     additionalRenderInfo: RenderAdditionalInfo
   ): Rectangle {
     val deltaAfterHeader = if (shouldRenderContent) deltaBetweenHeaderAndContent else 0
-    var adjustedRect = TextUtil.renderTextWithIcon(g, rect, editorImpl, highlightedText, icon, 2, deltaAfterHeader)
+    var adjustedRect = TextUtil.renderTextWithIcon(g, rect, editor, highlightedText, icon, 2, deltaAfterHeader)
 
     if (section.isExpanded) {
-      drawLeftLine(g, adjustedRect, editorImpl, additionalRenderInfo)
+      drawLeftLine(g, adjustedRect, editor, additionalRenderInfo)
     }
 
     adjustedRect = if (!shouldRenderContent) {
       adjustedRect
     } else {
       adjustedRect.x += leftContentIndent
-      adjustedRect = renderContent(g, adjustedRect, editorImpl, rectanglesModel, additionalRenderInfo)
+      adjustedRect = renderContent(g, adjustedRect, editor, rectanglesModel, additionalRenderInfo)
       adjustedRect.apply {
         x -= leftContentIndent
       }
@@ -67,10 +67,10 @@ abstract class VerticalSectionWithHeaderRenderer<T : UiInteractionModelBase>(
   private fun drawLeftLine(
     g: Graphics,
     rect: Rectangle,
-    editorImpl: EditorImpl,
+    editor: Editor,
     additionalRenderInfo: RenderAdditionalInfo
   ) {
-    val contentHeight = calculateContentHeight(editorImpl, additionalRenderInfo)
+    val contentHeight = calculateContentHeight(editor, additionalRenderInfo)
     val color = section.project.service<ColorsProvider>().getColorFor(Colors.LeftLineBackgroundColor)
 
     UpdatedGraphicsCookie(g, color = color).use {
@@ -81,30 +81,30 @@ abstract class VerticalSectionWithHeaderRenderer<T : UiInteractionModelBase>(
   protected abstract fun renderContent(
     g: Graphics,
     rect: Rectangle,
-    editorImpl: EditorImpl,
+    editor: Editor,
     rectanglesModel: RectanglesModel,
     additionalRenderInfo: RenderAdditionalInfo
   ): Rectangle
 
   final override fun calculateExpectedHeightInPixels(
-    editorImpl: EditorImpl,
+    editor: Editor,
     additionalRenderInfo: RenderAdditionalInfo
   ): Int {
-    val height = TextUtil.calculateTextHeightWithIcon(editorImpl, icon, highlightedText)
-    return if (shouldRenderContent) height + calculateContentHeight(editorImpl, additionalRenderInfo) else height
+    val height = TextUtil.calculateTextHeightWithIcon(editor, icon, highlightedText)
+    return if (shouldRenderContent) height + calculateContentHeight(editor, additionalRenderInfo) else height
   }
 
-  protected abstract fun calculateContentWidth(editorImpl: EditorImpl, additionalRenderInfo: RenderAdditionalInfo): Int
+  protected abstract fun calculateContentWidth(editor: Editor, additionalRenderInfo: RenderAdditionalInfo): Int
 
   final override fun calculateExpectedWidthInPixels(
-    editorImpl: EditorImpl,
+    editor: Editor,
     additionalRenderInfo: RenderAdditionalInfo
   ): Int {
-    val width = TextUtil.calculateWidthOfTextWithIcon(editorImpl, icon, deltaBetweenIconAndTextInHeader, highlightedText)
-    return if (shouldRenderContent) max(width, calculateContentWidth(editorImpl, additionalRenderInfo) + leftContentIndent) else width
+    val width = TextUtil.calculateWidthOfTextWithIcon(editor, icon, deltaBetweenIconAndTextInHeader, highlightedText)
+    return if (shouldRenderContent) max(width, calculateContentWidth(editor, additionalRenderInfo) + leftContentIndent) else width
   }
 
-  protected abstract fun calculateContentHeight(editorImpl: EditorImpl, additionalRenderInfo: RenderAdditionalInfo): Int
+  protected abstract fun calculateContentHeight(editor: Editor, additionalRenderInfo: RenderAdditionalInfo): Int
 
   final override fun accept(context: RectangleModelBuildContext) {
     val rect = context.rect
@@ -112,9 +112,9 @@ abstract class VerticalSectionWithHeaderRenderer<T : UiInteractionModelBase>(
     val headerText = section.headerUiModel.headerText
 
     val headerRect = Rectangle(rect).apply {
-      height = TextUtil.calculateTextHeightWithIcon(context.editorImpl, icon, headerText)
+      height = TextUtil.calculateTextHeightWithIcon(context.editor, icon, headerText)
       width =
-        TextUtil.calculateWidthOfTextWithIcon(context.editorImpl, icon, deltaBetweenIconAndTextInHeader, headerText)
+        TextUtil.calculateWidthOfTextWithIcon(context.editor, icon, deltaBetweenIconAndTextInHeader, headerText)
     }
 
     val sectionHeaderModel = section.headerUiModel

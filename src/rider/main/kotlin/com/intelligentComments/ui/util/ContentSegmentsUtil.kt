@@ -6,7 +6,7 @@ import com.intelligentComments.ui.comments.renderers.segments.LeftHeaderRightCon
 import com.intelligentComments.ui.comments.renderers.segments.SegmentRenderer
 import com.intelligentComments.ui.core.RectangleModelBuildContext
 import com.intelligentComments.ui.core.RectanglesModel
-import com.intellij.openapi.editor.impl.EditorImpl
+import com.intellij.openapi.editor.Editor
 import java.awt.Graphics
 import java.awt.Rectangle
 import java.lang.Integer.max
@@ -28,21 +28,21 @@ class ContentSegmentsUtil {
       contentSegmentsUiModel: ContentSegmentsUiModel,
       g: Graphics,
       rect: Rectangle,
-      editorImpl: EditorImpl,
+      editor: Editor,
       rectanglesModel: RectanglesModel
-    ): Rectangle = renderSegments(contentSegmentsUiModel.contentSection.content, g, rect, editorImpl, rectanglesModel)
+    ): Rectangle = renderSegments(contentSegmentsUiModel.contentSection.content, g, rect, editor, rectanglesModel)
 
     fun renderSegments(
       contentSegments: Collection<ContentSegmentUiModel>,
       g: Graphics,
       rect: Rectangle,
-      editorImpl: EditorImpl,
+      editor: Editor,
       rectanglesModel: RectanglesModel
     ): Rectangle {
       var adjustedRect = Rectangle(rect)
-      val additionalRenderInfo = createRenderInfoFor(contentSegments, editorImpl)
+      val additionalRenderInfo = createRenderInfoFor(contentSegments, editor)
       executeWithRenderers(contentSegments) { renderer, _ ->
-        adjustedRect = renderer.render(g, adjustedRect, editorImpl, rectanglesModel, additionalRenderInfo)
+        adjustedRect = renderer.render(g, adjustedRect, editor, rectanglesModel, additionalRenderInfo)
         RectanglesModelUtil.addHeightDelta(adjustedRect, deltaBetweenSegments)
       }
 
@@ -52,13 +52,13 @@ class ContentSegmentsUtil {
 
     private fun createRenderInfoFor(
       segments: Collection<ContentSegmentUiModel>,
-      editorImpl: EditorImpl
+      editor: Editor
     ): RenderAdditionalInfo {
       var maxHeaderWidth = 0
       for (segment in segments) {
         val renderer = SegmentRenderer.getRendererFor(segment)
         if (renderer is LeftHeaderRightContentRenderer) {
-          maxHeaderWidth = max(maxHeaderWidth, renderer.calculateHeaderWidth(editorImpl))
+          maxHeaderWidth = max(maxHeaderWidth, renderer.calculateHeaderWidth(editor))
         }
       }
 
@@ -79,18 +79,18 @@ class ContentSegmentsUtil {
 
     fun calculateContentHeight(
       contentSegments: ContentSegmentsUiModel,
-      editorImpl: EditorImpl,
+      editor: Editor,
       additionalInfo: RenderAdditionalInfo
-    ): Int = calculateContentHeight(contentSegments.contentSection.content, editorImpl, additionalInfo)
+    ): Int = calculateContentHeight(contentSegments.contentSection.content, editor, additionalInfo)
 
     fun calculateContentHeight(
       contentSegments: Collection<ContentSegmentUiModel>,
-      editorImpl: EditorImpl,
+      editor: Editor,
       additionalInfo: RenderAdditionalInfo
     ): Int {
       var height = 0
       executeWithRenderers(contentSegments) { renderer, _ ->
-        height += renderer.calculateExpectedHeightInPixels(editorImpl, additionalInfo) + deltaBetweenSegments
+        height += renderer.calculateExpectedHeightInPixels(editor, additionalInfo) + deltaBetweenSegments
       }
 
       return height - deltaBetweenSegments
@@ -98,25 +98,25 @@ class ContentSegmentsUtil {
 
     fun calculateContentWidth(
       contentSegments: ContentSegmentsUiModel,
-      editorImpl: EditorImpl,
+      editor: Editor,
       additionalInfo: RenderAdditionalInfo
-    ): Int = calculateContentWidth(contentSegments.contentSection.content, editorImpl, additionalInfo)
+    ): Int = calculateContentWidth(contentSegments.contentSection.content, editor, additionalInfo)
 
     fun calculateContentWidth(
       contentSegments: Collection<ContentSegmentUiModel>,
-      editorImpl: EditorImpl,
+      editor: Editor,
       additionalInfo: RenderAdditionalInfo
     ): Int {
       var width = 0
       executeWithRenderers(contentSegments) { renderer, _ ->
-        width = max(width, renderer.calculateExpectedWidthInPixels(editorImpl, additionalInfo))
+        width = max(width, renderer.calculateExpectedWidthInPixels(editor, additionalInfo))
       }
 
       return width
     }
 
     fun accept(context: RectangleModelBuildContext, segments: Collection<ContentSegmentUiModel>) {
-      val additionalRenderInfo = createRenderInfoFor(segments, context.editorImpl)
+      val additionalRenderInfo = createRenderInfoFor(segments, context.editor)
       val newContext = context.withAdditionalRenderInfo(additionalRenderInfo)
 
       executeWithRenderers(segments) { renderer, segment ->

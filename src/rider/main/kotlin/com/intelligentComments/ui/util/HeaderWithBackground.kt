@@ -1,6 +1,6 @@
 package com.intelligentComments.ui.util
 
-import com.intellij.openapi.editor.impl.EditorImpl
+import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.util.use
 import java.awt.Color
 import java.awt.Graphics
@@ -13,23 +13,23 @@ class HeaderWithBackground {
     fun drawTextWithBackground(
       g: Graphics,
       rect: Rectangle,
-      editorImpl: EditorImpl,
+      editor: Editor,
       text: String,
       color: Color
     ): Rectangle {
-      val height = calculateHeaderHeight(editorImpl)
-      val width = calculateHeaderWidth(editorImpl, text)
+      val height = calculateHeaderHeight(editor)
+      val width = calculateHeaderWidth(editor, text)
       val adjustedRect = drawBackgroundRoundedRect(g, rect, width, height, color)
 
-      return drawName(g, adjustedRect, editorImpl, text, height)
+      return drawName(g, adjustedRect, editor, text, height)
     }
 
-    fun calculateHeaderHeight(editorImpl: EditorImpl): Int {
-      return TextUtil.getTextHeight(editorImpl, null)
+    fun calculateHeaderHeight(editor: Editor): Int {
+      return TextUtil.getTextHeight(editor, null)
     }
 
-    fun calculateHeaderWidth(editorImpl: EditorImpl, text: String): Int {
-      val textWidth = TextUtil.getTextWidth(editorImpl, text)
+    fun calculateHeaderWidth(editor: Editor, text: String): Int {
+      val textWidth = TextUtil.getTextWidth(editor, text)
       return textWidth + 2 * margin
     }
 
@@ -50,17 +50,17 @@ class HeaderWithBackground {
     private fun drawName(
       g: Graphics,
       rect: Rectangle,
-      editorImpl: EditorImpl,
+      editor: Editor,
       text: String,
       height: Int
     ): Rectangle {
-      val shift = calculateHeightShiftForName(editorImpl)
+      val shift = calculateHeightShiftForName(editor)
       val rectForText = Rectangle(rect.x + margin, rect.y - shift, rect.width, rect.height)
-      TextUtil.renderText(g, rectForText, editorImpl, text, 0)
+      TextUtil.renderText(g, rectForText, editor, text, 0)
 
       return Rectangle(rect.x, rect.y + height, rect.width, rect.height - height)
     }
 
-    private fun calculateHeightShiftForName(editorImpl: EditorImpl) = TextUtil.getTextHeight(editorImpl, null) / 4
+    private fun calculateHeightShiftForName(editor: Editor) = TextUtil.getTextHeight(editor, null) / 4
   }
 }

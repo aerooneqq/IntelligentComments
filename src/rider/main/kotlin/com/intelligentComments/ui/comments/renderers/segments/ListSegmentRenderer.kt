@@ -12,7 +12,7 @@ import com.intelligentComments.ui.core.RectangleModelBuildContext
 import com.intelligentComments.ui.core.RectanglesModel
 import com.intelligentComments.ui.util.*
 import com.intellij.openapi.components.service
-import com.intellij.openapi.editor.impl.EditorImpl
+import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.util.use
 import java.awt.FontMetrics
 import java.awt.Graphics
@@ -29,19 +29,19 @@ class ListSegmentRenderer(private val model: ListContentSegmentUiModel) : Segmen
   override fun render(
     g: Graphics,
     rect: Rectangle,
-    editorImpl: EditorImpl,
+    editor: Editor,
     rectanglesModel: RectanglesModel,
     additionalRenderInfo: RenderAdditionalInfo
   ): Rectangle {
-    var adjustedRect = renderListHeader(g, rect, editorImpl)
+    var adjustedRect = renderListHeader(g, rect, editor)
     var finalY = adjustedRect.y
 
     executeIfExpanded {
       UpdatedRectCookie(adjustedRect, xDelta = leftIndentForListContent).use {
         for ((index, item) in model.items.withIndex()) {
           val listContent = getAllContentFrom(item)
-          drawItemBullet(g, adjustedRect, editorImpl, listContent.first(), index + 1)
-          adjustedRect = ContentSegmentsUtil.renderSegments(listContent, g, adjustedRect, editorImpl, rectanglesModel)
+          drawItemBullet(g, adjustedRect, editor, listContent.first(), index + 1)
+          adjustedRect = ContentSegmentsUtil.renderSegments(listContent, g, adjustedRect, editor, rectanglesModel)
           adjustedRect.y += ContentSegmentsUtil.deltaBetweenSegments
         }
 
@@ -71,14 +71,14 @@ class ListSegmentRenderer(private val model: ListContentSegmentUiModel) : Segmen
   private fun renderListHeader(
     g: Graphics,
     rect: Rectangle,
-    editorImpl: EditorImpl
+    editor: Editor
   ): Rectangle {
     val header = model.headerUiModel
     if (header != null) {
       val headerText = header.textWrapper.text
       val headerHighlighters = header.textWrapper.highlighters
       val delta = if (model.isExpanded) deltaBetweenListHeaderAndContent else 0
-      return TextUtil.renderLine(g, rect, editorImpl, headerText, headerHighlighters, delta)
+      return TextUtil.renderLine(g, rect, editor, headerText, headerHighlighters, delta)
     }
 
     return rect
@@ -87,20 +87,20 @@ class ListSegmentRenderer(private val model: ListContentSegmentUiModel) : Segmen
   private fun drawItemBullet(
     g: Graphics,
     rect: Rectangle,
-    editorImpl: EditorImpl,
+    editor: Editor,
     segment: ContentSegmentUiModel,
     index: Int
   ) {
-    val fontMetrics = TextUtil.getFontMetrics(editorImpl, null)
+    val fontMetrics = TextUtil.getFontMetrics(editor, null)
 
     when (segment) {
       is ImageContentSegmentUiModel,
       is ListContentSegmentUiModel,
       is TextContentSegmentUiModel -> {
         if (model.listKind == ListSegmentKind.Bullet) {
-          drawBullet(g, editorImpl, rect, fontMetrics)
+          drawBullet(g, editor, rect, fontMetrics)
         } else if (model.listKind == ListSegmentKind.Number) {
-          drawNumber(g, rect, editorImpl, index)
+          drawNumber(g, rect, editor, index)
         }
       }
     }
@@ -108,12 +108,12 @@ class ListSegmentRenderer(private val model: ListContentSegmentUiModel) : Segmen
 
   private fun drawBullet(
     g: Graphics,
-    editorImpl: EditorImpl,
+    editor: Editor,
     rect: Rectangle,
     fontMetrics: FontMetrics
   ) {
     val bulletColor = model.project.service<ColorsProvider>().getColorFor(Colors.ListItemBulletBackgroundColor)
-    val textHeight = TextUtil.getTextHeight(editorImpl, null)
+    val textHeight = TextUtil.getTextHeight(editor, null)
     val bulletRadius = textHeight / 2
     UpdatedGraphicsCookie(g, color = bulletColor).use {
       g.fillOval(rect.x - 5 * bulletRadius / 3 , rect.y + bulletRadius / 2 + fontMetrics.descent / 2 - 1, bulletRadius, bulletRadius)
@@ -123,7 +123,7 @@ class ListSegmentRenderer(private val model: ListContentSegmentUiModel) : Segmen
   private fun drawNumber(
     g: Graphics,
     rect: Rectangle,
-    editorImpl: EditorImpl,
+    editor: Editor,
     index: Int
   ) {
     val rectForNumber = Rectangle(rect).apply {
@@ -131,19 +131,19 @@ class ListSegmentRenderer(private val model: ListContentSegmentUiModel) : Segmen
     }
 
     val numberString = "$index."
-    TextUtil.renderText(g, rectForNumber, editorImpl, numberString, 0)
+    TextUtil.renderText(g, rectForNumber, editor, numberString, 0)
   }
 
   override fun calculateExpectedHeightInPixels(
-    editorImpl: EditorImpl,
+    editor: Editor,
     additionalRenderInfo: RenderAdditionalInfo
   ): Int {
-    var height = getHeaderHeightWithDelta(editorImpl)
+    var height = getHeaderHeightWithDelta(editor)
 
     executeIfExpanded {
       for (item in model.items) {
         for (content in getAllContentFrom(item)) {
-          height += SegmentRenderer.getRendererFor(content).calculateExpectedHeightInPixels(editorImpl, additionalRenderInfo)
+          height += SegmentRenderer.getRendererFor(content).calculateExpectedHeightInPixels(editor, additionalRenderInfo)
           height += ContentSegmentsUtil.deltaBetweenSegments
         }
       }
@@ -152,38 +152,38 @@ class ListSegmentRenderer(private val model: ListContentSegmentUiModel) : Segmen
     return height - if (model.isExpanded) ContentSegmentsUtil.deltaBetweenSegments else 0
   }
 
-  private fun getHeaderHeight(editorImpl: EditorImpl): Int {
+  private fun getHeaderHeight(editor: Editor): Int {
     val header = model.headerUiModel ?: return 0
 
     val highlighters = header.textWrapper.highlighters
-    return TextUtil.getLineHeightWithHighlighters(editorImpl, highlighters)
+    return TextUtil.getLineHeightWithHighlighters(editor, highlighters)
   }
 
-  private fun getHeaderHeightWithDelta(editorImpl: EditorImpl): Int {
+  private fun getHeaderHeightWithDelta(editor: Editor): Int {
     if (model.headerUiModel == null) return 0
 
-    var height = getHeaderHeight(editorImpl)
+    var height = getHeaderHeight(editor)
     height += if (model.isExpanded) deltaBetweenListHeaderAndContent else 0
     return height
   }
 
-  private fun getHeaderWidth(editorImpl: EditorImpl): Int {
+  private fun getHeaderWidth(editor: Editor): Int {
     if (model.headerUiModel == null) return 0
 
-    return TextUtil.getTextWidth(editorImpl, model.headerUiModel.textWrapper.text)
+    return TextUtil.getTextWidth(editor, model.headerUiModel.textWrapper.text)
   }
 
   override fun calculateExpectedWidthInPixels(
-    editorImpl: EditorImpl,
+    editor: Editor,
     additionalRenderInfo: RenderAdditionalInfo
   ): Int {
-    var headerWidth = getHeaderWidth(editorImpl)
+    var headerWidth = getHeaderWidth(editor)
 
     executeIfExpanded {
       for (item in model.items) {
         for (content in getAllContentFrom(item)) {
           val renderer = SegmentRenderer.getRendererFor(content)
-          val segmentWidth = renderer.calculateExpectedWidthInPixels(editorImpl, additionalRenderInfo)
+          val segmentWidth = renderer.calculateExpectedWidthInPixels(editor, additionalRenderInfo)
           headerWidth = max(segmentWidth + leftIndentForListContent, headerWidth)
         }
       }
@@ -204,9 +204,9 @@ class ListSegmentRenderer(private val model: ListContentSegmentUiModel) : Segmen
   private fun acceptHeaderModel(context: RectangleModelBuildContext) {
     if (model.headerUiModel == null) return
 
-    val editorImpl = context.editorImpl
+    val editor = context.editor
     val rect = context.rect
-    val headerRect = Rectangle(rect.x, rect.y, getHeaderWidth(editorImpl), getHeaderHeight(editorImpl))
+    val headerRect = Rectangle(rect.x, rect.y, getHeaderWidth(editor), getHeaderHeight(editor))
     context.rectanglesModel.addElement(model.headerUiModel, headerRect)
   }
 
@@ -219,14 +219,14 @@ class ListSegmentRenderer(private val model: ListContentSegmentUiModel) : Segmen
 
   private fun acceptListItemsIfExpanded(context: RectangleModelBuildContext) {
     val rect = context.rect
-    val editorImpl = context.editorImpl
+    val editor = context.editor
 
     executeIfExpanded {
-      UpdatedRectCookie(rect, xDelta = leftIndentForListContent, yDelta = getHeaderHeightWithDelta(editorImpl)).use {
+      UpdatedRectCookie(rect, xDelta = leftIndentForListContent, yDelta = getHeaderHeightWithDelta(editor)).use {
         for (item in model.items) {
           for (content in getAllContentFrom(item)) {
             val renderer = SegmentRenderer.getRendererFor(content)
-            val height = renderer.calculateExpectedHeightInPixels(editorImpl, context.additionalRenderInfo)
+            val height = renderer.calculateExpectedHeightInPixels(editor, context.additionalRenderInfo)
             renderer.accept(context)
             rect.y += height + ContentSegmentsUtil.deltaBetweenSegments
           }

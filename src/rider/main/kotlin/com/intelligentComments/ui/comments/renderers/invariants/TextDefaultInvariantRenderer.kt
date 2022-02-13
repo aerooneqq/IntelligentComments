@@ -4,7 +4,7 @@ import com.intelligentComments.ui.comments.model.invariants.TextInvariantUiModel
 import com.intelligentComments.ui.core.RectanglesModel
 import com.intelligentComments.ui.util.RenderAdditionalInfo
 import com.intelligentComments.ui.util.TextUtil
-import com.intellij.openapi.editor.impl.EditorImpl
+import com.intellij.openapi.editor.Editor
 import java.awt.Graphics
 import java.awt.Rectangle
 
@@ -12,15 +12,15 @@ class TextDefaultInvariantRenderer(private val model: TextInvariantUiModel) : In
   override fun render(
     g: Graphics,
     rect: Rectangle,
-    editorImpl: EditorImpl,
+    editor: Editor,
     rectanglesModel: RectanglesModel,
     additionalRenderInfo: RenderAdditionalInfo
   ): Rectangle {
-    val width = calculateWidth(editorImpl)
+    val width = calculateWidth(editor)
     return InvariantRendererUtil.render(
       g,
       rect,
-      editorImpl,
+      editor,
       model.borderColor,
       model.backgroundColor,
       width,
@@ -28,24 +28,24 @@ class TextDefaultInvariantRenderer(private val model: TextInvariantUiModel) : In
     )
   }
 
-  private fun calculateWidth(editorImpl: EditorImpl): Int {
-    return TextUtil.getTextWidth(editorImpl, model.text) + InvariantRenderer.extraInvariantWidth
+  private fun calculateWidth(editor: Editor): Int {
+    return TextUtil.getTextWidth(editor, model.text) + InvariantRenderer.extraInvariantWidth
   }
 
   override fun calculateWidthWithInvariantInterval(
-    editorImpl: EditorImpl,
+    editor: Editor,
     additionalRendererInfo: RenderAdditionalInfo
   ): Int {
-    return calculateExpectedWidthInPixels(editorImpl, additionalRendererInfo) + InvariantsRenderer.gapBetweenInvariants
+    return calculateExpectedWidthInPixels(editor, additionalRendererInfo) + InvariantsRenderer.gapBetweenInvariants
   }
 
   override fun calculateExpectedHeightInPixels(
-    editorImpl: EditorImpl,
+    editor: Editor,
     additionalRenderInfo: RenderAdditionalInfo
   ): Int = InvariantRenderer.invariantHeight
 
   override fun calculateExpectedWidthInPixels(
-    editorImpl: EditorImpl,
+    editor: Editor,
     additionalRenderInfo: RenderAdditionalInfo
-  ): Int = calculateWidth(editorImpl)
+  ): Int = calculateWidth(editor)
 }

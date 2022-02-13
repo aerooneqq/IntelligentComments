@@ -4,7 +4,7 @@ import com.intelligentComments.ui.comments.model.invariants.AddNewInvariantUiMod
 import com.intelligentComments.ui.core.RectanglesModel
 import com.intelligentComments.ui.util.RenderAdditionalInfo
 import com.intelligentComments.ui.util.TextUtil
-import com.intellij.openapi.editor.impl.EditorImpl
+import com.intellij.openapi.editor.Editor
 import java.awt.Graphics
 import java.awt.Rectangle
 
@@ -12,16 +12,16 @@ class AddNewInvariantRenderer(private val model: AddNewInvariantUiModel) : Invar
   override fun render(
     g: Graphics,
     rect: Rectangle,
-    editorImpl: EditorImpl,
+    editor: Editor,
     rectanglesModel: RectanglesModel,
     additionalRenderInfo: RenderAdditionalInfo
   ): Rectangle {
-    val width = calculateWidth(editorImpl)
-    val background = editorImpl.contentComponent.background
+    val width = calculateWidth(editor)
+    val background = editor.contentComponent.background
     return InvariantRendererUtil.render(
       g,
       rect,
-      editorImpl,
+      editor,
       model.borderColor,
       background,
       width,
@@ -30,29 +30,29 @@ class AddNewInvariantRenderer(private val model: AddNewInvariantUiModel) : Invar
     )
   }
 
-  private fun calculateWidth(editorImpl: EditorImpl): Int {
+  private fun calculateWidth(editor: Editor): Int {
     val iconDelta = InvariantRenderer.deltaBetweenTextAndIcon
     val extraWidth = InvariantRenderer.extraInvariantWidth
     val iconWidth = model.icon.iconWidth
-    val textWidth = TextUtil.getTextWidth(editorImpl, model.text)
+    val textWidth = TextUtil.getTextWidth(editor, model.text)
 
     return textWidth + iconWidth + extraWidth + iconDelta
   }
 
   override fun calculateWidthWithInvariantInterval(
-    editorImpl: EditorImpl,
+    editor: Editor,
     additionalRenderInfo: RenderAdditionalInfo
   ): Int {
-    return calculateExpectedWidthInPixels(editorImpl, additionalRenderInfo) + InvariantsRenderer.gapBetweenInvariants
+    return calculateExpectedWidthInPixels(editor, additionalRenderInfo) + InvariantsRenderer.gapBetweenInvariants
   }
 
   override fun calculateExpectedHeightInPixels(
-    editorImpl: EditorImpl,
+    editor: Editor,
     additionalRenderInfo: RenderAdditionalInfo)
   : Int = InvariantRenderer.invariantHeight
 
   override fun calculateExpectedWidthInPixels(
-    editorImpl: EditorImpl,
+    editor: Editor,
     additionalRenderInfo: RenderAdditionalInfo
-  ): Int = calculateWidth(editorImpl)
+  ): Int = calculateWidth(editor)
 }

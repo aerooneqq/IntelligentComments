@@ -2,6 +2,7 @@ package com.intelligentComments.ui.popups
 
 import com.intelligentComments.ui.comments.model.CommentUiModelBase
 import com.intelligentComments.ui.util.UpdatedGraphicsCookie
+import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.impl.EditorImpl
 import com.intellij.openapi.editor.markup.TextAttributes
 import com.intellij.openapi.util.Pair
@@ -20,7 +21,7 @@ import kotlin.math.min
 
 class IntelligentCommentPopup(
   model: CommentUiModelBase,
-  editor: EditorImpl
+  editor: Editor
 ) : AbstractPopup() {
   val popupSize: Dimension
 
@@ -48,7 +49,7 @@ class IntelligentCommentPopup(
 
   private class IntelligentCommentPopupComponent(
     private val model: CommentUiModelBase,
-    private val editor: EditorImpl
+    private val editor: Editor
   ) : JComponent() {
     companion object {
       private val logger = getLogger<IntelligentCommentPopupComponent>()
