@@ -32,7 +32,7 @@ import com.jetbrains.rider.document.RiderDocumentHost
 class RiderCommentsController(project: Project) : LifetimedProjectComponent(project) {
   private val commentsStorage: DocumentCommentsWithFoldingsStorage = DocumentCommentsWithFoldingsStorage()
   private val logger = getLogger<RiderDocumentHost>()
-  private val commentsStateManager = project.getService(RiderCommentsStateManager::class.java)
+  private val commentsStateManager = project.getComponent(RiderCommentsStateManager::class.java)
   private val textControlHost = FrontendTextControlHost.getInstance(project)
   private val listenersManager = project.service<CommentsEditorsListenersManager>()
   private val settings = RiderIntelligentCommentsSettingsProvider.getInstance()
