@@ -1,7 +1,6 @@
 package com.intelligentComments.ui.comments.renderers.todos
 
 import com.intelligentComments.ui.comments.model.tickets.TicketUiModel
-import com.intelligentComments.ui.comments.model.todo.ToDoUiModel
 import com.intelligentComments.ui.comments.model.todo.ToDoWithTicketsUiModel
 import com.intelligentComments.ui.comments.renderers.ExpandableContentWithHeader
 import com.intelligentComments.ui.core.RectangleModelBuildContext
@@ -15,19 +14,11 @@ import com.intellij.openapi.editor.Editor
 import java.awt.Graphics
 import java.awt.Rectangle
 
-interface ToDoRenderer : Renderer, RectangleModelBuildContributor {
-  companion object {
-    fun getRendererFor(todo: ToDoUiModel): ToDoRenderer {
-      return when (todo) {
-        is ToDoWithTicketsUiModel -> ToDoWithTicketsRenderer(todo)
-        else -> throw IllegalArgumentException(todo.toString())
-      }
-    }
-  }
-}
+interface ToDoRenderer : Renderer, RectangleModelBuildContributor
 
-class ToDoWithTicketsRenderer(private val todo: ToDoWithTicketsUiModel) :
-  ExpandableContentWithHeader(todo.headerUiModel), ToDoRenderer {
+class ToDoWithTicketsRenderer(
+  private val todo: ToDoWithTicketsUiModel
+) : ExpandableContentWithHeader(todo.headerUiModel), ToDoRenderer {
   companion object {
     private const val heightDelta = 4
     private const val deltaBetweenTicketsHeaderAndTickets = 4
@@ -104,7 +95,8 @@ class ToDoWithTicketsRenderer(private val todo: ToDoWithTicketsUiModel) :
 
   override fun calculateContentHeight(editor: Editor, additionalRenderInfo: RenderAdditionalInfo): Int {
     val ticketsHeaderHeight = calculateTicketsHeight(editor) + heightDelta
-    val contentHeight = ContentSegmentsUtil.calculateContentHeight(todo.description, editor, additionalRenderInfo) + heightDelta
+    val contentHeight =
+      ContentSegmentsUtil.calculateContentHeight(todo.description, editor, additionalRenderInfo) + heightDelta
     return ticketsHeaderHeight + contentHeight
   }
 

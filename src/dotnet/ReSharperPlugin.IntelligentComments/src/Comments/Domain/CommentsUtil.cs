@@ -62,10 +62,9 @@ public static class CommentsUtil
   private static RdComment ToRdComment([NotNull] this IIntelligentComment comment)
   {
     RdIntelligentCommentContent content = comment.Content.ToRdContent();
-    var authors = new List<RdIntelligentCommentAuthor> { new("Aero", DateTime.Now) };
     int identifier = comment.CreateIdentifier();
 
-    return new RdIntelligentComment(authors, DateTime.Now, content, null, null, null, null, identifier, comment.GetRdRange());
+    return new RdIntelligentComment(DateTime.Now, content, null, null, null, null, identifier, comment.GetRdRange());
   }
 
   [NotNull]

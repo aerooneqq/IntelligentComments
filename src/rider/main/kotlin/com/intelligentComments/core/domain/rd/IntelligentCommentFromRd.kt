@@ -24,7 +24,7 @@ class IntelligentCommentFromRd(
   private fun createReferences() = rdComment.references?.map { ReferenceContentSegmentFromRd(it, this, project) } ?: emptyList()
   private fun createInvariants() = rdComment.invariants?.map { InvariantContentSegmentFromRd(it, this, project) } ?: emptyList()
   private fun createToDos() = rdComment.toDos?.map { ToDoContentSegmentFromRd(it, this, project) } ?: emptyList()
-  private fun createHacks() = rdComment.hacks?.map { HackContentSegmentFromRd(it, this, project) } ?: emptyList()
+  private fun createHacks() = rdComment.hacks?.map { HackWithTicketsContentSegmentFromRd(it, this, project) } ?: emptyList()
 
 
   override fun recreate(editor: Editor): CommentBase {

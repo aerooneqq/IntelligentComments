@@ -7,16 +7,6 @@ import com.jetbrains.rd.ide.model.RdToDoContentSegment
 import com.jetbrains.rd.ide.model.RdToDoWithTickets
 
 open class ToDoFromRd(todo: RdToDo, project: Project) : UniqueEntityImpl(), ToDo {
-  companion object {
-    fun getFrom(todo: RdToDo, project: Project): ToDoFromRd {
-      return when (todo) {
-        is RdToDoWithTickets -> ToDoWithTicketsFromRd(todo, project)
-        else -> throw IllegalArgumentException(todo.toString())
-      }
-    }
-  }
-
-  final override val author: CommentAuthor = AuthorFromRd(todo.author)
   final override val name: String = todo.name
   final override val description: ContentSegments = ContentSegmentsFromRd(todo.description, null, project)
   final override val blockingReferences: Collection<Reference> =
@@ -31,6 +21,6 @@ class ToDoContentSegmentFromRd(
   contentSegment: RdToDoContentSegment,
   parent: Parentable?,
   project: Project
-) : ContentSegmentFromRd(contentSegment, parent), ToDoContentSegment {
-  override val toDo: ToDo = ToDoFromRd.getFrom(contentSegment.toDo, project)
+) : ContentSegmentFromRd(contentSegment, parent), ToDoWithTicketsContentSegment {
+  override val toDo = ToDoWithTicketsFromRd(contentSegment.toDo, project)
 }

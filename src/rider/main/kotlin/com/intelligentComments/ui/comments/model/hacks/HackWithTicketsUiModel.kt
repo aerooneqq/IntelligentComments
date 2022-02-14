@@ -1,25 +1,43 @@
 package com.intelligentComments.ui.comments.model.hacks
 
-import com.intelligentComments.core.domain.core.HackContentSegment
-import com.intelligentComments.core.domain.core.HackWithTickets
+import com.intelligentComments.core.domain.core.*
+import com.intelligentComments.ui.colors.Colors
+import com.intelligentComments.ui.comments.model.ExpandableUiModel
+import com.intelligentComments.ui.comments.model.HeaderUiModel
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
+import com.intelligentComments.ui.comments.model.content.ContentSegmentUiModel
+import com.intelligentComments.ui.comments.model.content.ContentSegmentsUiModel
+import com.intelligentComments.ui.comments.model.references.ReferenceUiModel
 import com.intelligentComments.ui.comments.model.tickets.TicketUiModel
-import com.intelligentComments.ui.comments.renderers.NotSupportedForRenderingError
+import com.intelligentComments.ui.comments.renderers.hacks.HackWithTicketsRenderer
 import com.intelligentComments.ui.core.Renderer
 import com.intelligentComments.ui.util.HashUtil
 import com.intellij.openapi.project.Project
 
 class HackWithTicketsUiModel(
-  segment: HackContentSegment,
-  hackWithTickets: HackWithTickets,
+  project: Project,
   parent: UiInteractionModelBase?,
-  project: Project
-) : HackUiModel(segment, parent, project) {
-  val tickets = hackWithTickets.tickets.map { TicketUiModel(it, this, project) }
+  segment: HackWithTicketsContentSegment,
+) : ContentSegmentUiModel(project, parent, segment), ExpandableUiModel {
+  private val hack = segment.hack
 
-  override fun calculateStateHash(): Int {
-    return HashUtil.hashCode(super.hashCode(), HashUtil.calculateHashFor(tickets) { it.calculateStateHash() })
+  val description = ContentSegmentsUiModel(project, this, hack.description)
+  val blockingReferences = hack.blockingReferences.map {
+    ReferenceUiModel(project, this, object : UniqueEntityImpl(), ReferenceContentSegment {
+      override val reference: Reference = it
+      override val parent: Parentable = this
+    })
   }
 
-  override fun createRenderer(): Renderer = throw NotSupportedForRenderingError()
+  val headerUiModel = HeaderUiModel(project, this, hack.name, Colors.HackHeaderBackgroundColor, Colors.HackHeaderHoveredBackgroundColor)
+  val tickets = segment.hack.tickets.map { TicketUiModel(it, this, project) }
+
+  override var isExpanded: Boolean = true
+  override fun calculateStateHash(): Int {
+    val referencesHash = HashUtil.calculateHashFor(blockingReferences) { it.calculateStateHash() }
+    val hash = HashUtil.hashCode(description.calculateStateHash(), referencesHash, headerUiModel.calculateStateHash())
+    return HashUtil.hashCode(hash, HashUtil.calculateHashFor(tickets) { it.calculateStateHash() })
+   }
+
+  override fun createRenderer(): Renderer = HackWithTicketsRenderer(this)
 }

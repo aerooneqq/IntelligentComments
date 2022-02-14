@@ -36,7 +36,6 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
   }
 
   val RdIntelligentComment = structdef extends RdComment {
-    field("Authors", immutableList(RdIntelligentCommentAuthor).nullable).optional
     field("Date", PredefinedType.dateTime)
     field("Content", RdIntelligentCommentContent.nullable).optional
 
@@ -44,11 +43,6 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
     field("References", immutableList(RdReferenceContentSegment).nullable).optional
     field("ToDos", immutableList(RdToDoContentSegment).nullable).optional
     field("Hacks", immutableList(RdHackContentSegment).nullable).optional
-  }
-
-  val RdIntelligentCommentAuthor = structdef {
-    field("Name", PredefinedType.string)
-    field("Date", PredefinedType.dateTime)
   }
 
   val RdContentSegment = basestruct { }
@@ -172,7 +166,7 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
   }
 
   val RdInvariantContentSegment = structdef extends RdContentSegment {
-    field("Invariant", RdInvariant)
+    field("Invariant", RdTextInvariant)
   }
 
   val RdReference = basestruct {
@@ -252,7 +246,6 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
   }
 
   val RdToDo = basestruct {
-    field("Author", RdIntelligentCommentAuthor)
     field("Name", PredefinedType.string)
     field("Description", RdContentSegments)
     field("BlockingReferences", immutableList(RdReference))
@@ -263,7 +256,7 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
   }
 
   val RdToDoContentSegment = structdef extends RdContentSegment {
-    field("ToDo", RdToDo)
+    field("ToDo", RdToDoWithTickets)
   }
 
   val RdTicket = structdef {
@@ -282,7 +275,7 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
   }
 
   val RdHackContentSegment = structdef extends RdContentSegment {
-    field("Hack", RdHack)
+    field("Hack", RdHackWithTickets)
   }
 
   val RdCodeHighlightingRequest = structdef {

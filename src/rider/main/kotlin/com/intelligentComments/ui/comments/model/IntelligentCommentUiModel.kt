@@ -2,12 +2,12 @@ package com.intelligentComments.ui.comments.model
 
 import com.intelligentComments.core.domain.core.IntelligentComment
 import com.intelligentComments.ui.comments.model.content.ContentSegmentUiModel
-import com.intelligentComments.ui.comments.model.hacks.HackUiModel
-import com.intelligentComments.ui.comments.model.invariants.InvariantUiModel
+import com.intelligentComments.ui.comments.model.hacks.HackWithTicketsUiModel
+import com.intelligentComments.ui.comments.model.invariants.TextInvariantUiModel
 import com.intelligentComments.ui.comments.model.references.ReferenceUiModel
 import com.intelligentComments.ui.comments.model.sections.HeaderTextInfo
 import com.intelligentComments.ui.comments.model.sections.SectionWithHeaderUiModel
-import com.intelligentComments.ui.comments.model.todo.ToDoUiModel
+import com.intelligentComments.ui.comments.model.todo.ToDoWithTicketsUiModel
 import com.intelligentComments.ui.comments.renderers.IntelligentCommentsRenderer
 import com.intelligentComments.ui.util.HashUtil
 import com.intellij.icons.AllIcons
@@ -32,17 +32,17 @@ class IntelligentCommentUiModel(
 
   init {
     val references = mutableListOf<ReferenceUiModel>()
-    val invariants = mutableListOf<InvariantUiModel>()
-    val todos = mutableListOf<ToDoUiModel>()
-    val hacks = mutableListOf<HackUiModel>()
+    val invariants = mutableListOf<TextInvariantUiModel>()
+    val todos = mutableListOf<ToDoWithTicketsUiModel>()
+    val hacks = mutableListOf<HackWithTicketsUiModel>()
     val content = IntelligentCommentContentUiModel(project, this, comment.content)
 
     for (reference in comment.references) references.add(ReferenceUiModel(project, this, reference))
 
-    for (invariant in comment.invariants) invariants.add(InvariantUiModel.getFrom(project, this, invariant))
+    for (invariant in comment.invariants) invariants.add(TextInvariantUiModel(project, this, invariant))
 
-    for (todo in comment.todos) todos.add(ToDoUiModel.getFrom(project, this, todo))
-    for (hack in comment.hacks) hacks.add(HackUiModel.getFrom(project, this, hack))
+    for (todo in comment.todos) todos.add(ToDoWithTicketsUiModel(project, this, todo))
+    for (hack in comment.hacks) hacks.add(HackWithTicketsUiModel(project, this, hack))
 
     contentSection = getSectionHeaderUiModel(content.segments, AllIcons.FileTypes.Text, "Content")
     referencesSection = getSectionHeaderUiModel(references, AllIcons.FileTypes.Java, "References")

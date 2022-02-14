@@ -18,8 +18,7 @@ open class HackFromRd(rdHack: RdHack, project: Project) : UniqueEntityImpl(), Ha
 
   final override val name: String = rdHack.name
   final override val description: ContentSegments = ContentSegmentsFromRd(rdHack.description, null, project)
-  final override val blockingReferences: Collection<Reference> =
-    rdHack.blockingReferences.map { ReferenceFromRd.getFrom(project, it) }
+  final override val blockingReferences = rdHack.blockingReferences.map { ReferenceFromRd.getFrom(project, it) }
 }
 
 class HackWithTicketsFromRd(
@@ -29,10 +28,10 @@ class HackWithTicketsFromRd(
   override val tickets: Collection<Ticket> = rdHackWithTickets.tickets.map { TicketFromRd(it) }
 }
 
-class HackContentSegmentFromRd(
+class HackWithTicketsContentSegmentFromRd(
   rdHackSegment: RdHackContentSegment,
   parent: Parentable?,
   project: Project
-) : ContentSegmentFromRd(rdHackSegment, parent), HackContentSegment {
-  override val hack: Hack = HackFromRd.getFrom(rdHackSegment.hack, project)
+) : ContentSegmentFromRd(rdHackSegment, parent), HackWithTicketsContentSegment {
+  override val hack = HackWithTicketsFromRd(rdHackSegment.hack, project)
 }

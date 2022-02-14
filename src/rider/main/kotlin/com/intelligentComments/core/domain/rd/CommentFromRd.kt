@@ -10,7 +10,7 @@ import com.jetbrains.rd.ide.model.*
 
 abstract class CommentFromRd(
   private val rdComment: RdComment,
-  private val project: Project,
+  project: Project,
   final override val rangeMarker: RangeMarker
 ) : UniqueEntityImpl(), CommentBase {
   final override val parent: Parentable? = null

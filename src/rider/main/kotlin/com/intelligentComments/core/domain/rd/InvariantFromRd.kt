@@ -25,6 +25,6 @@ class InvariantContentSegmentFromRd(
   contentSegment: RdInvariantContentSegment,
   parent: Parentable?,
   project: Project
-) : ContentSegmentFromRd(contentSegment, parent), InvariantContentSegment {
-  override val invariant: Invariant = InvariantFromRd.getFrom(contentSegment.invariant)
+) : ContentSegmentFromRd(contentSegment, parent), TextInvariantContentSegment {
+  override val invariant = TextInvariantFromRd(contentSegment.invariant)
 }

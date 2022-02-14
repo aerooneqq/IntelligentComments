@@ -6,6 +6,6 @@ interface TextInvariant : Invariant {
   val text: String
 }
 
-interface InvariantContentSegment : ContentSegment {
-  val invariant: Invariant
+interface TextInvariantContentSegment : ContentSegment {
+  val invariant: TextInvariant
 }

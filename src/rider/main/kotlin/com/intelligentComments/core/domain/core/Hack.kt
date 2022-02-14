@@ -7,6 +7,6 @@ interface Hack : UniqueEntity, EntityBlockedByReferences {
 
 interface HackWithTickets : Hack, EntityWithAssociatedTickets
 
-interface HackContentSegment : ContentSegment {
-  val hack: Hack
+interface HackWithTicketsContentSegment: ContentSegment {
+  val hack: HackWithTickets
 }

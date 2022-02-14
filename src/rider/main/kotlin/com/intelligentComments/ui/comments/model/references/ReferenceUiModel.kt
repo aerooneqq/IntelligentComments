@@ -11,7 +11,7 @@ import com.intelligentComments.ui.core.Renderer
 import com.intelligentComments.ui.util.HashUtil
 import com.intellij.openapi.project.Project
 
-open class ReferenceUiModel(
+class ReferenceUiModel(
   project: Project,
   parent: UiInteractionModelBase?,
   reference: ReferenceContentSegment
