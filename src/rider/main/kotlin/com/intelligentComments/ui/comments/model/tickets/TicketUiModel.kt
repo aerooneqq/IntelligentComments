@@ -1,10 +1,15 @@
 package com.intelligentComments.ui.comments.model.tickets
 
-import com.intelligentComments.core.domain.core.*
+import com.intelligentComments.core.domain.core.ForegroundTextAnimation
+import com.intelligentComments.core.domain.core.TextHighlighter
+import com.intelligentComments.core.domain.core.TextHighlighterImpl
+import com.intelligentComments.core.domain.core.Ticket
 import com.intelligentComments.core.domain.impl.HighlightedTextImpl
 import com.intelligentComments.ui.colors.Colors
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intelligentComments.ui.comments.model.highlighters.HighlightedTextUiWrapper
+import com.intelligentComments.ui.comments.renderers.NotSupportedForRenderingError
+import com.intelligentComments.ui.core.Renderer
 import com.intelligentComments.ui.util.HashUtil
 import com.intellij.openapi.project.Project
 
@@ -33,4 +38,6 @@ class TicketUiModel(
   override fun calculateStateHash(): Int {
     return HashUtil.hashCode(ticket.shortName.hashCode(), url.hashCode())
   }
+
+  override fun createRenderer(): Renderer = throw NotSupportedForRenderingError()
 }

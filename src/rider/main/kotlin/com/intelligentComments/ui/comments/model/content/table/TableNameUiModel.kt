@@ -3,6 +3,8 @@ package com.intelligentComments.ui.comments.model.content.table
 import com.intelligentComments.core.domain.core.HighlightedText
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intelligentComments.ui.comments.model.highlighters.HighlightedTextUiWrapper
+import com.intelligentComments.ui.comments.renderers.NotSupportedForRenderingError
+import com.intelligentComments.ui.core.Renderer
 import com.intelligentComments.ui.util.HashUtil
 import com.intellij.openapi.project.Project
 
@@ -17,4 +19,6 @@ class TableNameUiModel(
   override fun calculateStateHash(): Int {
     return HashUtil.hashCode(highlightedTextUiWrapper.calculateStateHash())
   }
+
+  override fun createRenderer(): Renderer = throw NotSupportedForRenderingError()
 }

@@ -7,6 +7,8 @@ import com.intelligentComments.ui.comments.model.content.ContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.getFirstLevelHeader
 import com.intelligentComments.ui.comments.model.content.text.TextContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.highlighters.HighlightedTextUiWrapper
+import com.intelligentComments.ui.comments.renderers.segments.SeeAlsoSegmentRenderer
+import com.intelligentComments.ui.core.Renderer
 import com.intelligentComments.ui.util.HashUtil
 import com.intellij.openapi.project.Project
 import java.util.*
@@ -42,6 +44,10 @@ open class SeeAlsoUiModel(
 
   override fun calculateStateHash(): Int {
     return HashUtil.hashCode(description.calculateStateHash(), header.calculateStateHash())
+  }
+
+  override fun createRenderer(): Renderer {
+    return SeeAlsoSegmentRenderer.getFor(this)
   }
 }
 

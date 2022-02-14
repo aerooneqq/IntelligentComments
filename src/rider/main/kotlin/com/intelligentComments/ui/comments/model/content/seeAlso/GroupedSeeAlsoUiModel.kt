@@ -6,6 +6,8 @@ import com.intelligentComments.ui.colors.Colors
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intelligentComments.ui.comments.model.content.GroupedContentWithTextUiModel
 import com.intelligentComments.ui.comments.model.content.getFirstLevelHeader
+import com.intelligentComments.ui.comments.renderers.segments.GroupedSeeAlsoRenderer
+import com.intelligentComments.ui.core.Renderer
 import com.intellij.openapi.project.Project
 
 class GroupedSeeAlsoUiModel(
@@ -24,4 +26,8 @@ class GroupedSeeAlsoUiModel(
     Colors.SeeAlsoBackgroundColor,
     groupedSeeAlso
   )
-)
+) {
+  override fun createRenderer(): Renderer {
+    return GroupedSeeAlsoRenderer(this)
+  }
+}

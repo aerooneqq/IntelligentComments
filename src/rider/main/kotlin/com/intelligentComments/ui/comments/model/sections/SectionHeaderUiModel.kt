@@ -1,11 +1,15 @@
 package com.intelligentComments.ui.comments.model.sections
 
-import com.intelligentComments.core.domain.core.*
+import com.intelligentComments.core.domain.core.ForegroundTextAnimation
+import com.intelligentComments.core.domain.core.TextHighlighter
+import com.intelligentComments.core.domain.core.TextHighlighterImpl
 import com.intelligentComments.core.domain.impl.HighlightedTextImpl
 import com.intelligentComments.ui.colors.Colors
 import com.intelligentComments.ui.comments.model.ExpandableUiModel
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intelligentComments.ui.comments.model.highlighters.HighlightedTextUiWrapper
+import com.intelligentComments.ui.comments.renderers.NotSupportedForRenderingError
+import com.intelligentComments.ui.core.Renderer
 import com.intellij.openapi.editor.event.EditorMouseEvent
 import com.intellij.openapi.project.Project
 import javax.swing.Icon
@@ -53,4 +57,6 @@ class SectionHeaderUiModel(
   override fun calculateStateHash(): Int {
     return headerText.calculateStateHash()
   }
+
+  override fun createRenderer(): Renderer = throw NotSupportedForRenderingError()
 }

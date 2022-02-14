@@ -5,6 +5,8 @@ import com.intelligentComments.ui.colors.Colors
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intelligentComments.ui.comments.model.content.GroupedContentUiModel
 import com.intelligentComments.ui.comments.model.content.getFirstLevelHeader
+import com.intelligentComments.ui.comments.renderers.segments.GroupedExceptionsRenderer
+import com.intelligentComments.ui.core.Renderer
 import com.intellij.openapi.project.Project
 
 class GroupedExceptionUiModel(
@@ -31,6 +33,10 @@ class GroupedExceptionUiModel(
     Colors.ExceptionBackgroundColor,
     model
   )
-)
+) {
+  override fun createRenderer(): Renderer {
+    return GroupedExceptionsRenderer(this)
+  }
+}
 
 private const val exceptionsSectionName = "Exceptions"

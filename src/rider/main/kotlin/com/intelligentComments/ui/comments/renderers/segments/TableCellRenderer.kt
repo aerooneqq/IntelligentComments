@@ -94,7 +94,7 @@ class TableCellRenderer(private val cell: TableCellUiModel) : Renderer, Rectangl
 
     val editor = context.editor
     for (cellContent in cell.contentSegments.contentSection.content) {
-      val renderer = SegmentRenderer.getRendererFor(cellContent)
+      val renderer = cellContent.createRenderer()
       val width = renderer.calculateExpectedWidthInPixels(editor, context.additionalRenderInfo)
       val height = renderer.calculateExpectedHeightInPixels(editor, context.additionalRenderInfo)
 

@@ -4,6 +4,7 @@ import com.intelligentComments.core.comments.RiderCommentsController
 import com.intelligentComments.core.comments.states.RiderCommentsStateManager
 import com.intelligentComments.core.domain.core.CommentBase
 import com.intelligentComments.core.settings.CommentsDisplayKind
+import com.intelligentComments.ui.core.Renderer
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.event.EditorMouseEvent
 import com.intellij.openapi.editor.impl.EditorImpl
@@ -22,6 +23,8 @@ abstract class CommentUiModelBase(
 
   private val controller = project.getComponent(RiderCommentsController::class.java)
   private val commentsStateManager = project.getComponent(RiderCommentsStateManager::class.java)
+
+  override fun createRenderer(): Renderer = renderer
 
   override fun handleClick(e: EditorMouseEvent): Boolean {
     val currentState = commentsStateManager.getExistingCommentState(editor, comment.commentIdentifier)

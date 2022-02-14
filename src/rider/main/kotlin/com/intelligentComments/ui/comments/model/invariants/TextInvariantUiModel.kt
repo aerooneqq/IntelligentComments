@@ -4,6 +4,8 @@ import com.intelligentComments.core.domain.core.TextInvariant
 import com.intelligentComments.ui.colors.ColorName
 import com.intelligentComments.ui.colors.Colors
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
+import com.intelligentComments.ui.comments.renderers.invariants.InvariantRenderer
+import com.intelligentComments.ui.comments.renderers.invariants.TextDefaultInvariantRenderer
 import com.intelligentComments.ui.util.HashUtil
 import com.intellij.openapi.project.Project
 
@@ -21,4 +23,6 @@ class TextInvariantUiModel(
   override fun calculateStateHash(): Int {
     return HashUtil.hashCode(text.hashCode())
   }
+
+  override fun createRenderer(): InvariantRenderer = TextDefaultInvariantRenderer(this)
 }

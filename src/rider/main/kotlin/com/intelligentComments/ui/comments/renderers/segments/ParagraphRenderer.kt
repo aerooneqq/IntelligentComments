@@ -10,7 +10,7 @@ import com.intellij.openapi.util.use
 import java.awt.Graphics
 import java.awt.Rectangle
 
-class ParagraphRendererImpl(
+class ParagraphRenderer(
   model: ParagraphUiModel
 ) : ContentSegmentsRenderer(model.content), SegmentRenderer {
   companion object {

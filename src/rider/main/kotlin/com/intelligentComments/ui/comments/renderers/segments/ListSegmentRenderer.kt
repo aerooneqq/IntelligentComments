@@ -143,7 +143,7 @@ class ListSegmentRenderer(private val model: ListContentSegmentUiModel) : Segmen
     executeIfExpanded {
       for (item in model.items) {
         for (content in getAllContentFrom(item)) {
-          height += SegmentRenderer.getRendererFor(content).calculateExpectedHeightInPixels(editor, additionalRenderInfo)
+          height += content.createRenderer().calculateExpectedHeightInPixels(editor, additionalRenderInfo)
           height += ContentSegmentsUtil.deltaBetweenSegments
         }
       }
@@ -182,7 +182,7 @@ class ListSegmentRenderer(private val model: ListContentSegmentUiModel) : Segmen
     executeIfExpanded {
       for (item in model.items) {
         for (content in getAllContentFrom(item)) {
-          val renderer = SegmentRenderer.getRendererFor(content)
+          val renderer = content.createRenderer()
           val segmentWidth = renderer.calculateExpectedWidthInPixels(editor, additionalRenderInfo)
           headerWidth = max(segmentWidth + leftIndentForListContent, headerWidth)
         }
@@ -225,7 +225,7 @@ class ListSegmentRenderer(private val model: ListContentSegmentUiModel) : Segmen
       UpdatedRectCookie(rect, xDelta = leftIndentForListContent, yDelta = getHeaderHeightWithDelta(editor)).use {
         for (item in model.items) {
           for (content in getAllContentFrom(item)) {
-            val renderer = SegmentRenderer.getRendererFor(content)
+            val renderer = content.createRenderer()
             val height = renderer.calculateExpectedHeightInPixels(editor, context.additionalRenderInfo)
             renderer.accept(context)
             rect.y += height + ContentSegmentsUtil.deltaBetweenSegments

@@ -4,8 +4,9 @@ import com.intelligentComments.core.domain.core.ExceptionSegment
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intelligentComments.ui.comments.model.content.ContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.ContentSegmentsUiModel
-import com.intelligentComments.ui.comments.model.content.getSecondLevelHeader
 import com.intelligentComments.ui.comments.model.highlighters.HighlightedTextUiWrapper
+import com.intelligentComments.ui.comments.renderers.segments.ExceptionSegmentRenderer
+import com.intelligentComments.ui.core.Renderer
 import com.intelligentComments.ui.util.HashUtil
 import com.intellij.openapi.project.Project
 
@@ -20,5 +21,9 @@ class ExceptionUiModel(
 
   override fun calculateStateHash(): Int {
     return HashUtil.hashCode(name.calculateStateHash(), content.calculateStateHash())
+  }
+
+  override fun createRenderer(): Renderer {
+    return ExceptionSegmentRenderer(this)
   }
 }

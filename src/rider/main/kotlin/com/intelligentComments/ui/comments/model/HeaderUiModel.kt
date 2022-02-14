@@ -1,6 +1,8 @@
 package com.intelligentComments.ui.comments.model
 
 import com.intelligentComments.ui.colors.ColorName
+import com.intelligentComments.ui.comments.renderers.NotSupportedForRenderingError
+import com.intelligentComments.ui.core.Renderer
 import com.intellij.openapi.editor.event.EditorMouseEvent
 import com.intellij.openapi.project.Project
 
@@ -24,4 +26,6 @@ class HeaderUiModel(
   override fun calculateStateHash(): Int {
     return text.hashCode()
   }
+
+  override fun createRenderer(): Renderer = throw NotSupportedForRenderingError()
 }

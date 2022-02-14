@@ -23,7 +23,7 @@ import javax.swing.Icon
 class IntelligentCommentUiModel(
   project: Project,
   comment: IntelligentComment
-) : CommentUiModelBase(comment, project, null!!), RootUiModel {
+) : CommentUiModelBase(comment, project, null!!) {
   override val renderer = IntelligentCommentsRenderer(this)
 
   val authorsSection: SectionUiModel<AuthorUiModel>

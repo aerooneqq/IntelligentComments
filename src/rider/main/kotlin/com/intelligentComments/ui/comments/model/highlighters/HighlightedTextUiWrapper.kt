@@ -2,6 +2,8 @@ package com.intelligentComments.ui.comments.model.highlighters
 
 import com.intelligentComments.core.domain.core.HighlightedText
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
+import com.intelligentComments.ui.comments.renderers.NotSupportedForRenderingError
+import com.intelligentComments.ui.core.Renderer
 import com.intelligentComments.ui.util.HashUtil
 import com.intellij.openapi.project.Project
 
@@ -22,4 +24,6 @@ class HighlightedTextUiWrapper(
 
     return HashUtil.hashCode(textHashCode, HashUtil.calculateHashFor(highlighters) { it.calculateStateHash() })
   }
+
+  override fun createRenderer(): Renderer = throw NotSupportedForRenderingError()
 }

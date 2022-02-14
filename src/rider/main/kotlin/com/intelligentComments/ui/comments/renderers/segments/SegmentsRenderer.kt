@@ -34,8 +34,9 @@ class DefaultSegmentsRenderer(
   }
 }
 
-class SegmentsRendererWithHeader(private val segmentsSection: SectionWithHeaderUiModel<ContentSegmentUiModel>) :
-  VerticalSectionWithHeaderRenderer<ContentSegmentUiModel>(segmentsSection), SegmentsRenderer {
+class SegmentsRendererWithHeader(
+  private val segmentsSection: SectionWithHeaderUiModel<ContentSegmentUiModel>
+) : VerticalSectionWithHeaderRenderer<ContentSegmentUiModel>(segmentsSection), SegmentsRenderer {
 
   override fun renderContent(
     g: Graphics,

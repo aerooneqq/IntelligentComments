@@ -7,6 +7,8 @@ import com.intelligentComments.core.domain.core.TextHighlighter
 import com.intelligentComments.core.domain.core.tryFindComment
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intelligentComments.ui.comments.model.tryGetRootUiModel
+import com.intelligentComments.ui.comments.renderers.NotSupportedForRenderingError
+import com.intelligentComments.ui.core.Renderer
 import com.intelligentComments.ui.util.HashUtil
 import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.event.EditorMouseEvent
@@ -87,4 +89,6 @@ class HighlighterUiModel(
     val bsHashCode = if (backgroundStyle == null) 1 else backgroundStyle.hashCode()
     return HashUtil.hashCode(highlighter.hashCode(), textColor.hashCode(), bsHashCode, underline.hashCode())
   }
+
+  override fun createRenderer(): Renderer = throw NotSupportedForRenderingError()
 }

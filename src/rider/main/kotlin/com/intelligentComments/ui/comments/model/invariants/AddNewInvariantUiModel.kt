@@ -3,6 +3,8 @@ package com.intelligentComments.ui.comments.model.invariants
 import com.intelligentComments.ui.colors.ColorName
 import com.intelligentComments.ui.colors.Colors
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
+import com.intelligentComments.ui.comments.renderers.invariants.AddNewInvariantRenderer
+import com.intelligentComments.ui.comments.renderers.invariants.InvariantRenderer
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.project.Project
 
@@ -19,4 +21,6 @@ class AddNewInvariantUiModel(
   override fun calculateStateHash(): Int {
     return 123;
   }
+
+  override fun createRenderer(): InvariantRenderer = AddNewInvariantRenderer(this)
 }

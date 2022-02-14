@@ -5,6 +5,8 @@ import com.intelligentComments.ui.colors.Colors
 import com.intelligentComments.ui.comments.model.ExpandableUiModel
 import com.intelligentComments.ui.comments.model.HeaderUiModel
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
+import com.intelligentComments.ui.comments.renderers.NotSupportedForRenderingError
+import com.intelligentComments.ui.core.Renderer
 import com.intelligentComments.ui.util.HashUtil
 import com.intellij.openapi.project.Project
 
@@ -34,4 +36,6 @@ open class ReferenceUiModel(
   override fun calculateStateHash(): Int {
     return HashUtil.hashCode(headerUiModel.calculateStateHash(), isExpanded.hashCode())
   }
+
+  override fun createRenderer(): Renderer = throw NotSupportedForRenderingError()
 }

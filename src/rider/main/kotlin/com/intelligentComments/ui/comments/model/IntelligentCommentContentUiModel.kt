@@ -2,6 +2,8 @@ package com.intelligentComments.ui.comments.model
 
 import com.intelligentComments.core.domain.core.IntelligentCommentContent
 import com.intelligentComments.ui.comments.model.content.ContentSegmentUiModel
+import com.intelligentComments.ui.comments.renderers.NotSupportedForRenderingError
+import com.intelligentComments.ui.core.Renderer
 import com.intelligentComments.ui.util.HashUtil
 import com.intellij.openapi.project.Project
 
@@ -22,4 +24,6 @@ class IntelligentCommentContentUiModel(
   override fun calculateStateHash(): Int {
     return HashUtil.calculateHashFor(mySegments) { it.calculateStateHash() }
   }
+
+  override fun createRenderer(): Renderer = throw NotSupportedForRenderingError()
 }

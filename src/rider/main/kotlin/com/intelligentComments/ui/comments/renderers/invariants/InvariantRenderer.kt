@@ -1,8 +1,5 @@
 package com.intelligentComments.ui.comments.renderers.invariants
 
-import com.intelligentComments.ui.comments.model.invariants.AddNewInvariantUiModel
-import com.intelligentComments.ui.comments.model.invariants.InvariantUiModel
-import com.intelligentComments.ui.comments.model.invariants.TextInvariantUiModel
 import com.intelligentComments.ui.core.Renderer
 import com.intelligentComments.ui.util.RenderAdditionalInfo
 import com.intelligentComments.ui.util.UpdatedGraphicsCookie
@@ -18,14 +15,6 @@ interface InvariantRenderer : Renderer {
     const val invariantHeight = 20
     const val deltaBetweenTextAndIcon = 0
     const val extraInvariantWidth = 10
-
-    fun getRendererFor(invariant: InvariantUiModel): InvariantRenderer {
-      return when (invariant) {
-        is TextInvariantUiModel -> TextDefaultInvariantRenderer(invariant)
-        is AddNewInvariantUiModel -> AddNewInvariantRenderer(invariant)
-        else -> throw IllegalArgumentException(invariant.toString())
-      }
-    }
   }
 
   fun calculateWidthWithInvariantInterval(editor: Editor, additionalRendererInfo: RenderAdditionalInfo): Int

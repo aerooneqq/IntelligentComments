@@ -95,7 +95,7 @@ abstract class LeftHeaderRightContentRenderer(
   }
 
   private fun isHeader(model: UiInteractionModelBase): Boolean {
-    return model is ContentSegmentUiModel && SegmentRenderer.getRendererFor(model) is LeftHeaderRightContentRenderer
+    return model is ContentSegmentUiModel && model.createRenderer() is LeftHeaderRightContentRenderer
   }
 
   private fun getMeaningfulParent(): UiInteractionModelBase? {
@@ -113,7 +113,7 @@ abstract class LeftHeaderRightContentRenderer(
     val parent = getMeaningfulParent()
     var current = parent
     while (current != null) {
-      if (current is ContentSegmentUiModel && SegmentRenderer.getRendererFor(current) is LeftHeaderRightContentRenderer) {
+      if (current is ContentSegmentUiModel && current.createRenderer() is LeftHeaderRightContentRenderer) {
         return true
       }
 
@@ -219,7 +219,7 @@ open class LeftTextHeaderAndRightContentRenderer : LeftHeaderRightContentRendere
 
   private fun shouldShiftUpHeader(): Boolean {
     val parent = header.parent?.parent?.parent
-    return !(parent is GroupedUiModel && SegmentRenderer.getRendererFor(parent) is LeftHeaderRightContentRenderer)
+    return !(parent is GroupedUiModel && parent.createRenderer() is LeftHeaderRightContentRenderer)
   }
 
   override fun accept(context: RectangleModelBuildContext) {

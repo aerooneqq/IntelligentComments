@@ -6,6 +6,9 @@ import com.intelligentComments.ui.comments.model.ExpandableUiModel
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intelligentComments.ui.comments.model.content.ContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.ContentSegmentsUiModel
+import com.intelligentComments.ui.comments.renderers.NotSupportedForRenderingError
+import com.intelligentComments.ui.comments.renderers.segments.ListSegmentRenderer
+import com.intelligentComments.ui.core.Renderer
 import com.intelligentComments.ui.util.HashUtil
 import com.intellij.openapi.project.Project
 
@@ -28,6 +31,10 @@ class ListContentSegmentUiModel(
     val headerHash = headerUiModel?.calculateStateHash() ?: 1
     return HashUtil.hashCode(headerHash, HashUtil.calculateHashFor(items) { it.calculateStateHash() }, isExpanded.hashCode())
   }
+
+  override fun createRenderer(): Renderer {
+    return ListSegmentRenderer(this)
+  }
 }
 
 class ListItemUiModel(
@@ -45,4 +52,6 @@ class ListItemUiModel(
 
     return hash
   }
+
+  override fun createRenderer(): Renderer = throw NotSupportedForRenderingError()
 }

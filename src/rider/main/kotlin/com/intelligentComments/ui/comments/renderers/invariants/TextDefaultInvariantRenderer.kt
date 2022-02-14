@@ -1,6 +1,7 @@
 package com.intelligentComments.ui.comments.renderers.invariants
 
 import com.intelligentComments.ui.comments.model.invariants.TextInvariantUiModel
+import com.intelligentComments.ui.core.RectangleModelBuildContext
 import com.intelligentComments.ui.core.RectanglesModel
 import com.intelligentComments.ui.util.RenderAdditionalInfo
 import com.intelligentComments.ui.util.TextUtil
@@ -48,4 +49,7 @@ class TextDefaultInvariantRenderer(private val model: TextInvariantUiModel) : In
     editor: Editor,
     additionalRenderInfo: RenderAdditionalInfo
   ): Int = calculateWidth(editor)
+
+  override fun accept(context: RectangleModelBuildContext) {
+  }
 }

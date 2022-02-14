@@ -5,6 +5,7 @@ import com.intelligentComments.core.domain.core.TextInvariant
 import com.intelligentComments.ui.colors.ColorName
 import com.intelligentComments.ui.colors.Colors
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
+import com.intelligentComments.ui.comments.renderers.invariants.InvariantRenderer
 import com.intellij.openapi.project.Project
 
 abstract class InvariantUiModel(
@@ -24,4 +25,6 @@ abstract class InvariantUiModel(
     get() = colorsProvider.getColorFor(borderColorKey)
 
   protected open val borderColorKey: ColorName = Colors.InvariantDefaultBorderColor
+
+  abstract override fun createRenderer(): InvariantRenderer
 }

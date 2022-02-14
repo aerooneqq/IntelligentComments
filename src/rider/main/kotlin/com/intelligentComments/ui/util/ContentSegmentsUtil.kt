@@ -56,7 +56,7 @@ class ContentSegmentsUtil {
     ): RenderAdditionalInfo {
       var maxHeaderWidth = 0
       for (segment in segments) {
-        val renderer = SegmentRenderer.getRendererFor(segment)
+        val renderer = segment.createRenderer()
         if (renderer is LeftHeaderRightContentRenderer) {
           maxHeaderWidth = max(maxHeaderWidth, renderer.calculateHeaderWidth(editor))
         }
@@ -72,7 +72,7 @@ class ContentSegmentsUtil {
       action: (SegmentRenderer, ContentSegmentUiModel) -> Unit
     ) {
       for (segment in contentSegments) {
-        val renderer = SegmentRenderer.getRendererFor(segment)
+        val renderer = segment.createRenderer() as SegmentRenderer
         action(renderer, segment)
       }
     }

@@ -3,8 +3,11 @@ package com.intelligentComments.ui.comments.renderers
 import com.intelligentComments.ui.colors.Colors
 import com.intelligentComments.ui.colors.ColorsProvider
 import com.intelligentComments.ui.comments.model.CommentUiModelBase
+import com.intelligentComments.ui.core.RectangleModelBuildContext
 import com.intelligentComments.ui.core.RectanglesModel
 import com.intelligentComments.ui.core.RectanglesModelHolder
+import com.intelligentComments.ui.core.Renderer
+import com.intelligentComments.ui.util.RenderAdditionalInfo
 import com.intelligentComments.ui.util.TextUtil
 import com.intelligentComments.ui.util.UpdatedGraphicsCookie
 import com.intelligentComments.ui.util.UpdatedRectCookie
@@ -23,7 +26,7 @@ import java.awt.geom.Rectangle2D
 
 abstract class RendererWithRectangleModel(
   val baseModel: CommentUiModelBase
-) : EditorCustomElementRenderer, CustomFoldRegionRenderer {
+) : EditorCustomElementRenderer, CustomFoldRegionRenderer, Renderer {
   private var rectModelXDelta = 0
   private var rectModelYDelta = 0
 
@@ -60,24 +63,24 @@ abstract class RendererWithRectangleModel(
 
   final override fun calcHeightInPixels(foldRegion: CustomFoldRegion): Int {
     application.assertIsDispatchThread()
-    return calculateExpectedHeight(foldRegion.editor as EditorImpl)
+    return calculateExpectedHeight(foldRegion.editor)
   }
 
   final override fun calcWidthInPixels(foldRegion: CustomFoldRegion): Int {
     application.assertIsDispatchThread()
-    return calculateExpectedWith(foldRegion.editor as EditorImpl)
+    return calculateExpectedWidth(foldRegion.editor)
   }
 
   final override fun calcWidthInPixels(inlay: Inlay<*>): Int {
     application.assertIsDispatchThread()
-    return calculateExpectedWith(inlay.editor as EditorImpl)
+    return calculateExpectedWidth(inlay.editor)
   }
 
-  private fun calculateExpectedWith(editor: Editor) = revalidateRectanglesModel(editor).width
+  private fun calculateExpectedWidth(editor: Editor) = revalidateRectanglesModel(editor).width
 
   final override fun calcHeightInPixels(inlay: Inlay<*>): Int {
     application.assertIsDispatchThread()
-    return calculateExpectedHeight(inlay.editor as EditorImpl)
+    return calculateExpectedHeight(inlay.editor)
   }
 
   private fun calculateExpectedHeight(editor: Editor) = revalidateRectanglesModel(editor).height
@@ -156,5 +159,29 @@ abstract class RendererWithRectangleModel(
   private fun doCalculateGutterIconRenderer(editor: Editor): GutterIconRenderer? {
     val project = editor.project ?: return null
     return DocCommentSwitchRenderModeGutterMark(baseModel.comment, editor, project)
+  }
+
+  override fun calculateExpectedHeightInPixels(editor: Editor, additionalRenderInfo: RenderAdditionalInfo): Int {
+    application.assertIsDispatchThread()
+     return calculateExpectedWidth(editor)
+  }
+
+  override fun calculateExpectedWidthInPixels(editor: Editor, additionalRenderInfo: RenderAdditionalInfo): Int {
+    application.assertIsDispatchThread()
+    return calculateExpectedHeight(editor)
+  }
+
+  override fun render(
+    g: Graphics,
+    rect: Rectangle,
+    editor: Editor,
+    rectanglesModel: RectanglesModel,
+    additionalRenderInfo: RenderAdditionalInfo
+  ): Rectangle {
+    doPaint(editor, g, rect, TextAttributes())
+    return rect
+  }
+
+  override fun accept(context: RectangleModelBuildContext) {
   }
 }

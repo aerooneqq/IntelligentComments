@@ -6,6 +6,7 @@ import com.intelligentComments.ui.colors.ColorsProvider
 import com.intelligentComments.ui.comments.model.content.ContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.sections.SectionUiModel
 import com.intelligentComments.ui.comments.renderers.RendererWithRectangleModel
+import com.intelligentComments.ui.core.Renderer
 import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.event.EditorMouseEvent
 import com.intellij.openapi.project.Project
@@ -24,6 +25,7 @@ abstract class UiInteractionModelBase(
   protected open val backgroundColorKey: ColorName = Colors.EmptyColor
   protected open val hoveredBackgroundColorKey: ColorName = Colors.EmptyColor
 
+  abstract fun createRenderer(): Renderer
   abstract fun calculateStateHash(): Int
 
   open val backgroundColor: Color
@@ -38,14 +40,14 @@ abstract class UiInteractionModelBase(
     return handleMouseInInternal(e)
   }
 
-  protected open fun handleMouseInInternal(e: EditorMouseEvent): Boolean = true
+  protected open fun handleMouseInInternal(e: EditorMouseEvent): Boolean = false
 
   fun handleMouseOut(e: EditorMouseEvent): Boolean {
     myMouseIn = false
     return handleMouseOutInternal(e)
   }
 
-  protected open fun handleMouseOutInternal(e: EditorMouseEvent): Boolean = true
+  protected open fun handleMouseOutInternal(e: EditorMouseEvent): Boolean = false
 
   open fun handleLongMousePresence(e: EditorMouseEvent): Boolean {
     return false

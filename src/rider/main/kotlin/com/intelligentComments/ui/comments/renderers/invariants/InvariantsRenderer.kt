@@ -38,14 +38,14 @@ class InvariantsRendererImpl(private val section: SectionWithHeaderUiModel<Invar
     var adjustedRect = rect
     var maxHeight = 0
     for (invariant in section.content) {
-      val renderer = InvariantRenderer.getRendererFor(invariant)
+      val renderer = invariant.createRenderer()
       maxHeight = max(renderer.calculateExpectedHeightInPixels(editor, additionalRenderInfo), maxHeight)
     }
 
     adjustedRect.height = maxHeight
 
     for (invariant in section.content) {
-      val renderer = InvariantRenderer.getRendererFor(invariant)
+      val renderer = invariant.createRenderer()
       adjustedRect = renderer.render(g, adjustedRect, editor, rectanglesModel, additionalRenderInfo)
     }
 
@@ -55,7 +55,7 @@ class InvariantsRendererImpl(private val section: SectionWithHeaderUiModel<Invar
   override fun calculateContentHeight(editor: Editor, additionalRenderInfo: RenderAdditionalInfo): Int {
     var height = 0
     for (invariant in section.content) {
-      val renderer = InvariantRenderer.getRendererFor(invariant)
+      val renderer = invariant.createRenderer()
       height = max(height, renderer.calculateExpectedHeightInPixels(editor, additionalRenderInfo))
     }
 
@@ -65,7 +65,7 @@ class InvariantsRendererImpl(private val section: SectionWithHeaderUiModel<Invar
   override fun calculateContentWidth(editor: Editor, additionalRenderInfo: RenderAdditionalInfo): Int {
     var width = 0
     for (invariant in section.content) {
-      val renderer = InvariantRenderer.getRendererFor(invariant)
+      val renderer = invariant.createRenderer()
       width += renderer.calculateWidthWithInvariantInterval(editor, additionalRenderInfo)
     }
 
@@ -76,7 +76,7 @@ class InvariantsRendererImpl(private val section: SectionWithHeaderUiModel<Invar
     val rect = context.rect
     val startX = rect.x
     for (invariant in section.content) {
-      val renderer = InvariantRenderer.getRendererFor(invariant)
+      val renderer = invariant.createRenderer()
       val height = renderer.calculateExpectedHeightInPixels(context.editor, context.additionalRenderInfo)
       val width = renderer.calculateExpectedWidthInPixels(context.editor, context.additionalRenderInfo)
 

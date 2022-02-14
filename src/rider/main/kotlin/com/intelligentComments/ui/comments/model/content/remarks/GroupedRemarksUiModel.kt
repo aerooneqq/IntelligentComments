@@ -5,6 +5,8 @@ import com.intelligentComments.ui.colors.Colors
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intelligentComments.ui.comments.model.content.GroupedContentUiModel
 import com.intelligentComments.ui.comments.model.content.getFirstLevelHeader
+import com.intelligentComments.ui.comments.renderers.segments.GroupedRemarksRenderer
+import com.intelligentComments.ui.core.Renderer
 import com.intellij.openapi.project.Project
 
 
@@ -25,4 +27,8 @@ class GroupedRemarksUiModel(
     Colors.RemarksSectionHeaderBackgroundColor,
     model
   )
-)
+) {
+  override fun createRenderer(): Renderer {
+    return GroupedRemarksRenderer(this)
+  }
+}

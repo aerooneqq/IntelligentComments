@@ -9,6 +9,9 @@ import com.intelligentComments.ui.colors.Colors
 import com.intelligentComments.ui.colors.ColorsProvider
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intelligentComments.ui.comments.model.content.GroupedContentUiModel
+import com.intelligentComments.ui.comments.renderers.segments.GroupedParamsRenderer
+import com.intelligentComments.ui.comments.renderers.segments.GroupedTypeParamsRenderer
+import com.intelligentComments.ui.core.Renderer
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 
@@ -30,7 +33,11 @@ class GroupedParamsUiModel(
     }
   },
   getGroupedParamsSectionHeader(project, groupedParamsSectionName, Colors.ParamsSectionHeaderBackgroundColor, model)
-)
+) {
+  override fun createRenderer(): Renderer {
+    return GroupedParamsRenderer(this)
+  }
+}
 
 private const val groupedParamsSectionName = "Parameters"
 private const val groupedTypeParamsSectionName = "Type parameters"
@@ -70,4 +77,8 @@ class GroupedTypeParamsUiModel(
     }
   },
   getGroupedParamsSectionHeader(project, groupedTypeParamsSectionName, Colors.TypeParamNameBackgroundColor, model)
-)
+) {
+  override fun createRenderer(): Renderer {
+    return GroupedTypeParamsRenderer(this)
+  }
+}

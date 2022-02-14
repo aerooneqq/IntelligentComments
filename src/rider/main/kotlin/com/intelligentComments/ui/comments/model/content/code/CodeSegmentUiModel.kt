@@ -4,6 +4,8 @@ import com.intelligentComments.core.domain.core.CodeSegment
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intelligentComments.ui.comments.model.content.ContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.highlighters.HighlightedTextUiWrapper
+import com.intelligentComments.ui.comments.renderers.segments.CodeSegmentRenderer
+import com.intelligentComments.ui.core.Renderer
 import com.intelligentComments.ui.util.HashUtil
 import com.intellij.openapi.project.Project
 
@@ -30,5 +32,9 @@ class CodeSegmentUiModel(
 
   override fun calculateStateHash(): Int {
     return HashUtil.hashCode(code.calculateStateHash())
+  }
+
+  override fun createRenderer(): Renderer {
+    return CodeSegmentRenderer(this)
   }
 }

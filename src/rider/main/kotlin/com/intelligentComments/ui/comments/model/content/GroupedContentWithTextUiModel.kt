@@ -23,7 +23,7 @@ abstract class GroupedUiModel(
   val header = HighlightedTextUiWrapper(project, this, header)
 }
 
-open class GroupedContentWithTextUiModel(
+abstract class GroupedContentWithTextUiModel(
   project: Project,
   parent: UiInteractionModelBase?,
   groupedModel: GroupedContentSegment<*>,
@@ -55,7 +55,7 @@ open class GroupedContentWithTextUiModel(
   }
 }
 
-open class GroupedContentUiModel(
+abstract class GroupedContentUiModel(
   project: Project,
   parent: UiInteractionModelBase?,
   groupedModel: GroupedContentSegment<*>,

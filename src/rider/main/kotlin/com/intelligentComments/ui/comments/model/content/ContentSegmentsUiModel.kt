@@ -5,6 +5,8 @@ import com.intelligentComments.core.domain.core.ContentSegments
 import com.intelligentComments.ui.comments.model.ModelWithContent
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intelligentComments.ui.comments.model.sections.SectionUiModel
+import com.intelligentComments.ui.comments.renderers.NotSupportedForRenderingError
+import com.intelligentComments.ui.core.Renderer
 import com.intellij.openapi.project.Project
 
 class ContentSegmentsUiModel : UiInteractionModelBase, ModelWithContent {
@@ -33,4 +35,6 @@ class ContentSegmentsUiModel : UiInteractionModelBase, ModelWithContent {
   override fun calculateStateHash(): Int {
     return contentSection.calculateStateHash()
   }
+
+  override fun createRenderer(): Renderer = throw NotSupportedForRenderingError()
 }

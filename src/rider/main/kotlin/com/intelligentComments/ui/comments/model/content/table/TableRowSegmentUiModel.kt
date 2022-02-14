@@ -2,6 +2,8 @@ package com.intelligentComments.ui.comments.model.content.table
 
 import com.intelligentComments.core.domain.core.TableRow
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
+import com.intelligentComments.ui.comments.renderers.NotSupportedForRenderingError
+import com.intelligentComments.ui.core.Renderer
 import com.intelligentComments.ui.util.HashUtil
 import com.intellij.openapi.project.Project
 
@@ -16,4 +18,6 @@ class TableRowSegmentUiModel(
   override fun calculateStateHash(): Int {
     return HashUtil.calculateHashFor(cells) { it.calculateStateHash() }
   }
+
+  override fun createRenderer(): Renderer = throw NotSupportedForRenderingError()
 }

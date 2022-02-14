@@ -4,7 +4,6 @@ import com.intelligentComments.ui.comments.model.tickets.TicketUiModel
 import com.intelligentComments.ui.comments.model.todo.ToDoUiModel
 import com.intelligentComments.ui.comments.model.todo.ToDoWithTicketsUiModel
 import com.intelligentComments.ui.comments.renderers.ExpandableContentWithHeader
-import com.intelligentComments.ui.comments.renderers.segments.SegmentRenderer
 import com.intelligentComments.ui.core.RectangleModelBuildContext
 import com.intelligentComments.ui.core.RectangleModelBuildContributor
 import com.intelligentComments.ui.core.RectanglesModel
@@ -121,7 +120,7 @@ class ToDoWithTicketsRenderer(private val todo: ToDoWithTicketsUiModel) :
     val currentRect = acceptForTickets(context)
 
     for (segment in todo.description.contentSection.content) {
-      val renderer = SegmentRenderer.getRendererFor(segment)
+      val renderer = segment.createRenderer()
       val rect = Rectangle(currentRect).apply {
         width = renderer.calculateExpectedWidthInPixels(context.editor, context.additionalRenderInfo)
         height = renderer.calculateExpectedHeightInPixels(context.editor, context.additionalRenderInfo)

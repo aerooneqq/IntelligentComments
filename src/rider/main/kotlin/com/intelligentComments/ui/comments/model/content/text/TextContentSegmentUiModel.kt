@@ -5,6 +5,8 @@ import com.intelligentComments.core.settings.RiderIntelligentCommentsSettingsPro
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intelligentComments.ui.comments.model.content.ContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.highlighters.HighlightedTextUiWrapper
+import com.intelligentComments.ui.comments.renderers.segments.TextSegmentRenderer
+import com.intelligentComments.ui.core.Renderer
 import com.intelligentComments.ui.util.HashUtil
 import com.intellij.openapi.project.Project
 
@@ -20,5 +22,9 @@ class TextContentSegmentUiModel(
 
   override fun calculateStateHash(): Int {
     return HashUtil.hashCode(highlightedTextWrapper.calculateStateHash())
+  }
+
+  override fun createRenderer(): Renderer {
+    return TextSegmentRenderer(this)
   }
 }
