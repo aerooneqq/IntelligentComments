@@ -3,7 +3,6 @@ package com.intelligentComments.ui.popups
 import com.intelligentComments.ui.comments.model.CommentUiModelBase
 import com.intelligentComments.ui.util.UpdatedGraphicsCookie
 import com.intellij.openapi.editor.Editor
-import com.intellij.openapi.editor.impl.EditorImpl
 import com.intellij.openapi.editor.markup.TextAttributes
 import com.intellij.openapi.util.Pair
 import com.intellij.openapi.util.use
@@ -12,7 +11,6 @@ import com.intellij.ui.popup.AbstractPopup
 import com.jetbrains.rd.platform.util.getLogger
 import java.awt.*
 import java.awt.event.ActionListener
-import java.awt.geom.Rectangle2D
 import java.util.*
 import javax.swing.JComponent
 import javax.swing.KeyStroke
@@ -29,12 +27,16 @@ class IntelligentCommentPopup(
   init {
     val project = model.project
     val popupInnerComponent = IntelligentCommentPopupComponent(model, editor)
-    val popupWidth = popupInnerComponent.cachedSize.width
+    val maxWidth = 600
+    val popupWidth = min(maxWidth, popupInnerComponent.cachedSize.width)
     val maxHeight = 400
     val popupHeight = min(maxHeight, popupInnerComponent.cachedSize.height)
 
     popupSize = Dimension(popupWidth, popupHeight)
-    val component = object : JBScrollPane(popupInnerComponent) {
+    val vScrollBehaviour = if (popupHeight < maxHeight) JBScrollPane.VERTICAL_SCROLLBAR_NEVER else JBScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED
+    val hScrollbarBehaviour = if (popupWidth < maxWidth) JBScrollPane.HORIZONTAL_SCROLLBAR_NEVER else JBScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED
+
+    val component = object : JBScrollPane(popupInnerComponent, vScrollBehaviour, hScrollbarBehaviour) {
       override fun getPreferredSize(): Dimension = popupSize
     }
 
@@ -56,6 +58,7 @@ class IntelligentCommentPopup(
 
       const val defaultWidth = 300
       const val defaultHeight = 300
+      const val padding = 10
     }
 
 
@@ -72,6 +75,11 @@ class IntelligentCommentPopup(
       } else {
         Dimension(rectanglesModel.width, rectanglesModel.height)
       }
+
+      cachedSize.apply {
+        width += 2 * padding
+        height += 2 * padding
+      }
     }
 
 
@@ -83,10 +91,15 @@ class IntelligentCommentPopup(
       super.paint(g)
       if (g !is Graphics2D) return
 
-      val targetRect: Rectangle2D = Rectangle(0, 0, cachedSize.width, cachedSize.height)
+      val targetRect = Rectangle(0, 0, cachedSize.width, cachedSize.height)
 
       UpdatedGraphicsCookie(g, color = editor.contentComponent.background).use {
-        g.fillRect(targetRect.x.toInt(), targetRect.y.toInt(), targetRect.width.toInt(), targetRect.height.toInt())
+        g.fillRect(targetRect.x, targetRect.y, targetRect.width, targetRect.height)
+      }
+
+      targetRect.apply {
+        x += padding
+        y += padding
       }
 
       model.renderer.paint(editor, g, targetRect, TextAttributes())

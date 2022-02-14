@@ -16,6 +16,7 @@ import com.jetbrains.rd.platform.util.idea.LifetimedService
 import com.jetbrains.rd.ui.addMouseMotionListener
 import com.jetbrains.rd.util.lifetime.Lifetime
 import com.jetbrains.rd.util.lifetime.SequentialLifetimes
+import java.awt.Point
 import java.awt.Rectangle
 import java.awt.event.MouseEvent
 import java.awt.event.MouseMotionListener
@@ -59,19 +60,16 @@ class CommentsHoverDocManager(private val project: Project) : LifetimedService()
     val textHeight = TextUtil.getTextHeight(e.editor as EditorImpl, null)
     val mousePoint = e.mouseEvent.point
 
-    val adjustedPopupY = if (folding != null) {
-      val bounds = folding.getBounds()
-      if (bounds != null) {
-        bounds.y + textHeight + 5
-      } else {
-        mousePoint.y + textHeight
-      }
+    val bounds = folding?.getBounds()
+    val adjustedPopupLeftUpPoint = if (bounds != null) {
+      Point(bounds.x, bounds.y + textHeight + 5)
     } else {
-      mousePoint.y + textHeight
+      Point(mousePoint.x, mousePoint.y + textHeight)
     }
 
     return RelativePoint(e.mouseEvent.component, mousePoint.apply {
-      y = adjustedPopupY
+      x = adjustedPopupLeftUpPoint.x
+      y = adjustedPopupLeftUpPoint.y
     })
   }
 

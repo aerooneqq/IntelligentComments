@@ -7,6 +7,10 @@ import com.intellij.openapi.editor.event.EditorMouseMotionListener
 import com.intellij.util.Alarm
 
 class CommentMouseMoveListener(private val foldRegion: CustomFoldRegion) : EditorMouseMotionListener {
+  companion object {
+    const val longMousePresenceTimeMs = 700
+  }
+
   private val renderer = foldRegion.renderer as RendererWithRectangleModel
   private val longMousePresenceAlarm = Alarm()
 
@@ -28,6 +32,6 @@ class CommentMouseMoveListener(private val foldRegion: CustomFoldRegion) : Edito
           foldRegion.repaint()
         }
       }
-    }, 1000)
+    }, longMousePresenceTimeMs)
   }
 }
