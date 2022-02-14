@@ -30,11 +30,11 @@ public abstract class AbstractOpenedDocumentBasedCache<TId, TValue> where TValue
         
         lock (mySyncObject)
         {
-          ISet<IDocument> allOpenedDocuments = textControlManager.TextControls.Select(editor => editor.Document).ToSet();
-          IEnumerable<IDocument> documentsToRemove = myFilesPerDocument.Keys.ToSet().Except(allOpenedDocuments);
-          foreach (IDocument document in documentsToRemove)
+          var allOpenedDocuments = textControlManager.TextControls.Select(editor => editor.Document).ToSet();
+          var documentsToRemove = myFilesPerDocument.Keys.ToSet().Except(allOpenedDocuments);
+          foreach (var document in documentsToRemove)
           {
-            if (myFilesPerDocument.TryGetValue(document, out IDictionary<TId, TValue> documentEntities))
+            if (myFilesPerDocument.TryGetValue(document, out var documentEntities))
             {
               BeforeRemoval(document, documentEntities.Values);
               myFilesPerDocument.Remove(document);
@@ -52,8 +52,8 @@ public abstract class AbstractOpenedDocumentBasedCache<TId, TValue> where TValue
   {
     lock (mySyncObject)
     {
-      TId id = CreateId(document, entry);
-      IDictionary<TId, TValue> documentEntities = myFilesPerDocument.GetOrCreate(document, () => new Dictionary<TId, TValue>());
+      var id = CreateId(document, entry);
+      var documentEntities = myFilesPerDocument.GetOrCreate(document, () => new Dictionary<TId, TValue>());
       documentEntities[id] = entry;
       return id;
     }
@@ -65,8 +65,8 @@ public abstract class AbstractOpenedDocumentBasedCache<TId, TValue> where TValue
   {
     lock (mySyncObject)
     {
-      if (myFilesPerDocument.TryGetValue(document, out IDictionary<TId, TValue> documentEntities) &&
-          documentEntities.TryGetValue(id, out TValue entry))
+      if (myFilesPerDocument.TryGetValue(document, out var documentEntities) &&
+          documentEntities.TryGetValue(id, out var entry))
       {
         return entry;
       }

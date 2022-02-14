@@ -27,7 +27,7 @@ public class CSharpCodeHighlightingRequestBuilder : ICodeHighlightingRequestBuil
     [NotNull] CSharpElementFactory factory, 
     [NotNull] CSharpCodeHighlightingContext context)
   {
-    IBlock node = factory.CreateBlock("{" + rawCodeText + "}");
+    var node = factory.CreateBlock("{" + rawCodeText + "}");
     return HasAnyErrorElements(node) ? null : new(node, new CSharpBlockNodeSandBoxOperations(node.GetText(), context));
   }
 
@@ -38,7 +38,7 @@ public class CSharpCodeHighlightingRequestBuilder : ICodeHighlightingRequestBuil
     [NotNull] CSharpElementFactory factory, 
     [NotNull] CSharpCodeHighlightingContext context)
   {
-    ICSharpFile node = factory.CreateFile(rawCodeText);
+    var node = factory.CreateFile(rawCodeText);
     return new(node, new CSharpTypeDeclarationNodeOperations(node.GetText(), context));
   }
 
@@ -47,7 +47,7 @@ public class CSharpCodeHighlightingRequestBuilder : ICodeHighlightingRequestBuil
     if (commentOwner.GetContainingFile() is not ICSharpFile file) return null;
     
     var imports = new List<string>();
-    foreach (IUsingDirective import in file.Imports)
+    foreach (var import in file.Imports)
     {
       imports.Add(import.GetText());
     }

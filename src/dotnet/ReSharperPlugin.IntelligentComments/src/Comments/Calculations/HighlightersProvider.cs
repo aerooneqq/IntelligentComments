@@ -102,7 +102,7 @@ public abstract class HighlightersProvider : IHighlightersProvider
 
   public TextHighlighter TryGetReSharperHighlighter(string resharperAttributeId, int length)
   {
-    string id = myHighlighterNamesProvider.GetExternalName(resharperAttributeId);
+    var id = myHighlighterNamesProvider.GetExternalName(resharperAttributeId);
     return new TextHighlighter(id, 0, length, TextHighlighterAttributes.DefaultAttributes, IsResharperHighlighter: true);
   }
 

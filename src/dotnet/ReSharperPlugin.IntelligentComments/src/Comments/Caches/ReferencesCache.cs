@@ -27,7 +27,7 @@ public class ReferencesCache : AbstractOpenedDocumentBasedCache<int, ReferenceIn
   public int AddReferenceIfNotPresent(IDocument document, IReference reference)
   {
     var info = new ReferenceInfo(reference);
-    int id = CreateId(document, info);
+    var id = CreateId(document, info);
 
     if (TryGetValue(document, id) is { }) return id;
 
@@ -40,8 +40,8 @@ public class ReferencesCache : AbstractOpenedDocumentBasedCache<int, ReferenceIn
 
   protected override int CreateId(IDocument document, ReferenceInfo value)
   {
-    int documentHash = Hash.Create(document.Moniker).Value;
-    int referenceHash = value.Reference.GetHashCode();
+    var documentHash = Hash.Create(document.Moniker).Value;
+    var referenceHash = value.Reference.GetHashCode();
     return Hash.Combine(documentHash, referenceHash);
   }
 }

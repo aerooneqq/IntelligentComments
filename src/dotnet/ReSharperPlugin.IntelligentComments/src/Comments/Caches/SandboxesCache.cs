@@ -61,28 +61,27 @@ public class SandboxesCache : AbstractOpenedDocumentBasedCache<string, SandboxFi
     return TryGetValue(originalDocument, fileName)?.SandboxPsiSourceFile;
   }
 
-  public SandboxCodeFragmentInfo GetOrCreateSandboxFileForHighlighting(
-    [NotNull] IDocument originalDocument,
-    [NotNull] CodeHighlightingRequest request)
+  public SandboxCodeFragmentInfo GetOrCreateSandboxFileForHighlighting([NotNull] CodeHighlightingRequest request)
   {
     myShellLocks.AssertMainThread();
-    LifetimeDefinition lifetimeDef = myLifetime.CreateNested();
-    Lifetime highlightingLifetime = lifetimeDef.Lifetime;
+    var lifetimeDef = myLifetime.CreateNested();
+    var highlightingLifetime = lifetimeDef.Lifetime;
     if (request.Document.GetData(DocumentHostBase.DocumentIdKey) is not { } documentId)
     {
       myLogger.Error($"Failed to get documentId for {request.Document.Moniker}");
       return null;
     }
     
-    SandboxInfo sandBoxInfo = CreateSandboxInfo(request, documentId);
-    IProjectFile sandboxFile = myHelper.GetOrCreateSandboxProjectFile(documentId, sandBoxInfo, highlightingLifetime);
-    
+    var sandBoxInfo = CreateSandboxInfo(request, documentId);
+    var sandboxFile = myHelper.GetOrCreateSandboxProjectFile(documentId, sandBoxInfo, highlightingLifetime);
+
+    var originalDocument = request.Document;
     if (TryGetValue(originalDocument, originalDocument.Moniker) is { } existingSandboxFileInfo)
     {
       return AddTextIfNeededAndGetFragment(existingSandboxFileInfo, request);
     }
     
-    IDocument document = sandboxFile.GetDocument();
+    var document = sandboxFile.GetDocument();
     if (document is not RiderDocument riderDocument)
     {
       myLogger.LogAssertion($"Got unexpected document for {sandboxFile}: {document}");
@@ -98,14 +97,14 @@ public class SandboxesCache : AbstractOpenedDocumentBasedCache<string, SandboxFi
       sandboxFile,
       myDocumentHost);
 
-    IPsiSourceFile sourceFile = riderDocument.GetPsiSourceFile(mySolution);
+    var sourceFile = riderDocument.GetPsiSourceFile(mySolution);
     if (sourceFile is not SandboxPsiSourceFile sandboxPsiSourceFile)
     {
       myLogger.LogAssertion($"Got unexpected sourceFile for {sandboxFile}: {sourceFile}");
       return null;
     }
 
-    int endOffset = riderDocument.GetTextLength();
+    var endOffset = riderDocument.GetTextLength();
     var idToOffsets = new Dictionary<int, TextRange>
     {
       [request.CalculateTextHash()] = new(0, endOffset)
@@ -121,16 +120,16 @@ public class SandboxesCache : AbstractOpenedDocumentBasedCache<string, SandboxFi
     [NotNull] SandboxFileInfo sandboxFileInfo,
     [NotNull] CodeHighlightingRequest request)
   {
-    (_, SandboxPsiSourceFile sandboxPsiSourceFile, IDictionary<int, TextRange> textHashesToOffset) = sandboxFileInfo;
-    if (textHashesToOffset.TryGetValue(request.CalculateTextHash(), out TextRange existingRange))
+    (_, var sandboxPsiSourceFile, var textHashesToOffset) = sandboxFileInfo;
+    if (textHashesToOffset.TryGetValue(request.CalculateTextHash(), out var existingRange))
     {
       return new SandboxCodeFragmentInfo(sandboxPsiSourceFile, existingRange.StartOffset, existingRange.EndOffset);
     }
     
-    IDocument sandboxDocument = sandboxPsiSourceFile.Document;
-    int startOffset = sandboxDocument.GetTextLength();
-    string createdText = request.Text;
-    int endOffset = startOffset + createdText.Length;
+    var sandboxDocument = sandboxPsiSourceFile.Document;
+    var startOffset = sandboxDocument.GetTextLength();
+    var createdText = request.Text;
+    var endOffset = startOffset + createdText.Length;
     
     sandboxDocument.InsertText(startOffset, createdText);
     
@@ -141,7 +140,7 @@ public class SandboxesCache : AbstractOpenedDocumentBasedCache<string, SandboxFi
   
   private static SandboxInfo CreateSandboxInfo(CodeHighlightingRequest request, RdDocumentId rdDocumentId)
   {
-    string documentText = request.Text;
+    var documentText = request.Text;
     return new SandboxInfo(
       rdDocumentId,
       documentText,
@@ -168,7 +167,7 @@ public class SandboxesCache : AbstractOpenedDocumentBasedCache<string, SandboxFi
   protected override void BeforeRemoval(IDocument document, IEnumerable<SandboxFileInfo> values)
   {
     myShellLocks.AssertMainThread();
-    foreach (SandboxFileInfo value in values)
+    foreach (var value in values)
     {
       value.LifetimeDefinition.Terminate();
     }

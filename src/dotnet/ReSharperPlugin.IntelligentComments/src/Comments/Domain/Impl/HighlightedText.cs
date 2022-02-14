@@ -43,9 +43,9 @@ public class HighlightedText : IHighlightedText
 
   public void Add(IHighlightedText other)
   {
-    int length = Text.Length;
+    var length = Text.Length;
 
-    List<TextHighlighter> newHighlighters = other.Highlighters
+    var newHighlighters = other.Highlighters
       .Select(h => h with { StartOffset = h.StartOffset + length, EndOffset = h.EndOffset + length })
       .ToList();
     
@@ -57,7 +57,7 @@ public class HighlightedText : IHighlightedText
     
   public void Normalize()
   {
-    int removedCharsFromStartCount = 0;
+    var removedCharsFromStartCount = 0;
     var sb = new StringBuilder(Text);
     while (sb.Length > 0 && ourWhitespaceTokens.Contains(sb[0]))
     {
@@ -65,7 +65,7 @@ public class HighlightedText : IHighlightedText
       ++removedCharsFromStartCount;
     }
 
-    List<TextHighlighter> newHighlighters = myHighlighters
+    var newHighlighters = myHighlighters
       .Select(h => h with { StartOffset = h.StartOffset - removedCharsFromStartCount })
       .Where(h => h.IsValid())
       .ToList();

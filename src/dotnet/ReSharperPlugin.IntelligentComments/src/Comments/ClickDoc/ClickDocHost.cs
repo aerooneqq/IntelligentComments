@@ -88,15 +88,15 @@ public class ClickDocHost
       }
 
       const string name = $"{nameof(ClickDocHost)}::DataRule";
-      IList<IDataRule> dataRules = DataRules
+      var dataRules = DataRules
         .AddRule(name, ProjectModelDataConstants.SOLUTION, declaredElement.GetSolution())
         .AddRule(name, PsiDataConstants.DECLARED_ELEMENTS, declaredElement.ToDeclaredElementsDataConstant())
         .AddRule(name, DocumentModelDataConstants.DOCUMENT, textControl.Document);
 
-      IDataContext dataContext = myDataContexts.CreateWithDataRules(myLifetime, dataRules);
+      var dataContext = myDataContexts.CreateWithDataRules(myLifetime, dataRules);
       
-      using CompilationContextCookie _ = CompilationContextCookie.GetExplicitUniversalContextIfNotSet();
-      int? sessionId = myQuickDocHost.ExecuteSession(dataContext);
+      using var _ = CompilationContextCookie.GetExplicitUniversalContextIfNotSet();
+      var sessionId = myQuickDocHost.ExecuteSession(dataContext);
       task.Set(sessionId);
     });
     

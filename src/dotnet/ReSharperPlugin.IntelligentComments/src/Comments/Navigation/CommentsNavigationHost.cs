@@ -61,8 +61,8 @@ public class CommentsNavigationHost
     
     myShellLocks.QueueReadLock(myLifetime, $"{nameof(CommentsNavigationHost)}::ServingRequest", () =>
     {
-      using CompilationContextCookie _ = CompilationContextCookie.GetExplicitUniversalContextIfNotSet();
-      (RdReference rdReference, TextControlId textControlId) = request;
+      using var _ = CompilationContextCookie.GetExplicitUniversalContextIfNotSet();
+      (var rdReference, var textControlId) = request;
       if (myRdReferenceConverter.TryGetReference(rdReference, textControlId) is not { } reference)
       {
         LogWarnAndSetNull($"Failed to get reference for {rdReference}");
@@ -76,7 +76,7 @@ public class CommentsNavigationHost
       }
 
       var resolveContext = new ResolveContextImpl(mySolution, document);
-      ResolveResult resolveResult = reference.Resolve(resolveContext);
+      var resolveResult = reference.Resolve(resolveContext);
       if (resolveResult is not DeclaredElementResolveResult { DeclaredElement: { } declaredElement })
       {
         LogWarnAndSetNull("Need declared element in order to perform navigation");

@@ -32,7 +32,7 @@ public abstract class CodeHighlighterBase
   {
     if (!AcceptNode(element)) return;
 
-    NodeType nodeType = element.NodeType;
+    var nodeType = element.NodeType;
     if (nodeType == CSharpTokenType.WHITE_SPACE)
     {
       context.Text.Add(new HighlightedText(element.GetText()));
@@ -49,12 +49,12 @@ public abstract class CodeHighlighterBase
   {
     if (element is ITokenNode token)
     {
-      TokenNodeType type = token.GetTokenType();
-      string attributeId = SyntaxHighlightingProcessor.GetAttributeId(type);
+      var type = token.GetTokenType();
+      var attributeId = SyntaxHighlightingProcessor.GetAttributeId(type);
       if (attributeId is { })
       {
-        string text = element.GetText();
-        TextHighlighter highlighter = HighlightersProvider.TryGetReSharperHighlighter(attributeId, text.Length);
+        var text = element.GetText();
+        var highlighter = HighlightersProvider.TryGetReSharperHighlighter(attributeId, text.Length);
         context.Text.Add(highlighter is { } ? new HighlightedText(text, highlighter) : new HighlightedText(text));
         return true;
       }

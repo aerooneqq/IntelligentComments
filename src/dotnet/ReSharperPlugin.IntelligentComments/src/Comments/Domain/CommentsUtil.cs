@@ -33,21 +33,21 @@ public static class CommentsUtil
   [NotNull]
   private static RdMultilineComment ToRdComment([NotNull] this IMultilineComment multilineComment)
   {
-    int id = multilineComment.CreateIdentifier();
+    var id = multilineComment.CreateIdentifier();
     return new RdMultilineComment(multilineComment.Text.ToRdTextSegment(), id, multilineComment.GetRdRange());
   }
 
   [NotNull]
   private static RdGroupOfLineComments ToRdComment([NotNull] this IGroupOfLineComments groupOfLineComments)
   {
-    int id = groupOfLineComments.CreateIdentifier();
+    var id = groupOfLineComments.CreateIdentifier();
     return new RdGroupOfLineComments(groupOfLineComments.Text.ToRdTextSegment(), id, groupOfLineComments.GetRdRange());
   }
   
   [NotNull]
   private static RdTextRange GetRdRange([NotNull] this ICommentBase comment)
   {
-    (DocumentOffset startOffset, DocumentOffset endOffset) = comment.Range;
+    (var startOffset, var endOffset) = comment.Range;
     return new RdTextRange(startOffset.Offset, endOffset.Offset);
   }
 
@@ -62,7 +62,7 @@ public static class CommentsUtil
   private static RdComment ToRdComment([NotNull] this IIntelligentComment comment)
   {
     RdIntelligentCommentContent content = comment.Content.ToRdContent();
-    int identifier = comment.CreateIdentifier();
+    var identifier = comment.CreateIdentifier();
 
     return new RdIntelligentComment(DateTime.Now, content, null, null, null, null, identifier, comment.GetRdRange());
   }
@@ -77,7 +77,7 @@ public static class CommentsUtil
   private static RdContentSegments ToRdContentSegments([NotNull] this IContentSegments contentSegments)
   {
     var contentSegmentsList = new List<RdContentSegment>();
-    foreach (IContentSegment contentSegment in contentSegments.Segments)
+    foreach (var contentSegment in contentSegments.Segments)
     {
       contentSegmentsList.Add(contentSegment.ToRdContentSegment());
     }
@@ -128,10 +128,10 @@ public static class CommentsUtil
   private static RdTableSegment ToRdTable([NotNull] this ITableSegment table)
   {
     var rows = new List<RdTableRow>();
-    foreach (ITableSegmentRow row in table.Rows)
+    foreach (var row in table.Rows)
     {
       var cells = new List<RdTableCell>();
-      foreach (ITableCell cell in row.Cells)
+      foreach (var cell in row.Cells)
       {
         cells.Add(new RdTableCell(cell.Content.ToRdContentSegments(), cell.Properties?.ToRdTableCellProperties()));
       }
@@ -329,7 +329,7 @@ public static class CommentsUtil
   private static RdListSegment ToRdList([NotNull] this IListSegment listSegment)
   {
     var items = new List<RdListItem>();
-    foreach (IListItem item in listSegment.Items)
+    foreach (var item in listSegment.Items)
     {
       RdContentSegments rdHeader = item.Header is { } header && header.ContentSegments.Segments.Count > 0
         ? item.Header.ContentSegments.ToRdContentSegments()

@@ -56,7 +56,7 @@ public class CodeFragmentHighlightingManager
     myPsiServices = psiServices;
     myRequests = new Dictionary<int, CodeHighlightingRequest>();
     
-    RdCommentsModel rdCommentsModel = solution.GetSolution().GetProtocolSolution().GetRdCommentsModel();
+    var rdCommentsModel = solution.GetSolution().GetProtocolSolution().GetRdCommentsModel();
     rdCommentsModel.HighlightCode.Set((lt, request) =>
     {
       var task = new RdTask<RdHighlightedText>();
@@ -78,7 +78,7 @@ public class CodeFragmentHighlightingManager
     [NotNull] RdCodeHighlightingRequest rdRequest)
   {
     myShellLocks.AssertMainThread();
-    int id = rdRequest.Id;
+    var id = rdRequest.Id;
 
     void LogErrorAndSetNull(string message)
     {
@@ -93,7 +93,7 @@ public class CodeFragmentHighlightingManager
       return;
     }
 
-    if (TryCreateSandboxSourceFile(id, request) is not var (sourceFile, startOffset, endOffset))
+    if (TryCreateSandboxSourceFile(request) is not var (sourceFile, startOffset, endOffset))
     {
       LogErrorAndSetNull($"Failed to create sandbox for {id}");
       return;
@@ -136,7 +136,7 @@ public class CodeFragmentHighlightingManager
   {
     lock (mySyncObject)
     {
-      if (!myRequests.TryGetValue(id, out CodeHighlightingRequest request))
+      if (!myRequests.TryGetValue(id, out var request))
       {
         myLogger.Error($"Failed to get highlighting request for {id}");
         return null;
@@ -158,7 +158,7 @@ public class CodeFragmentHighlightingManager
   {
     lock (mySyncObject)
     {
-      int nextId = GetNextId();
+      var nextId = GetNextId();
       if (nextId == 0)
       {
         nextId = GetNextId();
@@ -169,10 +169,10 @@ public class CodeFragmentHighlightingManager
     }
   }
 
-  private SandboxCodeFragmentInfo TryCreateSandboxSourceFile(int id, CodeHighlightingRequest request)
+  private SandboxCodeFragmentInfo TryCreateSandboxSourceFile(CodeHighlightingRequest request)
   {
     myShellLocks.AssertMainThread();
-    return mySandboxesCache.GetOrCreateSandboxFileForHighlighting(request.Document, request);
+    return mySandboxesCache.GetOrCreateSandboxFileForHighlighting(request);
   }
 
   private int GetNextId()

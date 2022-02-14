@@ -36,7 +36,7 @@ public class MultilineCommentsBuilder : IMultilineCommentsBuilder
   
   public IMultilineComment Build()
   {
-    string text = CommentsBuilderUtil.PreprocessText(myCommentNode.CommentText, null);
+    var text = CommentsBuilderUtil.PreprocessText(myCommentNode.CommentText, null);
     text = text.Split('\n').Select(line =>
     {
       if (line.StartsWith(Star))
@@ -48,10 +48,10 @@ public class MultilineCommentsBuilder : IMultilineCommentsBuilder
     }).Join("\n");
 
     text = CommentsBuilderUtil.PreprocessText(text, null);
-    TextHighlighter highlighter = myHighlightersProvider.TryGetReSharperHighlighter(myCommentAttributeId, text.Length);
+    var highlighter = myHighlightersProvider.TryGetReSharperHighlighter(myCommentAttributeId, text.Length);
     var highlightedText = new HighlightedText(text, highlighter);
     var textSegment = new TextContentSegment(highlightedText);
-    DocumentRange range = myCommentNode.GetDocumentRange();
+    var range = myCommentNode.GetDocumentRange();
 
     return new MultilineComment(textSegment, range);
   }

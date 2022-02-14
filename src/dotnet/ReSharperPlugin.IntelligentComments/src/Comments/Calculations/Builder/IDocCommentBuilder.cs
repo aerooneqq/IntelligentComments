@@ -117,7 +117,7 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
     
   private static void ExecuteActionOverChildren([NotNull] XmlElement parent, [NotNull] Action<XmlNode> actionWithNode)
   {
-    foreach (object child in parent)
+    foreach (var child in parent)
     {
       if (child is not XmlNode childXmlNode)
       {
@@ -132,10 +132,10 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
   public override void VisitC(XmlElement element)
   {
     myVisitedNodes.Add(element);
-    if (ElementHasOneTextChild(element, out string value))
+    if (ElementHasOneTextChild(element, out var value))
     {
-      (value, int length) = PreprocessTextWithContext(value, element);
-      TextHighlighter highlighter = myHighlightersProvider.GetCXmlElementHighlighter(0, length);
+      (value, var length) = PreprocessTextWithContext(value, element);
+      var highlighter = myHighlightersProvider.GetCXmlElementHighlighter(0, length);
       AddHighlightedText(value, highlighter);
       
       return;
@@ -151,7 +151,7 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
   
   private static bool ElementHasOneTextChild([NotNull] XmlElement element, [NotNull] out string value)
   {
-    bool hasOneTextChild = element.ChildNodes.Count == 1 && element.FirstChild is XmlText { Value: { } };
+    var hasOneTextChild = element.ChildNodes.Count == 1 && element.FirstChild is XmlText { Value: { } };
 
     value = hasOneTextChild switch
     {
@@ -180,14 +180,14 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
     [NotNull] Func<IHighlightedText, IParamContentSegment> factory)
   {
     myVisitedNodes.Add(element);
-    string paramName = element.GetAttribute(nameAttrName);
+    var paramName = element.GetAttribute(nameAttrName);
     if (paramName == string.Empty)
     {
       paramName = UndefinedParam;
     }
 
-    TextHighlighter highlighter = myHighlightersProvider.TryGetReSharperHighlighter(myParamAttributeId, paramName.Length);
-    IParamContentSegment paramSegment = factory.Invoke(new HighlightedText(paramName, highlighter));
+    var highlighter = myHighlightersProvider.TryGetReSharperHighlighter(myParamAttributeId, paramName.Length);
+    var paramSegment = factory.Invoke(new HighlightedText(paramName, highlighter));
     
     var metadata = new ContentSegmentsMetadata(paramSegment, paramSegment.ContentSegments);
     using (new WithPushedToStackContentSegments(myContentSegmentsStack, metadata, ourLogger))
@@ -216,8 +216,8 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
   {
     myVisitedNodes.Add(text);
 
-    (string processedText, int length) = PreprocessTextWithContext(text.Value, text);
-    TextHighlighter highlighter = myHighlightersProvider.TryGetReSharperHighlighter(myDocCommentAttributeId, length);
+    (var processedText, var length) = PreprocessTextWithContext(text.Value, text);
+    var highlighter = myHighlightersProvider.TryGetReSharperHighlighter(myDocCommentAttributeId, length);
     var textContentSegment = new MergeableTextContentSegment(new HighlightedText(processedText, highlighter));
     ExecuteWithTopmostContentSegments(metadata => metadata.ContentSegments.Segments.Add(textContentSegment));
   }
@@ -269,14 +269,14 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
   public override void VisitException(XmlElement element)
   {
     myVisitedNodes.Add(element);
-    string exceptionName = UndefinedParam;
+    var exceptionName = UndefinedParam;
     if (element.GetAttributeNode(CRef) is { } attribute)
     {
       myVisitedNodes.Add(attribute);
       exceptionName = attribute.Value;
     }
 
-    IReference reference = CreateCodeEntityReference(exceptionName);
+    var reference = CreateCodeEntityReference(exceptionName);
 
     exceptionName = (reference.Resolve(myResolveContext) as DeclaredElementResolveResult)?.DeclaredElement switch
     {
@@ -284,7 +284,7 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
       null => BeautifyCodeEntityId(exceptionName)
     };
 
-    TextHighlighter highlighter = myHighlightersProvider.GetReSharperExceptionHighlighter(
+    var highlighter = myHighlightersProvider.GetReSharperExceptionHighlighter(
       0, exceptionName.Length, reference, myResolveContext);
     
     var exceptionSegment = new ExceptionContentSegment(new HighlightedText(exceptionName, highlighter));
@@ -314,18 +314,18 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
     [NotNull] Func<int, TextHighlighter> highlighterFactory)
   {
     myVisitedNodes.Add(element);
-    string paramName = element.GetAttribute(nameAttrName);
+    var paramName = element.GetAttribute(nameAttrName);
     if (paramName == string.Empty) paramName = UndefinedParam;
-    (paramName, int length) = PreprocessTextWithContext(paramName, element);
+    (paramName, var length) = PreprocessTextWithContext(paramName, element);
 
-    TextHighlighter highlighter = highlighterFactory.Invoke(length);
+    var highlighter = highlighterFactory.Invoke(length);
     AddHighlightedText(paramName, highlighter);
   }
 
   public override void VisitSeeAlso(XmlElement element)
   {
     myVisitedNodes.Add(element);
-    string href = element.GetAttribute(Href);
+    var href = element.GetAttribute(Href);
     if (href != string.Empty)
     {
       VisitSeeAlsoLink(element);
@@ -341,9 +341,9 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
     {
       description ??= referenceRawText;
       
-      (description, int length) = PreprocessTextWithContext(description, element);
+      (description, var length) = PreprocessTextWithContext(description, element);
       
-      TextHighlighter highlighter = myHighlightersProvider.GetSeeAlsoLinkHighlighter(0, length);
+      var highlighter = myHighlightersProvider.GetSeeAlsoLinkHighlighter(0, length);
       var highlightedText = new HighlightedText(description, new[] { highlighter });
       return new SeeAlsoLinkContentSegment(highlightedText, new HttpReference(referenceRawText));
     });
@@ -354,10 +354,10 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
     [NotNull] string attributeName,
     [NotNull] Func<string, string, ISeeAlsoContentSegment> factory)
   {
-    string attributeValue = element.GetAttribute(attributeName);
-    string innerText = ElementHasOneTextChild(element, out string text) ? text : null;
+    var attributeValue = element.GetAttribute(attributeName);
+    var innerText = ElementHasOneTextChild(element, out var text) ? text : null;
 
-    ISeeAlsoContentSegment seeAlso = factory.Invoke(attributeValue, innerText);
+    var seeAlso = factory.Invoke(attributeValue, innerText);
     if (IsTopmostContext())
     {
       ExecuteWithTopmostContentSegments(metadata => metadata.ContentSegments.Segments.Add(seeAlso)); 
@@ -375,10 +375,10 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
   {
     ProcessSeeAlso(element, CRef, (referenceRawText, description) =>
     {
-      IReference reference = CreateCodeEntityReference(referenceRawText);
+      var reference = CreateCodeEntityReference(referenceRawText);
       
       var resolveResult = reference.Resolve(myResolveContext) as DeclaredElementResolveResult;
-      IDeclaredElement declaredElement = resolveResult?.DeclaredElement;
+      var declaredElement = resolveResult?.DeclaredElement;
       
       description = description switch
       {
@@ -387,9 +387,9 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
         _ => description
       };
 
-      (description, int length) = PreprocessTextWithContext(description, element);
+      (description, var length) = PreprocessTextWithContext(description, element);
 
-      TextHighlighter highlighter = myHighlightersProvider.GetSeeAlsoReSharperMemberHighlighter(0, length, reference, myResolveContext);
+      var highlighter = myHighlightersProvider.GetSeeAlsoReSharperMemberHighlighter(0, length, reference, myResolveContext);
       
       var highlightedText = new HighlightedText(description, new[] { highlighter });
       return new SeeAlsoMemberContentSegment(highlightedText, reference);
@@ -399,7 +399,7 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
   private IReference CreateCodeEntityReference([NotNull] string rawValue)
   {
     var realReference = new XmlDocCodeEntityReference(rawValue, myPsiServices, myPsiModule);
-    int referenceId = myReferencesCache.AddReferenceIfNotPresent(myResolveContext.Document, realReference);
+    var referenceId = myReferencesCache.AddReferenceIfNotPresent(myResolveContext.Document, realReference);
     return new ProxyReference(referenceId);
   }
 
@@ -445,7 +445,7 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
     }
 
     if (reference is null) return;
-    string content = BeautifyCodeEntityId(reference.RawValue);
+    var content = BeautifyCodeEntityId(reference.RawValue);
 
     var resolveResult = reference.Resolve(myResolveContext) as DeclaredElementResolveResult;
     if (resolveResult is { DeclaredElement: { } declaredElement })
@@ -453,7 +453,7 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
       content = Present(declaredElement);
     }
     
-    if (ElementHasOneTextChild(element, out string text))
+    if (ElementHasOneTextChild(element, out var text))
     {
       content = text;
     }
@@ -463,9 +463,9 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
 
   private void ProcessSee([NotNull] string content, [NotNull] IReference reference, [NotNull] XmlElement element)
   {
-    (content, int length) = PreprocessTextWithContext(content, element);
+    (content, var length) = PreprocessTextWithContext(content, element);
     
-    TextHighlighter highlighter = reference switch
+    var highlighter = reference switch
     {
       ICodeEntityReference or IProxyReference => 
         myHighlightersProvider.GetReSharperSeeCodeEntityHighlighter(0, length, reference, myResolveContext),
@@ -480,7 +480,7 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
   public override void VisitList(XmlElement element)
   {
     myVisitedNodes.Add(element);
-    string typeOfList = element.GetAttribute("type");
+    var typeOfList = element.GetAttribute("type");
 
     switch (typeOfList)
     {
@@ -518,7 +518,7 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
     [NotNull] XmlElement element, 
     [NotNull] Action<IEntityWithContentSegments, IEntityWithContentSegments> actionWithTermAndDescription)
   {
-    foreach (object child in element.ChildNodes)
+    foreach (var child in element.ChildNodes)
     {
       if (child is not XmlElement childElement) continue;
       
@@ -550,8 +550,8 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
     var table = new TableSegment(null);
     ExecuteActionOverTermsAndDescriptions(element, (term, description) =>
     {
-      IContentSegments termContentSegments = term?.ContentSegments ?? ContentSegments.CreateEmpty();
-      IContentSegments descriptionSegments = description?.ContentSegments ?? ContentSegments.CreateEmpty();
+      var termContentSegments = term?.ContentSegments ?? ContentSegments.CreateEmpty();
+      var descriptionSegments = description?.ContentSegments ?? ContentSegments.CreateEmpty();
       var termCell = new TableCell(termContentSegments, TableCellProperties.DefaultProperties);
       var descriptionCell = new TableCell(descriptionSegments, TableCellProperties.DefaultProperties);
       var row = new TableSegmentRow();
@@ -566,7 +566,7 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
   public override void VisitCode(XmlElement element)
   {
     myVisitedNodes.Add(element);
-    if (ElementHasOneTextChild(element, out string text))
+    if (ElementHasOneTextChild(element, out var text))
     {
       if (CanInlineCode(text))
       {
@@ -574,7 +574,7 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
         return;
       }
       
-      CodeFragment codeFragment = CreateCodeFragment(text);
+      var codeFragment = CreateCodeFragment(text);
       var codeSegment = new CodeSegment(codeFragment.PreliminaryText, codeFragment.HighlightingRequestId);
       ExecuteWithTopmostContentSegments(metadata => metadata.ContentSegments.Segments.Add(codeSegment));
     }
@@ -601,7 +601,7 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
         file.GetSourceFile()?.Document is { } document)
     {
       var request = new CodeHighlightingRequest(file.Language, code, document, operations);
-      int id = myCodeFragmentHighlightingManager.AddRequestForHighlighting(request);
+      var id = myCodeFragmentHighlightingManager.AddRequestForHighlighting(request);
       
       var preliminaryHighlighter = myLanguageManager.GetService<IPreliminaryCodeHighlighter>(file.Language);
       var highlightedText = HighlightedText.CreateEmptyText();

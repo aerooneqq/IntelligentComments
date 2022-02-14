@@ -32,7 +32,7 @@ internal static class CommentsBuilderUtil
       sb.Remove(sb.Length - 1, 1);
     }
     
-    for (int i = sb.Length - 1; i >= 0; --i)
+    for (var i = sb.Length - 1; i >= 0; --i)
     {
       if (sb[i] == '\r') sb.Remove(i, 1);
     }
@@ -54,7 +54,7 @@ internal static class CommentsBuilderUtil
   
   internal static TextProcessingResult PreprocessTextWithContext([NotNull] string text, [NotNull] XmlNode context)
   {
-    XmlNode nextSibling = context.NextSibling;
+    var nextSibling = context.NextSibling;
 
     char? trailingCharToAdd = null;
     if (nextSibling is not XmlText xmlText)
@@ -66,7 +66,7 @@ internal static class CommentsBuilderUtil
     }
     else
     {
-      foreach (char c in xmlText.Value)
+      foreach (var c in xmlText.Value)
       {
         if (c == '\n')
         {

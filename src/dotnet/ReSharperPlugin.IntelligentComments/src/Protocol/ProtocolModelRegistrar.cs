@@ -11,7 +11,7 @@ public class ProtocolModelRegistrar
 {
   public ProtocolModelRegistrar(ISolution solution)
   {
-    ISerializers protoSerializers = solution.GetProtocolSolution().Proto.Serializers;
+    var protoSerializers = solution.GetProtocolSolution().Proto.Serializers;
     protoSerializers.RegisterToplevelOnce(typeof(RdCommentsModel), RdCommentsModel.RegisterDeclaredTypesSerializers);
   }
 }

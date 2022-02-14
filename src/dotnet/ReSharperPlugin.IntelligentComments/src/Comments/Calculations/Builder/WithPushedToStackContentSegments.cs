@@ -41,12 +41,12 @@ internal readonly struct WithPushedToStackContentSegments : IDisposable
       return;
     }
         
-    ContentSegmentsMetadata contentSegments = myStack.Pop();
-    IList<IContentSegment> segments = contentSegments.ContentSegments.Segments;
+    var contentSegments = myStack.Pop();
+    var segments = contentSegments.ContentSegments.Segments;
 
     void Normalize()
     {
-      foreach (IContentSegment segment in segments)
+      foreach (var segment in segments)
       {
         if (segment is ITextContentSegment textContentSegment)
         {
@@ -55,7 +55,7 @@ internal readonly struct WithPushedToStackContentSegments : IDisposable
       }
     }
         
-    int index = 0;
+    var index = 0;
     while (index != segments.Count)
     {
       if (index + 1 >= segments.Count)
@@ -64,8 +64,8 @@ internal readonly struct WithPushedToStackContentSegments : IDisposable
         return;
       }
 
-      IContentSegment currentSegment = segments[index];
-      IContentSegment nextSegment = segments[index + 1];
+      var currentSegment = segments[index];
+      var nextSegment = segments[index + 1];
       if (currentSegment is not IMergeableContentSegment currentTextSegment ||
           nextSegment is not IMergeableContentSegment nextTextSegment)
       {

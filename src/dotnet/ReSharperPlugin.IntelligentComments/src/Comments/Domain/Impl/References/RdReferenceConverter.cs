@@ -56,14 +56,14 @@ public class RdReferenceConverter
       return null;
     }
     
-    IDocument document = textControl.Document;
+    var document = textControl.Document;
     if (document.GetPsiSourceFile(mySolution) is not { } sourceFile)
     {
       return null;
     }
     
-    IPsiModule module = sourceFile.PsiModule;
-    string rawName = reference.RawValue;
+    var module = sourceFile.PsiModule;
+    var rawName = reference.RawValue;
     return new XmlDocCodeEntityReference(rawName, myPsiServices, module);
   }
   
@@ -72,7 +72,7 @@ public class RdReferenceConverter
   {
     if (reference.OriginalDocumentId is null) return null;
     
-    RiderDocument document = myDocumentHostBase.TryGetHostDocument(reference.OriginalDocumentId);
+    var document = myDocumentHostBase.TryGetHostDocument(reference.OriginalDocumentId);
     if (document is null) return null;
 
     return new SandBoxCodeEntityReference(
