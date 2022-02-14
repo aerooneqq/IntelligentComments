@@ -3,7 +3,6 @@ package com.intelligentComments.ui.comments.model
 import com.intelligentComments.ui.colors.ColorName
 import com.intelligentComments.ui.colors.Colors
 import com.intelligentComments.ui.colors.ColorsProvider
-import com.intelligentComments.ui.comments.model.content.ContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.sections.SectionUiModel
 import com.intelligentComments.ui.comments.renderers.RendererWithRectangleModel
 import com.intelligentComments.ui.core.Renderer
@@ -76,5 +75,5 @@ interface ExpandableUiModel {
 }
 
 interface ModelWithContent {
-  val contentSection: SectionUiModel<ContentSegmentUiModel>
+  val contentSection: SectionUiModel
 }

@@ -16,14 +16,15 @@ import java.lang.Integer.max
 
 interface ToDosRenderer : Renderer, RectangleModelBuildContributor {
   companion object {
-    fun getRendererFor(section: SectionWithHeaderUiModel<ToDoUiModel>): ToDosRenderer {
+    fun getRendererFor(section: SectionWithHeaderUiModel): ToDosRenderer {
       return ToDosRendererImpl(section)
     }
   }
 }
 
-class ToDosRendererImpl(private val section: SectionWithHeaderUiModel<ToDoUiModel>) :
-  VerticalSectionWithHeaderRenderer<ToDoUiModel>(section), ToDosRenderer {
+class ToDosRendererImpl(
+  private val section: SectionWithHeaderUiModel
+) : VerticalSectionWithHeaderRenderer(section), ToDosRenderer {
   companion object {
     const val deltaBetweenToDos = 10
   }
@@ -48,10 +49,10 @@ class ToDosRendererImpl(private val section: SectionWithHeaderUiModel<ToDoUiMode
     }
   }
 
-  private fun executeActionWithToDosAndRenderers(action: (ToDoUiModel, ToDoRenderer) -> Unit) {
+  private fun executeActionWithToDosAndRenderers(action: (ToDoUiModel, Renderer) -> Unit) {
     for (todo in section.content) {
-      val renderer = ToDoRenderer.getRendererFor(todo)
-      action(todo, renderer)
+      val renderer = todo.createRenderer()
+      action(todo as ToDoUiModel, renderer)
     }
   }
 

@@ -1,5 +1,6 @@
 package com.intelligentComments.ui.comments.model.todo
 
+import com.intelligentComments.core.domain.core.ToDoContentSegment
 import com.intelligentComments.core.domain.core.ToDoWithTickets
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intelligentComments.ui.comments.model.tickets.TicketUiModel
@@ -9,10 +10,11 @@ import com.intelligentComments.ui.util.HashUtil
 import com.intellij.openapi.project.Project
 
 class ToDoWithTicketsUiModel(
+  segment : ToDoContentSegment,
   todo: ToDoWithTickets,
   parent: UiInteractionModelBase?,
   project: Project
-) : ToDoUiModel(todo, parent, project) {
+) : ToDoUiModel(segment, parent, project) {
   val tickets = todo.tickets.map { TicketUiModel(it, this, project) }
 
 

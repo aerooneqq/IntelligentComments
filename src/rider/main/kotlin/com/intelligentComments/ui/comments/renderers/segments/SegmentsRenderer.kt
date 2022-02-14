@@ -1,6 +1,5 @@
 package com.intelligentComments.ui.comments.renderers.segments
 
-import com.intelligentComments.ui.comments.model.content.ContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.sections.SectionUiModel
 import com.intelligentComments.ui.comments.model.sections.SectionWithHeaderUiModel
 import com.intelligentComments.ui.comments.renderers.ContentSegmentsRenderer
@@ -15,19 +14,10 @@ import com.intellij.openapi.editor.Editor
 import java.awt.Graphics
 import java.awt.Rectangle
 
-interface SegmentsRenderer : Renderer, RectangleModelBuildContributor {
-  companion object {
-    fun getRendererFor(segmentsSection: SectionUiModel<ContentSegmentUiModel>): SegmentsRenderer {
-      return when (segmentsSection) {
-        is SectionWithHeaderUiModel -> SegmentsRendererWithHeader(segmentsSection)
-        else -> DefaultSegmentsRenderer(segmentsSection)
-      }
-    }
-  }
-}
+interface SegmentsRenderer : Renderer, RectangleModelBuildContributor
 
 class DefaultSegmentsRenderer(
-  private val section: SectionUiModel<ContentSegmentUiModel>
+  private val section: SectionUiModel
 ) : ContentSegmentsRenderer(section.content), SegmentsRenderer {
   override fun accept(context: RectangleModelBuildContext) {
     ContentSegmentsUtil.accept(context, section.content)
@@ -35,8 +25,8 @@ class DefaultSegmentsRenderer(
 }
 
 class SegmentsRendererWithHeader(
-  private val segmentsSection: SectionWithHeaderUiModel<ContentSegmentUiModel>
-) : VerticalSectionWithHeaderRenderer<ContentSegmentUiModel>(segmentsSection), SegmentsRenderer {
+  private val segmentsSection: SectionWithHeaderUiModel
+) : VerticalSectionWithHeaderRenderer(segmentsSection), SegmentsRenderer {
 
   override fun renderContent(
     g: Graphics,

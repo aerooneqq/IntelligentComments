@@ -1,11 +1,11 @@
 package com.intelligentComments.ui.comments.model.todo
 
-import com.intelligentComments.core.domain.core.ToDo
-import com.intelligentComments.core.domain.core.ToDoWithTickets
+import com.intelligentComments.core.domain.core.*
 import com.intelligentComments.ui.colors.Colors
 import com.intelligentComments.ui.comments.model.ExpandableUiModel
 import com.intelligentComments.ui.comments.model.HeaderUiModel
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
+import com.intelligentComments.ui.comments.model.content.ContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.ContentSegmentsUiModel
 import com.intelligentComments.ui.comments.model.references.ReferenceUiModel
 import com.intelligentComments.ui.comments.renderers.NotSupportedForRenderingError
@@ -14,14 +14,14 @@ import com.intelligentComments.ui.util.HashUtil
 import com.intellij.openapi.project.Project
 
 open class ToDoUiModel(
-  todo: ToDo,
+  contentSegment: ToDoContentSegment,
   parent: UiInteractionModelBase?,
   project: Project
-) : UiInteractionModelBase(project, parent), ExpandableUiModel {
+) : ContentSegmentUiModel(project, parent, contentSegment), ExpandableUiModel {
   companion object {
-    fun getFrom(project: Project, parent: UiInteractionModelBase?, todo: ToDo): ToDoUiModel {
-      return when (todo) {
-        is ToDoWithTickets -> ToDoWithTicketsUiModel(todo, parent, project)
+    fun getFrom(project: Project, parent: UiInteractionModelBase?, segment: ToDoContentSegment): ToDoUiModel {
+      return when (val todo = segment.toDo) {
+        is ToDoWithTickets -> ToDoWithTicketsUiModel(segment, todo, parent, project)
         else -> throw IllegalArgumentException(todo.toString())
       }
     }
@@ -29,11 +29,17 @@ open class ToDoUiModel(
 
   override var isExpanded: Boolean = true
 
-  val description = ContentSegmentsUiModel(project, this, todo.description)
+  val toDo = contentSegment.toDo
+  val description = ContentSegmentsUiModel(project, this, toDo.description)
   val headerUiModel =
-    HeaderUiModel(project, this, todo.name, Colors.ToDoHeaderBackgroundColor, Colors.ToDoHeaderHoveredBackgroundColor)
-  val blockingReferences = todo.blockingReferences.map { ReferenceUiModel(project, this, it) }
+    HeaderUiModel(project, this, toDo.name, Colors.ToDoHeaderBackgroundColor, Colors.ToDoHeaderHoveredBackgroundColor)
 
+  val blockingReferences = toDo.blockingReferences.map {
+    ReferenceUiModel(project, this, object : UniqueEntityImpl(), ReferenceContentSegment {
+      override val reference: Reference = it
+      override val parent: Parentable = this
+    })
+  }
 
   override fun calculateStateHash(): Int {
     return HashUtil.hashCode(

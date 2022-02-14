@@ -67,3 +67,11 @@ fun Reference.toRdReference(project: Project): RdReference {
     else -> throw IllegalArgumentException(this.javaClass.name)
   }
 }
+
+class ReferenceContentSegmentFromRd(
+  contentSegment: RdReferenceContentSegment,
+  parent: Parentable?,
+  project: Project
+) : ContentSegmentFromRd(contentSegment, parent), ReferenceContentSegment {
+  override val reference: Reference = ReferenceFromRd.getFrom(project, contentSegment.reference)
+}

@@ -3,6 +3,7 @@ package com.intelligentComments.core.domain.rd
 import com.intelligentComments.core.domain.core.*
 import com.intellij.openapi.project.Project
 import com.jetbrains.rd.ide.model.RdHack
+import com.jetbrains.rd.ide.model.RdHackContentSegment
 import com.jetbrains.rd.ide.model.RdHackWithTickets
 
 open class HackFromRd(rdHack: RdHack, project: Project) : UniqueEntityImpl(), Hack {
@@ -26,4 +27,12 @@ class HackWithTicketsFromRd(
   project: Project
 ) : HackFromRd(rdHackWithTickets, project), HackWithTickets {
   override val tickets: Collection<Ticket> = rdHackWithTickets.tickets.map { TicketFromRd(it) }
+}
+
+class HackContentSegmentFromRd(
+  rdHackSegment: RdHackContentSegment,
+  parent: Parentable?,
+  project: Project
+) : ContentSegmentFromRd(rdHackSegment, parent), HackContentSegment {
+  override val hack: Hack = HackFromRd.getFrom(rdHackSegment.hack, project)
 }

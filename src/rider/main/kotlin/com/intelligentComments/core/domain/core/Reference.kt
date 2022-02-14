@@ -26,3 +26,7 @@ interface ExternalReference : Reference
 interface HttpLinkReference : ExternalReference {
   val rawLink: String
 }
+
+interface ReferenceContentSegment : ContentSegment {
+  val reference: Reference
+}

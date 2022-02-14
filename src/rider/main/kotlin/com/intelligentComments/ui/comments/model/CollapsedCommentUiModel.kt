@@ -3,7 +3,6 @@ package com.intelligentComments.ui.comments.model
 import com.intelligentComments.core.comments.docs.CommentsHoverDocManager
 import com.intelligentComments.core.domain.core.*
 import com.intelligentComments.core.domain.impl.HighlightedTextImpl
-import com.intelligentComments.ui.comments.model.content.ContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.text.TextContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.highlighters.HighlighterUiModel
 import com.intelligentComments.ui.comments.model.sections.SectionUiModel
@@ -27,7 +26,7 @@ class CollapsedCommentUiModel(
   private val hoverDocsManager = project.service<CommentsHoverDocManager>()
   private val highlighterUiModel: HighlighterUiModel?
 
-  override val contentSection: SectionUiModel<ContentSegmentUiModel>
+  override val contentSection: SectionUiModel
 
 
   init {

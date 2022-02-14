@@ -10,7 +10,7 @@ import com.intelligentComments.ui.core.Renderer
 import com.intellij.openapi.project.Project
 
 class ContentSegmentsUiModel : UiInteractionModelBase, ModelWithContent {
-  override val contentSection: SectionUiModel<ContentSegmentUiModel>
+  override val contentSection: SectionUiModel
 
 
   constructor(

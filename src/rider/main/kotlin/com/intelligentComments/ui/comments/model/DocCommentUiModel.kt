@@ -15,7 +15,7 @@ class DocCommentUiModel(
   override val renderer
     get() = DocCommentRenderer(this)
 
-  override val contentSection: SectionUiModel<ContentSegmentUiModel>
+  override val contentSection: SectionUiModel
 
 
   init {

@@ -1,5 +1,6 @@
 package com.intelligentComments.ui.comments.model.invariants
 
+import com.intelligentComments.core.domain.core.InvariantContentSegment
 import com.intelligentComments.core.domain.core.TextInvariant
 import com.intelligentComments.ui.colors.ColorName
 import com.intelligentComments.ui.colors.Colors
@@ -12,8 +13,9 @@ import com.intellij.openapi.project.Project
 class TextInvariantUiModel(
   project: Project,
   parent: UiInteractionModelBase?,
-  textInvariant: TextInvariant
-) : InvariantUiModel(project, parent) {
+  invariantContentSegment: InvariantContentSegment,
+  textInvariant: TextInvariant,
+) : InvariantUiModel(project, parent, invariantContentSegment) {
   override val backgroundColorKey: ColorName = Colors.TextInvariantBackgroundColor
   override val hoveredBackgroundColorKey: ColorName = Colors.TextInvariantHoveredBackgroundColor
 

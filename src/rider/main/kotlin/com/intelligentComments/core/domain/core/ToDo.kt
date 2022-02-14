@@ -20,3 +20,7 @@ interface Ticket : UniqueEntity {
   val url: String
   val shortName: String
 }
+
+interface ToDoContentSegment : ContentSegment {
+  val toDo: ToDo
+}

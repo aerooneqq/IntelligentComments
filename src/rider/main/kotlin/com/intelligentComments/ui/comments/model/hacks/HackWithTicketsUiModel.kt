@@ -1,5 +1,6 @@
 package com.intelligentComments.ui.comments.model.hacks
 
+import com.intelligentComments.core.domain.core.HackContentSegment
 import com.intelligentComments.core.domain.core.HackWithTickets
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intelligentComments.ui.comments.model.tickets.TicketUiModel
@@ -9,10 +10,11 @@ import com.intelligentComments.ui.util.HashUtil
 import com.intellij.openapi.project.Project
 
 class HackWithTicketsUiModel(
+  segment: HackContentSegment,
   hackWithTickets: HackWithTickets,
   parent: UiInteractionModelBase?,
   project: Project
-) : HackUiModel(hackWithTickets, parent, project) {
+) : HackUiModel(segment, parent, project) {
   val tickets = hackWithTickets.tickets.map { TicketUiModel(it, this, project) }
 
   override fun calculateStateHash(): Int {

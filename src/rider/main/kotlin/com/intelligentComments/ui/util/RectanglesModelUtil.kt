@@ -1,12 +1,9 @@
 package com.intelligentComments.ui.util
 
 import com.intelligentComments.ui.comments.model.*
-import com.intelligentComments.ui.comments.model.content.ContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.sections.SectionUiModel
-import com.intelligentComments.ui.comments.renderers.authors.CommentAuthorsRenderer
 import com.intelligentComments.ui.comments.renderers.invariants.InvariantsRenderer
 import com.intelligentComments.ui.comments.renderers.references.ReferencesRenderer
-import com.intelligentComments.ui.comments.renderers.segments.SegmentsRenderer
 import com.intelligentComments.ui.comments.renderers.todos.ToDosRenderer
 import com.intelligentComments.ui.core.RectangleModelBuildContext
 import com.intelligentComments.ui.core.RectanglesModel
@@ -40,13 +37,13 @@ class RectanglesModelUtil {
     private fun buildRectanglesModel(
       editor: Editor,
       model: UiInteractionModelBase,
-      contentSection: SectionUiModel<ContentSegmentUiModel>,
+      contentSection: SectionUiModel,
       xDelta: Int,
       yDelta: Int
     ): RectanglesModelBuildResult {
       val context = createRectanglesBuildContext(xDelta, yDelta, editor)
 
-      val renderer = SegmentsRenderer.getRendererFor(contentSection)
+      val renderer = contentSection.createRenderer()
       renderer.accept(context)
 
       addTopmostModel(context, xDelta, yDelta, model)
@@ -109,10 +106,7 @@ class RectanglesModelUtil {
     ): RectanglesModelBuildResult {
       val context = createRectanglesBuildContext(xDelta, yDelta, editor)
 
-      CommentAuthorsRenderer.getRendererFor(intelligentComment.authorsSection.content).accept(context)
-      updateRectYAndHeight(heightDeltaBetweenSections, context)
-
-      SegmentsRenderer.getRendererFor(intelligentComment.contentSection).accept(context)
+      intelligentComment.contentSection.createRenderer().accept(context)
       updateRectYAndHeight(heightDeltaBetweenSections, context)
 
       ReferencesRenderer.getRendererFor(intelligentComment.referencesSection).accept(context)

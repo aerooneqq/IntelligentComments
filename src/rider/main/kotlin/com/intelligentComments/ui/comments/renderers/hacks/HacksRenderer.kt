@@ -1,6 +1,5 @@
 package com.intelligentComments.ui.comments.renderers.hacks
 
-import com.intelligentComments.ui.comments.model.hacks.HackUiModel
 import com.intelligentComments.ui.comments.model.sections.SectionWithHeaderUiModel
 import com.intelligentComments.ui.comments.renderers.VerticalSectionWithHeaderRenderer
 import com.intelligentComments.ui.core.RectangleModelBuildContext
@@ -15,16 +14,16 @@ import java.awt.Rectangle
 
 interface HacksRenderer : Renderer, RectangleModelBuildContributor {
   companion object {
-    fun getFrom(section: SectionWithHeaderUiModel<HackUiModel>, project: Project): HacksRenderer {
+    fun getFrom(section: SectionWithHeaderUiModel, project: Project): HacksRenderer {
       return HacksRendererImpl(section, project)
     }
   }
 }
 
 class HacksRendererImpl(
-  private val section: SectionWithHeaderUiModel<HackUiModel>,
+  private val section: SectionWithHeaderUiModel,
   private val project: Project
-) : VerticalSectionWithHeaderRenderer<HackUiModel>(section), HacksRenderer {
+) : VerticalSectionWithHeaderRenderer(section), HacksRenderer {
   override fun renderContent(
     g: Graphics,
     rect: Rectangle,

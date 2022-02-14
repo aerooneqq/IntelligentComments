@@ -2,7 +2,6 @@ package com.intelligentComments.ui.comments.renderers
 
 import com.intelligentComments.ui.colors.Colors
 import com.intelligentComments.ui.colors.ColorsProvider
-import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intelligentComments.ui.comments.model.sections.SectionWithHeaderUiModel
 import com.intelligentComments.ui.core.RectangleModelBuildContext
 import com.intelligentComments.ui.core.RectangleModelBuildContributor
@@ -21,8 +20,8 @@ import java.awt.Graphics
 import java.awt.Rectangle
 import kotlin.math.max
 
-abstract class VerticalSectionWithHeaderRenderer<T : UiInteractionModelBase>(
-  private val section: SectionWithHeaderUiModel<T>
+abstract class VerticalSectionWithHeaderRenderer(
+  private val section: SectionWithHeaderUiModel
 ) : Renderer, RectangleModelBuildContributor {
 
   companion object {

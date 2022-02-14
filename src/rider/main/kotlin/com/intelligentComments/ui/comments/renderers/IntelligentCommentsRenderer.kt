@@ -42,7 +42,6 @@ class IntelligentCommentsRenderer(private val model: IntelligentCommentUiModel) 
       adjustedRect = drawLeftLine(g, adjustedRect)
     }
 
-    adjustedRect = drawCommentAuthors(g, adjustedRect, editor)
     adjustedRect = drawCommentContent(g, adjustedRect, editor)
     adjustedRect = drawReferences(g, adjustedRect, editor)
     adjustedRect = drawInvariants(g, adjustedRect, editor)
@@ -66,15 +65,9 @@ class IntelligentCommentsRenderer(private val model: IntelligentCommentUiModel) 
     )
   }
 
-  private fun drawCommentAuthors(g: Graphics, rect: Rectangle, editor: Editor): Rectangle {
-    val renderer = CommentAuthorsRenderer.getRendererFor(model.authorsSection.content)
-    val model = revalidateRectanglesModel(editor)
-    return renderer.render(g, rect, editor, model, RenderAdditionalInfo.emptyInstance)
-  }
-
   private fun drawCommentContent(g: Graphics, rect: Rectangle, editor: Editor): Rectangle {
     val model = revalidateRectanglesModel(editor)
-    val renderer = SegmentsRenderer.getRendererFor(this.model.contentSection)
+    val renderer = this.model.contentSection.createRenderer()
     return renderer.render(g, rect, editor, model, RenderAdditionalInfo.emptyInstance)
   }
 

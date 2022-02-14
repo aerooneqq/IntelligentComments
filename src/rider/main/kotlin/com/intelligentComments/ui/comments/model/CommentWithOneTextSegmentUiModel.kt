@@ -16,7 +16,7 @@ class CommentWithOneTextSegmentUiModel(
   override val renderer: RendererWithRectangleModel
     get() = CommentWithOneTextSegmentRenderer(this)
 
-  override val contentSection: SectionUiModel<ContentSegmentUiModel>
+  override val contentSection: SectionUiModel
 
 
   init {

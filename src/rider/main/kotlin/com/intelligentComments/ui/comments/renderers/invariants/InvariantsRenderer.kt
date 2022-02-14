@@ -1,6 +1,5 @@
 package com.intelligentComments.ui.comments.renderers.invariants
 
-import com.intelligentComments.ui.comments.model.invariants.InvariantUiModel
 import com.intelligentComments.ui.comments.model.sections.SectionWithHeaderUiModel
 import com.intelligentComments.ui.comments.renderers.VerticalSectionWithHeaderRenderer
 import com.intelligentComments.ui.comments.renderers.invariants.InvariantsRenderer.Companion.gapBetweenInvariants
@@ -19,14 +18,14 @@ interface InvariantsRenderer : Renderer, RectangleModelBuildContributor {
   companion object {
     const val gapBetweenInvariants = 5
 
-    fun getRendererFor(invariantsSection: SectionWithHeaderUiModel<InvariantUiModel>): InvariantsRenderer {
+    fun getRendererFor(invariantsSection: SectionWithHeaderUiModel): InvariantsRenderer {
       return InvariantsRendererImpl(invariantsSection)
     }
   }
 }
 
-class InvariantsRendererImpl(private val section: SectionWithHeaderUiModel<InvariantUiModel>) :
-  VerticalSectionWithHeaderRenderer<InvariantUiModel>(section), InvariantsRenderer {
+class InvariantsRendererImpl(private val section: SectionWithHeaderUiModel) :
+  VerticalSectionWithHeaderRenderer(section), InvariantsRenderer {
 
   override fun renderContent(
     g: Graphics,
@@ -65,7 +64,7 @@ class InvariantsRendererImpl(private val section: SectionWithHeaderUiModel<Invar
   override fun calculateContentWidth(editor: Editor, additionalRenderInfo: RenderAdditionalInfo): Int {
     var width = 0
     for (invariant in section.content) {
-      val renderer = invariant.createRenderer()
+      val renderer = invariant.createRenderer() as InvariantRenderer
       width += renderer.calculateWidthWithInvariantInterval(editor, additionalRenderInfo)
     }
 

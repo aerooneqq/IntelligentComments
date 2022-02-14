@@ -1,10 +1,11 @@
 package com.intelligentComments.ui.comments.model.references
 
-import com.intelligentComments.core.domain.core.Reference
+import com.intelligentComments.core.domain.core.ReferenceContentSegment
 import com.intelligentComments.ui.colors.Colors
 import com.intelligentComments.ui.comments.model.ExpandableUiModel
 import com.intelligentComments.ui.comments.model.HeaderUiModel
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
+import com.intelligentComments.ui.comments.model.content.ContentSegmentUiModel
 import com.intelligentComments.ui.comments.renderers.NotSupportedForRenderingError
 import com.intelligentComments.ui.core.Renderer
 import com.intelligentComments.ui.util.HashUtil
@@ -13,16 +14,8 @@ import com.intellij.openapi.project.Project
 open class ReferenceUiModel(
   project: Project,
   parent: UiInteractionModelBase?,
-  reference: Reference
-) : UiInteractionModelBase(project, parent), ExpandableUiModel {
-  companion object {
-    fun getFrom(project: Project, reference: Reference): ReferenceUiModel {
-      return when (reference) {
-        else -> throw IllegalArgumentException(reference.toString())
-      }
-    }
-  }
-
+  reference: ReferenceContentSegment
+) : ContentSegmentUiModel(project, parent, reference), ExpandableUiModel {
   val headerUiModel = HeaderUiModel(
     project,
     this,
@@ -30,6 +23,7 @@ open class ReferenceUiModel(
     Colors.ReferenceHeaderBackgroundColor,
     Colors.ReferenceHeaderHoveredBackgroundColor
   )
+
   override var isExpanded: Boolean = true
 
 

@@ -1,6 +1,5 @@
 package com.intelligentComments.ui.comments.renderers.references
 
-import com.intelligentComments.ui.comments.model.references.ReferenceUiModel
 import com.intelligentComments.ui.comments.model.sections.SectionWithHeaderUiModel
 import com.intelligentComments.ui.comments.renderers.VerticalSectionWithHeaderRenderer
 import com.intelligentComments.ui.comments.renderers.references.ReferencesRenderer.Companion.deltaBetweenReferences
@@ -19,14 +18,14 @@ interface ReferencesRenderer : Renderer, RectangleModelBuildContributor {
   companion object {
     const val deltaBetweenReferences = 10
 
-    fun getRendererFor(referencesSection: SectionWithHeaderUiModel<ReferenceUiModel>): ReferencesRenderer {
+    fun getRendererFor(referencesSection: SectionWithHeaderUiModel): ReferencesRenderer {
       return ReferencesRendererImpl(referencesSection)
     }
   }
 }
 
-class ReferencesRendererImpl(private val section: SectionWithHeaderUiModel<ReferenceUiModel>) :
-  VerticalSectionWithHeaderRenderer<ReferenceUiModel>(section), ReferencesRenderer {
+class ReferencesRendererImpl(private val section: SectionWithHeaderUiModel) :
+  VerticalSectionWithHeaderRenderer(section), ReferencesRenderer {
 
   override fun renderContent(
     g: Graphics,
@@ -38,7 +37,7 @@ class ReferencesRendererImpl(private val section: SectionWithHeaderUiModel<Refer
     var adjustedRect = rect
 
     for (reference in section.content) {
-      val renderer = ReferenceRenderer.getRendererFor(reference)
+      val renderer = reference.createRenderer()
       adjustedRect = renderer.render(g, adjustedRect, editor, rectanglesModel, additionalRenderInfo)
       adjustedRect.y += deltaBetweenReferences
     }
@@ -51,7 +50,7 @@ class ReferencesRendererImpl(private val section: SectionWithHeaderUiModel<Refer
     var height = 0
 
     for (reference in section.content) {
-      height += ReferenceRenderer.getRendererFor(reference).calculateExpectedHeightInPixels(editor, additionalRenderInfo)
+      height += reference.createRenderer().calculateExpectedHeightInPixels(editor, additionalRenderInfo)
       height += deltaBetweenReferences
     }
 
@@ -63,7 +62,7 @@ class ReferencesRendererImpl(private val section: SectionWithHeaderUiModel<Refer
     var width = 0
 
     for (reference in section.content) {
-      val renderer = ReferenceRenderer.getRendererFor(reference)
+      val renderer = reference.createRenderer()
       width = max(width, renderer.calculateExpectedWidthInPixels(editor, additionalRenderInfo))
     }
 
@@ -72,7 +71,7 @@ class ReferencesRendererImpl(private val section: SectionWithHeaderUiModel<Refer
 
   override fun acceptContent(context: RectangleModelBuildContext) {
     for (reference in section.content) {
-      val renderer = ReferenceRenderer.getRendererFor(reference)
+      val renderer = reference.createRenderer()
       renderer.accept(context)
       RectanglesModelUtil.updateHeightAndWidthAndAddModel(renderer, context, reference)
       RectanglesModelUtil.addHeightDeltaTo(context.widthAndHeight, context.rect, deltaBetweenReferences)

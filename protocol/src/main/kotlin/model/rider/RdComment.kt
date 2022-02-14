@@ -40,10 +40,10 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
     field("Date", PredefinedType.dateTime)
     field("Content", RdIntelligentCommentContent.nullable).optional
 
-    field("Invariants", immutableList(RdInvariant).nullable).optional
-    field("References", immutableList(RdReference).nullable).optional
-    field("ToDos", immutableList(RdToDo).nullable).optional
-    field("Hacks", immutableList(RdHack).nullable).optional
+    field("Invariants", immutableList(RdInvariantContentSegment).nullable).optional
+    field("References", immutableList(RdReferenceContentSegment).nullable).optional
+    field("ToDos", immutableList(RdToDoContentSegment).nullable).optional
+    field("Hacks", immutableList(RdHackContentSegment).nullable).optional
   }
 
   val RdIntelligentCommentAuthor = structdef {
@@ -171,6 +171,10 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
     call("Evaluate", PredefinedType.int, PredefinedType.bool)
   }
 
+  val RdInvariantContentSegment = structdef extends RdContentSegment {
+    field("Invariant", RdInvariant)
+  }
+
   val RdReference = basestruct {
     field("RawValue", PredefinedType.string)
   }
@@ -194,6 +198,10 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
   }
 
   val RdLangWordReference = structdef extends RdReference { }
+
+  val RdReferenceContentSegment = structdef extends RdContentSegment {
+    field("Reference", RdReference)
+  }
 
   val RdHighlightedText = structdef {
     field("Text", PredefinedType.string)
@@ -254,6 +262,10 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
     field("Tickets", immutableList(RdTicket))
   }
 
+  val RdToDoContentSegment = structdef extends RdContentSegment {
+    field("ToDo", RdToDo)
+  }
+
   val RdTicket = structdef {
     field("Url", PredefinedType.string)
     field("ShortName", PredefinedType.string)
@@ -267,6 +279,10 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
 
   val RdHackWithTickets = structdef extends RdHack {
     field("Tickets", immutableList(RdTicket))
+  }
+
+  val RdHackContentSegment = structdef extends RdContentSegment {
+    field("Hack", RdHack)
   }
 
   val RdCodeHighlightingRequest = structdef {

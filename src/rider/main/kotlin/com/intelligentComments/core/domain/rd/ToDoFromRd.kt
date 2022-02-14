@@ -3,6 +3,7 @@ package com.intelligentComments.core.domain.rd
 import com.intelligentComments.core.domain.core.*
 import com.intellij.openapi.project.Project
 import com.jetbrains.rd.ide.model.RdToDo
+import com.jetbrains.rd.ide.model.RdToDoContentSegment
 import com.jetbrains.rd.ide.model.RdToDoWithTickets
 
 open class ToDoFromRd(todo: RdToDo, project: Project) : UniqueEntityImpl(), ToDo {
@@ -24,4 +25,12 @@ open class ToDoFromRd(todo: RdToDo, project: Project) : UniqueEntityImpl(), ToDo
 
 class ToDoWithTicketsFromRd(todo: RdToDoWithTickets, project: Project) : ToDoFromRd(todo, project), ToDoWithTickets {
   override val tickets: Collection<Ticket> = todo.tickets.map { TicketFromRd(it) }
+}
+
+class ToDoContentSegmentFromRd(
+  contentSegment: RdToDoContentSegment,
+  parent: Parentable?,
+  project: Project
+) : ContentSegmentFromRd(contentSegment, parent), ToDoContentSegment {
+  override val toDo: ToDo = ToDoFromRd.getFrom(contentSegment.toDo, project)
 }

@@ -1,14 +1,11 @@
 package com.intelligentComments.ui.comments.model
 
 import com.intelligentComments.core.domain.core.IntelligentComment
-import com.intelligentComments.ui.comments.model.authors.AuthorUiModel
 import com.intelligentComments.ui.comments.model.content.ContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.hacks.HackUiModel
-import com.intelligentComments.ui.comments.model.invariants.AddNewInvariantUiModel
 import com.intelligentComments.ui.comments.model.invariants.InvariantUiModel
 import com.intelligentComments.ui.comments.model.references.ReferenceUiModel
 import com.intelligentComments.ui.comments.model.sections.HeaderTextInfo
-import com.intelligentComments.ui.comments.model.sections.SectionUiModel
 import com.intelligentComments.ui.comments.model.sections.SectionWithHeaderUiModel
 import com.intelligentComments.ui.comments.model.todo.ToDoUiModel
 import com.intelligentComments.ui.comments.renderers.IntelligentCommentsRenderer
@@ -26,32 +23,27 @@ class IntelligentCommentUiModel(
 ) : CommentUiModelBase(comment, project, null!!) {
   override val renderer = IntelligentCommentsRenderer(this)
 
-  val authorsSection: SectionUiModel<AuthorUiModel>
-  override val contentSection: SectionWithHeaderUiModel<ContentSegmentUiModel>
-  val referencesSection: SectionWithHeaderUiModel<ReferenceUiModel>
-  val invariantsSection: SectionWithHeaderUiModel<InvariantUiModel>
-  val todosSection: SectionWithHeaderUiModel<ToDoUiModel>
-  val hacksSection: SectionWithHeaderUiModel<HackUiModel>
+  override val contentSection: SectionWithHeaderUiModel
+  val referencesSection: SectionWithHeaderUiModel
+  val invariantsSection: SectionWithHeaderUiModel
+  val todosSection: SectionWithHeaderUiModel
+  val hacksSection: SectionWithHeaderUiModel
 
 
   init {
-    val authors = mutableListOf<AuthorUiModel>()
     val references = mutableListOf<ReferenceUiModel>()
     val invariants = mutableListOf<InvariantUiModel>()
     val todos = mutableListOf<ToDoUiModel>()
     val hacks = mutableListOf<HackUiModel>()
     val content = IntelligentCommentContentUiModel(project, this, comment.content)
 
-    for (author in comment.allAuthors) authors.add(AuthorUiModel.getFrom(project, this, author))
-    for (reference in comment.references) references.add(ReferenceUiModel.getFrom(project, reference))
+    for (reference in comment.references) references.add(ReferenceUiModel(project, this, reference))
 
     for (invariant in comment.invariants) invariants.add(InvariantUiModel.getFrom(project, this, invariant))
-    invariants.add(AddNewInvariantUiModel(project, this))
 
     for (todo in comment.todos) todos.add(ToDoUiModel.getFrom(project, this, todo))
     for (hack in comment.hacks) hacks.add(HackUiModel.getFrom(project, this, hack))
 
-    authorsSection = SectionUiModel(project, this, authors)
     contentSection = getSectionHeaderUiModel(content.segments, AllIcons.FileTypes.Text, "Content")
     referencesSection = getSectionHeaderUiModel(references, AllIcons.FileTypes.Java, "References")
     invariantsSection = getSectionHeaderUiModel(invariants, AllIcons.Nodes.Interface, "Invariants")
@@ -60,11 +52,11 @@ class IntelligentCommentUiModel(
   }
 
 
-  private fun <T : UiInteractionModelBase> getSectionHeaderUiModel(
-    items: Collection<T>,
+  private fun getSectionHeaderUiModel(
+    items: Collection<ContentSegmentUiModel>,
     icon: Icon,
     name: String
-  ): SectionWithHeaderUiModel<T> {
+  ): SectionWithHeaderUiModel {
     val headerTextInfo = getHeaderInfo(name)
     return SectionWithHeaderUiModel(project, this, items, icon, headerTextInfo)
   }
@@ -91,7 +83,6 @@ class IntelligentCommentUiModel(
 
   override fun calculateStateHash(): Int {
     val hashCode = HashUtil.hashCode(
-      authorsSection.calculateStateHash(),
       todosSection.calculateStateHash (),
       hacksSection.calculateStateHash(),
       referencesSection.calculateStateHash(),
