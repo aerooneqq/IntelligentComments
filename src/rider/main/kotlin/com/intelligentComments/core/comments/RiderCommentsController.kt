@@ -11,11 +11,9 @@ import com.intelligentComments.ui.comments.model.*
 import com.intelligentComments.ui.comments.renderers.CollapsedCommentRenderer
 import com.intelligentComments.ui.comments.renderers.RendererWithRectangleModel
 import com.intellij.openapi.components.service
-import com.intellij.openapi.editor.CustomFoldRegion
-import com.intellij.openapi.editor.CustomFoldRegionRenderer
-import com.intellij.openapi.editor.Document
-import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.editor.*
 import com.intellij.openapi.editor.impl.EditorImpl
+import com.intellij.openapi.editor.impl.FoldingModelImpl
 import com.intellij.openapi.project.Project
 import com.intellij.psi.impl.source.tree.injected.changesHandler.range
 import com.intellij.util.application
@@ -23,6 +21,7 @@ import com.jetbrains.rd.platform.diagnostics.logAssertion
 import com.jetbrains.rd.platform.util.getLogger
 import com.jetbrains.rd.util.lifetime.Lifetime
 import com.jetbrains.rd.util.lifetime.onTermination
+import com.jetbrains.rdclient.daemon.highlighters.foldings.markAsDocComment
 import com.jetbrains.rdclient.document.getFirstDocumentId
 import com.jetbrains.rdclient.editors.FrontendTextControlHost
 import com.jetbrains.rdclient.util.idea.LifetimedProjectComponent
@@ -149,7 +148,7 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
 
     val correspondingComment = getComment(commentIdentifier, editor.document)
     if (correspondingComment != null) {
-      val foldingModel = editor.foldingModel
+      val foldingModel = editor.foldingModel as FoldingModelImpl
       val folding = commentsStorage.getFolding(commentIdentifier, editor)
       if (folding != null) {
         val startOffset = commentIdentifier.rangeMarker.startOffset
@@ -158,6 +157,13 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
           foldingModel.removeFoldRegion(folding)
           commentsStorage.removeFolding(commentIdentifier, editor)
         }
+      }
+
+      foldingModel.runBatchFoldingOperation {
+        val startOffset = commentIdentifier.rangeMarker.startOffset
+        val endOffset = commentIdentifier.rangeMarker.endOffset
+        val region = foldingModel.createFoldRegion(startOffset, endOffset, "...", null, false)
+        region?.markAsDocComment()
       }
     }
   }
@@ -198,13 +204,16 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
     val foldingModel = editor.foldingModel
     foldingModel.runBatchFoldingOperation {
       val oldFolding = foldingModel.getFoldRegion(foldStartOffset, foldEndOffset)
-      if (oldFolding != null && oldFolding is CustomFoldRegion && oldFolding.renderer is RendererWithRectangleModel) {
-        val oldFoldingRenderer = oldFolding.renderer
-        if (oldFoldingRenderer is RendererWithRectangleModel) {
-          val oldComment = oldFoldingRenderer.baseModel.comment
-          commentsStorage.removeFolding(oldComment.commentIdentifier, editor)
-          foldingModel.removeFoldRegion(oldFolding)
+      if (oldFolding != null) {
+        if (oldFolding is CustomFoldRegion && oldFolding.renderer is RendererWithRectangleModel) {
+          val oldFoldingRenderer = oldFolding.renderer
+          if (oldFoldingRenderer is RendererWithRectangleModel) {
+            val oldComment = oldFoldingRenderer.baseModel.comment
+            commentsStorage.removeFolding(oldComment.commentIdentifier, editor)
+          }
         }
+
+        foldingModel.removeFoldRegion(oldFolding)
       }
     }
   }
@@ -223,11 +232,6 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
     val foldEndOffset = document.getLineEndOffset(foldEndLine)
 
     return FoldingInfo(foldStartLine, foldEndLine, foldStartOffset, foldEndOffset)
-  }
-
-  private fun removeFoldRegion(comment: CommentBase, editor: Editor) {
-    val (_, _, foldStartOffset, foldEndOffset) = getFoldingInfo(comment, editor) ?: return
-    removeFoldRegion(editor, foldStartOffset, foldEndOffset)
   }
 
   private fun renderComment(
