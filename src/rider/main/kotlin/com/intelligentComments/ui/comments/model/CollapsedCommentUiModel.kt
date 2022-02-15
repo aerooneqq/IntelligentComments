@@ -3,6 +3,8 @@ package com.intelligentComments.ui.comments.model
 import com.intelligentComments.core.comments.docs.CommentsHoverDocManager
 import com.intelligentComments.core.domain.core.*
 import com.intelligentComments.core.domain.impl.HighlightedTextImpl
+import com.intelligentComments.core.settings.CommentsDisplayKind
+import com.intelligentComments.core.settings.RiderIntelligentCommentsSettingsProvider
 import com.intelligentComments.ui.comments.model.content.text.TextContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.highlighters.HighlighterUiModel
 import com.intelligentComments.ui.comments.model.sections.SectionUiModel
@@ -11,8 +13,11 @@ import com.intelligentComments.ui.comments.renderers.RendererWithRectangleModel
 import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.event.EditorMouseEvent
+import com.intellij.openapi.editor.impl.EditorImpl
 import com.intellij.openapi.project.Project
 import com.intellij.util.application
+import com.jetbrains.rd.platform.diagnostics.logAssertion
+import com.jetbrains.rd.platform.util.getLogger
 
 class CollapsedCommentUiModel(
   comment: CommentBase,
@@ -21,6 +26,7 @@ class CollapsedCommentUiModel(
 ) : CommentUiModelBase(comment, project, editor) {
   companion object {
     private const val placeholder = "Collapsed comment..."
+    private val logger = getLogger<CollapsedCommentUiModel>()
   }
 
   private val hoverDocsManager = project.service<CommentsHoverDocManager>()
@@ -59,5 +65,25 @@ class CollapsedCommentUiModel(
     }
 
     return false
+  }
+
+  override fun handleClick(e: EditorMouseEvent): Boolean {
+    val currentState = commentsStateManager.getExistingCommentState(editor, comment.commentIdentifier)
+    if (currentState == null) {
+      logger.logAssertion("Failed to get comment's state for ${comment.commentIdentifier}")
+      return false
+    }
+
+    if (currentState.displayKind == CommentsDisplayKind.Render) return false
+
+    controller.toggleModeChange(comment.commentIdentifier, e.editor as EditorImpl) {
+      if (it == CommentsDisplayKind.Hide) {
+        CommentsDisplayKind.Code
+      } else {
+        RiderIntelligentCommentsSettingsProvider.getInstance().commentsDisplayKind.value
+      }
+    }
+
+    return true
   }
 }

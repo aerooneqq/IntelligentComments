@@ -86,9 +86,9 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
         return null;
       }
 
-      if (xmlNode is XmlElement { Name: InheritDoc })
+      if (xmlNode.FirstChild is XmlElement { Name: InheritDoc } inheritDocElement)
       {
-        return ProcessInheritDoc();
+        return ProcessInheritDoc(inheritDocElement);
       }
 
       return ProcessRegularComment(xmlNode);
@@ -101,15 +101,29 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
   }
 
 
-  private DocComment ProcessInheritDoc()
+  [CanBeNull]
+  private DocComment ProcessInheritDoc(XmlElement inheritDocElement)
   {
-    var commentOwner = myComment.GetNextMeaningfulSibling();
-    if (commentOwner is not IXmlDocOwnerTreeNode xmlDocOwnerTreeNode) return null;
+    XmlNode xmlNode;
+    if (inheritDocElement.GetAttributeNode(CRef) is { } crefAttribute)
+    {
+      var element = XMLDocUtil.ResolveId(myPsiServices, crefAttribute.Value, myPsiModule, true);
+      xmlNode = element?.GetXMLDoc(true);
+    }
+    else
+    {
+      var commentOwner = myComment.Parent;
+      if (commentOwner is not IDeclaration { DeclaredElement: { } declaredElement }) return null;
 
-    var xmlNode = xmlDocOwnerTreeNode.GetXMLDoc(true);
+      xmlNode = declaredElement.GetXMLDoc(true);
+    }
+
+    if (xmlNode is null) return null;
+    
     return ProcessRegularComment(xmlNode);
   }
 
+  [NotNull]
   private DocComment ProcessRegularComment(XmlNode xmlNode)
   {
     var topmostContentSegments = ContentSegmentsMetadata.CreateEmpty();

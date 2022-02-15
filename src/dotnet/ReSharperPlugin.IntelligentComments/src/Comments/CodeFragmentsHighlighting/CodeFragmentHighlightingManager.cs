@@ -38,7 +38,7 @@ public class CodeFragmentHighlightingManager
   [NotNull] private readonly IPsiServices myPsiServices;
   [NotNull] private readonly IDictionary<int, CodeHighlightingRequest> myRequests;
 
-
+  
   private volatile int myCurrentId;
 
 

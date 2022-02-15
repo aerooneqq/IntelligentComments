@@ -3,6 +3,8 @@ package com.intelligentComments.core.markup
 import com.intelligentComments.core.comments.RiderCommentsController
 import com.intelligentComments.core.comments.RiderCommentsCreator
 import com.intelligentComments.core.domain.core.CommentBase
+import com.intelligentComments.core.settings.CommentsDisplayKind
+import com.intelligentComments.core.settings.RiderIntelligentCommentsSettingsProvider
 import com.intelligentComments.ui.comments.renderers.DocCommentSwitchRenderModeGutterMark
 import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.Document
@@ -51,6 +53,7 @@ class DocCommentsFoldingAdapter(private val editor: EditorImpl) : FrontendMarkup
 
 
   private val rangeMarkerCache = CommentsRangeMarkersCache()
+  private val settings = RiderIntelligentCommentsSettingsProvider.getInstance()
 
 
   override fun afterAdded(highlighter: RangeHighlighterEx) {
@@ -84,8 +87,11 @@ class DocCommentsFoldingAdapter(private val editor: EditorImpl) : FrontendMarkup
             controller.addComment(editor, comment)
 
             highlighter.putUserData(commentKey, comment)
-            highlighter.gutterIconRenderer = DocCommentSwitchRenderModeGutterMark(comment, editor, it)
             highlighter.isGreedyToRight = true
+
+            if (settings.commentsDisplayKind.value != CommentsDisplayKind.Code) {
+              highlighter.gutterIconRenderer = DocCommentSwitchRenderModeGutterMark(comment, editor, it)
+            }
           }
         }
       }

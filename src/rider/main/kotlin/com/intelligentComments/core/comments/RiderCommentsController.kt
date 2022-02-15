@@ -63,16 +63,11 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
 
   fun toggleModeChange(
     commentIdentifier: CommentIdentifier,
-    editor: Editor
+    editor: Editor,
+    transform: (CommentsDisplayKind) -> CommentsDisplayKind
   ) {
     executeWithCurrentState(commentIdentifier, editor) { commentState ->
-      val newDisplayKind = if (commentState.displayKind == CommentsDisplayKind.Hide) {
-        CommentsDisplayKind.Code
-      } else {
-        settings.commentsDisplayKind.value
-      }
-
-      changeStateAndUpdateComment(editor, commentIdentifier, newDisplayKind)
+      changeStateAndUpdateComment(editor, commentIdentifier, transform(commentState.displayKind))
     }
   }
 

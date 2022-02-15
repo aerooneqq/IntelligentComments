@@ -3,6 +3,8 @@ package com.intelligentComments.ui.comments.renderers
 import com.intelligentComments.core.comments.RiderCommentsController
 import com.intelligentComments.core.comments.states.RiderCommentsStateManager
 import com.intelligentComments.core.domain.core.CommentBase
+import com.intelligentComments.core.settings.CommentsDisplayKind
+import com.intelligentComments.core.settings.RiderIntelligentCommentsSettingsProvider
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -54,7 +56,13 @@ class DocCommentSwitchRenderModeGutterMark(
   override fun getClickAction(): AnAction = object : AnAction() {
     override fun actionPerformed(e: AnActionEvent) {
       e.dataContext.Editor?.let { editor ->
-        controller.toggleModeChange(comment.commentIdentifier, editor as EditorImpl)
+        controller.toggleModeChange(comment.commentIdentifier, editor as EditorImpl) {
+          if (it == CommentsDisplayKind.Hide || it == CommentsDisplayKind.Render) {
+            CommentsDisplayKind.Code
+          } else {
+            RiderIntelligentCommentsSettingsProvider.getInstance().commentsDisplayKind.value
+          }
+        }
       }
     }
   }
