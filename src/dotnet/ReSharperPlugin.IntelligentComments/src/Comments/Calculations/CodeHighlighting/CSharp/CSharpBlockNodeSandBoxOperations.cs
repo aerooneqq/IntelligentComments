@@ -29,7 +29,7 @@ public abstract class CSharpBlockNodeSandBoxOperationsBase : ISandBoxTreeNodeOpe
   
   public string CreateTextForSandBox()
   {
-    (var imports, var @namespace) = myContext;
+    var (imports, @namespace) = myContext;
     var sb = new StringBuilder();
 
     sb.Append("namespace ").Append(@namespace).Append("{\n");

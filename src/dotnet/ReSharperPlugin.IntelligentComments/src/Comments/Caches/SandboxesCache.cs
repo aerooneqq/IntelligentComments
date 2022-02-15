@@ -120,7 +120,7 @@ public class SandboxesCache : AbstractOpenedDocumentBasedCache<string, SandboxFi
     [NotNull] SandboxFileInfo sandboxFileInfo,
     [NotNull] CodeHighlightingRequest request)
   {
-    (_, var sandboxPsiSourceFile, var textHashesToOffset) = sandboxFileInfo;
+    var (_, sandboxPsiSourceFile, textHashesToOffset) = sandboxFileInfo;
     if (textHashesToOffset.TryGetValue(request.CalculateTextHash(), out var existingRange))
     {
       return new SandboxCodeFragmentInfo(sandboxPsiSourceFile, existingRange.StartOffset, existingRange.EndOffset);

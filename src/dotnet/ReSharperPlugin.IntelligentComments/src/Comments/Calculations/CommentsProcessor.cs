@@ -32,7 +32,7 @@ public class CommentsProcessor : IRecursiveElementProcessor
 
     switch (element)
     {
-      case IDocCommentBlock docCommentBlock:
+      case ICSharpDocCommentBlock docCommentBlock:
       {
         ProcessDocCommentBlock(docCommentBlock);
         break;

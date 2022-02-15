@@ -38,6 +38,7 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
   [NotNull] private const string CRef = "cref";
   [NotNull] private const string Href = "href";
   [NotNull] private const string LangWord = "langword";
+  [NotNull] private const string InheritDoc = "inheritdoc";
   
   [NotNull] private static readonly ILogger ourLogger = Logger.GetLogger<DocCommentBuilder>();
   [NotNull] private static readonly Func<IHighlightedText, IParamContentSegment> ourParamFactory = name => new ParamContentSegment(name);
@@ -85,14 +86,12 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
         return null;
       }
 
-      var topmostContentSegments = ContentSegmentsMetadata.CreateEmpty();
-      using (new WithPushedToStackContentSegments(myContentSegmentsStack, topmostContentSegments, ourLogger))
+      if (xmlNode is XmlElement { Name: InheritDoc })
       {
-        Visit(xmlNode);
+        return ProcessInheritDoc();
       }
-      
-      var content = new IntelligentCommentContent(topmostContentSegments.ContentSegments);
-      return new DocComment(content, myComment.GetDocumentRange());
+
+      return ProcessRegularComment(xmlNode);
     }
     catch (Exception ex)
     {
@@ -100,8 +99,29 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
       return null;
     }
   }
-    
 
+
+  private DocComment ProcessInheritDoc()
+  {
+    var commentOwner = myComment.GetNextMeaningfulSibling();
+    if (commentOwner is not IXmlDocOwnerTreeNode xmlDocOwnerTreeNode) return null;
+
+    var xmlNode = xmlDocOwnerTreeNode.GetXMLDoc(true);
+    return ProcessRegularComment(xmlNode);
+  }
+
+  private DocComment ProcessRegularComment(XmlNode xmlNode)
+  {
+    var topmostContentSegments = ContentSegmentsMetadata.CreateEmpty();
+    using (new WithPushedToStackContentSegments(myContentSegmentsStack, topmostContentSegments, ourLogger))
+    {
+      Visit(xmlNode);
+    }
+      
+    var content = new IntelligentCommentContent(topmostContentSegments.ContentSegments);
+    return new DocComment(content, myComment.GetDocumentRange());
+  }
+  
   public override void Visit(XmlNode node)
   {
     if (myVisitedNodes.Contains(node)) return;
@@ -216,7 +236,7 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
   {
     myVisitedNodes.Add(text);
 
-    (var processedText, var length) = PreprocessTextWithContext(text.Value, text);
+    var (processedText, length) = PreprocessTextWithContext(text.Value, text);
     var highlighter = myHighlightersProvider.TryGetReSharperHighlighter(myDocCommentAttributeId, length);
     var textContentSegment = new MergeableTextContentSegment(new HighlightedText(processedText, highlighter));
     ExecuteWithTopmostContentSegments(metadata => metadata.ContentSegments.Segments.Add(textContentSegment));

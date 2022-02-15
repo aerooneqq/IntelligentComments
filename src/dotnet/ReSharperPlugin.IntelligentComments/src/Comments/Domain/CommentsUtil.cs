@@ -47,7 +47,7 @@ public static class CommentsUtil
   [NotNull]
   private static RdTextRange GetRdRange([NotNull] this ICommentBase comment)
   {
-    (var startOffset, var endOffset) = comment.Range;
+    var (startOffset, endOffset) = comment.Range;
     return new RdTextRange(startOffset.Offset, endOffset.Offset);
   }
 

@@ -62,7 +62,7 @@ public class CommentsNavigationHost
     myShellLocks.QueueReadLock(myLifetime, $"{nameof(CommentsNavigationHost)}::ServingRequest", () =>
     {
       using var _ = CompilationContextCookie.GetExplicitUniversalContextIfNotSet();
-      (var rdReference, var textControlId) = request;
+      var (rdReference, textControlId) = request;
       if (myRdReferenceConverter.TryGetReference(rdReference, textControlId) is not { } reference)
       {
         LogWarnAndSetNull($"Failed to get reference for {rdReference}");
