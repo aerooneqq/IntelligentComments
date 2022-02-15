@@ -12,6 +12,7 @@ class ContentProcessingStrategyImpl(private val project: Project) : ContentProce
 
   private fun preprocessSegments(segments: MutableList<ContentSegment>) {
     val settings = RiderIntelligentCommentsSettingsProvider.getInstance()
+    removeEmptyRowsAndColsFromTables(settings, segments)
 
     groupSeeAlsoIfNeeded(settings, segments)
     groupReturnsIfNeeded(settings, segments)
@@ -90,5 +91,18 @@ class ContentProcessingStrategyImpl(private val project: Project) : ContentProce
   ) {
     if (!settings.groupRemarks.value) return
     groupSegmentsOfType<RemarksSegment>(segments) { GroupedRemarksSegments(it, segments.first().parent) }
+  }
+
+  private fun removeEmptyRowsAndColsFromTables(
+    settings: RiderIntelligentCommentsSettingsProvider,
+    segments: MutableList<ContentSegment>
+  ) {
+    if (!settings.removeEmptyRowsAndCols.value) return
+
+    visitAllContentSegments(segments) {
+      if (it is TableContentSegment) {
+        it.removeEmptyRowsAndCols()
+      }
+    }
   }
 }

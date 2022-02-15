@@ -58,6 +58,8 @@ data class ListItem(val header: ContentSegments?, val description: ContentSegmen
 interface TableContentSegment : ContentSegment {
   val header: HighlightedText?
   val rows: Collection<TableRow>
+
+  fun removeEmptyRowsAndCols()
 }
 
 interface TableRow : Parentable {
@@ -130,4 +132,14 @@ fun tryFindComment(parentable: Parentable): CommentBase? {
   }
 
   return current as? CommentBase
+}
+
+fun visitAllContentSegments(startSegments: Collection<ContentSegment>, action: (ContentSegment) -> Unit) {
+  for (segment in startSegments) {
+    if (segment is EntityWithContentSegments) {
+      visitAllContentSegments(segment.content.segments, action)
+    }
+
+    action(segment)
+  }
 }

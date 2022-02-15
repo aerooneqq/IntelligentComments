@@ -157,8 +157,42 @@ class TableSegmentFromRd(
   parent: Parentable?,
   project: Project
 ) : ContentSegmentFromRd(segment, parent), TableContentSegment {
+  private val cachedRows = segment.rows.map { TableRowFromRd(it, this, project) }.toMutableList()
+
   override val header: HighlightedText? = segment.header?.toIdeaHighlightedText(project, this)
-  override val rows: Collection<TableRow> = segment.rows.map { TableRowFromRd(it, this, project) }
+  override val rows: Collection<TableRow>
+    get() = cachedRows.toList()
+
+  override fun removeEmptyRowsAndCols() {
+    for (i in cachedRows.indices.reversed()) {
+      if (cachedRows[i].cells.all { it.contentSegments.segments.isEmpty() }) {
+        cachedRows.removeAt(i)
+      }
+    }
+
+    if (cachedRows.size == 0) return
+
+    val colsToRemove = mutableListOf<Int>()
+    for (j in cachedRows[0].cells.indices) {
+      var isEmpty = true
+      for (i in cachedRows.indices) {
+        if (!cachedRows[i].cells[j].contentSegments.segments.isEmpty()) {
+          isEmpty = false
+          break
+        }
+      }
+
+      if (isEmpty) {
+        colsToRemove.add(j)
+      }
+    }
+
+    for (idx in colsToRemove.reversed()) {
+      for (row in cachedRows) {
+        row.removeCelAt(idx)
+      }
+    }
+  }
 }
 
 class TableRowFromRd(
@@ -166,7 +200,13 @@ class TableRowFromRd(
   override val parent: Parentable?,
   project: Project
 ) : TableRow {
-  override val cells: Collection<TableCell> = row.cells.map { TableCellFromRd(it, this, project) }
+  private val cachedCells = row.cells.map { TableCellFromRd(it, this, project) }.toMutableList()
+  override val cells: List<TableCell>
+    get() = cachedCells
+
+  fun removeCelAt(idx: Int) {
+    cachedCells.removeAt(idx)
+  }
 }
 
 class TableCellFromRd(
