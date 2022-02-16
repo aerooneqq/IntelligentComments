@@ -11,6 +11,7 @@ import com.intelligentComments.core.domain.rd.MultilineCommentFromRd
 import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.RangeMarker
+import com.intellij.openapi.editor.markup.RangeHighlighter
 import com.intellij.openapi.project.Project
 import com.intellij.util.application
 import com.jetbrains.rd.ide.model.RdComment
@@ -28,13 +29,15 @@ class RiderCommentsCreator {
   fun tryCreateComment(
     rdComment: RdComment,
     editor: Editor,
-    commentRange: RangeMarker
+    commentRange: RangeMarker,
+    highlighter: RangeHighlighter
   ) : CommentBase? {
     application.assertIsDispatchThread()
+    val project = editor.project ?: return null
     return when(rdComment) {
-      is RdDocComment -> createDocComment(rdComment, editor.project ?: return null, commentRange)
-      is RdGroupOfLineComments -> createGroupOfLinesComment(rdComment, editor.project ?: return null, commentRange)
-      is RdMultilineComment -> createMultilineComments(rdComment, editor.project ?: return null, commentRange)
+      is RdDocComment -> createDocComment(rdComment, project, commentRange, highlighter)
+      is RdGroupOfLineComments -> createGroupOfLinesComment(rdComment, project, commentRange, highlighter)
+      is RdMultilineComment -> createMultilineComments(rdComment, project, commentRange, highlighter)
       else -> throw IllegalArgumentException(rdComment.javaClass.name)
     }
   }
@@ -42,10 +45,11 @@ class RiderCommentsCreator {
   fun createDocComment(
     rdDocComment: RdDocComment,
     project: Project,
-    commentRange: RangeMarker
+    commentRange: RangeMarker,
+    highlighter: RangeHighlighter
   ) : DocComment {
     application.assertIsDispatchThread()
-    val docComment = DocCommentFromRd(rdDocComment, project, commentRange)
+    val docComment = DocCommentFromRd(rdDocComment, project, highlighter, commentRange)
     val segmentsPreprocessingStrategy = project.service<ContentProcessingStrategyImpl>()
     docComment.content.content.processSegments(segmentsPreprocessingStrategy)
     return docComment
@@ -54,18 +58,20 @@ class RiderCommentsCreator {
   fun createGroupOfLinesComment(
     rdGroupOfLineComments: RdGroupOfLineComments,
     project: Project,
-    commentRange: RangeMarker
+    commentRange: RangeMarker,
+    highlighter: RangeHighlighter
   ) : GroupOfLineComments {
     application.assertIsDispatchThread()
-    return GroupOfLineCommentsFromRd(rdGroupOfLineComments, project, commentRange)
+    return GroupOfLineCommentsFromRd(rdGroupOfLineComments, project, highlighter, commentRange)
   }
 
   fun createMultilineComments(
     rdMultilineComment: RdMultilineComment,
     project: Project,
-    commentRange: RangeMarker
+    commentRange: RangeMarker,
+    highlighter: RangeHighlighter
   ) : MultilineComment {
     application.assertIsDispatchThread()
-    return MultilineCommentFromRd(rdMultilineComment, project, commentRange)
+    return MultilineCommentFromRd(rdMultilineComment, project, highlighter, commentRange)
   }
 }

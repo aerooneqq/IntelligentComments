@@ -12,14 +12,27 @@ class CommentsIdentifierStorage<T> {
 
 
   fun findNearestLeftToOffset(offset: Int): T? {
-    val pairs = idStorage.entries.map { Pair(it.key, it.key.rangeMarker.endOffset) }
-    var index = abs(pairs.map { it.second }.binarySearch(offset))
-    if (index >= pairs.size || pairs[index].second != offset) {
-      index -= 2
+    var (index, pairs) = find(offset)
+    if (index < 0 || pairs[index].second != offset) {
+      index = abs(index) - 2
     }
 
-    if (index < 0) return null
+    if (index < 0 || index >= pairs.size) return null
+    return markersStorage[pairs[index].first.rangeMarker]
+  }
 
+  private fun find(offset: Int): Pair<Int, List<Pair<CommentIdentifier, Int>>> {
+    val pairs = idStorage.entries.map { Pair(it.key, it.key.rangeMarker.endOffset) }
+    return Pair(pairs.map { it.second }.binarySearch(offset), pairs)
+  }
+
+  fun findNearestToOffset(offset: Int): T? {
+    var (index, pairs) = find(offset)
+    if (index < 0) {
+      index = abs(index) - 1
+    }
+
+    if (index < 0 || index >= pairs.size) return null
     return markersStorage[pairs[index].first.rangeMarker]
   }
 

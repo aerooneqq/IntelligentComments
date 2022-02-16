@@ -62,7 +62,7 @@ class HighlighterUiModel(
   private fun handleUsualClick(e: EditorMouseEvent): Boolean {
     val root = tryGetRootUiModel(this)
     var point = e.mouseEvent.point
-    val commentId = tryFindComment(highlighter)?.commentIdentifier
+    val commentId = tryFindComment(highlighter)?.identifier
 
     if (commentId != null && root != null) {
       val rectangle = root.renderer.rectanglesModel?.getRectanglesFor(this)?.lastOrNull()

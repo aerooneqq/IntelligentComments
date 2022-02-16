@@ -57,5 +57,5 @@ fun findNearestComment(editorImpl: EditorImpl): CommentBase? {
   val project = editorImpl.project ?: return null
 
   val controller = project.getComponent(RiderCommentsController::class.java)
-  return controller.findNearestCommentToCurrentOffset(editorImpl)
+  return controller.findNearestLeftCommentToCurrentOffset(editorImpl)
 }

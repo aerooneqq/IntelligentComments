@@ -1,15 +1,15 @@
 package com.intelligentComments.core.domain.core
 
 import com.intellij.openapi.editor.Editor
-import com.intellij.openapi.editor.RangeMarker
+import com.intellij.openapi.editor.markup.RangeHighlighter
 
 
 interface CommentBase : UniqueEntity, Parentable {
-  val rangeMarker: RangeMarker
-  val commentIdentifier: CommentIdentifier
+  val correspondingHighlighter: RangeHighlighter
+  val identifier: CommentIdentifier
 
   fun isValid(): Boolean {
-    return rangeMarker.isValid
+    return identifier.isValid
   }
 
   fun recreate(editor: Editor): CommentBase

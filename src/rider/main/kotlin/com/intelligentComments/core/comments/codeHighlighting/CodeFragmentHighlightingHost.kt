@@ -32,7 +32,7 @@ class CodeFragmentHighlightingHost(private val project: Project) : LifetimedServ
         val comment = tryFindComment(codeSegment)
         if (comment != null) {
           handleNewText(ideaText)
-          changeManager.dispatch(CodeHighlightersChange(comment.commentIdentifier, codeSegment.id, ideaText))
+          changeManager.dispatch(CodeHighlightersChange(comment.identifier, codeSegment.id, ideaText))
         }
       }
     }

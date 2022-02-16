@@ -82,7 +82,7 @@ class DocCommentsFoldingAdapter(private val editor: EditorImpl) : FrontendMarkup
             val marker = getRangeMarkerFor(highlighter.range, highlighter.document)
             marker.isGreedyToRight = true
 
-            val comment = commentsCreator.tryCreateComment(model.comment, editor, marker)
+            val comment = commentsCreator.tryCreateComment(model.comment, editor, marker, highlighter)
             comment ?: return@executeOverDocHighlighters
             controller.addComment(editor, comment)
 
@@ -120,7 +120,7 @@ class DocCommentsFoldingAdapter(private val editor: EditorImpl) : FrontendMarkup
 
         if (existingComment != null) {
           highlighter.putUserData(commentKey, null)
-          rangeMarkerCache.store(existingComment.rangeMarker)
+          rangeMarkerCache.store(existingComment.identifier.rangeMarker)
         }
       }
     }

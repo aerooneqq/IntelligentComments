@@ -25,7 +25,7 @@ class HighlightersClickHandler(project: Project) {
     }
 
     val reference = tryGetCodeEntityOrProxyReferenceFrom(highlighter)
-    clickDocHost.tryRequestHoverDoc(comment.commentIdentifier, reference ?: return, editor, contextPoint)
+    clickDocHost.tryRequestHoverDoc(comment.identifier, reference ?: return, editor, contextPoint)
   }
 
   private fun tryGetCodeEntityOrProxyReferenceFrom(highlighter: TextHighlighter): Reference? {

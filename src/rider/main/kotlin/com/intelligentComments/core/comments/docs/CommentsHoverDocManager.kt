@@ -56,7 +56,7 @@ class CommentsHoverDocManager(private val project: Project) : LifetimedService()
     comment: CommentBase,
     e: EditorMouseEvent
   ): RelativePoint {
-    val folding = commentsController.getFolding(comment.commentIdentifier, e.editor as EditorImpl)
+    val folding = commentsController.getFolding(comment.identifier, e.editor as EditorImpl)
     val textHeight = TextUtil.getTextHeight(e.editor as EditorImpl, null)
     val mousePoint = e.mouseEvent.point
 

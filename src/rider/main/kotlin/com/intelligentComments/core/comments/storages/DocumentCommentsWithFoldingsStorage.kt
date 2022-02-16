@@ -17,7 +17,7 @@ class DocumentCommentsWithFoldingsStorage : DocumentCommentsStorage() {
     editor: Editor
   ) {
     val editorFoldings = foldings.getOrCreate(editor) { TreeMap() }
-    editorFoldings[comment.commentIdentifier] = folding
+    editorFoldings[comment.identifier] = folding
   }
 
   fun getFolding(commentIdentifier: CommentIdentifier, editor: Editor): CustomFoldRegion? {

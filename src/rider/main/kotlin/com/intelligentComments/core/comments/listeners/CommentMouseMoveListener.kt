@@ -2,8 +2,10 @@ package com.intelligentComments.core.comments.listeners
 
 import com.intelligentComments.ui.comments.renderers.RendererWithRectangleModel
 import com.intellij.openapi.editor.CustomFoldRegion
+import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.event.EditorMouseEvent
 import com.intellij.openapi.editor.event.EditorMouseMotionListener
+import com.intellij.openapi.editor.ex.EditorGutterComponentEx
 import com.intellij.util.Alarm
 
 class CommentMouseMoveListener(private val foldRegion: CustomFoldRegion) : EditorMouseMotionListener {
@@ -21,6 +23,7 @@ class CommentMouseMoveListener(private val foldRegion: CustomFoldRegion) : Edito
     ++stamp
     val rectanglesModel = renderer.rectanglesModel ?: return
     val bounds = foldRegion.getBounds() ?: return
+
     if (rectanglesModel.dispatchMouseMove(e, bounds)) {
       foldRegion.repaint()
     }

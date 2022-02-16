@@ -8,11 +8,15 @@ import com.intellij.openapi.project.Project
 
 class CommentIdentifier(val moniker: String, val rangeMarker: RangeMarker) : Comparable<CommentIdentifier> {
   companion object {
-    fun create(document: Document, project: Project, rangeMarker: RangeMarker): CommentIdentifier {
-      val moniker = DocumentUtils.tryGetMoniker(document, project) ?: throw IllegalArgumentException()
+    fun create(project: Project, rangeMarker: RangeMarker): CommentIdentifier {
+      val moniker = DocumentUtils.tryGetMoniker(rangeMarker.document, project) ?: throw IllegalArgumentException()
       return CommentIdentifier(moniker, rangeMarker)
     }
   }
+
+
+  val isValid
+    get() = rangeMarker.isValid
 
   override fun hashCode(): Int {
     return HashUtil.hashCode(moniker.hashCode(), rangeMarker.startOffset, rangeMarker.endOffset)

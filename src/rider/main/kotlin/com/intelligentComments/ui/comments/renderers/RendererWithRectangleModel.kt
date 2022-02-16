@@ -13,7 +13,6 @@ import com.intelligentComments.ui.util.UpdatedGraphicsCookie
 import com.intelligentComments.ui.util.UpdatedRectCookie
 import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.*
-import com.intellij.openapi.editor.impl.EditorImpl
 import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.openapi.editor.markup.TextAttributes
 import com.intellij.openapi.util.use
@@ -32,6 +31,10 @@ abstract class RendererWithRectangleModel(
 
   private val rectangleModelHolder = RectanglesModelHolder(baseModel)
   private var myXDelta = -1
+  private var cachedGutterMark: DocCommentSwitchRenderModeGutterMark? = null
+
+  val gutterMark
+    get() = cachedGutterMark
 
   open val xDelta: Int
     get() {
@@ -39,7 +42,7 @@ abstract class RendererWithRectangleModel(
       if (currentDelta != -1) return currentDelta
 
       val document = baseModel.editor.document
-      val lineNumber = document.getLineNumber(baseModel.comment.rangeMarker.startOffset)
+      val lineNumber = document.getLineNumber(baseModel.comment.identifier.rangeMarker.startOffset)
       currentDelta = if (lineNumber < document.lineCount) {
         val lineStartOffset = document.getLineStartOffset(lineNumber)
         val contentStartOffset = CharArrayUtil.shiftForward(document.immutableCharSequence, lineStartOffset, " \t\n")
@@ -153,17 +156,24 @@ abstract class RendererWithRectangleModel(
     colorsProvider: ColorsProvider
   )
 
-  override fun calcGutterIconRenderer(region: CustomFoldRegion) = doCalculateGutterIconRenderer(region.editor as EditorImpl)
-  override fun calcGutterIconRenderer(inlay: Inlay<*>) = doCalculateGutterIconRenderer(inlay.editor as EditorImpl)
+  override fun calcGutterIconRenderer(region: CustomFoldRegion) = doCalculateGutterIconRenderer(region.editor)
+  override fun calcGutterIconRenderer(inlay: Inlay<*>) = doCalculateGutterIconRenderer(inlay.editor)
 
   private fun doCalculateGutterIconRenderer(editor: Editor): GutterIconRenderer? {
+    var gutter = cachedGutterMark
+    if (gutter != null) {
+      return gutter
+    }
+
     val project = editor.project ?: return null
-    return DocCommentSwitchRenderModeGutterMark(baseModel.comment, editor, project)
+    gutter = DocCommentSwitchRenderModeGutterMark(baseModel.comment, editor, project)
+    cachedGutterMark = gutter
+    return gutter
   }
 
   override fun calculateExpectedHeightInPixels(editor: Editor, additionalRenderInfo: RenderAdditionalInfo): Int {
     application.assertIsDispatchThread()
-     return calculateExpectedWidth(editor)
+    return calculateExpectedWidth(editor)
   }
 
   override fun calculateExpectedWidthInPixels(editor: Editor, additionalRenderInfo: RenderAdditionalInfo): Int {

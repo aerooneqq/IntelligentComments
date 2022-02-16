@@ -7,13 +7,21 @@ import com.intellij.openapi.editor.Editor
 import com.jetbrains.rd.platform.util.getLogger
 
 open class DocumentCommentsStorage {
-  private val logger = getLogger<DocumentCommentsStorage>()
+  companion object {
+    private val logger = getLogger<DocumentCommentsStorage>()
+  }
+
   private val comments = HashMap<Document, CommentsIdentifierStorage<CommentBase>>()
 
 
-  fun findNearestCommentTo(editor: Editor, offset: Int): CommentBase? {
+  fun findNearestLeftCommentTo(editor: Editor, offset: Int): CommentBase? {
     val documentComments = comments[editor.document] ?: return null
     return documentComments.findNearestLeftToOffset(offset)
+  }
+
+  fun findNearestCommentTo(editor: Editor, offset: Int): CommentBase? {
+    val documentComments = comments[editor.document] ?: return null
+    return documentComments.findNearestToOffset(offset)
   }
 
   fun recreateAllCommentsFor(editor: Editor) {
@@ -21,7 +29,7 @@ open class DocumentCommentsStorage {
     val allComments = storage.getAllKeysAndValues().map { it.second.recreate(editor) }
     storage.clear()
     for (comment in allComments) {
-      storage.add(comment.commentIdentifier, comment)
+      storage.add(comment.identifier, comment)
     }
   }
 
@@ -50,6 +58,6 @@ open class DocumentCommentsStorage {
       comments[document] ?: return
     }
 
-    documentComments.add(comment.commentIdentifier, comment)
+    documentComments.add(comment.identifier, comment)
   }
 }

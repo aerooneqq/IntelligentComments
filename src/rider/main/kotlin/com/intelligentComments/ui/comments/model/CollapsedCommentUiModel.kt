@@ -68,15 +68,15 @@ class CollapsedCommentUiModel(
   }
 
   override fun handleClick(e: EditorMouseEvent): Boolean {
-    val currentState = commentsStateManager.getExistingCommentState(editor, comment.commentIdentifier)
+    val currentState = commentsStateManager.getExistingCommentState(editor, comment.identifier)
     if (currentState == null) {
-      logger.logAssertion("Failed to get comment's state for ${comment.commentIdentifier}")
+      logger.logAssertion("Failed to get comment's state for ${comment.identifier}")
       return false
     }
 
     if (currentState.displayKind == CommentsDisplayKind.Render) return false
 
-    controller.toggleModeChange(comment.commentIdentifier, e.editor as EditorImpl) {
+    controller.toggleModeChange(comment.identifier, e.editor as EditorImpl) {
       if (it == CommentsDisplayKind.Hide) {
         CommentsDisplayKind.Code
       } else {

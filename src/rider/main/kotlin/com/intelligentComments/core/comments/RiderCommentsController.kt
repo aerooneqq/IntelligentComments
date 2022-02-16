@@ -37,8 +37,12 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
   private val settings = RiderIntelligentCommentsSettingsProvider.getInstance()
 
 
-  fun findNearestCommentToCurrentOffset(editor: Editor): CommentBase? {
-    return commentsStorage.findNearestCommentTo(editor, editor.caretModel.offset)
+  fun findNearestLeftCommentToCurrentOffset(editor: Editor): CommentBase? {
+    return commentsStorage.findNearestLeftCommentTo(editor, editor.caretModel.offset)
+  }
+
+  fun findNearestCommentToOffset(editor: Editor, offset: Int): CommentBase? {
+    return commentsStorage.findNearestCommentTo(editor, offset)
   }
 
   fun getFolding(commentIdentifier: CommentIdentifier, editor: Editor): CustomFoldRegion? {
@@ -51,13 +55,13 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
     application.assertIsDispatchThread()
 
     if (!comment.isValid()) {
-      logger.warn("Comment ${comment.commentIdentifier} is invalid")
+      logger.warn("Comment ${comment.identifier} is invalid")
       return
     }
 
     commentsStorage.addNewComment(comment, editor)
-    val state = commentsStateManager.restoreOrCreateCommentState(editor, comment.commentIdentifier)
-    updateCommentToMatchState(comment.commentIdentifier, editor.document, state)
+    val state = commentsStateManager.restoreOrCreateCommentState(editor, comment.identifier)
+    updateCommentToMatchState(comment.identifier, editor.document, state)
   }
 
   fun toggleModeChange(
@@ -76,8 +80,8 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
   ) {
     val comments = commentsStorage.getAllComments(editor)
     for (comment in comments) {
-      val actualState = commentsStateManager.changeDisplayKind(editor, comment.commentIdentifier, transform) ?: continue
-      updateCommentToMatchState(comment.commentIdentifier, editor.document, actualState)
+      val actualState = commentsStateManager.changeDisplayKind(editor, comment.identifier, transform) ?: continue
+      updateCommentToMatchState(comment.identifier, editor.document, actualState)
     }
   }
 
@@ -88,9 +92,9 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
   ) {
     application.assertIsDispatchThread()
     val comment = getComment(commentIdentifier, editor.document) ?: return
-    val commentState = commentsStateManager.getExistingCommentState(editor, comment.commentIdentifier)
+    val commentState = commentsStateManager.getExistingCommentState(editor, comment.identifier)
     if (commentState == null) {
-      logger.logAssertion("Trying to change render mode for a not registered comment ${comment.commentIdentifier}")
+      logger.logAssertion("Trying to change render mode for a not registered comment ${comment.identifier}")
       return
     }
 
@@ -110,7 +114,7 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
 
   fun displayInRenderMode(comment: CommentBase, editor: Editor, lifetime: Lifetime) {
     lifetime.executeIfAlive {
-      val id = comment.commentIdentifier
+      val id = comment.identifier
       executeWithCurrentState(id, editor) { state ->
         val cachedKind = state.displayKind
         changeStateAndUpdateComment(editor, id, CommentsDisplayKind.Render)
@@ -175,8 +179,8 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
   fun reRenderAllComments(editor: Editor) {
     commentsStorage.recreateAllCommentsFor(editor)
     for (comment in commentsStorage.getAllComments(editor)) {
-      val state = commentsStateManager.getExistingCommentState(editor, comment.commentIdentifier) ?: continue
-      doUpdateCommentToMathState(comment.commentIdentifier, editor, state)
+      val state = commentsStateManager.getExistingCommentState(editor, comment.identifier) ?: continue
+      doUpdateCommentToMathState(comment.identifier, editor, state)
     }
   }
 
@@ -193,8 +197,9 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
 
   private fun cacheCaretOffset(comment: CommentBase, state: CommentState, editor: Editor) {
     val caretOffset = editor.caretModel.offset
-    state.lastRelativeCaretOffsetWithinComment = if (comment.rangeMarker.range.contains(caretOffset)) {
-      caretOffset - comment.rangeMarker.startOffset
+    val rangeMarker = comment.identifier.rangeMarker
+    state.lastRelativeCaretOffsetWithinComment = if (rangeMarker.range.contains(caretOffset)) {
+      caretOffset - rangeMarker.startOffset
     } else {
       0
     }
@@ -209,7 +214,7 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
           val oldFoldingRenderer = oldFolding.renderer
           if (oldFoldingRenderer is RendererWithRectangleModel) {
             val oldComment = oldFoldingRenderer.baseModel.comment
-            commentsStorage.removeFolding(oldComment.commentIdentifier, editor)
+            commentsStorage.removeFolding(oldComment.identifier, editor)
           }
         }
 
@@ -221,9 +226,10 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
   data class FoldingInfo(val foldStartLine: Int, val foldEndLine: Int, val foldStartOffset: Int, val foldEndOffset: Int)
 
   private fun getFoldingInfo(comment: CommentBase, editor: Editor): FoldingInfo? {
-    if (!comment.rangeMarker.isValid) return null
-    val startOffset = comment.rangeMarker.startOffset
-    val endOffset = comment.rangeMarker.endOffset
+    val rangeMarker = comment.identifier.rangeMarker
+    if (!rangeMarker.isValid) return null
+    val startOffset = rangeMarker.startOffset
+    val endOffset = rangeMarker.endOffset
     val document = editor.document
 
     val foldStartLine = document.getLineNumber(startOffset)

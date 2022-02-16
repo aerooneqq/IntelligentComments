@@ -4,14 +4,16 @@ import com.intelligentComments.core.domain.core.CommentBase
 import com.intelligentComments.core.domain.core.IntelligentComment
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.RangeMarker
+import com.intellij.openapi.editor.markup.RangeHighlighter
 import com.intellij.openapi.project.Project
 import com.jetbrains.rd.ide.model.RdIntelligentComment
 
 class IntelligentCommentFromRd(
   private val rdComment: RdIntelligentComment,
   private val project: Project,
-  highlighter: RangeMarker
-) : CommentFromRd(rdComment, project, highlighter), IntelligentComment {
+  rangeMarker: RangeMarker,
+  highlighter: RangeHighlighter,
+) : CommentFromRd(project, rangeMarker, highlighter), IntelligentComment {
 
   override val content = createContent(project)
   override val references = createReferences()
