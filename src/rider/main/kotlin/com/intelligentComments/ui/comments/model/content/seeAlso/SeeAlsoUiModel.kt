@@ -1,7 +1,6 @@
 package com.intelligentComments.ui.comments.model.content.seeAlso
 
 import com.intelligentComments.core.domain.core.*
-import com.intelligentComments.ui.colors.Colors
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intelligentComments.ui.comments.model.content.ContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.getFirstLevelHeader
@@ -37,8 +36,6 @@ open class SeeAlsoUiModel(
   val header = HighlightedTextUiWrapper(project, this, getFirstLevelHeader(
     project,
     seeAlsoText,
-    Colors.TextInSectionsRectanglesHeadersColor,
-    Colors.SeeAlsoBackgroundColor,
     seeAlso
   ))
 

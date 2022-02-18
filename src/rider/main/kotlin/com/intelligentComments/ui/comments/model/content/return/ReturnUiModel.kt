@@ -1,7 +1,6 @@
 package com.intelligentComments.ui.comments.model.content.`return`
 
 import com.intelligentComments.core.domain.core.ReturnSegment
-import com.intelligentComments.ui.colors.Colors
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intelligentComments.ui.comments.model.content.ContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.ContentSegmentsUiModel
@@ -22,8 +21,6 @@ class ReturnUiModel(
   private val highlightedHeader = getFirstLevelHeader(
     project,
     returnSectionName,
-    Colors.TextInSectionsRectanglesHeadersColor,
-    Colors.ReturnBackgroundColor,
     ret
   )
 

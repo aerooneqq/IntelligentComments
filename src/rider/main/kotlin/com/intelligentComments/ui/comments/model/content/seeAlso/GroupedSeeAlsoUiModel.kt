@@ -2,7 +2,6 @@ package com.intelligentComments.ui.comments.model.content.seeAlso
 
 import com.intelligentComments.core.domain.core.GroupedContentSegment
 import com.intelligentComments.core.domain.core.SeeAlsoSegment
-import com.intelligentComments.ui.colors.Colors
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intelligentComments.ui.comments.model.content.GroupedContentWithTextUiModel
 import com.intelligentComments.ui.comments.model.content.getFirstLevelHeader
@@ -22,8 +21,6 @@ class GroupedSeeAlsoUiModel(
   getFirstLevelHeader(
     project,
     seeAlsoText,
-    Colors.TextInSectionsRectanglesHeadersColor,
-    Colors.SeeAlsoBackgroundColor,
     groupedSeeAlso
   )
 ) {

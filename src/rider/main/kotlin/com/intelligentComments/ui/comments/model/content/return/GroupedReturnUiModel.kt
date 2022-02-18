@@ -2,7 +2,6 @@ package com.intelligentComments.ui.comments.model.content.`return`
 
 import com.intelligentComments.core.domain.core.GroupedContentSegment
 import com.intelligentComments.core.domain.core.ReturnSegment
-import com.intelligentComments.ui.colors.Colors
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intelligentComments.ui.comments.model.content.GroupedContentUiModel
 import com.intelligentComments.ui.comments.model.content.getFirstLevelHeader
@@ -22,8 +21,6 @@ class GroupedReturnUiModel(
   getFirstLevelHeader(
     project,
     returnSectionName,
-    Colors.TextInSectionsRectanglesHeadersColor,
-    Colors.ReturnBackgroundColor,
     groupedReturns
   )
 ) {

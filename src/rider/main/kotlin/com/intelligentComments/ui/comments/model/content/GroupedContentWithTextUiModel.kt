@@ -3,7 +3,6 @@ package com.intelligentComments.ui.comments.model.content
 import com.intelligentComments.core.domain.core.*
 import com.intelligentComments.core.domain.impl.HighlightedTextImpl
 import com.intelligentComments.core.settings.RiderIntelligentCommentsSettingsProvider
-import com.intelligentComments.ui.colors.ColorName
 import com.intelligentComments.ui.colors.Colors
 import com.intelligentComments.ui.colors.ColorsProvider
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
@@ -73,24 +72,20 @@ fun getSecondLevelHeader(project: Project, text: String, parent: Parentable): Hi
   val colorsProvider = project.service<ColorsProvider>()
   val textColor = colorsProvider.getColorFor(Colors.TextInSectionsHeadersColor)
 
-  val attributes = TextAttributesImpl(false, 900f, Font.PLAIN)
-  val highlighter = TextHighlighterImpl(null,0, text.length, textColor, attributes = attributes)
+  val attributes = TextAttributesImpl(false, 600f, Font.PLAIN)
+  val highlighter = CommonsHighlightersFactory.createHighlighter(text.length, textColor, attributes)
   return HighlightedTextImpl(text, parent, listOf(highlighter))
 }
 
 fun getFirstLevelHeader(
   project: Project,
   text: String,
-  textColorKey: ColorName,
-  backgroundColorKey: ColorName,
   parent: Parentable
 ): HighlightedText {
   val colorsProvider = project.service<ColorsProvider>()
-  val textColor = colorsProvider.getColorFor(textColorKey)
-  val returnBackgroundColor = colorsProvider.getColorFor(backgroundColorKey)
-
-  val length = text.length
-  val highlighter = CommonsHighlightersFactory.createWithRoundedBackgroundRect(null, textColor, returnBackgroundColor, length)
+  val textColor = colorsProvider.getColorFor(Colors.TextInSectionsHeadersColor)
+  val attributes = TextAttributesImpl(true, 600f, Font.PLAIN)
+  val highlighter = CommonsHighlightersFactory.createHighlighter(text.length, textColor, attributes)
 
   return HighlightedTextImpl(text, parent, listOf(highlighter))
 }

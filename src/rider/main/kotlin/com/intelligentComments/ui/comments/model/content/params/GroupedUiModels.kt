@@ -1,18 +1,16 @@
 package com.intelligentComments.ui.comments.model.content.params
 
-import com.intelligentComments.core.domain.core.*
+import com.intelligentComments.core.domain.core.ContentProcessingStrategy
+import com.intelligentComments.core.domain.core.ContentSegments
+import com.intelligentComments.core.domain.core.Parentable
 import com.intelligentComments.core.domain.impl.GroupedParamSegments
 import com.intelligentComments.core.domain.impl.GroupedTypeParamSegments
-import com.intelligentComments.core.domain.impl.HighlightedTextImpl
-import com.intelligentComments.ui.colors.ColorName
-import com.intelligentComments.ui.colors.Colors
-import com.intelligentComments.ui.colors.ColorsProvider
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intelligentComments.ui.comments.model.content.GroupedContentUiModel
+import com.intelligentComments.ui.comments.model.content.getFirstLevelHeader
 import com.intelligentComments.ui.comments.renderers.segments.GroupedParamsRenderer
 import com.intelligentComments.ui.comments.renderers.segments.GroupedTypeParamsRenderer
 import com.intelligentComments.ui.core.Renderer
-import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 
 class GroupedParamsUiModel(
@@ -32,7 +30,7 @@ class GroupedParamsUiModel(
       }
     }
   },
-  getGroupedParamsSectionHeader(project, groupedParamsSectionName, Colors.ParamsSectionHeaderBackgroundColor, model)
+  getFirstLevelHeader(project, groupedParamsSectionName, model)
 ) {
   override fun createRenderer(): Renderer {
     return GroupedParamsRenderer(this)
@@ -41,23 +39,6 @@ class GroupedParamsUiModel(
 
 private const val groupedParamsSectionName = "Parameters"
 private const val groupedTypeParamsSectionName = "Type parameters"
-
-private fun getGroupedParamsSectionHeader(
-  project: Project,
-  sectionName: String,
-  backgroundColor: ColorName,
-  parent: Parentable
-): HighlightedText {
-  val colorsProvider = project.service<ColorsProvider>()
-  val textColor = colorsProvider.getColorFor(Colors.TextInSectionsRectanglesHeadersColor)
-  val paramBackgroundColor = colorsProvider.getColorFor(backgroundColor)
-
-  val highlighter = CommonsHighlightersFactory.createWithRoundedBackgroundRect(
-    null, textColor, paramBackgroundColor, sectionName.length
-  )
-
-  return HighlightedTextImpl(sectionName, parent, listOf(highlighter))
-}
 
 class GroupedTypeParamsUiModel(
   project: Project,
@@ -76,7 +57,7 @@ class GroupedTypeParamsUiModel(
       }
     }
   },
-  getGroupedParamsSectionHeader(project, groupedTypeParamsSectionName, Colors.TypeParamNameBackgroundColor, model)
+  getFirstLevelHeader(project, groupedTypeParamsSectionName, model)
 ) {
   override fun createRenderer(): Renderer {
     return GroupedTypeParamsRenderer(this)

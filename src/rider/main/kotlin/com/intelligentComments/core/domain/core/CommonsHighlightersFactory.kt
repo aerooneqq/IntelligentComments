@@ -42,4 +42,18 @@ object CommonsHighlightersFactory {
       attributes = TextAttributesImpl.defaultAttributes
     )
   }
+
+  fun createHighlighter(
+    length: Int,
+    color: Color,
+    attributes: TextAttributes = TextAttributesImpl.defaultAttributes
+  ): TextHighlighter {
+    return TextHighlighterImpl(
+      null,
+      0,
+      length,
+      color,
+      attributes = attributes
+    )
+  }
 }

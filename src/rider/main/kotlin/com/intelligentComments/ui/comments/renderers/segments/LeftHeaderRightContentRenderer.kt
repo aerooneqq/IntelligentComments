@@ -5,7 +5,6 @@ import com.intelligentComments.ui.comments.model.ModelWithContent
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intelligentComments.ui.comments.model.content.ContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.ContentSegmentsUiModel
-import com.intelligentComments.ui.comments.model.content.GroupedUiModel
 import com.intelligentComments.ui.comments.model.highlighters.HighlightedTextUiWrapper
 import com.intelligentComments.ui.core.RectangleModelBuildContext
 import com.intelligentComments.ui.core.RectanglesModel
@@ -218,8 +217,7 @@ open class LeftTextHeaderAndRightContentRenderer : LeftHeaderRightContentRendere
   }
 
   private fun shouldShiftUpHeader(): Boolean {
-    val parent = header.parent?.parent?.parent
-    return !(parent is GroupedUiModel && parent.createRenderer() is LeftHeaderRightContentRenderer)
+    return false
   }
 
   override fun accept(context: RectangleModelBuildContext) {
