@@ -10,7 +10,6 @@ import com.intellij.icons.AllIcons
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.components.service
-import com.intellij.openapi.components.services
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.impl.EditorImpl
 import com.intellij.openapi.editor.markup.GutterIconRenderer
@@ -22,7 +21,7 @@ import com.jetbrains.rider.util.idea.Editor
 import javax.swing.Icon
 
 class DocCommentSwitchRenderModeGutterMark(
-  private val comment: CommentBase,
+  val comment: CommentBase,
   private val editor: Editor,
   project: Project
 ) : GutterIconRenderer(), MergableGutterIconRenderer {
@@ -76,6 +75,10 @@ class DocCommentSwitchRenderModeGutterMark(
               RiderIntelligentCommentsSettingsProvider.getInstance().commentsDisplayKind.value
             }
           }
+        }
+
+        application.invokeLater {
+          guttersManager.makeGutterVisibleImmediately(comment, editor)
         }
       }
     }

@@ -17,14 +17,13 @@ import com.intellij.util.ui.update.MergingUpdateQueue
 import com.intellij.util.ui.update.Update
 
 class CommentsGutterMarksManager(project: Project) {
-  private val commentsGuttersVisibility = HashMap<CommentBase, Boolean>()
   private val settings = RiderIntelligentCommentsSettingsProvider.getInstance()
   private val controller = project.getComponent(RiderCommentsController::class.java)
   private val statesManager = project.getComponent(RiderCommentsStateManager::class.java)
-  private val visibleGutters = HashSet<DocCommentSwitchRenderModeGutterMark>()
+  private val visibleCommentsGutters = HashSet<CommentBase>()
 
   private val name = "${GutterMarkVisibilityMouseMoveListener::class.java.name}::queue"
-  private val queue = MergingUpdateQueue(name, 300, true, null)
+  private val queue = MergingUpdateQueue(name, 100, true, null)
 
 
   fun queueUpdate(editor: Editor, offset: Int) {
@@ -35,16 +34,15 @@ class CommentsGutterMarksManager(project: Project) {
     })
   }
 
-  fun getGutterVisibilityFor(comment: CommentBase) = commentsGuttersVisibility[comment] ?: false
+  fun getGutterVisibilityFor(comment: CommentBase) = visibleCommentsGutters.contains(comment)
 
   private fun updateGutterFor(editor: Editor, offset: Int) {
     if (settings.commentsDisplayKind.value == CommentsDisplayKind.Code) return
 
-    val foldings = (editor.foldingModel as FoldingModelImpl).getRegionsOverlappingWith(offset, offset)
-    val renderer = foldings.filterIsInstance<CustomFoldRegion>().firstOrNull()?.renderer as? RendererWithRectangleModel
+    val renderer = tryFindRendererFor(editor, offset)
     if (renderer == null) {
       val comment = controller.findNearestCommentToOffset(editor, offset)
-      clearVisibleGutters()
+      clearVisibleGutters(editor)
 
       if (comment != null) {
         val offsetLine = editor.document.getLineNumber(offset)
@@ -55,9 +53,7 @@ class CommentsGutterMarksManager(project: Project) {
         if (range != null && (range.contains(offset) || offsetLine == commentStartLine)) {
           val state = statesManager.getExistingCommentState(editor, comment.identifier)
           if (state != null && !state.isInRenderMode) {
-            commentsGuttersVisibility[comment] = true
-            gutterMark.isVisible = true
-            visibleGutters.add(gutterMark)
+            makeGutterVisible(gutterMark)
           }
         }
       }
@@ -66,24 +62,44 @@ class CommentsGutterMarksManager(project: Project) {
       return
     }
 
-    commentsGuttersVisibility[renderer.baseModel.comment] = true
     val gutter = renderer.gutterMark
     if (gutter != null) {
-      clearVisibleGutters()
-      gutter.isVisible = true
-      visibleGutters.add(gutter)
+      clearVisibleGutters(editor)
+      makeGutterVisible(gutter)
     }
 
     updateEditorGutter(editor)
   }
 
-  private fun clearVisibleGutters() {
-    visibleGutters.forEach { it.isVisible = false }
-    visibleGutters.clear()
+  private fun tryFindRendererFor(editor: Editor, offset: Int): RendererWithRectangleModel? {
+    val foldings = (editor.foldingModel as FoldingModelImpl).getRegionsOverlappingWith(offset, offset)
+    return foldings.filterIsInstance<CustomFoldRegion>().firstOrNull()?.renderer as? RendererWithRectangleModel
   }
 
-  fun makeGutterVisibleImmediately(gutter: DocCommentSwitchRenderModeGutterMark, editor: Editor) {
+  private fun tryFindGutterFor(comment: CommentBase, editor: Editor): DocCommentSwitchRenderModeGutterMark? {
+    val rangeMarker = comment.identifier.rangeMarker
+    val offset = (rangeMarker.startOffset + rangeMarker.endOffset) / 2
+    val renderer = tryFindRendererFor(editor, offset)
+    if (renderer != null) {
+      return renderer.gutterMark
+    }
+
+    return comment.correspondingHighlighter.gutterIconRenderer as? DocCommentSwitchRenderModeGutterMark
+  }
+
+  private fun makeGutterVisible(gutter: DocCommentSwitchRenderModeGutterMark) {
     gutter.isVisible = true
+    visibleCommentsGutters.add(gutter.comment)
+  }
+
+  private fun clearVisibleGutters(editor: Editor) {
+    visibleCommentsGutters.forEach { tryFindGutterFor(it, editor)?.isVisible = false }
+    visibleCommentsGutters.clear()
+  }
+
+  fun makeGutterVisibleImmediately(comment: CommentBase, editor: Editor) {
+    val gutterMark = tryFindGutterFor(comment, editor) ?: return
+    makeGutterVisible(gutterMark)
     updateEditorGutter(editor)
   }
 
