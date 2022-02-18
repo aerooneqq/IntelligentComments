@@ -14,7 +14,10 @@ class HideOrRenderCommentsInEditorAction : AnAction() {
     e.project?.let {
       val controller = it.getComponent(RiderCommentsController::class.java)
       val settings = RiderIntelligentCommentsSettingsProvider.getInstance()
-      if (settings.commentsDisplayKind.value == CommentsDisplayKind.Code) return@let
+      if (settings.commentsDisplayKind.value == CommentsDisplayKind.Code) {
+        controller.collapseOrExpandAllFoldingsInCodeMode(editor)
+        return@let
+      }
 
       controller.changeStatesForAllCommentsInEditor(editor) { kind ->
         if (kind == CommentsDisplayKind.Render) {

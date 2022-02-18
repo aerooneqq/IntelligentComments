@@ -49,7 +49,7 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
   }
 
   fun getFolding(commentIdentifier: CommentIdentifier, editor: Editor): CustomFoldRegion? {
-    return commentsStorage.getFolding(commentIdentifier, editor)
+    return commentsStorage.getFolding(commentIdentifier, editor) as? CustomFoldRegion
   }
 
   fun getAllFoldingsFor(editor: Editor) = commentsStorage.getAllFoldingsFor(editor)
@@ -102,6 +102,15 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
     }
 
     action(commentState)
+  }
+
+  fun collapseOrExpandAllFoldingsInCodeMode(editor: Editor) {
+    val foldingModel = editor.foldingModel as FoldingModelImpl
+    foldingModel.runBatchFoldingOperation {
+      for (folding in commentsStorage.getAllFoldingsFor(editor)) {
+        folding.isExpanded = !folding.isExpanded
+      }
+    }
   }
 
   private fun changeStateAndUpdateComment(
@@ -167,10 +176,12 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
       }
 
       foldingModel.runBatchFoldingOperation {
-        val startOffset = commentIdentifier.rangeMarker.startOffset
-        val endOffset = commentIdentifier.rangeMarker.endOffset
-        val region = foldingModel.createFoldRegion(startOffset, endOffset, "...", null, false)
+        val rangeMarker = commentIdentifier.rangeMarker
+        val region = foldingModel.createFoldRegion(rangeMarker.startOffset, rangeMarker.endOffset, "...", null, false)
         region?.markAsDocComment()
+        if (region != null) {
+          commentsStorage.addFoldingToComment(correspondingComment, region, editor)
+        }
       }
     }
   }
