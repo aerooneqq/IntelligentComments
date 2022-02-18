@@ -9,8 +9,9 @@ import com.jetbrains.rdclient.document.FrontendDocumentHost
 import com.jetbrains.rdclient.document.getFirstDocumentId
 import com.jetbrains.rdclient.util.idea.toIdeaRange
 import com.jetbrains.rdclient.util.idea.toRdTextRange
+import java.io.File
 
-open class ReferenceFromRd(private val reference: RdReference) : UniqueEntityImpl(), Reference {
+open class ReferenceFromRd(reference: RdReference) : UniqueEntityImpl(), Reference {
   companion object {
     fun getFrom(project: Project, reference: RdReference): ReferenceFromRd {
       return when (reference) {
@@ -18,6 +19,7 @@ open class ReferenceFromRd(private val reference: RdReference) : UniqueEntityImp
         is RdXmlDocCodeEntityReference -> XmlDocCodeEntityReferenceFromRd(reference)
         is RdSandboxCodeEntityReference -> SandboxCodeEntityReferenceFromRd(project, reference)
         is RdHttpLinkReference -> HttpLinkReferenceFromRd(reference)
+        is RdFileReference -> FileReferenceFromRd(reference)
         else -> throw IllegalArgumentException(reference.toString())
       }
     }
@@ -74,4 +76,8 @@ class ReferenceContentSegmentFromRd(
   project: Project
 ) : ContentSegmentFromRd(contentSegment, parent), ReferenceContentSegment {
   override val reference: Reference = ReferenceFromRd.getFrom(project, contentSegment.reference)
+}
+
+class FileReferenceFromRd(reference: RdFileReference) : ExternalReferenceFromRd(reference), FileReference {
+  override val file: File = File(reference.path)
 }

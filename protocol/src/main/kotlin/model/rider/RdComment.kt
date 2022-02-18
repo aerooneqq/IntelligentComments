@@ -102,12 +102,9 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
     field("Text", RdHighlightedText)
   }
 
-  val RdImageSegment = basestruct extends RdContentSegment {
+  val RdImageSegment = structdef extends RdContentSegment {
+    field("SourceReference", RdReference)
     field("Description", RdHighlightedText)
-  }
-
-  val RdFileBasedImageSegment = structdef extends RdImageSegment {
-    field("Path", PredefinedType.string)
   }
 
   val ListKind = enum {
@@ -180,6 +177,10 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
   val RdExternalReference = basestruct extends RdReference { }
 
   val RdHttpLinkReference = structdef extends RdExternalReference { }
+
+  val RdFileReference = structdef extends RdExternalReference {
+    field("Path", PredefinedType.string)
+  }
 
   val RdCodeEntityReference = basestruct extends RdReference { }
 

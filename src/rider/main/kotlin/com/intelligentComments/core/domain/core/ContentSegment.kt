@@ -1,7 +1,6 @@
 package com.intelligentComments.core.domain.core
 
 import com.jetbrains.rd.util.reactive.Property
-import java.awt.Image
 
 interface IntelligentCommentContent : EntityWithContentSegments
 
@@ -38,7 +37,7 @@ interface TextContentSegment : ContentSegment {
 }
 
 interface ImageContentSegment : ContentSegment {
-  val image: Image
+  val sourceReference: Reference
   val description: HighlightedText?
 }
 

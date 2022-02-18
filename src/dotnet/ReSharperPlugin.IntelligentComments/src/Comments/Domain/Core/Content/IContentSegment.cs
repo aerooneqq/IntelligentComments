@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using JetBrains.Rider.Model;
+using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Domain.Core.Content;
 
@@ -41,7 +42,7 @@ public interface IValueSegment : IEntityWithContentSegments
 
 public interface IListSegment : IContentSegment
 {
-  public ListKind ListKind { get; }
+  ListKind ListKind { get; }
   [NotNull] IList<IListItem> Items { get; }
 }
 
@@ -53,19 +54,19 @@ public interface IListItem
 
 public interface ITableSegment : IContentSegment
 {
-  [CanBeNull] public IHighlightedText Header { get; }
-  [NotNull] public IList<ITableSegmentRow> Rows { get; }
+  [CanBeNull] IHighlightedText Header { get; }
+  [NotNull] IList<ITableSegmentRow> Rows { get; }
 }
 
 public interface ITableSegmentRow
 {
-  [NotNull] public IList<ITableCell> Cells { get; }
+  [NotNull] IList<ITableCell> Cells { get; }
 }
 
 public interface ITableCell
 {
-  [NotNull] public IContentSegments Content { get; }
-  [CanBeNull] public TableCellProperties Properties { get; }
+  [NotNull] IContentSegments Content { get; }
+  [CanBeNull] TableCellProperties Properties { get; }
 }
 
 public record TableCellProperties(
@@ -79,6 +80,12 @@ public record TableCellProperties(
 
 public interface ICodeSegment : IContentSegment
 {
-  public int HighlightingRequestId { get; }
+  int HighlightingRequestId { get; }
   [NotNull] IHighlightedText Code { get; }
+}
+
+public interface IImageContentSegment : IContentSegment
+{
+  [NotNull] IReference SourceReference { get; }
+  [NotNull] IHighlightedText Description { get; }
 }

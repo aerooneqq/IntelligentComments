@@ -17,6 +17,7 @@ class ImageContentSegmentUiModel(
   val description: HighlightedTextUiWrapper?
   val imageHolder = ImageHolder(imageSegment)
 
+
   init {
     val description = imageSegment.description
     this.description = if (description != null) {

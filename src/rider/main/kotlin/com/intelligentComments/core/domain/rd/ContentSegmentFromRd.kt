@@ -11,9 +11,6 @@ import com.jetbrains.rd.platform.diagnostics.logAssertion
 import com.jetbrains.rd.platform.util.getLogger
 import com.jetbrains.rd.util.reactive.Property
 import com.jetbrains.rd.util.string.printToString
-import java.awt.Image
-import java.io.File
-import javax.imageio.ImageIO
 
 open class ContentSegmentFromRd(
   private val contentSegment: RdContentSegment,
@@ -24,7 +21,7 @@ open class ContentSegmentFromRd(
       return when (contentSegment) {
         is RdTextSegment -> TextContentSegmentFromRd(contentSegment, parent, project)
         is RdListSegment -> ListSegmentFromRd(contentSegment, parent, project)
-        is RdFileBasedImageSegment -> FileBasedImageSegmentFromRd(contentSegment, parent, project)
+        is RdImageSegment -> FileBasedImageSegmentFromRd(contentSegment, parent, project)
         is RdTableSegment -> TableSegmentFromRd(contentSegment, parent, project)
         is RdParagraphSegment -> ParagraphContentSegmentFromRd(contentSegment, parent, project)
         is RdTypeParam -> TypeParamFromRd(contentSegment, parent, project)
@@ -132,24 +129,12 @@ class ListSegmentFromRd(
 }
 
 class FileBasedImageSegmentFromRd(
-  private val segment: RdFileBasedImageSegment,
+  segment: RdImageSegment,
   parent: Parentable?,
   project: Project
 ) : ContentSegmentFromRd(segment, parent), ImageContentSegment {
   override val description: HighlightedText = segment.description.toIdeaHighlightedText(project, this)
-
-  private var cachedImage: Image? = null
-  override val image: Image
-    get() {
-      val loadedImage = cachedImage
-      if (loadedImage == null) {
-        val image = ImageIO.read(File(segment.path))
-        cachedImage = image
-        return image
-      }
-
-      return loadedImage
-    }
+  override val sourceReference: Reference = ReferenceFromRd.getFrom(project, segment.sourceReference)
 }
 
 class TableSegmentFromRd(

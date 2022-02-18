@@ -39,7 +39,9 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
   [NotNull] private const string Href = "href";
   [NotNull] private const string LangWord = "langword";
   [NotNull] private const string InheritDoc = "inheritdoc";
-  
+  [NotNull] private const string ImageTagName = "image";
+  [NotNull] private const string ImageSourceAttrName = "source";
+
   [NotNull] private static readonly ILogger ourLogger = Logger.GetLogger<DocCommentBuilder>();
   [NotNull] private static readonly Func<IHighlightedText, IParamContentSegment> ourParamFactory = name => new ParamContentSegment(name);
   [NotNull] private static readonly Func<IHighlightedText, ITypeParamSegment> ourTypeParamFactory = name => new TypeParamSegment(name);
@@ -57,6 +59,7 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
   [NotNull] private readonly string myParamAttributeId;
   [NotNull] private readonly string myTypeParamAttributeId;
   [NotNull] private readonly ReferencesCache myReferencesCache;
+  [NotNull] private readonly IDictionary<string, Action<XmlElement>> myAdditionalHandlers;
 
 
   public DocCommentBuilder([NotNull] IDocCommentBlock comment)
@@ -74,8 +77,16 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
     myDocCommentAttributeId = DefaultLanguageAttributeIds.DOC_COMMENT;
     myParamAttributeId = DefaultLanguageAttributeIds.PARAMETER;
     myTypeParamAttributeId = DefaultLanguageAttributeIds.TYPE_PARAMETER;
+    
+    myAdditionalHandlers = new Dictionary<string, Action<XmlElement>>();
+    RegisterAdditionalHandlers();
   }
-  
+
+
+  private void RegisterAdditionalHandlers()
+  {
+    myAdditionalHandlers.Add(ImageTagName, VisitImage);
+  }
 
   public IDocComment Build()
   {
@@ -140,6 +151,32 @@ public class DocCommentBuilder : XmlDocVisitor, IDocCommentBuilder
   {
     if (myVisitedNodes.Contains(node)) return;
     base.Visit(node);
+  }
+
+  public override void VisitUnknownTag(XmlElement element)
+  {
+    myVisitedNodes.Add(element);
+    if (myAdditionalHandlers.TryGetValue(element.LocalName, out var handler))
+    {
+      handler?.Invoke(element);
+    }
+  }
+
+  public virtual void VisitImage(XmlElement element)
+  {
+    if (element.GetAttributeNode(ImageSourceAttrName) is not { } sourceAttribute) return;
+    var path = FileSystemPath.TryParse(sourceAttribute.Value);
+    if (path == FileSystemPath.Empty) return;
+
+    var reference = new FileReference(path);
+    IHighlightedText description = HighlightedText.EmptyText;
+    if (ElementHasOneTextChild(element, out var text))
+    {
+      description = new HighlightedText(text);
+    }
+    
+    var imageSegment = new ImageContentSegment(reference, description);
+    ExecuteWithTopmostContentSegments(metadata => metadata.ContentSegments.Segments.Add(imageSegment));
   }
 
   public override void VisitSummary(XmlElement element)
