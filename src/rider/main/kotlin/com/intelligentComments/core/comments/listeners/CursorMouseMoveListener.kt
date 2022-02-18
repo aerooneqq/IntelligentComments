@@ -1,28 +1,19 @@
 package com.intelligentComments.core.comments.listeners
 
-import com.intelligentComments.core.comments.RiderCommentsController
-import com.intellij.openapi.components.service
+import com.intelligentComments.ui.comments.renderers.RendererWithRectangleModel
+import com.intellij.openapi.editor.CustomFoldRegion
 import com.intellij.openapi.editor.event.EditorMouseEvent
 import com.intellij.openapi.editor.event.EditorMouseMotionListener
-import com.intellij.openapi.project.Project
+import com.intellij.openapi.editor.impl.FoldingModelImpl
 import com.intellij.util.ui.UIUtil
 import java.awt.Cursor
 
-class CursorMouseMoveListener(project: Project) : EditorMouseMotionListener {
-  private val commentsController = project.getComponent(RiderCommentsController::class.java)
-
+class CursorMouseMoveListener : EditorMouseMotionListener {
   override fun mouseMoved(e: EditorMouseEvent) {
-    val allFoldings = commentsController.getAllFoldingsFor(e.editor)
+    val foldings = (e.editor.foldingModel as FoldingModelImpl).getRegionsOverlappingWith(e.offset, e.offset)
+    val mouseOverComment = foldings.any { it is CustomFoldRegion && it.renderer is RendererWithRectangleModel }
+    val cursor = if (mouseOverComment) Cursor.HAND_CURSOR else Cursor.TEXT_CURSOR
 
-    val point = e.mouseEvent.point
-    for (folding in allFoldings) {
-      val bounds = folding.getBounds()
-      if (bounds != null && bounds.contains(point)) {
-        UIUtil.setCursor(e.editor.contentComponent, Cursor.getPredefinedCursor(Cursor.HAND_CURSOR))
-        return
-      }
-    }
-
-    UIUtil.setCursor(e.editor.contentComponent, Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR))
+    UIUtil.setCursor(e.editor.contentComponent, Cursor.getPredefinedCursor(cursor))
   }
 }

@@ -15,7 +15,7 @@ class CommentsEditorsListenersManager(private val project: Project) {
     foldRegion.editor.addEditorMouseMotionListener(CommentMouseMoveListener(foldRegion))
 
     if (!processedEditors.contains(foldRegion.editor)) {
-      foldRegion.editor.addEditorMouseMotionListener(CursorMouseMoveListener(project))
+      foldRegion.editor.addEditorMouseMotionListener(CursorMouseMoveListener())
       foldRegion.editor.addEditorMouseMotionListener(GutterMarkVisibilityMouseMoveListener(project))
       processedEditors.add(foldRegion.editor)
     }
