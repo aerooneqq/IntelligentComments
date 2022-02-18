@@ -11,6 +11,8 @@ class CommentMouseListener(private val foldRegion: CustomFoldRegion) : EditorMou
 
 
   override fun mouseClicked(event: EditorMouseEvent) {
+    if (!CommentsListenersUtil.canProcessEvent(event)) return
+
     val rectanglesModel = renderer.rectanglesModel ?: return
     val bounds = foldRegion.getBounds() ?: return
 

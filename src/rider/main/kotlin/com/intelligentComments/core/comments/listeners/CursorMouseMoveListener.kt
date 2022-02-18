@@ -10,6 +10,8 @@ import java.awt.Cursor
 
 class CursorMouseMoveListener : EditorMouseMotionListener {
   override fun mouseMoved(e: EditorMouseEvent) {
+    if (!CommentsListenersUtil.canProcessEvent(e)) return
+
     val foldings = (e.editor.foldingModel as FoldingModelImpl).getRegionsOverlappingWith(e.offset, e.offset)
     val mouseOverComment = foldings.any { it is CustomFoldRegion && it.renderer is RendererWithRectangleModel }
     val cursor = if (mouseOverComment) Cursor.HAND_CURSOR else Cursor.TEXT_CURSOR

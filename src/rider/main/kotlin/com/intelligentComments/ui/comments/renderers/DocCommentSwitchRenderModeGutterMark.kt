@@ -53,13 +53,6 @@ class DocCommentSwitchRenderModeGutterMark(
   }
 
   override fun getAlignment(): Alignment = Alignment.LEFT
-  override fun getTooltipText(): String =
-    when (commentsStatesManager.isInRenderMode(editor, comment.identifier)) {
-      true -> "Go to edit mode"
-      false -> "Go to render mode"
-      else -> ""
-    }
-
   override fun getWeight(): Int {
     return Int.MAX_VALUE
   }

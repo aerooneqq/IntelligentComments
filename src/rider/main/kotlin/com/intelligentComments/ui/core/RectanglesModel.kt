@@ -125,10 +125,7 @@ class RectanglesModel {
   fun dispatchMouseClick(event: EditorMouseEvent, inlayBounds: Rectangle): Boolean {
     application.assertIsDispatchThread()
     var anyUiChange = false
-    val point = event.mouseEvent.point.apply {
-      x -= inlayBounds.x
-      y -= inlayBounds.y
-    }
+    val point = adjustPoint(event, inlayBounds)
 
     executeWithRectangleAndModels { rect, model ->
       if (rect.contains(point)) {
