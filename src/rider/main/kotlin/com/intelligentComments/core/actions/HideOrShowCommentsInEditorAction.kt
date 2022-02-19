@@ -8,7 +8,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.editor.impl.EditorImpl
 import com.jetbrains.rider.util.idea.Editor
 
-class HideOrRenderCommentsInEditorAction : AnAction() {
+class HideOrShowCommentsInEditorAction : AnAction() {
   override fun actionPerformed(e: AnActionEvent) {
     val editor = e.dataContext.Editor as? EditorImpl ?: return
     e.project?.let {

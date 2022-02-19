@@ -105,6 +105,9 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
   }
 
   fun collapseOrExpandAllFoldingsInCodeMode(editor: Editor) {
+    val displayKind = RiderIntelligentCommentsSettingsProvider.getInstance().commentsDisplayKind.value
+    if (displayKind != CommentsDisplayKind.Code) return
+
     val foldingModel = editor.foldingModel as FoldingModelImpl
     foldingModel.runBatchFoldingOperation {
       for (folding in commentsStorage.getAllFoldingsFor(editor)) {
@@ -153,13 +156,13 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
 
   private fun doUpdateCommentToMathState(commentIdentifier: CommentIdentifier, editor: Editor, state: CommentState) {
     if (!state.isInRenderMode) {
-      toggleEditMode(commentIdentifier, editor, state)
+      toggleEditMode(commentIdentifier, editor)
     } else {
       toggleRenderMode(commentIdentifier, editor, state)
     }
   }
 
-  private fun toggleEditMode(commentIdentifier: CommentIdentifier, editor: Editor, state: CommentState) {
+  private fun toggleEditMode(commentIdentifier: CommentIdentifier, editor: Editor) {
     application.assertIsDispatchThread()
 
     val correspondingComment = getComment(commentIdentifier, editor.document)
@@ -167,8 +170,6 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
       val foldingModel = editor.foldingModel as FoldingModelImpl
       val folding = commentsStorage.getFolding(commentIdentifier, editor)
       if (folding != null) {
-        val startOffset = commentIdentifier.rangeMarker.startOffset
-        editor.caretModel.moveToOffset(state.lastRelativeCaretOffsetWithinComment + startOffset)
         foldingModel.runBatchFoldingOperation {
           foldingModel.removeFoldRegion(folding)
           commentsStorage.removeFolding(commentIdentifier, editor)

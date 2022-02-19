@@ -32,7 +32,7 @@
   </extensions>
 
   <actions>
-    <action class="com.intelligentComments.core.actions.HideOrRenderCommentsInEditorAction"
+    <action class="com.intelligentComments.core.actions.HideOrShowCommentsInEditorAction"
             id="HideOrRenderComments">
       <keyboard-shortcut first-keystroke="control shift A" keymap="$default" />
       <keyboard-shortcut first-keystroke="control shift A" keymap="Mac OS X" />
