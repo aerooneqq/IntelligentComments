@@ -24,6 +24,8 @@ public interface IHighlightersProvider
   [NotNull] TextHighlighter GetSeeLangWordHighlighter(int startOffset, int endOffset);
 
   [NotNull] TextHighlighter GetExceptionHighlighter(int startOffset, int endOffset);
+
+  [NotNull] TextHighlighter GetErrorHighlighter(int startOffset, int endOffset);
   
   
   [NotNull]
@@ -42,6 +44,7 @@ public interface IHighlightersProvider
 
 public abstract class HighlightersProvider : IHighlightersProvider
 {
+  [NotNull] private const string ErrorElementKey = "comment.error";
   [NotNull] private const string CElementKey = "doc.comment.c.element.text";
   [NotNull] private const string ParamRefKey = "doc.comment.param.ref.text";
   [NotNull] private const string SeeAlsoLinkKey = "see.also.link.text";
@@ -73,6 +76,8 @@ public abstract class HighlightersProvider : IHighlightersProvider
   public TextHighlighter GetSeeHttpLinkHighlighter(int startOffset, int endOffset) => Get(SeeHttpKey, startOffset, endOffset);
   public TextHighlighter GetSeeLangWordHighlighter(int startOffset, int endOffset) => Get(SeeLangWord, startOffset, endOffset);
   public TextHighlighter GetExceptionHighlighter(int startOffset, int endOffset) => Get(Exception, startOffset, endOffset);
+
+  public TextHighlighter GetErrorHighlighter(int startOffset, int endOffset) => Get(ErrorElementKey, startOffset, endOffset);
   
   private static TextHighlighter Get(string key, int startOffset, int endOffset) =>
     new(key, startOffset, endOffset, TextHighlighterAttributes.DefaultAttributes, TextAnimation: UnderlineTextAnimation.Instance);

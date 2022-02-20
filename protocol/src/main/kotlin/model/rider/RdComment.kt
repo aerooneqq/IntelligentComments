@@ -19,20 +19,24 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
   }
 
   val RdComment = basestruct {
-    field("CommentIdentifier", PredefinedType.int)
-    field("Range", SolutionModel.RdTextRange)
+    field("Range", RdTextRange)
   }
 
-  val RdGroupOfLineComments = structdef extends RdComment {
+  val RdCommentWithOneTextSegment = basestruct extends RdComment {
     field("Text", RdTextSegment)
+  }
+
+  val RdInvalidComment = structdef extends RdCommentWithOneTextSegment {
+  }
+
+  val RdGroupOfLineComments = structdef extends RdCommentWithOneTextSegment {
   }
 
   val RdDocComment = structdef extends RdComment {
     field("Content", RdIntelligentCommentContent.nullable).optional
   }
 
-  val RdMultilineComment = structdef extends RdComment {
-    field("Text", RdTextSegment)
+  val RdMultilineComment = structdef extends RdCommentWithOneTextSegment {
   }
 
   val RdIntelligentComment = structdef extends RdComment {

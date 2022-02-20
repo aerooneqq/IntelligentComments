@@ -42,13 +42,21 @@ class DocCommentFromRd(
   }
 }
 
+abstract class CommentWithOneTextSegmentFromRd(
+  rdComment: RdCommentWithOneTextSegment,
+  project: Project,
+  rangeMarker: RangeMarker,
+  highlighter: RangeHighlighter,
+  ) : CommentFromRd(project, rangeMarker, highlighter), CommentWithOneTextSegment {
+  final override val text = ContentSegmentFromRd.getFrom(rdComment.text, this, project) as TextContentSegment
+}
+
 class GroupOfLineCommentsFromRd(
   private val rdComment: RdGroupOfLineComments,
   private val project: Project,
   highlighter: RangeHighlighter,
   rangeMarker: RangeMarker
-) : CommentFromRd(project, rangeMarker, highlighter), GroupOfLineComments {
-  override val text = ContentSegmentFromRd.getFrom(rdComment.text, this, project) as TextContentSegment
+) : CommentWithOneTextSegmentFromRd(rdComment, project, rangeMarker, highlighter), GroupOfLineComments {
 
   override fun recreate(editor: Editor): CommentBase {
     val creator = project.service<RiderCommentsCreator>()
@@ -61,11 +69,21 @@ class MultilineCommentFromRd(
   private val project: Project,
   highlighter: RangeHighlighter,
   rangeMarker: RangeMarker
-) : CommentFromRd(project, rangeMarker, highlighter), MultilineComment {
-  override val text: TextContentSegment = ContentSegmentFromRd.getFrom(rdMultilineComment.text, this, project) as TextContentSegment
-
+) : CommentWithOneTextSegmentFromRd(rdMultilineComment, project, rangeMarker, highlighter), MultilineComment {
   override fun recreate(editor: Editor): CommentBase {
     val creator = project.service<RiderCommentsCreator>()
     return creator.createMultilineComments(rdMultilineComment, project, identifier.rangeMarker, correspondingHighlighter)
+  }
+}
+
+class InvalidCommentFromRd(
+  private val rdInvalidComment: RdInvalidComment,
+  private val project: Project,
+  highlighter: RangeHighlighter,
+  rangeMarker: RangeMarker
+) : CommentWithOneTextSegmentFromRd(rdInvalidComment, project, rangeMarker, highlighter), InvalidComment {
+  override fun recreate(editor: Editor): CommentBase {
+    val creator = project.service<RiderCommentsCreator>()
+    return creator.createInvalidComment(rdInvalidComment, project, identifier.rangeMarker, correspondingHighlighter)
   }
 }

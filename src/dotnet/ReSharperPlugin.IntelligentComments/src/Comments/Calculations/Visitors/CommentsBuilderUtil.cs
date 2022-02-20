@@ -123,7 +123,7 @@ internal static class CommentsBuilderUtil
   {
     if (!IsInheritDocComment(commentBlock)) return commentBlock;
 
-    if (commentBlock.GetXML(null) is not XmlElement inheritDocElement) return null;
+    if (commentBlock.GetXML(null) is not { FirstChild: XmlElement inheritDocElement }) return null;
 
     IDeclaredElement element;
     if (inheritDocElement.GetAttributeNode(CRef) is { } crefAttribute)
@@ -131,30 +131,40 @@ internal static class CommentsBuilderUtil
       var services = commentBlock.GetPsiServices();
       var module = commentBlock.GetPsiModule();
       element = XMLDocUtil.ResolveId(services, crefAttribute.Value, module, true);
-    }
-    else
-    {
-      var commentOwner = commentBlock.Parent;
-      if (commentOwner is not IDeclaration { DeclaredElement: { } declaredElement }) return null;
-      element = declaredElement;
+
+      return element is { } ? TryGetDocCommentBlockFor(element) : null;
     }
 
-    if (element is null) return null;
+    var commentOwner = commentBlock.Parent;
+    if (commentOwner is not IDeclaration { DeclaredElement: { } declaredElement }) return null;
+    element = declaredElement;
+
     if (element is not IOverridableMember overridableMember) return commentBlock;
 
     foreach (var superMember in overridableMember.GetImmediateSuperMembers())
     {
       var member = superMember.Member;
-      foreach (var declaration in member.GetDeclarations())
+      if (TryGetDocCommentBlockFor(member) is { } docCommentBlock)
       {
-        if (SharedImplUtil.GetDocCommentBlockNode(declaration) is { } docCommentBlock &&
-            !IsInheritDocComment(docCommentBlock))
-        {
-          return docCommentBlock;
-        }
+        return docCommentBlock;
       }
     }
 
     return commentBlock;
+  }
+
+  [CanBeNull]
+  internal static IDocCommentBlock TryGetDocCommentBlockFor([NotNull] IDeclaredElement declaredElement)
+  {
+    foreach (var declaration in declaredElement.GetDeclarations())
+    {
+      if (SharedImplUtil.GetDocCommentBlockNode(declaration) is { } docCommentBlock &&
+          !IsInheritDocComment(docCommentBlock))
+      {
+        return docCommentBlock;
+      }
+    }
+
+    return null;
   }
 }

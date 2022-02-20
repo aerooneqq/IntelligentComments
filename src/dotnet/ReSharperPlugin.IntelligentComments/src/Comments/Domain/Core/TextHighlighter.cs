@@ -14,7 +14,7 @@ public enum FontStyle
 
 public record TextHighlighterAttributes(FontStyle FontStyle, bool Underline, double FontWeight)
 {
-  [NotNull] public static TextHighlighterAttributes DefaultAttributes { get; } = new(FontStyle.Italic, false, 400);
+  [NotNull] public static TextHighlighterAttributes DefaultAttributes { get; } = new(FontStyle.Regular, false, 400);
 }
 
 public record TextHighlighter(

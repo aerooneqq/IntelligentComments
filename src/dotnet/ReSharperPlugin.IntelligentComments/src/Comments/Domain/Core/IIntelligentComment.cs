@@ -1,13 +1,18 @@
 using JetBrains.Annotations;
 using JetBrains.DocumentModel;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.Content;
+using System.Collections.Generic;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 
 public interface ICommentBase
 {
   DocumentRange Range { get; }
-  int CreateIdentifier();
+}
+
+public interface IInvalidComment : ICommentBase
+{
+  [NotNull] ITextContentSegment ErrorsSummary { get; }
 }
 
 public interface IGroupOfLineComments : ICommentBase

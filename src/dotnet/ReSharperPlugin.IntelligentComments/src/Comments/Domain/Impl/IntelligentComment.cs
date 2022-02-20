@@ -1,16 +1,16 @@
 using JetBrains.DocumentModel;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.Content;
+using System.Collections.Generic;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Domain.Impl;
 
 public record CommentBase(DocumentRange Range) : ICommentBase
 {
-  public int CreateIdentifier()
-  {
-    return Range.TextRange.GetHashCode();
-  }
 }
+
+
+public record InvalidComment(ITextContentSegment ErrorsSummary, DocumentRange Range) : CommentBase(Range), IInvalidComment;
 
 public record DocCommentBase(IIntelligentCommentContent Content, DocumentRange Range) : CommentBase(Range);
 

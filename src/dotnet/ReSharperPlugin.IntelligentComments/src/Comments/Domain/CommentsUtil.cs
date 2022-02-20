@@ -23,22 +23,27 @@ public static class CommentsUtil
       IDocComment docComment => ToRdComment(docComment),
       IGroupOfLineComments groupOfLineComments => groupOfLineComments.ToRdComment(),
       IMultilineComment multilineComment => multilineComment.ToRdComment(),
+      IInvalidComment invalidComment => invalidComment.ToRdComment(),
       _ => throw new ArgumentOutOfRangeException(commentBase.GetType().Name)
     };
+  }
+  
+  [NotNull]
+  private static RdInvalidComment ToRdComment([NotNull] this IInvalidComment invalidComment)
+  {
+    return new RdInvalidComment(invalidComment.ErrorsSummary.ToRdTextSegment(), invalidComment.GetRdRange());
   }
 
   [NotNull]
   private static RdMultilineComment ToRdComment([NotNull] this IMultilineComment multilineComment)
   {
-    var id = multilineComment.CreateIdentifier();
-    return new RdMultilineComment(multilineComment.Text.ToRdTextSegment(), id, multilineComment.GetRdRange());
+    return new RdMultilineComment(multilineComment.Text.ToRdTextSegment(), multilineComment.GetRdRange());
   }
 
   [NotNull]
   private static RdGroupOfLineComments ToRdComment([NotNull] this IGroupOfLineComments groupOfLineComments)
   {
-    var id = groupOfLineComments.CreateIdentifier();
-    return new RdGroupOfLineComments(groupOfLineComments.Text.ToRdTextSegment(), id, groupOfLineComments.GetRdRange());
+    return new RdGroupOfLineComments(groupOfLineComments.Text.ToRdTextSegment(), groupOfLineComments.GetRdRange());
   }
   
   [NotNull]
@@ -52,16 +57,14 @@ public static class CommentsUtil
   private static RdComment ToRdComment([NotNull] this IDocComment docComment)
   {
     RdIntelligentCommentContent content = docComment.Content.ToRdContent();
-    return new RdDocComment(content, docComment.CreateIdentifier(), docComment.GetRdRange());
+    return new RdDocComment(content, docComment.GetRdRange());
   }
 
   [NotNull]
   private static RdComment ToRdComment([NotNull] this IIntelligentComment comment)
   {
     RdIntelligentCommentContent content = comment.Content.ToRdContent();
-    var identifier = comment.CreateIdentifier();
-
-    return new RdIntelligentComment(DateTime.Now, content, null, null, null, null, identifier, comment.GetRdRange());
+    return new RdIntelligentComment(DateTime.Now, content, null, null, null, null, comment.GetRdRange());
   }
 
   [NotNull]
