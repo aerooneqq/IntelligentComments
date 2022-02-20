@@ -9,6 +9,7 @@ using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.ReSharper.Psi.Xml.Tree;
 using JetBrains.Util;
+using System.Linq;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Visitors;
 
@@ -74,8 +75,9 @@ public class CommentProblemsCollector : IRecursiveElementProcessor<CommentProble
     var isInheritDoc = CommentsBuilderUtil.IsInheritDocComment(myInitialComment);
     if (isInheritDoc && myHighlightings.Count > 0)
     {
+      var firstErrorMessage = myHighlightings.First().Highlighting.ToolTip;
       myHighlightings.Clear();
-      AddError(myInitialComment.GetDocumentRange(), "Some errors");
+      AddError(myInitialComment.GetDocumentRange(), $"Parent comment contains errors, the first one: \"{firstErrorMessage}\"");
     }
 
     return myHighlightings;

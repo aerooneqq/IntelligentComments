@@ -3,6 +3,7 @@ using System.Text;
 using System.Xml;
 using JetBrains.Annotations;
 using JetBrains.ReSharper.Psi;
+using JetBrains.ReSharper.Psi.ExtensionsAPI;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.ReSharper.Psi.Util;
 
@@ -139,15 +140,21 @@ internal static class CommentsBuilderUtil
     }
 
     if (element is null) return null;
+    if (element is not IOverridableMember overridableMember) return commentBlock;
 
-    foreach (var declaration in element.GetDeclarations())
+    foreach (var superMember in overridableMember.GetImmediateSuperMembers())
     {
-      if (declaration.FirstChild is IDocCommentBlock docCommentBlock)
+      var member = superMember.Member;
+      foreach (var declaration in member.GetDeclarations())
       {
-        return docCommentBlock;
+        if (SharedImplUtil.GetDocCommentBlockNode(declaration) is { } docCommentBlock &&
+            !IsInheritDocComment(docCommentBlock))
+        {
+          return docCommentBlock;
+        }
       }
     }
 
-    return null;
+    return commentBlock;
   }
 }

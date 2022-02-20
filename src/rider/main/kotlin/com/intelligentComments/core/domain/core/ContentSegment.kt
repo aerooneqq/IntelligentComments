@@ -12,7 +12,9 @@ interface Parentable {
   val parent: Parentable?
 }
 
-interface ContentSegment : Parentable, UniqueEntity
+interface ContentSegment : Parentable, UniqueEntity {
+  fun isValid() = true
+}
 
 interface ContentSegments : Parentable {
   val segments: Collection<ContentSegment>
@@ -140,5 +142,23 @@ fun visitAllContentSegments(startSegments: Collection<ContentSegment>, action: (
     }
 
     action(segment)
+  }
+}
+
+fun removeContentSegmentsRecursively(
+  segments: MutableList<ContentSegment>,
+  criteria: (ContentSegment) -> Boolean
+) {
+  for (index in segments.indices.reversed()) {
+    if (criteria(segments[index])) {
+      segments.removeAt(index)
+    }
+  }
+
+  for (segment in segments) {
+    if (segment is EntityWithContentSegments) {
+      val innerSegments = segment.content.segments as? MutableList<ContentSegment> ?: continue
+      removeContentSegmentsRecursively(innerSegments, criteria)
+    }
   }
 }

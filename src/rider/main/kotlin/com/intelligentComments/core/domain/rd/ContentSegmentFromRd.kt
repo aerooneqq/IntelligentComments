@@ -135,6 +135,13 @@ class FileBasedImageSegmentFromRd(
 ) : ContentSegmentFromRd(segment, parent), ImageContentSegment {
   override val description: HighlightedText = segment.description.toIdeaHighlightedText(project, this)
   override val sourceReference: Reference = ReferenceFromRd.getFrom(project, segment.sourceReference)
+
+
+  override fun isValid(): Boolean {
+    sourceReference as FileReference
+    val file = sourceReference.file ?: return false
+    return file.exists()
+  }
 }
 
 class TableSegmentFromRd(

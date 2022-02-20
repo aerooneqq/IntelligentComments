@@ -2,9 +2,8 @@ package com.intelligentComments.core.domain.impl
 
 import com.intelligentComments.core.domain.core.*
 import com.intelligentComments.core.settings.RiderIntelligentCommentsSettingsProvider
-import com.intellij.openapi.project.Project
 
-class ContentProcessingStrategyImpl(private val project: Project) : ContentProcessingStrategy {
+class ContentProcessingStrategyImpl : ContentProcessingStrategy {
 
   override fun process(segments: MutableList<ContentSegment>) {
     return preprocessSegments(segments)
@@ -13,6 +12,7 @@ class ContentProcessingStrategyImpl(private val project: Project) : ContentProce
   private fun preprocessSegments(segments: MutableList<ContentSegment>) {
     val settings = RiderIntelligentCommentsSettingsProvider.getInstance()
     removeEmptyRowsAndColsFromTables(settings, segments)
+    removeInvalidSegments(segments)
 
     groupSeeAlsoIfNeeded(settings, segments)
     groupReturnsIfNeeded(settings, segments)
@@ -104,5 +104,9 @@ class ContentProcessingStrategyImpl(private val project: Project) : ContentProce
         it.removeEmptyRowsAndCols()
       }
     }
+  }
+
+  private fun removeInvalidSegments(segments: MutableList<ContentSegment>) {
+    removeContentSegmentsRecursively(segments) { !it.isValid() }
   }
 }
