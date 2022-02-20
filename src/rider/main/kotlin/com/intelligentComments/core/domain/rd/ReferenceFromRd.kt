@@ -79,5 +79,5 @@ class ReferenceContentSegmentFromRd(
 }
 
 class FileReferenceFromRd(reference: RdFileReference) : ExternalReferenceFromRd(reference), FileReference {
-  override val file: File = File(reference.path)
+  override val file: File? = try { File(reference.path) } catch (e: Exception) { null }
 }

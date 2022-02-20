@@ -36,7 +36,7 @@ class ImageHolder(private val imageContentSegment: ImageContentSegment) {
       if (loadedImage == null) {
         try {
           val reference = imageContentSegment.sourceReference as? FileReference ?: return null
-          val image = ImageIO.read(reference.file)
+          val image = ImageIO.read(reference.file ?: return null)
           cachedImage = image
           return image
         } catch (e: Exception) {

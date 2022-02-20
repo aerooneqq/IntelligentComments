@@ -1,17 +1,11 @@
 using System;
-using System.Collections.Generic;
 using JetBrains.Annotations;
-using JetBrains.ProjectModel;
-using JetBrains.ReSharper.Daemon.CSharp.CodeFoldings;
 using JetBrains.ReSharper.Feature.Services.Daemon;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.ReSharper.Psi.Files;
-using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Util;
-using JetBrains.Util.Logging;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations;
-using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Daemon;
 
@@ -29,17 +23,26 @@ public class CommentDaemonProcess : IDaemonStageProcess
   public void Execute(Action<DaemonStageResult> committer)
   {
     var files = DaemonProcess.SourceFile.GetPsiFiles<CSharpLanguage>();
-    var result = new List<HighlightingInfo>();
+    var result = new LocalList<HighlightingInfo>();
+    
     foreach (var file in files)
     {
       var commentsCollector = new CommentsProcessor();
       file.ProcessThisAndDescendants(commentsCollector);
-      foreach (var comment in commentsCollector.Comments)
+      foreach (var commentProcessingResult in commentsCollector.Comments)
       {
-        result.Add(new HighlightingInfo(comment.Range, CommentFoldingHighlighting.Create(comment)));
+        if (commentProcessingResult.CommentBase is { } comment)
+        {
+          result.Add(new HighlightingInfo(comment.Range, CommentFoldingHighlighting.Create(comment)));
+        }
+
+        if (commentProcessingResult.Errors.Count > 0)
+        {
+          result.AddRange(commentProcessingResult.Errors);
+        }
       }
     }
 
-    committer(new DaemonStageResult(result));
+    committer(new DaemonStageResult(result.ResultingList().AsIReadOnlyList()));
   }
 }

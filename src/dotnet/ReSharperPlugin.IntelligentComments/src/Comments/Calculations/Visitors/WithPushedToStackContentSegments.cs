@@ -4,7 +4,7 @@ using JetBrains.Annotations;
 using JetBrains.Util;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.Content;
 
-namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Builder;
+namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Visitors;
 
 internal record struct ContentSegmentsMetadata(
   [CanBeNull] IEntityWithContentSegments CorrespondingEntity,

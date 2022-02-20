@@ -11,7 +11,7 @@ using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.Content;
 
-namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Builder;
+namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Visitors;
 
 public record struct GroupOfLineCommentsBuildResult(
   [NotNull] IGroupOfLineComments GroupOfLineComments,

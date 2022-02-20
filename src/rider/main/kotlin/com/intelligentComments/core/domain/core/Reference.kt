@@ -29,7 +29,7 @@ interface HttpLinkReference : ExternalReference {
 }
 
 interface FileReference : ExternalReference {
-  val file: File
+  val file: File?
 }
 
 interface ReferenceContentSegment : ContentSegment {
