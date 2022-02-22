@@ -2,7 +2,6 @@ using System;
 using JetBrains.Annotations;
 using JetBrains.ReSharper.Feature.Services.Daemon;
 using JetBrains.ReSharper.Psi;
-using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.ReSharper.Psi.Files;
 using JetBrains.Util;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations;
@@ -22,14 +21,14 @@ public class CommentDaemonProcess : IDaemonStageProcess
   
   public void Execute(Action<DaemonStageResult> committer)
   {
-    var files = DaemonProcess.SourceFile.GetPsiFiles<CSharpLanguage>();
+    var files = DaemonProcess.SourceFile.GetPsiFiles<KnownLanguage>();
     var result = new LocalList<HighlightingInfo>();
     
     foreach (var file in files)
     {
-      var commentsCollector = new CommentsProcessor();
-      file.ProcessThisAndDescendants(commentsCollector);
-      foreach (var commentProcessingResult in commentsCollector.Comments)
+      var collector = LanguageManager.Instance.GetService<ICommentsProcessor>(file.Language);
+      file.ProcessThisAndDescendants(collector);
+      foreach (var commentProcessingResult in collector.ProcessedComments)
       {
         if (commentProcessingResult.CommentBase is { } comment)
         {

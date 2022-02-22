@@ -11,7 +11,7 @@ public interface ISandBoxTreeNodeOperations
   [CanBeNull] ITreeNode TryFind([NotNull] IFile file, TreeTextRange range);
 }
 
-public record struct SandBoxNodeCreationResult([NotNull] ITreeNode Node, ISandBoxTreeNodeOperations NodeOperations);
+public record struct SandBoxNodeCreationResult([NotNull] ITreeNode Node, [NotNull] ISandBoxTreeNodeOperations NodeOperations);
 
 public interface ICodeHighlightingRequestBuilder
 {

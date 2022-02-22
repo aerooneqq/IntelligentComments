@@ -16,7 +16,7 @@ public interface IMultilineCommentsBuilder
   [NotNull] IMultilineComment Build();
 }
 
-public class MultilineCommentsBuilder : IMultilineCommentsBuilder
+public abstract class MultilineCommentBuilderBase : IMultilineCommentsBuilder
 {
   [NotNull] private const string Star = "*";
   
@@ -25,7 +25,7 @@ public class MultilineCommentsBuilder : IMultilineCommentsBuilder
   [NotNull] private readonly string myCommentAttributeId;
 
 
-  public MultilineCommentsBuilder([NotNull] ICSharpCommentNode commentNode)
+  protected MultilineCommentBuilderBase([NotNull] ICSharpCommentNode commentNode)
   {
     myCommentNode = commentNode;
     myHighlightersProvider = LanguageManager.Instance.GetService<IHighlightersProvider>(commentNode.Language);

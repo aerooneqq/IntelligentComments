@@ -35,17 +35,21 @@ public class CommentError : IHighlighting
   public DocumentRange CalculateRange() => myRange;
 }
 
-public class CommentProblemsCollector : IRecursiveElementProcessor<CommentProblemsCollector.Context>
-{
-  public record Context(IDocCommentBlock AdjustedComment);
+public record Context(IDocCommentBlock AdjustedComment);
 
+public interface ICommentProblemsCollector : IRecursiveElementProcessor<Context>
+{
+}
+
+public abstract class CommentProblemsCollectorBase : ICommentProblemsCollector
+{
   [NotNull] private readonly IDocCommentBlock myInitialComment;
   [NotNull] private readonly List<HighlightingInfo> myHighlightings;
   [NotNull] private readonly IDictionary<string,Action<IXmlTag>> myTagsProcessors;
   
   
   // ReSharper disable once NotNullMemberIsNotInitialized
-  public CommentProblemsCollector([NotNull] IDocCommentBlock comment)
+  protected CommentProblemsCollectorBase([NotNull] IDocCommentBlock comment)
   {
     myInitialComment = comment;
     myHighlightings = new List<HighlightingInfo>();

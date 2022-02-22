@@ -31,7 +31,7 @@ public interface IDocCommentBuilder
   [CanBeNull] IDocComment Build();
 }
 
-public class DocCommentBuilder : XmlDocVisitorWitCustomElements, IDocCommentBuilder
+public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, IDocCommentBuilder
 {
   [NotNull] private const string Name = "name";
   [NotNull] private const string UndefinedParam = "???";
@@ -39,7 +39,7 @@ public class DocCommentBuilder : XmlDocVisitorWitCustomElements, IDocCommentBuil
   [NotNull] private const string LangWord = "langword";
   
 
-  [NotNull] private static readonly ILogger ourLogger = Logger.GetLogger<DocCommentBuilder>();
+  [NotNull] private static readonly ILogger ourLogger = Logger.GetLogger<DocCommentBuilderBase>();
   [NotNull] private static readonly Func<IHighlightedText, IParamContentSegment> ourParamFactory = name => new ParamContentSegment(name);
   [NotNull] private static readonly Func<IHighlightedText, ITypeParamSegment> ourTypeParamFactory = name => new TypeParamSegment(name);
   
@@ -56,7 +56,7 @@ public class DocCommentBuilder : XmlDocVisitorWitCustomElements, IDocCommentBuil
   [NotNull] private readonly ReferencesCache myReferencesCache;
 
 
-  public DocCommentBuilder([NotNull] IDocCommentBlock comment) : base(comment)
+  protected DocCommentBuilderBase([NotNull] IDocCommentBlock comment) : base(comment)
   {
     myResolveContext = new ResolveContextImpl(comment.GetSolution(), comment.GetSourceFile()?.Document);
     myLanguageManager = LanguageManager.Instance;

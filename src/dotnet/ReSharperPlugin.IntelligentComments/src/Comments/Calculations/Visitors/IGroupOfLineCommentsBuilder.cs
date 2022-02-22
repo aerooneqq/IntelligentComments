@@ -22,15 +22,15 @@ public interface IGroupOfLineCommentsBuilder
   GroupOfLineCommentsBuildResult? Build();
 }
 
-public class GroupOfLineCommentsBuilder : IGroupOfLineCommentsBuilder
+public abstract class GroupOfLineCommentsBuilderBase : IGroupOfLineCommentsBuilder
 {
   [NotNull] private readonly ICSharpCommentNode myStartCommentNode;
   [NotNull] private readonly string myCommentAttributeId;
 
   [CanBeNull] private readonly IHighlightersProvider myHighlightersProvider;
 
-  
-  public GroupOfLineCommentsBuilder([NotNull] ICSharpCommentNode startCommentNode)
+
+  protected GroupOfLineCommentsBuilderBase([NotNull] ICSharpCommentNode startCommentNode)
   {
     myStartCommentNode = startCommentNode;
     myHighlightersProvider = LanguageManager.Instance.GetService<IHighlightersProvider>(startCommentNode.Language);
