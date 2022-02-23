@@ -45,6 +45,8 @@ class CommentsGutterMarksManager(project: Project) {
       clearVisibleGutters(editor)
 
       if (comment != null) {
+        if (!comment.isValid()) return
+
         val offsetLine = editor.document.getLineNumber(offset)
         val commentStartLine = editor.document.getLineNumber(comment.identifier.rangeMarker.startOffset)
         val range = comment.identifier.rangeMarker.range

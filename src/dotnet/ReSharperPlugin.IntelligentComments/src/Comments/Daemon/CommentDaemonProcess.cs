@@ -1,5 +1,6 @@
 using System;
 using JetBrains.Annotations;
+using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Feature.Services.Daemon;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Files;
@@ -26,18 +27,18 @@ public class CommentDaemonProcess : IDaemonStageProcess
     
     foreach (var file in files)
     {
-      var collector = LanguageManager.Instance.GetService<ICommentsProcessor>(file.Language);
+      var collector = CommentsProcessorsProvider.CreateProcessorFor(file.Language);
       file.ProcessThisAndDescendants(collector);
-      foreach (var commentProcessingResult in collector.ProcessedComments)
+      foreach (var (highlightingInfos, commentBase) in collector.ProcessedComments)
       {
-        if (commentProcessingResult.CommentBase is { } comment)
+        if (commentBase is { } comment)
         {
           result.Add(new HighlightingInfo(comment.Range, CommentFoldingHighlighting.Create(comment)));
         }
 
-        if (commentProcessingResult.Errors.Count > 0)
+        if (highlightingInfos.Count > 0)
         {
-          result.AddRange(commentProcessingResult.Errors);
+          result.AddRange(highlightingInfos);
         }
       }
     }
