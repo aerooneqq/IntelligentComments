@@ -26,3 +26,4 @@ interface CommentWithOneTextSegment : CommentBase {
 interface GroupOfLineComments : CommentWithOneTextSegment
 interface MultilineComment : CommentWithOneTextSegment
 interface InvalidComment : CommentWithOneTextSegment
+interface DisablingInspectionsComment : CommentWithOneTextSegment

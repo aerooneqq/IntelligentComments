@@ -26,6 +26,13 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
     field("Text", RdTextSegment)
   }
 
+  val RdDisableInspectionComment = structdef extends RdCommentWithOneTextSegment {
+  }
+  
+  val RdToDoComment = structdef extends RdComment {
+    field("ToDo", RdToDoContentSegment)
+  }
+
   val RdInvalidComment = structdef extends RdCommentWithOneTextSegment {
   }
 

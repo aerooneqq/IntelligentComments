@@ -87,3 +87,15 @@ class InvalidCommentFromRd(
     return creator.createInvalidComment(rdInvalidComment, project, identifier.rangeMarker, correspondingHighlighter)
   }
 }
+
+class DisablingCommentFromRd(
+  private val rdDisableInspectionComment: RdDisableInspectionComment,
+  private val project: Project,
+  highlighter: RangeHighlighter,
+  rangeMarker: RangeMarker
+) : CommentWithOneTextSegmentFromRd(rdDisableInspectionComment, project, rangeMarker, highlighter), DisablingInspectionsComment {
+  override fun recreate(editor: Editor): CommentBase {
+    val creator = project.service<RiderCommentsCreator>()
+    return creator.createDisablingInspectionsComment(rdDisableInspectionComment, project, identifier.rangeMarker, correspondingHighlighter)
+  }
+}

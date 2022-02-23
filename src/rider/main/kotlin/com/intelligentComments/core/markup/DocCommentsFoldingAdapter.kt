@@ -82,7 +82,7 @@ class DocCommentsFoldingAdapter(private val editor: EditorImpl) : FrontendMarkup
             val marker = getRangeMarkerFor(highlighter.range, highlighter.document)
             marker.isGreedyToRight = true
 
-            val comment = commentsCreator.createComment(model.comment, editor, marker, highlighter)
+            val comment = commentsCreator.createComment(model.comment, marker, highlighter)
             controller.addComment(editor, comment)
 
             highlighter.putUserData(commentKey, comment)

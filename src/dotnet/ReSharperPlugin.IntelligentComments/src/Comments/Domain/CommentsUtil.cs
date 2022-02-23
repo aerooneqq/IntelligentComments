@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
+using JetBrains.DocumentModel;
 using JetBrains.RdBackend.Common.Features.Documents;
 using JetBrains.RdBackend.Common.Features.Util.Ranges;
 using JetBrains.Rider.Model;
@@ -24,8 +25,16 @@ public static class CommentsUtil
       IGroupOfLineComments groupOfLineComments => groupOfLineComments.ToRdComment(),
       IMultilineComment multilineComment => multilineComment.ToRdComment(),
       IInvalidComment invalidComment => invalidComment.ToRdComment(),
+      IDisablingComment disablingComment => disablingComment.ToRdComment(),
       _ => throw new ArgumentOutOfRangeException(commentBase.GetType().Name)
     };
+  }
+
+  [NotNull]
+  private static RdDisableInspectionComment ToRdComment([NotNull] this IDisablingComment disablingComment)
+  {
+    return new RdDisableInspectionComment(
+      disablingComment.DisabledInspections.ToRdTextSegment(), disablingComment.GetRdRange());
   }
   
   [NotNull]

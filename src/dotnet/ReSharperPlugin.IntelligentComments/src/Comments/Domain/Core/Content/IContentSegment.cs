@@ -89,3 +89,13 @@ public interface IImageContentSegment : IContentSegment
   [NotNull] IReference SourceReference { get; }
   [NotNull] IHighlightedText Description { get; }
 }
+
+public interface IToDo
+{
+  [NotNull] string Text { get; }
+}
+
+public interface IToDoContentSegment : IContentSegment
+{
+  [NotNull] IToDo ToDo { get; }
+}

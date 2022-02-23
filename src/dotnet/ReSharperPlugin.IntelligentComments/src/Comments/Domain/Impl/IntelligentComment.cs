@@ -10,6 +10,11 @@ public record CommentBase(DocumentRange Range) : ICommentBase
 }
 
 
+public record ToDoComment(IToDoContentSegment ToDoContentSegment, DocumentRange Range) : CommentBase(Range), IToDoComment;
+
+public record InspectionDisablingComment(
+  ITextContentSegment DisabledInspections, DocumentRange Range) : CommentBase(Range), IDisablingComment;
+
 public record InvalidComment(ITextContentSegment ErrorsSummary, DocumentRange Range) : CommentBase(Range), IInvalidComment;
 
 public record DocCommentBase(IIntelligentCommentContent Content, DocumentRange Range) : CommentBase(Range);

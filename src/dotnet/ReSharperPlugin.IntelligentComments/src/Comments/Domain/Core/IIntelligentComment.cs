@@ -10,6 +10,16 @@ public interface ICommentBase
   DocumentRange Range { get; }
 }
 
+public interface IDisablingComment : ICommentBase
+{
+  [NotNull] ITextContentSegment DisabledInspections { get; }
+}
+
+public interface IToDoComment : ICommentBase
+{
+  [NotNull] IToDoContentSegment ToDoContentSegment { get; }
+}
+
 public interface IInvalidComment : ICommentBase
 {
   [NotNull] ITextContentSegment ErrorsSummary { get; }

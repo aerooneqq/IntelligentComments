@@ -2,12 +2,8 @@ package com.intelligentComments.core.comments
 
 import com.intelligentComments.core.domain.core.*
 import com.intelligentComments.core.domain.impl.ContentProcessingStrategyImpl
-import com.intelligentComments.core.domain.rd.DocCommentFromRd
-import com.intelligentComments.core.domain.rd.GroupOfLineCommentsFromRd
-import com.intelligentComments.core.domain.rd.InvalidCommentFromRd
-import com.intelligentComments.core.domain.rd.MultilineCommentFromRd
+import com.intelligentComments.core.domain.rd.*
 import com.intellij.openapi.components.service
-import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.RangeMarker
 import com.intellij.openapi.editor.markup.RangeHighlighter
 import com.intellij.openapi.project.Project
@@ -23,7 +19,6 @@ class RiderCommentsCreator(private val project: Project) {
 
   fun createComment(
     rdComment: RdComment,
-    editor: Editor,
     commentRange: RangeMarker,
     highlighter: RangeHighlighter
   ): CommentBase {
@@ -33,6 +28,7 @@ class RiderCommentsCreator(private val project: Project) {
       is RdGroupOfLineComments -> createGroupOfLinesComment(rdComment, project, commentRange, highlighter)
       is RdMultilineComment -> createMultilineComments(rdComment, project, commentRange, highlighter)
       is RdInvalidComment -> createInvalidComment(rdComment, project, commentRange, highlighter)
+      is RdDisableInspectionComment -> createDisablingInspectionsComment(rdComment, project, commentRange, highlighter)
       else -> throw IllegalArgumentException(rdComment.javaClass.name)
     }
   }
@@ -78,5 +74,15 @@ class RiderCommentsCreator(private val project: Project) {
   ): InvalidComment {
     application.assertIsDispatchThread()
     return InvalidCommentFromRd(rdInvalidComment, project, highlighter, commentRange)
+  }
+
+  fun createDisablingInspectionsComment(
+    rdInvalidComment: RdDisableInspectionComment,
+    project: Project,
+    rangeMarker: RangeMarker,
+    highlighter: RangeHighlighter
+  ): DisablingInspectionsComment {
+    application.assertIsDispatchThread()
+    return DisablingCommentFromRd(rdInvalidComment, project, highlighter, rangeMarker)
   }
 }
