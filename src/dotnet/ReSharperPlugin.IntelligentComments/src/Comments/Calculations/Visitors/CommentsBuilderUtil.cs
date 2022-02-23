@@ -167,4 +167,12 @@ internal static class CommentsBuilderUtil
 
     return null;
   }
+
+  [CanBeNull]
+  internal static string TryGetInvariantName([NotNull] XmlElement element)
+  {
+    if (element.LocalName != InvariantTagName) return null;
+    
+    return element.GetAttribute(InvariantNameAttrName);
+  }
 }
