@@ -15,7 +15,6 @@ using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.Content;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Visitors.CSharp;
 
-[Language(typeof(CSharpLanguage))]
 public class CSharpCommentsProcessor : CommentsProcessorBase
 {
   public override void ProcessBeforeInterior(ITreeNode element)
