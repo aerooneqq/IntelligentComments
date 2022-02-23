@@ -29,6 +29,7 @@ import com.jetbrains.rdclient.document.getFirstDocumentId
 import com.jetbrains.rdclient.editors.FrontendTextControlHost
 import com.jetbrains.rdclient.util.idea.LifetimedProjectComponent
 import com.jetbrains.rider.document.RiderDocumentHost
+import kotlin.test.assertNotNull
 
 
 class RiderCommentsController(project: Project) : LifetimedProjectComponent(project) {
@@ -56,11 +57,6 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
 
   fun addComment(editor: Editor, comment: CommentBase) {
     application.assertIsDispatchThread()
-
-    if (!comment.isValid()) {
-      logger.warn("Comment ${comment.identifier} is invalid")
-      return
-    }
 
     commentsStorage.addNewComment(comment, editor)
     val state = commentsStateManager.restoreOrCreateCommentState(editor, comment.identifier)
@@ -148,14 +144,16 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
     application.invokeLater {
       val documentId = document.getFirstDocumentId(project) ?: return@invokeLater
       for (editor in textControlHost.getAllEditors(documentId)) {
-        editor as? EditorImpl ?: continue
         doUpdateCommentToMathState(commentIdentifier, editor, state)
       }
     }
   }
 
   private fun doUpdateCommentToMathState(commentIdentifier: CommentIdentifier, editor: Editor, state: CommentState) {
-    if (!state.isInRenderMode) {
+    val comment = getComment(commentIdentifier, editor.document)
+    assertNotNull(comment, "comment != null")
+
+    if (!state.isInRenderMode || !comment.isValid()) {
       toggleEditMode(commentIdentifier, editor)
     } else {
       toggleRenderMode(commentIdentifier, editor, state)
