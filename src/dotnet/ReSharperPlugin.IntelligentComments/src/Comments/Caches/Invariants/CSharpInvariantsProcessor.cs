@@ -9,9 +9,9 @@ using ReSharperPlugin.IntelligentComments.Comments.Calculations.Visitors;
 namespace ReSharperPlugin.IntelligentComments.Comments.Caches.Invariants;
 
 [Language(typeof(CSharpLanguage))]
-public class CSharpInvariantsProcessor : TreeNodeVisitor<JetHashSet<string>>, IInvariantsProcessor
+public class CSharpInvariantsProcessor : TreeNodeVisitor<Dictionary<string, int>>, IInvariantsProcessor
 {
-  public void Process(IFile file, JetHashSet<string> invariantsNames)
+  public void Process(IFile file, Dictionary<string, int> invariantsCount)
   {
     if (file is not ICSharpFile cSharpFile) return;
     foreach (var comment in cSharpFile.Descendants<IDocCommentBlock>().Collect())
@@ -26,7 +26,14 @@ public class CSharpInvariantsProcessor : TreeNodeVisitor<JetHashSet<string>>, II
           continue;
         }
 
-        invariantsNames.Add(invariantName);
+        if (invariantsCount.ContainsKey(invariantName))
+        {
+          ++invariantsCount[invariantName];
+        }
+        else
+        {
+          invariantsCount[invariantName] = 1;
+        }
       }
     }
   }

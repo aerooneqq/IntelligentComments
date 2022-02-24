@@ -14,20 +14,25 @@ public class CSharpIntelligentCommentCompletionContextProvider : ICodeCompletion
 {
   public bool IsApplicable(CodeCompletionContext context)
   {
-    return true;
+    return TryGetDocCommentBlock(context) is { };
   }
-
-  public ISpecificCodeCompletionContext GetCompletionContext(CodeCompletionContext context)
+  
+  [CanBeNull]
+  private static IDocCommentBlock TryGetDocCommentBlock(CodeCompletionContext context)
   {
     var treeOffset = context.File.Translate(context.CaretDocumentOffset);
-    var node = context.File.FindNodeAt(treeOffset);
+    var node = context.File.FindTokenAt(treeOffset);
     while (node is { } and not IDocCommentBlock)
     {
       node = node.Parent;
     }
 
-    if (node is null) return null;
-    IDocCommentBlock docCommentBlock = node as IDocCommentBlock;
+    return node as IDocCommentBlock;
+  }
+
+  public ISpecificCodeCompletionContext GetCompletionContext(CodeCompletionContext context)
+  {
+    var docCommentBlock = TryGetDocCommentBlock(context);
     Assertion.AssertNotNull(docCommentBlock, "docCommentBlock != null");
     
     var psiHelper = LanguageManager.Instance.GetService<IPsiHelper>(docCommentBlock.Language);
@@ -43,7 +48,7 @@ public class CSharpIntelligentCommentCompletionContextProvider : ICodeCompletion
   }
   
   [CanBeNull]
-  private TextLookupRanges TryCreateTextLookupRanges([NotNull] ITokenNode contextToken)
+  private static TextLookupRanges TryCreateTextLookupRanges([NotNull] ITokenNode contextToken)
   {
     return TryGetAttributeValueRange(contextToken);
   }

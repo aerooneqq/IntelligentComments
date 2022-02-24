@@ -20,7 +20,7 @@ public class CSharpReferenceCompletionProvider : ItemsProviderOfSpecificContext<
     var cache = context.GetSolution().GetComponent<InvariantsNamesCache>();
     foreach (var name in cache.Map[context.BasicContext.SourceFile])
     {
-      var lookupItem = new TextLookupItem(name);
+      var lookupItem = new TextLookupItem(name.Key);
       lookupItem.InitializeRanges(context.TextLookupRanges, context.BasicContext);
 
       collector.Add(lookupItem);

@@ -6,5 +6,5 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Caches.Invariants;
 
 public interface IInvariantsProcessor
 {
-  void Process([NotNull] IFile file, [NotNull] JetHashSet<string> invariantsNames);
+  void Process([NotNull] IFile file, [NotNull] Dictionary<string, int> invariantsCount);
 }

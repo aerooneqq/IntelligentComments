@@ -10,11 +10,22 @@ using JetBrains.Util.PersistentMap;
 namespace ReSharperPlugin.IntelligentComments.Comments.Caches.Invariants;
 
 [PsiComponent]
-public class InvariantsNamesCache : SimpleICache<JetHashSet<string>>
+public class InvariantsNamesCache : SimpleICache<Dictionary<string, int>>
 {
-  [NotNull] private static readonly IUnsafeMarshaller<JetHashSet<string>> ourMarshaller =
-    UnsafeMarshallers.GetNullFilteredSetMarshaller(UnsafeMarshallers.UnicodeStringMarshaller);
+  [NotNull] private static readonly IUnsafeMarshaller<Dictionary<string, int>> ourMarshaller =
+    UnsafeMarshallers.GetCollectionMarshaller(
+      reader => new KeyValuePair<string, int>(reader.ReadString(), reader.ReadInt()),
+      (writer, value) =>
+      {
+        writer.Write(value.Key);
+        writer.Write(value.Value);
+      },
+      collection => new Dictionary<string, int>(collection)
+    );
+
   
+  public override string Version => "2";
+
   
   public InvariantsNamesCache(
     Lifetime lifetime,
@@ -27,7 +38,7 @@ public class InvariantsNamesCache : SimpleICache<JetHashSet<string>>
 
   public override object Build(IPsiSourceFile sourceFile, bool isStartup)
   {
-    var invariants = new JetHashSet<string>();
+    var invariants = new Dictionary<string, int>();
     foreach (var file in sourceFile.GetPsiFiles<KnownLanguage>())
     {
       GetProcessor(file.Language)?.Process(file, invariants);
