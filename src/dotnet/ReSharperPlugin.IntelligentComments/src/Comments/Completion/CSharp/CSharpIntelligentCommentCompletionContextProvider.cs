@@ -1,0 +1,64 @@
+using JetBrains.Annotations;
+using JetBrains.Diagnostics;
+using JetBrains.ReSharper.Feature.Services.CodeCompletion.Infrastructure;
+using JetBrains.ReSharper.Features.ReSpeller.Analyzers;
+using JetBrains.ReSharper.Psi;
+using JetBrains.ReSharper.Psi.Tree;
+using JetBrains.ReSharper.Psi.Xml.Tree;
+using System.Linq;
+
+namespace ReSharperPlugin.IntelligentComments.Comments.Completion.CSharp;
+
+[IntellisensePart]
+public class CSharpIntelligentCommentCompletionContextProvider : ICodeCompletionContextProvider
+{
+  public bool IsApplicable(CodeCompletionContext context)
+  {
+    return true;
+  }
+
+  public ISpecificCodeCompletionContext GetCompletionContext(CodeCompletionContext context)
+  {
+    var treeOffset = context.File.Translate(context.CaretDocumentOffset);
+    var node = context.File.FindNodeAt(treeOffset);
+    while (node is { } and not IDocCommentBlock)
+    {
+      node = node.Parent;
+    }
+
+    if (node is null) return null;
+    IDocCommentBlock docCommentBlock = node as IDocCommentBlock;
+    Assertion.AssertNotNull(docCommentBlock, "docCommentBlock != null");
+    
+    var psiHelper = LanguageManager.Instance.GetService<IPsiHelper>(docCommentBlock.Language);
+    if (psiHelper.GetXmlDocPsi(docCommentBlock)?.XmlFile is not { } xmlFile) return null;
+
+    var offset = xmlFile.Translate(context.CaretDocumentOffset);
+    
+    if (xmlFile.FindTokenAt(offset) as ITokenNode is not { } contextDocCommentNode) return null;
+    if (TryCreateTextLookupRanges(contextDocCommentNode) is not { } ranges) return null;
+    if (!ranges.InsertRange.IsValid() || !ranges.ReplaceRange.IsValid()) return null;
+    
+    return new IntelligentCommentCodeCompletionContext(context, contextDocCommentNode, ranges);
+  }
+  
+  [CanBeNull]
+  private TextLookupRanges TryCreateTextLookupRanges([NotNull] ITokenNode contextToken)
+  {
+    return TryGetAttributeValueRange(contextToken);
+  }
+  
+  [CanBeNull]
+  private static TextLookupRanges TryGetAttributeValueRange([NotNull] ITokenNode contextToken)
+  {
+    if (contextToken.Parent is not IXmlAttribute parentAttribute) return null;
+
+    var eq = parentAttribute.Eq;
+    if (eq is null || !eq.RightSiblings().Contains(contextToken)) return null;
+
+    if (contextToken is not IXmlValueToken) return null;
+    var range = contextToken.GetDocumentRange().TrimLeft(1).TrimRight(1);
+    
+    return new TextLookupRanges(range, range);
+  }
+}

@@ -14,22 +14,20 @@ public class CSharpInvariantsProcessor : TreeNodeVisitor<JetHashSet<string>>, II
   public void Process(IFile file, JetHashSet<string> invariantsNames)
   {
     if (file is not ICSharpFile cSharpFile) return;
-    cSharpFile.Accept(this, invariantsNames);
-  }
-
-  public override void VisitDocCommentBlockNode(IDocCommentBlock xmlDoc, JetHashSet<string> invariantsNames)
-  {
-    if (xmlDoc.GetXML(null) is not { } xml) return;
-
-    for (var node = xml.FirstChild; node is { }; node = node.NextSibling)
+    foreach (var comment in cSharpFile.Descendants<IDocCommentBlock>().Collect())
     {
-      if (node is not XmlElement xmlElement ||
-          CommentsBuilderUtil.TryGetInvariantName(xmlElement) is not { } invariantName)
-      {
-        continue;
-      }
+      if (comment.GetXML(null) is not { } xml) return;
 
-      invariantsNames.Add(invariantName);
+      for (var node = xml.FirstChild; node is { }; node = node.NextSibling)
+      {
+        if (node is not XmlElement xmlElement ||
+            CommentsBuilderUtil.TryGetInvariantName(xmlElement) is not { } invariantName)
+        {
+          continue;
+        }
+
+        invariantsNames.Add(invariantName);
+      }
     }
   }
 }

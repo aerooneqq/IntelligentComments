@@ -6,6 +6,7 @@ using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.ExtensionsAPI;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.ReSharper.Psi.Util;
+using JetBrains.ReSharper.Psi.Xml.Tree;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Visitors;
 
@@ -174,5 +175,15 @@ internal static class CommentsBuilderUtil
     if (element.LocalName != InvariantTagName) return null;
     
     return element.GetAttribute(InvariantNameAttrName);
+  }
+  
+  internal static bool IsInvariantNameAttribute([CanBeNull] IXmlAttribute attribute)
+  {
+    return attribute?.AttributeName == InvariantNameAttrName;
+  }
+  
+  internal static bool IsReferenceSourceAttribute([CanBeNull] IXmlAttribute attribute)
+  {
+    return attribute?.AttributeName == ReferenceSourceAttrName;
   }
 }

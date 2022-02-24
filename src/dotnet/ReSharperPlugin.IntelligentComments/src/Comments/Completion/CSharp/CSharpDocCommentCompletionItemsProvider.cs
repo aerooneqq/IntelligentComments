@@ -18,7 +18,7 @@ public class CSharpDocCommentCompletionItemsProvider : ItemsProviderOfSpecificCo
 {
   private record TagInfo(string Tag, string[] Attributes, bool ClosedTag)
   {
-    public TagLookupItem ToLookupItem() => new(Tag, Attributes, ClosedTag);
+    [NotNull] public TagLookupItem ToLookupItem() => new(Tag, Attributes, ClosedTag);
   }
 
   [ItemNotNull] [NotNull] private static readonly TagInfo[] ourClosedTags =
@@ -27,7 +27,6 @@ public class CSharpDocCommentCompletionItemsProvider : ItemsProviderOfSpecificCo
     new("invariant", new[] { "name" }, false),
     new("reference", new[] { "referenceSource" }, false)
   };
-  
   
   protected override bool AddLookupItems(ContextInDocComment context, IItemsCollector collector)
   {
