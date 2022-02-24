@@ -221,7 +221,7 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
       ExecuteActionOverChildren(element, Visit);
     }
       
-    ExecuteWithTopmostContentSegments(metadata => metadata.ContentSegments.Segments.Add(paramSegment));
+    ExecuteWithTopmostContentSegments(segmentsMetadata => segmentsMetadata.ContentSegments.Segments.Add(paramSegment));
   }
     
   private void ExecuteWithTopmostContentSegments([NotNull] Action<ContentSegmentsMetadata> action)
@@ -267,7 +267,8 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
 
     if (addToTopmostSegments)
     {
-      ExecuteWithTopmostContentSegments(metadata => metadata.ContentSegments.Segments.Add(entityWithContentSegments));
+      ExecuteWithTopmostContentSegments(
+        segmentsMetadata => segmentsMetadata.ContentSegments.Segments.Add(entityWithContentSegments));
     }
   }
 

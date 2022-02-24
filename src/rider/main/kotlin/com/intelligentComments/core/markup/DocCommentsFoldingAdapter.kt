@@ -17,7 +17,10 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.impl.source.tree.injected.changesHandler.range
 import com.intellij.util.application
 import com.jetbrains.rd.ide.model.RdCommentFoldingModel
+import com.jetbrains.rd.platform.util.lifetime
 import com.jetbrains.rd.util.lifetime.Lifetime
+import com.jetbrains.rd.util.reactive.Property
+import com.jetbrains.rd.util.reactive.whenTrue
 import com.jetbrains.rdclient.daemon.FrontendMarkupAdapterListener
 import com.jetbrains.rdclient.daemon.highlighters.MarkupListenerAggregator
 
@@ -52,6 +55,7 @@ class DocCommentsFoldingAdapter(private val editor: EditorImpl) : FrontendMarkup
   }
 
 
+  private var addingHighlighters = Property(false)
   private val rangeMarkerCache = CommentsRangeMarkersCache()
   private val settings = RiderIntelligentCommentsSettingsProvider.getInstance()
 
@@ -71,6 +75,7 @@ class DocCommentsFoldingAdapter(private val editor: EditorImpl) : FrontendMarkup
 
   override fun afterBulkAdd(highlighters: List<RangeHighlighterEx>) {
     editor.project?.let {
+      addingHighlighters.value = true
       application.executeOnPooledThread {
         val controller = it.getComponent(RiderCommentsController::class.java) ?: return@executeOnPooledThread
         val commentsCreator = it.service<RiderCommentsCreator>()
@@ -79,6 +84,8 @@ class DocCommentsFoldingAdapter(private val editor: EditorImpl) : FrontendMarkup
 
         application.invokeLater {
           executeOverDocHighlighters(highlighters) { highlighter, model ->
+            if (!highlighter.isValid) return@executeOverDocHighlighters
+
             val marker = getRangeMarkerFor(highlighter.range, highlighter.document)
             marker.isGreedyToRight = true
 
@@ -92,6 +99,8 @@ class DocCommentsFoldingAdapter(private val editor: EditorImpl) : FrontendMarkup
               highlighter.gutterIconRenderer = DocCommentSwitchRenderModeGutterMark(comment, editor, it)
             }
           }
+
+          addingHighlighters.value = false
         }
       }
     }
@@ -114,13 +123,25 @@ class DocCommentsFoldingAdapter(private val editor: EditorImpl) : FrontendMarkup
 
   override fun beforeBulkRemove(highlighters: List<RangeHighlighterEx>) {
     editor.project?.let {
-      executeOverDocHighlighters(highlighters) { highlighter, _ ->
-        val existingComment = highlighter.getUserData(commentKey)
+      fun removeHighlighters() {
+        executeOverDocHighlighters(highlighters) { highlighter, _ ->
+          val existingComment = highlighter.getUserData(commentKey)
 
-        if (existingComment != null) {
-          highlighter.putUserData(commentKey, null)
-          rangeMarkerCache.store(existingComment.identifier.rangeMarker)
+          if (existingComment != null) {
+            highlighter.putUserData(commentKey, null)
+            rangeMarkerCache.store(existingComment.identifier.rangeMarker)
+          }
         }
+      }
+
+      if (addingHighlighters.value) {
+        val lifetimeDefinition = it.lifetime.createNested()
+        addingHighlighters.whenTrue(lifetimeDefinition.lifetime) {
+          removeHighlighters()
+          lifetimeDefinition.terminate()
+        }
+      } else {
+        removeHighlighters()
       }
     }
   }

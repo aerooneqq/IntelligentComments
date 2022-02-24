@@ -29,6 +29,7 @@
     
     <rdclient.highlighterModelSupport implementation="com.intelligentComments.core.markup.DocCommentsFoldingHighlightersSupport" />
 
+    <editorFactoryListener implementation="com.intelligentComments.core.comments.listeners.RiderEditorsListener" />
   </extensions>
 
   <actions>
@@ -64,6 +65,9 @@
     </component>
     <component>
       <implementation-class>com.intelligentComments.core.comments.listeners.EditorsColorsChangeListener</implementation-class>
+    </component>
+    <component>
+      <implementation-class>com.intelligentComments.core.comments.listeners.RiderEditorsListener</implementation-class>
     </component>
   </project-components>
 </idea-plugin>

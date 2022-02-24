@@ -7,7 +7,6 @@ import kotlin.math.abs
 
 
 class CommentsIdentifierStorage<T> {
-  private val markersStorage = HashMap<RangeMarker, T>()
   private val idStorage = TreeMap<CommentIdentifier, T>()
 
 
@@ -18,7 +17,7 @@ class CommentsIdentifierStorage<T> {
     }
 
     if (index < 0 || index >= pairs.size) return null
-    return markersStorage[pairs[index].first.rangeMarker]
+    return idStorage[pairs[index].first]
   }
 
   private fun find(offset: Int): Pair<Int, List<Pair<CommentIdentifier, Int>>> {
@@ -33,20 +32,18 @@ class CommentsIdentifierStorage<T> {
     }
 
     if (index < 0 || index >= pairs.size) return null
-    return markersStorage[pairs[index].first.rangeMarker]
+    return idStorage[pairs[index].first]
   }
 
   fun remove(commentIdentifier: CommentIdentifier) {
     idStorage.remove(commentIdentifier)
-    markersStorage.remove(commentIdentifier.rangeMarker)
   }
 
   fun clear() {
-    markersStorage.clear()
     idStorage.clear()
   }
 
-  fun get(commentIdentifier: CommentIdentifier) = markersStorage[commentIdentifier.rangeMarker]
+  fun get(commentIdentifier: CommentIdentifier) = idStorage[commentIdentifier]
 
   fun getWithAdditionalSearch(commentIdentifier: CommentIdentifier): T? {
     return get(commentIdentifier)
@@ -69,12 +66,11 @@ class CommentsIdentifierStorage<T> {
     key: CommentIdentifier,
     value: T
   ) {
-    markersStorage[key.rangeMarker] = value
     idStorage[key] = value
   }
 
   fun getAllKeysAndValues(): Collection<Pair<RangeMarker, T>> {
-    return markersStorage.toList()
+    return idStorage.map { Pair(it.key.rangeMarker, it.value) }.toList()
   }
 }
 

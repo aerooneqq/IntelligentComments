@@ -37,7 +37,7 @@ public class IntelligentCommentCodeCompletionContext : ISpecificCodeCompletionCo
   public DeclaredElementsOrPointers CreatePointer(DeclaredElementInstance instance) => new(instance);
 }
 
-public static class InvariantCodeCompletionContextExtensions
+public static class IntelligentCommentCodeCompletionContextExtensions
 {
   [CanBeNull]
   public static IXmlAttribute TryGetContextAttribute([NotNull] this IntelligentCommentCodeCompletionContext context)
