@@ -176,6 +176,15 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
 
       foldingModel.runBatchFoldingOperation {
         val rangeMarker = commentIdentifier.rangeMarker
+        val start = rangeMarker.startOffset
+        val end = rangeMarker.endOffset
+        val foldRegions = foldingModel.getRegionsOverlappingWith(start, end)
+        for (region in foldRegions) {
+          if (region.startOffset >= start && region.endOffset <= end) {
+            foldingModel.removeFoldRegion(region)
+          }
+        }
+
         val region = foldingModel.createFoldRegion(rangeMarker.startOffset, rangeMarker.endOffset, "...", null, false)
         region?.markAsDocComment()
         if (region != null) {

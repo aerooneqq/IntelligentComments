@@ -8,17 +8,22 @@ class CommentsEditorsListenersManager(private val project: Project) {
   private val processedEditors = mutableSetOf<Editor>()
   private val processedRegions = mutableSetOf<CustomFoldRegion>()
 
+
+  fun attachListenersToEditorIfNeeded(editor: Editor) {
+    if (!processedEditors.contains(editor)) {
+      editor.addEditorMouseMotionListener(CursorMouseMoveListener())
+      editor.addEditorMouseMotionListener(GutterMarkVisibilityMouseMoveListener(project))
+      processedEditors.add(editor)
+    }
+  }
+
   fun attachListenersIfNeeded(foldRegion: CustomFoldRegion) {
     if (processedRegions.contains(foldRegion)) return
 
     foldRegion.editor.addEditorMouseListener(CommentMouseListener(foldRegion))
     foldRegion.editor.addEditorMouseMotionListener(CommentMouseMoveListener(foldRegion))
 
-    if (!processedEditors.contains(foldRegion.editor)) {
-      foldRegion.editor.addEditorMouseMotionListener(CursorMouseMoveListener())
-      foldRegion.editor.addEditorMouseMotionListener(GutterMarkVisibilityMouseMoveListener(project))
-      processedEditors.add(foldRegion.editor)
-    }
+    attachListenersToEditorIfNeeded(foldRegion.editor)
 
     processedRegions.add(foldRegion)
   }
