@@ -137,20 +137,19 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
     }
 
     var nameText = new HighlightedText(name);
-    var reference = new InvariantReference(name);
     var descriptionText = HighlightedText.CreateEmptyText();
     if (ElementHasOneTextChild(element, out var description))
     {
-      descriptionText.Add(new HighlightedText(description));
+      var (processedText, _) = PreprocessTextWithContext(description, element);
+      descriptionText.Add(new HighlightedText(processedText));
     }
 
-    var invariant = new InvariantContentSegment(reference, nameText, descriptionText);
+    var invariant = new InvariantContentSegment(nameText, descriptionText);
     ExecuteWithTopmostContentSegments(metadata => metadata.ContentSegments.Segments.Add(invariant));
   }
 
   protected override void VisitReference(XmlElement element)
   {
-    
   }
 
   public override void VisitSummary(XmlElement element)

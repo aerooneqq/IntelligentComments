@@ -159,7 +159,6 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
   val RdInvariant = basestruct extends RdContentSegment { }
 
   val RdTextInvariant = structdef extends RdInvariant {
-    field("Reference", RdInvariantReference)
     field("Name", RdHighlightedText)
     field("Description", RdHighlightedText)
     call("Evaluate", PredefinedType.int, PredefinedType.bool)

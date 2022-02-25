@@ -9,7 +9,7 @@ public interface IHighlightedText
   [NotNull] IList<TextHighlighter> Highlighters { get; }
 
 
-  void Add(IHighlightedText other);
+  void Add([NotNull] IHighlightedText other);
   void SortHighlighters();
   void Normalize();
 }

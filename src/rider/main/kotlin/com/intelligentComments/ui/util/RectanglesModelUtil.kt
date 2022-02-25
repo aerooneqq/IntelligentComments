@@ -1,10 +1,6 @@
 package com.intelligentComments.ui.util
 
-import com.intelligentComments.ui.comments.model.*
-import com.intelligentComments.ui.comments.model.sections.SectionUiModel
-import com.intelligentComments.ui.comments.renderers.invariants.InvariantsRenderer
-import com.intelligentComments.ui.comments.renderers.references.ReferencesRenderer
-import com.intelligentComments.ui.comments.renderers.todos.ToDosRenderer
+import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intelligentComments.ui.core.RectangleModelBuildContext
 import com.intelligentComments.ui.core.RectanglesModel
 import com.intelligentComments.ui.core.Renderer
@@ -25,24 +21,9 @@ class RectanglesModelUtil {
       xDelta: Int,
       yDelta: Int
     ): RectanglesModelBuildResult {
-      return when (model) {
-        is DocCommentUiModel -> buildRectanglesModel(editor, model,  model.contentSection, xDelta, yDelta)
-        is CommentWithOneTextSegmentUiModel -> buildRectanglesModel(editor, model, model.contentSection, xDelta, yDelta)
-        is CollapsedCommentUiModel -> buildRectanglesModel(editor, model, model.contentSection, xDelta, yDelta)
-        else -> throw IllegalArgumentException(model.toString())
-      }
-    }
-
-    private fun buildRectanglesModel(
-      editor: Editor,
-      model: UiInteractionModelBase,
-      contentSection: SectionUiModel,
-      xDelta: Int,
-      yDelta: Int
-    ): RectanglesModelBuildResult {
       val context = createRectanglesBuildContext(xDelta, yDelta, editor)
 
-      val renderer = contentSection.createRenderer()
+      val renderer = model.createRenderer()
       renderer.accept(context)
 
       addTopmostModel(context, xDelta, yDelta, model)
@@ -90,11 +71,6 @@ class RectanglesModelUtil {
       val initialRect = Rectangle(xDelta, yDelta, Int.MAX_VALUE, Int.MAX_VALUE)
       val model = RectanglesModel()
       return RectangleModelBuildContext(model, widthAndHeight, initialRect, editor)
-    }
-
-    private fun updateRectYAndHeight(delta: Int, context: RectangleModelBuildContext) {
-      context.rect.y += delta
-      context.widthAndHeight.updateHeightSum(delta)
     }
 
     fun addDeltaBetweenSections(rect: Rectangle) {

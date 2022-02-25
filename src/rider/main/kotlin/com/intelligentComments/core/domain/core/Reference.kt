@@ -8,11 +8,19 @@ interface Reference : UniqueEntity {
   val rawValue: String
 }
 
-interface ProxyReference : Reference {
+interface FrontendReference : Reference
+
+interface FrontendInvariantReference : FrontendReference {
+  val invariant: TextInvariantSegment
+}
+
+interface BackendReference : Reference
+
+interface ProxyReference : BackendReference {
   val realReferenceId: Int
 }
 
-interface CodeEntityReference : Reference
+interface CodeEntityReference : BackendReference
 
 interface XmlDocCodeEntityReference : CodeEntityReference
 
@@ -22,7 +30,7 @@ interface SandboxCodeEntityReference : CodeEntityReference {
   val range: TextRange
 }
 
-interface ExternalReference : Reference
+interface ExternalReference : BackendReference
 
 interface HttpLinkReference : ExternalReference {
   val rawLink: String

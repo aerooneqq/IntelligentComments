@@ -1,14 +1,14 @@
 package com.intelligentComments.ui.popups
 
-import com.intelligentComments.ui.comments.model.CommentUiModelBase
+import com.intelligentComments.ui.comments.model.UiInteractionModelBase
+import com.intelligentComments.ui.util.RectanglesModelUtil
+import com.intelligentComments.ui.util.RenderAdditionalInfo
 import com.intelligentComments.ui.util.UpdatedGraphicsCookie
 import com.intellij.openapi.editor.Editor
-import com.intellij.openapi.editor.markup.TextAttributes
 import com.intellij.openapi.util.Pair
 import com.intellij.openapi.util.use
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.popup.AbstractPopup
-import com.jetbrains.rd.platform.util.getLogger
 import java.awt.*
 import java.awt.event.ActionListener
 import java.util.*
@@ -18,7 +18,7 @@ import javax.swing.SwingConstants
 import kotlin.math.min
 
 class IntelligentCommentPopup(
-  model: CommentUiModelBase,
+  model: UiInteractionModelBase,
   editor: Editor
 ) : AbstractPopup() {
   val popupSize: Dimension
@@ -50,14 +50,10 @@ class IntelligentCommentPopup(
 
 
   private class IntelligentCommentPopupComponent(
-    private val model: CommentUiModelBase,
+    private val model: UiInteractionModelBase,
     private val editor: Editor
   ) : JComponent() {
     companion object {
-      private val logger = getLogger<IntelligentCommentPopupComponent>()
-
-      const val defaultWidth = 300
-      const val defaultHeight = 300
       const val padding = 10
     }
 
@@ -66,19 +62,15 @@ class IntelligentCommentPopup(
 
 
     init {
-      val renderer = model.renderer
-      renderer.invalidateRectangleModel(editor)
-      val rectanglesModel = renderer.rectanglesModel
-      cachedSize = if (rectanglesModel == null) {
-        logger.error("Rectangles model was null after revalidating for $model")
-        Dimension(defaultWidth, defaultHeight)
-      } else {
-        Dimension(rectanglesModel.width, rectanglesModel.height)
-      }
+      val renderer = model.createRenderer()
+      val width = renderer.calculateExpectedWidthInPixels(editor, RenderAdditionalInfo.emptyInstance)
+      val height = renderer.calculateExpectedHeightInPixels(editor, RenderAdditionalInfo.emptyInstance)
+
+      cachedSize = Dimension(width, height)
 
       cachedSize.apply {
-        width += 2 * padding
-        height += 2 * padding
+        this.width += 2 * padding
+        this.height += 2 * padding
       }
     }
 
@@ -102,7 +94,8 @@ class IntelligentCommentPopup(
         y += padding
       }
 
-      model.renderer.paint(editor, g, targetRect, TextAttributes())
+      val rectanglesModel = RectanglesModelUtil.buildRectanglesModel(editor, model, 0, 0).model
+      model.createRenderer().render(g, targetRect, editor, rectanglesModel, RenderAdditionalInfo.emptyInstance)
     }
   }
 }

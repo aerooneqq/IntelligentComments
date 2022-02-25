@@ -1,8 +1,8 @@
 package com.intelligentComments.core.domain.core
 
-interface Invariant : ContentSegment
+interface InvariantSegment : ContentSegment
 
-interface TextInvariant : Invariant {
+interface TextInvariantSegment : InvariantSegment {
   val name: HighlightedText
   val description: HighlightedText
 }

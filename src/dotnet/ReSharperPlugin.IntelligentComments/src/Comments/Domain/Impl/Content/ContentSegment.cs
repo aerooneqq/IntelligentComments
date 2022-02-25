@@ -138,6 +138,5 @@ public record CodeSegment(IHighlightedText Code, int HighlightingRequestId) : IC
 public record ImageContentSegment(IReference SourceReference, IHighlightedText Description) : IImageContentSegment;
 
 public record InvariantContentSegment(
-  IInvariantReference Reference,
   IHighlightedText Name,
   IHighlightedText Description) : IInvariantContentSegment;

@@ -114,9 +114,7 @@ public static class CommentsUtil
   private static RdTextInvariant ToRdInvariant([NotNull] this IInvariantContentSegment contentSegment)
   {
     return new RdTextInvariant(
-      contentSegment.Reference.ToRdReference(),
-      contentSegment.Name.ToRdHighlightedText(),
-      contentSegment.Description.ToRdHighlightedText());
+      contentSegment.Name.ToRdHighlightedText(), contentSegment.Description.ToRdHighlightedText());
   }
 
   [NotNull]

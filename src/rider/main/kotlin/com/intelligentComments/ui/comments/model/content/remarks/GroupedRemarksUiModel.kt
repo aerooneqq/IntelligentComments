@@ -8,8 +8,8 @@ import com.intelligentComments.ui.comments.renderers.segments.GroupedRemarksRend
 import com.intelligentComments.ui.core.Renderer
 import com.intellij.openapi.project.Project
 
-
 private const val remarksSectionName = "Remarks"
+
 class GroupedRemarksUiModel(
   project: Project,
   parent: UiInteractionModelBase?,

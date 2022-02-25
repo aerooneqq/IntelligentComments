@@ -39,3 +39,8 @@ class GroupedRemarksSegments(
   override val segments: List<RemarksSegment>,
   parent: Parentable?
 ) : GroupedSegmentsBase(parent), GroupedContentSegment<RemarksSegment>
+
+class GroupedInvariantsSegments(
+  override val segments: List<InvariantSegment>,
+  parent: Parentable?
+) : GroupedSegmentsBase(parent), GroupedContentSegment<InvariantSegment>

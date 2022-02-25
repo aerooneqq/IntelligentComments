@@ -35,7 +35,7 @@ abstract class LeftHeaderRightContentRenderer(
     rectanglesModel: RectanglesModel,
     additionalRenderInfo: RenderAdditionalInfo
   ): Rectangle {
-    val shouldDrawHeader = shouldDrawHeader(editor)
+    val shouldDrawHeader = shouldDrawHeader()
     if (shouldDrawHeader) {
       UpdatedRectCookie(rect).use {
         renderHeader(g, rect, editor, rectanglesModel)
@@ -102,7 +102,7 @@ abstract class LeftHeaderRightContentRenderer(
     return content.first().parent?.parent?.parent
   }
 
-  protected fun shouldDrawHeader(editor: Editor): Boolean {
+  protected fun shouldDrawHeader(): Boolean {
     if (!renderHeader) return false
 
     if (content.isEmpty()) {
@@ -121,7 +121,7 @@ abstract class LeftHeaderRightContentRenderer(
 
     val singleContent = parent is ModelWithContent && parent.contentSection.content.size == 1
     val settings = RiderIntelligentCommentsSettingsProvider.getInstance()
-    val canOmitHeader = !(settings?.showFirstLevelHeaderWhenOneElement?.value ?: return true)
+    val canOmitHeader = !settings.showFirstLevelHeaderWhenOneElement.value
 
     return !(canOmitHeader && singleContent)
   }
@@ -141,8 +141,7 @@ abstract class LeftHeaderRightContentRenderer(
     editor: Editor,
     additionalRenderInfo: RenderAdditionalInfo
   ): Int {
-    val nameHeight = if (shouldDrawHeader(editor)) calculateHeaderHeightInternal(editor) else 0
-
+    val nameHeight = if (shouldDrawHeader()) calculateHeaderHeightInternal(editor) else 0
     val contentHeight = ContentSegmentsUtil.calculateContentHeight(content, editor, additionalRenderInfo)
 
     return max(nameHeight, contentHeight)
@@ -154,7 +153,7 @@ abstract class LeftHeaderRightContentRenderer(
   ): Int {
     var width = 0
 
-    if (shouldDrawHeader(editor)) {
+    if (shouldDrawHeader()) {
       width = additionalRenderInfo.topmostLeftIndent
       width += calculateHeaderContentDelta()
     }
@@ -165,7 +164,7 @@ abstract class LeftHeaderRightContentRenderer(
 
   override fun accept(context: RectangleModelBuildContext) {
     ContentSegmentsUtil.accept(context.createCopy(Rectangle(context.rect).apply {
-      x += if (shouldDrawHeader(context.editor)) {
+      x += if (shouldDrawHeader()) {
         calculateHeaderContentDelta() + context.additionalRenderInfo.topmostLeftIndent
       } else {
         0
@@ -221,7 +220,7 @@ open class LeftTextHeaderAndRightContentRenderer : LeftHeaderRightContentRendere
   }
 
   override fun accept(context: RectangleModelBuildContext) {
-    if (shouldDrawHeader(context.editor)) {
+    if (shouldDrawHeader()) {
       TextUtil.createRectanglesForHighlightedText(header, context)
     }
 

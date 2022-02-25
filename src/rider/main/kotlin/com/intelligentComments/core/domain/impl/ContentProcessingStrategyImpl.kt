@@ -21,6 +21,7 @@ class ContentProcessingStrategyImpl : ContentProcessingStrategy {
     groupExceptionsIfNeeded(settings, segments)
     groupSummaryIfNeeded(settings, segments)
     groupRemarksIfNeeded(settings, segments)
+    groupInvariants(segments)
   }
 
   private fun groupSeeAlsoIfNeeded(
@@ -91,6 +92,12 @@ class ContentProcessingStrategyImpl : ContentProcessingStrategy {
   ) {
     if (!settings.groupRemarks.value) return
     groupSegmentsOfType<RemarksSegment>(segments) { GroupedRemarksSegments(it, segments.first().parent) }
+  }
+
+  private fun groupInvariants(
+    segments: MutableList<ContentSegment>
+  ) {
+    groupSegmentsOfType<InvariantSegment>(segments) { GroupedInvariantsSegments(it, segments.first().parent) }
   }
 
   private fun removeEmptyRowsAndColsFromTables(

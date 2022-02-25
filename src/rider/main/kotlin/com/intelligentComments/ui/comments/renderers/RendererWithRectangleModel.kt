@@ -115,13 +115,6 @@ abstract class RendererWithRectangleModel(
     doPaint(region.editor, g, targetRegion, textAttributes)
   }
 
-  fun paint(
-    editor: Editor,
-    g: Graphics2D,
-    targetRegion: Rectangle2D,
-    textAttributes: TextAttributes
-  ) = doPaint(editor, g, targetRegion, textAttributes)
-
   private fun doPaint(
     editor: Editor,
     g: Graphics,
@@ -193,5 +186,7 @@ abstract class RendererWithRectangleModel(
   }
 
   override fun accept(context: RectangleModelBuildContext) {
+    val renderer = baseModel.contentSection.createRenderer()
+    renderer.accept(context)
   }
 }

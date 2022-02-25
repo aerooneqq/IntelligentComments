@@ -8,6 +8,7 @@ import com.intelligentComments.ui.comments.model.content.example.ExampleSegmentU
 import com.intelligentComments.ui.comments.model.content.exceptions.ExceptionUiModel
 import com.intelligentComments.ui.comments.model.content.exceptions.GroupedExceptionUiModel
 import com.intelligentComments.ui.comments.model.content.image.ImageContentSegmentUiModel
+import com.intelligentComments.ui.comments.model.content.invariants.GroupedInvariantsUiModel
 import com.intelligentComments.ui.comments.model.content.invariants.TextInvariantUiModel
 import com.intelligentComments.ui.comments.model.content.list.ListContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.paragraphs.ParagraphUiModel
@@ -26,7 +27,6 @@ import com.intelligentComments.ui.comments.model.content.summary.SummaryUiModel
 import com.intelligentComments.ui.comments.model.content.table.TableContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.text.TextContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.value.ValueUiModel
-import com.intelligentComments.ui.util.HashUtil
 import com.intellij.openapi.project.Project
 
 abstract class ContentSegmentUiModel(
@@ -56,11 +56,12 @@ abstract class ContentSegmentUiModel(
         is GroupedExceptionsSegments -> GroupedExceptionUiModel(project, parent, segment)
         is GroupedSummarySegments -> GroupedSummaryUiModel(project, parent, segment)
         is GroupedRemarksSegments -> GroupedRemarksUiModel(project, parent, segment)
+        is GroupedInvariantsSegments -> GroupedInvariantsUiModel(project, parent, segment)
         is ExampleContentSegment -> ExampleSegmentUiModel(project, parent, segment)
         is SummaryContentSegment -> SummaryUiModel(project, parent, segment)
         is CodeSegment -> CodeSegmentUiModel(project, parent, segment)
         is ValueSegment -> ValueUiModel(project, parent, segment)
-        is TextInvariant -> TextInvariantUiModel(project, parent, segment)
+        is TextInvariantSegment -> TextInvariantUiModel(project, parent, segment)
         else -> throw IllegalArgumentException(segment.javaClass.name)
       }
     }

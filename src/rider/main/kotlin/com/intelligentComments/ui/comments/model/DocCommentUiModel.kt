@@ -12,8 +12,7 @@ class DocCommentUiModel(
   project: Project,
   editor: Editor
 ) : CommentUiModelBase(docComment, project, editor) {
-  override val renderer
-    get() = DocCommentRenderer(this)
+  override val renderer = DocCommentRenderer(this)
 
   override val contentSection: SectionUiModel
 

@@ -12,7 +12,6 @@ import com.intelligentComments.ui.core.Renderer
 import com.intelligentComments.ui.util.HashUtil
 import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.event.EditorMouseEvent
-import com.intellij.openapi.editor.impl.EditorImpl
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.SystemInfo
 import java.awt.Point
@@ -59,6 +58,10 @@ class HighlighterUiModel(
     return handleUsualClick(e)
   }
 
+  override fun handleLongMousePresence(e: EditorMouseEvent): Boolean {
+    return false
+  }
+
   private fun handleUsualClick(e: EditorMouseEvent): Boolean {
     val root = tryGetRootUiModel(this)
     var point = e.mouseEvent.point
@@ -66,7 +69,7 @@ class HighlighterUiModel(
 
     if (commentId != null && root != null) {
       val rectangle = root.renderer.rectanglesModel?.getRectanglesFor(this)?.lastOrNull()
-      val folding = project.getComponent(RiderCommentsController::class.java).getFolding(commentId, e.editor as EditorImpl)
+      val folding = project.getComponent(RiderCommentsController::class.java).getFolding(commentId, e.editor)
 
       if (rectangle != null && folding != null) {
         val bounds = folding.getBounds()
@@ -76,7 +79,7 @@ class HighlighterUiModel(
       }
     }
 
-    e.editor.project?.service<HighlightersClickHandler>()?.handleClick(highlighter, e.editor, point)
+    e.editor.project?.service<HighlightersClickHandler>()?.handleClick(highlighter, e.editor, point, e)
     return false
   }
 
