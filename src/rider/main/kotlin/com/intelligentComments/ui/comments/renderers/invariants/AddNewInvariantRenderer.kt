@@ -1,6 +1,6 @@
 package com.intelligentComments.ui.comments.renderers.invariants
 
-import com.intelligentComments.ui.comments.model.invariants.AddNewInvariantUiModel
+import com.intelligentComments.ui.comments.model.content.invariants.AddNewInvariantUiModel
 import com.intelligentComments.ui.core.RectangleModelBuildContext
 import com.intelligentComments.ui.core.RectanglesModel
 import com.intelligentComments.ui.util.RenderAdditionalInfo
@@ -49,13 +49,17 @@ class AddNewInvariantRenderer(private val model: AddNewInvariantUiModel) : Invar
 
   override fun calculateExpectedHeightInPixels(
     editor: Editor,
-    additionalRenderInfo: RenderAdditionalInfo)
-  : Int = InvariantRenderer.invariantHeight
+    additionalRenderInfo: RenderAdditionalInfo
+  ) : Int {
+    return InvariantRenderer.invariantHeight
+  }
 
   override fun calculateExpectedWidthInPixels(
     editor: Editor,
     additionalRenderInfo: RenderAdditionalInfo
-  ): Int = calculateWidth(editor)
+  ): Int {
+    return calculateWidth(editor)
+  }
 
 
   override fun accept(context: RectangleModelBuildContext) {

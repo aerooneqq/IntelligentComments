@@ -26,7 +26,6 @@ class RectanglesModelUtil {
       yDelta: Int
     ): RectanglesModelBuildResult {
       return when (model) {
-        is IntelligentCommentUiModel -> buildRectanglesModel(editor, model, xDelta, yDelta)
         is DocCommentUiModel -> buildRectanglesModel(editor, model,  model.contentSection, xDelta, yDelta)
         is CommentWithOneTextSegmentUiModel -> buildRectanglesModel(editor, model, model.contentSection, xDelta, yDelta)
         is CollapsedCommentUiModel -> buildRectanglesModel(editor, model, model.contentSection, xDelta, yDelta)
@@ -96,36 +95,6 @@ class RectanglesModelUtil {
     private fun updateRectYAndHeight(delta: Int, context: RectangleModelBuildContext) {
       context.rect.y += delta
       context.widthAndHeight.updateHeightSum(delta)
-    }
-
-    private fun buildRectanglesModel(
-      editor: Editor,
-      intelligentComment: IntelligentCommentUiModel,
-      xDelta: Int,
-      yDelta: Int
-    ): RectanglesModelBuildResult {
-      val context = createRectanglesBuildContext(xDelta, yDelta, editor)
-
-      intelligentComment.contentSection.createRenderer().accept(context)
-      updateRectYAndHeight(heightDeltaBetweenSections, context)
-
-      ReferencesRenderer.getRendererFor(intelligentComment.referencesSection).accept(context)
-      updateRectYAndHeight(heightDeltaBetweenSections, context)
-
-      InvariantsRenderer.getRendererFor(intelligentComment.invariantsSection).accept(context)
-      updateRectYAndHeight(heightDeltaBetweenSections, context)
-
-      ToDosRenderer.getRendererFor(intelligentComment.todosSection).accept(context)
-      updateRectYAndHeight(heightDeltaBetweenSections, context)
-
-      addTopmostModel(context, xDelta, yDelta, intelligentComment)
-
-      val model = context.rectanglesModel.apply {
-        setSize(context.widthAndHeight.width, context.widthAndHeight.height)
-        seal()
-      }
-
-      return RectanglesModelBuildResult(model, 0, 0)
     }
 
     fun addDeltaBetweenSections(rect: Rectangle) {

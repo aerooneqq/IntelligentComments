@@ -1,5 +1,6 @@
 package com.intelligentComments.ui.comments.renderers.invariants
 
+import com.intelligentComments.ui.comments.renderers.segments.SegmentRenderer
 import com.intelligentComments.ui.core.Renderer
 import com.intelligentComments.ui.util.RenderAdditionalInfo
 import com.intelligentComments.ui.util.UpdatedGraphicsCookie
@@ -10,7 +11,7 @@ import java.awt.Graphics
 import java.awt.Rectangle
 import javax.swing.Icon
 
-interface InvariantRenderer : Renderer {
+interface InvariantRenderer : SegmentRenderer {
   companion object {
     const val invariantHeight = 20
     const val deltaBetweenTextAndIcon = 0

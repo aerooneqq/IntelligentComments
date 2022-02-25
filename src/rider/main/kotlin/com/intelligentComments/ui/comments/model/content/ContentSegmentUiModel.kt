@@ -8,6 +8,7 @@ import com.intelligentComments.ui.comments.model.content.example.ExampleSegmentU
 import com.intelligentComments.ui.comments.model.content.exceptions.ExceptionUiModel
 import com.intelligentComments.ui.comments.model.content.exceptions.GroupedExceptionUiModel
 import com.intelligentComments.ui.comments.model.content.image.ImageContentSegmentUiModel
+import com.intelligentComments.ui.comments.model.content.invariants.TextInvariantUiModel
 import com.intelligentComments.ui.comments.model.content.list.ListContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.paragraphs.ParagraphUiModel
 import com.intelligentComments.ui.comments.model.content.params.GroupedParamsUiModel
@@ -59,6 +60,7 @@ abstract class ContentSegmentUiModel(
         is SummaryContentSegment -> SummaryUiModel(project, parent, segment)
         is CodeSegment -> CodeSegmentUiModel(project, parent, segment)
         is ValueSegment -> ValueUiModel(project, parent, segment)
+        is TextInvariant -> TextInvariantUiModel(project, parent, segment)
         else -> throw IllegalArgumentException(segment.javaClass.name)
       }
     }

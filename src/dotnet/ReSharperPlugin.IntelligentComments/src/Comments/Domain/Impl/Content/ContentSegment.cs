@@ -136,3 +136,8 @@ public record TableCell(IContentSegments Content, TableCellProperties Properties
 public record CodeSegment(IHighlightedText Code, int HighlightingRequestId) : ICodeSegment;
 
 public record ImageContentSegment(IReference SourceReference, IHighlightedText Description) : IImageContentSegment;
+
+public record InvariantContentSegment(
+  IInvariantReference Reference,
+  IHighlightedText Name,
+  IHighlightedText Description) : IInvariantContentSegment;

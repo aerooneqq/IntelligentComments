@@ -1,4 +1,4 @@
-package com.intelligentComments.ui.comments.model.invariants
+package com.intelligentComments.ui.comments.model.content.invariants
 
 import com.intelligentComments.ui.colors.Colors
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase

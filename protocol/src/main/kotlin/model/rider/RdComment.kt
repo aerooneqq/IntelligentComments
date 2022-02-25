@@ -46,16 +46,6 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
   val RdMultilineComment = structdef extends RdCommentWithOneTextSegment {
   }
 
-  val RdIntelligentComment = structdef extends RdComment {
-    field("Date", PredefinedType.dateTime)
-    field("Content", RdIntelligentCommentContent.nullable).optional
-
-    field("Invariants", immutableList(RdInvariantContentSegment).nullable).optional
-    field("References", immutableList(RdReferenceContentSegment).nullable).optional
-    field("ToDos", immutableList(RdToDoContentSegment).nullable).optional
-    field("Hacks", immutableList(RdHackContentSegment).nullable).optional
-  }
-
   val RdContentSegment = basestruct { }
 
   val RdSegmentWithContent = basestruct extends RdContentSegment {
@@ -166,19 +156,21 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
     +"Bottom"
   }
 
-  val RdInvariant = basestruct { }
+  val RdInvariant = basestruct extends RdContentSegment { }
 
   val RdTextInvariant = structdef extends RdInvariant {
-    field("Text", PredefinedType.string)
+    field("Reference", RdInvariantReference)
+    field("Name", RdHighlightedText)
+    field("Description", RdHighlightedText)
     call("Evaluate", PredefinedType.int, PredefinedType.bool)
-  }
-
-  val RdInvariantContentSegment = structdef extends RdContentSegment {
-    field("Invariant", RdTextInvariant)
   }
 
   val RdReference = basestruct {
     field("RawValue", PredefinedType.string)
+  }
+
+  val RdInvariantReference = structdef extends RdReference {
+    field("InvariantName", PredefinedType.string)
   }
 
   val RdProxyReference = structdef extends RdReference {

@@ -20,7 +20,6 @@ public static class CommentsUtil
   {
     return commentBase switch
     {
-      IIntelligentComment intelligentComment => ToRdComment(intelligentComment),
       IDocComment docComment => ToRdComment(docComment),
       IGroupOfLineComments groupOfLineComments => groupOfLineComments.ToRdComment(),
       IMultilineComment multilineComment => multilineComment.ToRdComment(),
@@ -68,14 +67,7 @@ public static class CommentsUtil
     RdIntelligentCommentContent content = docComment.Content.ToRdContent();
     return new RdDocComment(content, docComment.GetRdRange());
   }
-
-  [NotNull]
-  private static RdComment ToRdComment([NotNull] this IIntelligentComment comment)
-  {
-    RdIntelligentCommentContent content = comment.Content.ToRdContent();
-    return new RdIntelligentComment(DateTime.Now, content, null, null, null, null, comment.GetRdRange());
-  }
-
+  
   [NotNull]
   private static RdIntelligentCommentContent ToRdContent([NotNull] this IIntelligentCommentContent content)
   {
@@ -113,8 +105,18 @@ public static class CommentsUtil
       ICodeSegment codeSegment => codeSegment.ToRdCodeSegment(),
       IValueSegment valueSegment => valueSegment.ToRdValue(),
       IImageContentSegment imageContentSegment => imageContentSegment.ToRdImage(),
+      IInvariantContentSegment contentSegment => contentSegment.ToRdInvariant(),
       _ => throw new ArgumentOutOfRangeException(segment.GetType().Name)
     };
+  }
+  
+  [NotNull]
+  private static RdTextInvariant ToRdInvariant([NotNull] this IInvariantContentSegment contentSegment)
+  {
+    return new RdTextInvariant(
+      contentSegment.Reference.ToRdReference(),
+      contentSegment.Name.ToRdHighlightedText(),
+      contentSegment.Description.ToRdHighlightedText());
   }
 
   [NotNull]
@@ -186,15 +188,15 @@ public static class CommentsUtil
   [NotNull]
   private static RdSeeAlsoLinkContentSegment ToRdSeeAlso([NotNull] this ISeeAlsoLinkContentSegment seeAlso)
   {
-    return new RdSeeAlsoLinkContentSegment(seeAlso.Reference.ToRdReference(),
-      seeAlso.HighlightedText.ToRdHighlightedText());
+    return new RdSeeAlsoLinkContentSegment(
+      seeAlso.Reference.ToRdReference(), seeAlso.HighlightedText.ToRdHighlightedText());
   }
 
   [NotNull]
   private static RdSeeAlsoMemberContentSegment ToRdSeeAlso([NotNull] this ISeeAlsoMemberContentSegment seeAlso)
   {
-    return new RdSeeAlsoMemberContentSegment(seeAlso.Reference.ToRdReference(),
-      seeAlso.HighlightedText.ToRdHighlightedText());
+    return new RdSeeAlsoMemberContentSegment(
+      seeAlso.Reference.ToRdReference(), seeAlso.HighlightedText.ToRdHighlightedText());
   }
 
   [NotNull]
@@ -206,8 +208,15 @@ public static class CommentsUtil
       ICodeEntityReference codeEntityReference => codeEntityReference.ToRdReference(),
       IExternalReference externalReference => externalReference.ToRdReference(),
       ILangWordReference langWordReference => langWordReference.ToRdReference(),
+      IInvariantReference invariantReference => invariantReference.ToRdReference(),
       _ => throw new ArgumentOutOfRangeException(reference.GetType().Name),
     };
+  }
+  
+  [NotNull]
+  private static RdInvariantReference ToRdReference([NotNull] this IInvariantReference reference)
+  {
+    return new RdInvariantReference(reference.InvariantName, reference.InvariantName);
   }
 
   [NotNull]

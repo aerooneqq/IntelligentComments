@@ -34,7 +34,7 @@ open class ContentSegmentFromRd(
         is RdSummarySegment -> SummaryContentSegmentFromRd(contentSegment, parent, project)
         is RdCodeContentSegment -> CodeSegmentFromRd(contentSegment, parent, project)
         is RdValueSegment -> ValueContentSegmentFromRd(contentSegment, parent, project)
-        is RdInvariantContentSegment -> InvariantContentSegmentFromRd(contentSegment, parent, project)
+        is RdTextInvariant -> TextInvariantFromRd(contentSegment, parent, project)
         is RdHackContentSegment -> HackWithTicketsContentSegmentFromRd(contentSegment, parent, project)
         is RdToDoContentSegment -> ToDoContentSegmentFromRd(contentSegment, parent, project)
         else -> throw IllegalArgumentException(contentSegment.toString())

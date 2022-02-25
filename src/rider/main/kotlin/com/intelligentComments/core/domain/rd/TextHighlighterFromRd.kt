@@ -46,16 +46,22 @@ private fun RdTextHighlighter.toIdeaHighlighterFromReSharper(
   parent: Parentable?,
 ): TextHighlighter {
   val textAttributes = tryGetTextAttributes(key) ?: return toIdeaHighlighterInternal(project, parent, null)
-  val textColor = textAttributes.foregroundColor?.darker() ?: return toIdeaHighlighterInternal(project, parent, null)
+
+  var textColor = when(EditorColorsManager.getInstance().isDarkEditor) {
+    true -> textAttributes.foregroundColor?.darker()
+    false -> textAttributes.foregroundColor?.brighter()
+  }
+
+  textColor = textColor ?: return toIdeaHighlighterInternal(project, parent, null)
   return toIdeaHighlighterInternal(project, parent, textColor)
 }
 
 fun tryGetTextAttributes(key: String): TextAttributes? {
   val scheme = EditorColorsManager.getInstance().globalScheme
-  val key = IdeaTextAttributesKey(null, key)
+  val ideaTextAttributesKey = IdeaTextAttributesKey(null, key)
 
   val host = TextAttributesRegistrationHost.getInstance()
-  return host.getTextAttributes(key, scheme)
+  return host.getTextAttributes(ideaTextAttributesKey, scheme)
 }
 
 class BackgroundStyleFromRd(rdBackgroundStyle: RdBackgroundStyle) : BackgroundStyle {

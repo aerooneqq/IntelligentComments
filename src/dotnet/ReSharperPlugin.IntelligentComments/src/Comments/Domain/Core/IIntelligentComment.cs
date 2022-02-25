@@ -39,8 +39,3 @@ public interface IDocComment : ICommentBase
 {
   [NotNull] IIntelligentCommentContent Content { get; }
 }
-
-public interface IIntelligentComment : ICommentBase
-{
-  [NotNull] IIntelligentCommentContent Content { get; }
-}

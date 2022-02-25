@@ -99,3 +99,15 @@ public interface IToDoContentSegment : IContentSegment
 {
   [NotNull] IToDo ToDo { get; }
 }
+
+public interface IInvariantContentSegment : IContentSegment
+{
+  [NotNull] IInvariantReference Reference { get; }
+  [NotNull] IHighlightedText Name { get; }
+  [NotNull] IHighlightedText Description { get; }
+}
+
+public interface IReferenceContentSegment : IContentSegment
+{
+  [NotNull] IReference Reference { get; }
+}

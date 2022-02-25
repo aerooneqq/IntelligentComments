@@ -1,11 +1,8 @@
 package com.intelligentComments.core.domain.core
 
-interface Invariant : UniqueEntity
+interface Invariant : ContentSegment
 
 interface TextInvariant : Invariant {
-  val text: String
-}
-
-interface TextInvariantContentSegment : ContentSegment {
-  val invariant: TextInvariant
+  val name: HighlightedText
+  val description: HighlightedText
 }

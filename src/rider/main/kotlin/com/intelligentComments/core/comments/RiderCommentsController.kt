@@ -302,7 +302,6 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
 fun CommentBase.createCommentUiModel(project: Project, editor: Editor): CommentUiModelBase {
   return when (val comment = this) {
     is DocComment -> DocCommentUiModel(comment, project, editor)
-    is IntelligentComment -> IntelligentCommentUiModel(project, comment)
     is CommentWithOneTextSegment -> CommentWithOneTextSegmentUiModel(comment, project, editor)
     else -> throw IllegalArgumentException(comment.javaClass.name)
   }
