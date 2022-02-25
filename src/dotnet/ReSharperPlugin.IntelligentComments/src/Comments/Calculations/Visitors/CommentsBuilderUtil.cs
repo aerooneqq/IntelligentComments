@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 using JetBrains.Annotations;
+using JetBrains.Diagnostics;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.ExtensionsAPI;
 using JetBrains.ReSharper.Psi.Tree;
@@ -185,5 +186,17 @@ internal static class CommentsBuilderUtil
   internal static bool IsReferenceSourceAttribute([CanBeNull] IXmlAttribute attribute)
   {
     return attribute?.AttributeName == ReferenceSourceAttrName;
+  }
+
+  [CanBeNull]
+  internal static IXmlAttribute TryGetInvariantAttribute([CanBeNull] IXmlTag invariantTag)
+  {
+    return invariantTag?.GetAttribute(InvariantNameAttrName);
+  }
+
+  internal static string GetInvariantName(IXmlAttribute attribute)
+  {
+    Assertion.Assert(attribute.AttributeName == InvariantNameAttrName, "attribute.AttributeName == InvariantNameAttrName");
+    return PreprocessText(attribute.UnquotedValue, null);
   }
 }

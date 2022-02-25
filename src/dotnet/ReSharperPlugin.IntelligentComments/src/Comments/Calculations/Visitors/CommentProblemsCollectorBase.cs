@@ -10,6 +10,8 @@ using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.ReSharper.Psi.Xml.Tree;
 using JetBrains.Util;
 using System.Linq;
+using JetBrains.ProjectModel;
+using ReSharperPlugin.IntelligentComments.Comments.Caches.Invariants;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Visitors;
 
@@ -146,7 +148,25 @@ public abstract class CommentProblemsCollectorBase : ICommentProblemsCollector
 
   private void ProcessInvariant([NotNull] IXmlTag invariantTag)
   {
-    CheckAttributePresenceAndNonEmptyValue(invariantTag, CommentsBuilderUtil.InvariantNameAttrName);
+    if (!CheckAttributePresenceAndNonEmptyValue(invariantTag, CommentsBuilderUtil.InvariantNameAttrName)) return;
+
+    CheckThatInvariantNameOccursOnce(invariantTag);
+  }
+
+  private bool CheckThatInvariantNameOccursOnce([NotNull] IXmlTag invariantTag)
+  {
+    var invariantNameAttribute = CommentsBuilderUtil.TryGetInvariantAttribute(invariantTag);
+    Assertion.AssertNotNull(invariantNameAttribute, "attribute != null");
+
+    var name = CommentsBuilderUtil.GetInvariantName(invariantNameAttribute);
+    var cache = invariantTag.GetSolution().GetComponent<InvariantsNamesCache>();
+    var invariantNameCount = cache.GetInvariantNameCount(name);
+
+    if (invariantNameCount == 1) return true;
+
+    var range = invariantNameAttribute.Value.GetDocumentRange();
+    AddError(range, $"The invariant name \"{name}\" must occur only once in solution");
+    return false;
   }
   
   public bool InteriorShouldBeProcessed(ITreeNode element, Context context) => true;

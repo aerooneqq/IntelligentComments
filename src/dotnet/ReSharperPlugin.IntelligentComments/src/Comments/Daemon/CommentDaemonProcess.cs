@@ -27,9 +27,9 @@ public class CommentDaemonProcess : IDaemonStageProcess
     
     foreach (var file in files)
     {
-      var collector = CommentsProcessorsProvider.CreateProcessorFor(file.Language);
-      file.ProcessThisAndDescendants(collector);
-      foreach (var (highlightingInfos, commentBase) in collector.ProcessedComments)
+      var processor = CommentsProcessorsProvider.CreateProcessorFor(file.Language);
+      file.ProcessThisAndDescendants(processor);
+      foreach (var (highlightingInfos, commentBase) in processor.ProcessedComments)
       {
         if (commentBase is { } comment)
         {
