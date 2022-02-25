@@ -9,24 +9,27 @@ using JetBrains.ReSharper.Psi.Xml.Tree;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Completion.CSharp;
 
-public class IntelligentCommentCodeCompletionContext : ISpecificCodeCompletionContext
+public class IntelligentCommentCompletionContext : ISpecificCodeCompletionContext
 {
-  public string ContextId => nameof(IntelligentCommentCodeCompletionContext);
+  public string ContextId => nameof(IntelligentCommentCompletionContext);
   public PsiLanguageType Language => CSharpLanguage.Instance;
   
   public CodeCompletionContext BasicContext { get; }
   [NotNull] public ITokenNode ContextToken { get; }
   [NotNull] public TextLookupRanges TextLookupRanges { get; }
+  [NotNull] public IDocCommentBlock DocCommentBlock { get; }
 
 
-  public IntelligentCommentCodeCompletionContext(
+  public IntelligentCommentCompletionContext(
     [NotNull] CodeCompletionContext basicContext, 
     [NotNull] ITokenNode contextToken,
-    [NotNull] TextLookupRanges textLookupRanges)
+    [NotNull] TextLookupRanges textLookupRanges,
+    [NotNull] IDocCommentBlock docCommentBlock)
   {
     BasicContext = basicContext;
     ContextToken = contextToken;
     TextLookupRanges = textLookupRanges;
+    DocCommentBlock = docCommentBlock;
   }
   
   
@@ -40,14 +43,20 @@ public class IntelligentCommentCodeCompletionContext : ISpecificCodeCompletionCo
 public static class IntelligentCommentCodeCompletionContextExtensions
 {
   [CanBeNull]
-  public static IXmlAttribute TryGetContextAttribute([NotNull] this IntelligentCommentCodeCompletionContext context)
+  public static IXmlAttribute TryGetContextAttribute([NotNull] this IntelligentCommentCompletionContext context)
   {
     return context.ContextToken.Parent as IXmlAttribute;
   }
 
   [NotNull] 
-  public static ISolution GetSolution([NotNull] this IntelligentCommentCodeCompletionContext context)
+  public static ISolution GetSolution([NotNull] this IntelligentCommentCompletionContext context)
   {
     return context.ContextToken.GetSolution();
+  }
+
+  [CanBeNull]
+  public static IDocCommentBlockOwner TryFindDocumentedEntity([NotNull] this IntelligentCommentCompletionContext context)
+  {
+    return context.DocCommentBlock.Parent as IDocCommentBlockOwner;
   }
 }

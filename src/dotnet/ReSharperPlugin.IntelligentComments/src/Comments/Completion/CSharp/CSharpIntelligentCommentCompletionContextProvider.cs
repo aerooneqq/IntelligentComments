@@ -6,12 +6,16 @@ using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.ReSharper.Psi.Xml.Tree;
 using System.Linq;
+using JetBrains.Util;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Completion.CSharp;
 
 [IntellisensePart]
 public class CSharpIntelligentCommentCompletionContextProvider : ICodeCompletionContextProvider
 {
+  [NotNull] private static readonly Key<IDocCommentBlock> ourDocCommentKey = new(nameof(ourDocCommentKey)); 
+  
+  
   public bool IsApplicable(CodeCompletionContext context)
   {
     return TryGetDocCommentBlock(context) is { };
@@ -27,12 +31,14 @@ public class CSharpIntelligentCommentCompletionContextProvider : ICodeCompletion
       node = node.Parent;
     }
 
-    return node as IDocCommentBlock;
+    var docCommentBlock = node as IDocCommentBlock;
+    context.PutData(ourDocCommentKey, docCommentBlock);
+    return docCommentBlock;
   }
 
   public ISpecificCodeCompletionContext GetCompletionContext(CodeCompletionContext context)
   {
-    var docCommentBlock = TryGetDocCommentBlock(context);
+    var docCommentBlock = context.GetData(ourDocCommentKey);
     Assertion.AssertNotNull(docCommentBlock, "docCommentBlock != null");
     
     var psiHelper = LanguageManager.Instance.GetService<IPsiHelper>(docCommentBlock.Language);
@@ -44,7 +50,7 @@ public class CSharpIntelligentCommentCompletionContextProvider : ICodeCompletion
     if (TryCreateTextLookupRanges(contextDocCommentNode) is not { } ranges) return null;
     if (!ranges.InsertRange.IsValid() || !ranges.ReplaceRange.IsValid()) return null;
     
-    return new IntelligentCommentCodeCompletionContext(context, contextDocCommentNode, ranges);
+    return new IntelligentCommentCompletionContext(context, contextDocCommentNode, ranges, docCommentBlock);
   }
   
   [CanBeNull]

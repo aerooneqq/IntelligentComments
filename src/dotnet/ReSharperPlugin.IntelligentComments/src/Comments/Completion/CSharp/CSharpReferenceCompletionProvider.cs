@@ -10,9 +10,9 @@ using ReSharperPlugin.IntelligentComments.Comments.Calculations.Visitors;
 namespace ReSharperPlugin.IntelligentComments.Comments.Completion.CSharp;
 
 [Language(typeof(CSharpLanguage))]
-public class CSharpReferenceCompletionProvider : ItemsProviderOfSpecificContext<IntelligentCommentCodeCompletionContext>
+public class CSharpReferenceCompletionProvider : ItemsProviderOfSpecificContext<IntelligentCommentCompletionContext>
 {
-  protected override bool AddLookupItems(IntelligentCommentCodeCompletionContext context, IItemsCollector collector)
+  protected override bool AddLookupItems(IntelligentCommentCompletionContext context, IItemsCollector collector)
   {
     var attribute = context.TryGetContextAttribute();
     if (!CommentsBuilderUtil.IsReferenceSourceAttribute(attribute)) return false;
