@@ -55,6 +55,7 @@ internal class TagLookupItem : TextLookupItemBase
   private readonly bool myClosedTag;
 
 
+  public sealed override string Text { get; set; }
   public override IconId Image => null;
 
 

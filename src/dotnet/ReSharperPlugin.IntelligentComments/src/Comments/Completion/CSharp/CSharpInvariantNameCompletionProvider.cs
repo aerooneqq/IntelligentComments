@@ -1,6 +1,6 @@
+using JetBrains.Annotations;
 using JetBrains.ReSharper.Feature.Services.CodeCompletion.Infrastructure;
 using JetBrains.ReSharper.Feature.Services.CodeCompletion.Infrastructure.LookupItems;
-using JetBrains.ReSharper.Feature.Services.CodeCompletion.Infrastructure.LookupItems.Impl;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.ReSharper.Psi.Tree;
@@ -17,9 +17,11 @@ public class CSharpInvariantNameCompletionProvider : ItemsProviderOfSpecificCont
     if (context.TryFindDocumentedEntity() is not IDeclaration declaration) return false;
 
     var name = declaration.DeclaredName + "::";
-    var item = new TextLookupItem(name);
+    var item = new CommentLookupItem(name);
     item.InitializeRanges(context.TextLookupRanges, context.BasicContext);
+    
     collector.Add(item);
+    
     return true;
   }
 }

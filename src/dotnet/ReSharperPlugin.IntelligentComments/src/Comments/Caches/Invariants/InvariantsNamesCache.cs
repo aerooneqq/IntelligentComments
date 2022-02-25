@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using JetBrains.Annotations;
+using JetBrains.Application.Progress;
 using JetBrains.Application.Threading;
 using JetBrains.Collections;
 using JetBrains.Diagnostics;
@@ -7,8 +8,8 @@ using JetBrains.Lifetimes;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Caches;
 using JetBrains.ReSharper.Psi.Files;
-using JetBrains.Util;
 using JetBrains.Util.PersistentMap;
+using System.Linq;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Caches.Invariants;
 
@@ -26,18 +27,18 @@ public class InvariantsNamesCache : SimpleICache<Dictionary<string, int>>
       collection => new Dictionary<string, int>(collection)
     );
 
-  [NotNull] private readonly Dictionary<int, int> myNameHashToCount;
+  [NotNull] private readonly Dictionary<string, int> myNamesToCount;
   
   public override string Version => "3";
-
   
+
   public InvariantsNamesCache(
     Lifetime lifetime,
     [NotNull] IShellLocks locks,
     [NotNull] IPersistentIndexManager persistentIndexManager)
     : base(lifetime, locks, persistentIndexManager, ourMarshaller)
   {
-    myNameHashToCount = new Dictionary<int, int>();
+    myNamesToCount = new Dictionary<string, int>();
   }
   
 
@@ -56,11 +57,6 @@ public class InvariantsNamesCache : SimpleICache<Dictionary<string, int>>
   private static IInvariantsProcessor GetProcessor([NotNull] PsiLanguageType languageType) =>
     LanguageManager.Instance.TryGetService<IInvariantsProcessor>(languageType);
   
-  private static int CalculateHashFor(string name)
-  {
-    return Hash.Create(name).Value;
-  }
-  
   public override void Merge(IPsiSourceFile sourceFile, object builtPart)
   {
     if (Map.TryGetValue(sourceFile, out var oldValue) && oldValue is { })
@@ -75,31 +71,42 @@ public class InvariantsNamesCache : SimpleICache<Dictionary<string, int>>
     
     base.Merge(sourceFile, builtPart);
   }
-  
+
+  public override object Load(IProgressIndicator progress, bool enablePersistence)
+  {
+    var obj = base.Load(progress, enablePersistence);
+    
+    foreach (var (_, namesCount) in Map)
+    {
+      IncreaseOrDecreaseCounts(namesCount, true);
+    }
+
+    return obj;
+  }
+
   private void IncreaseOrDecreaseCounts([NotNull] Dictionary<string, int> namesCount, bool increase)
   {
     foreach (var (name, count) in namesCount)
     {
-      var hash = CalculateHashFor(name);
-      var adjustedCount = increase ? count : -count;
-      if (!increase && !myNameHashToCount.ContainsKey(hash))
+      if (!increase && !myNamesToCount.ContainsKey(name))
       {
         return;
       }
 
-      if (increase && !myNameHashToCount.ContainsKey(hash))
+      if (increase && !myNamesToCount.ContainsKey(name))
       {
-        myNameHashToCount[hash] = 0;
+        myNamesToCount[name] = 0;
       }
 
-      Assertion.Assert(myNameHashToCount.ContainsKey(hash), "myNameHashToCount.ContainsKey(hash)");
+      Assertion.Assert(myNamesToCount.ContainsKey(name), "myNameHashToCount.ContainsKey(hash)");
       
-      myNameHashToCount[hash] += adjustedCount;
-      Assertion.Assert(myNameHashToCount[hash] >= 0, "myNameHashToCount[hash] > 0");
+      var adjustedCount = increase ? count : -count;
+      myNamesToCount[name] += adjustedCount;
+      Assertion.Assert(myNamesToCount[name] >= 0, "myNameHashToCount[hash] > 0");
 
-      if (myNameHashToCount[hash] == 0)
+      if (myNamesToCount[name] == 0)
       {
-        myNameHashToCount.Remove(hash);
+        myNamesToCount.Remove(name);
       }
     }
   }
@@ -111,14 +118,19 @@ public class InvariantsNamesCache : SimpleICache<Dictionary<string, int>>
     
     base.Drop(sourceFile);
   }
-  
+
   public int GetInvariantNameCount([NotNull] string name)
   {
-    if (myNameHashToCount.TryGetValue(CalculateHashFor(name), out var count))
+    if (myNamesToCount.TryGetValue(name, out var count))
     {
       return count;
     }
 
     return 0;
+  }
+  
+  public IEnumerable<string> GetAllInvariantsNames()
+  {
+    return myNamesToCount.Keys.ToList();
   }
 }

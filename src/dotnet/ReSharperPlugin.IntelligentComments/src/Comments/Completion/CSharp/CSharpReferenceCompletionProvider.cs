@@ -1,7 +1,6 @@
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Feature.Services.CodeCompletion.Infrastructure;
 using JetBrains.ReSharper.Feature.Services.CodeCompletion.Infrastructure.LookupItems;
-using JetBrains.ReSharper.Feature.Services.CodeCompletion.Infrastructure.LookupItems.Impl;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp;
 using ReSharperPlugin.IntelligentComments.Comments.Caches.Invariants;
@@ -18,9 +17,9 @@ public class CSharpReferenceCompletionProvider : ItemsProviderOfSpecificContext<
     if (!CommentsBuilderUtil.IsReferenceSourceAttribute(attribute)) return false;
 
     var cache = context.GetSolution().GetComponent<InvariantsNamesCache>();
-    foreach (var name in cache.Map[context.BasicContext.SourceFile])
+    foreach (var name in cache.GetAllInvariantsNames())
     {
-      var lookupItem = new TextLookupItem(name.Key);
+      var lookupItem = new CommentLookupItem(name);
       lookupItem.InitializeRanges(context.TextLookupRanges, context.BasicContext);
 
       collector.Add(lookupItem);
