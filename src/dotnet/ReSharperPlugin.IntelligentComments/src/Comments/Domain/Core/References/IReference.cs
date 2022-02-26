@@ -9,7 +9,7 @@ public interface IReference
   [NotNull] string RawValue { get; }
 
 
-  ResolveResult Resolve(IResolveContext context);
+  [NotNull] ResolveResult Resolve(IResolveContext context);
 }
 
 public interface IProxyReference : IReference

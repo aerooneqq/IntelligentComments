@@ -14,6 +14,7 @@ using JetBrains.Util;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl;
+using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.References;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Visitors;
 
@@ -210,8 +211,9 @@ internal static class CommentsBuilderUtil
   internal static TagInfo? TryExtractTagInfo(
     [NotNull] XmlElement element, 
     [NotNull] string attributeName,
-    IHighlightersProvider highlightersProvider,
-    [CanBeNull] Func<string, IReference> nameReferenceCreator = null)
+    [NotNull] IHighlightersProvider highlightersProvider,
+    [CanBeNull] Func<string, IReference> nameReferenceCreator = null,
+    [CanBeNull] Func<IReference, bool> referenceValidityChecker = null)
   {
     var name = element.GetAttribute(attributeName);
     if (name.IsNullOrWhitespace()) return null;
@@ -219,7 +221,20 @@ internal static class CommentsBuilderUtil
     var nameHighlighter = highlightersProvider.TryGetReSharperHighlighter(DefaultLanguageAttributeIds.DOC_COMMENT, name.Length);
     if (nameHighlighter is { } && nameReferenceCreator is { })
     {
-      nameHighlighter = nameHighlighter with { References = new[] { nameReferenceCreator(name) } };
+      var reference = nameReferenceCreator(name);
+      var isValid = referenceValidityChecker?.Invoke(reference) ?? true;
+
+      if (!isValid)
+      {
+        nameHighlighter = highlightersProvider.GetErrorHighlighter(0, name.Length);
+      }
+      
+      nameHighlighter = nameHighlighter with
+      {
+        Attributes = nameHighlighter.Attributes with { FontStyle = FontStyle.Italic },
+        References = new[] { nameReferenceCreator(name) },
+        TextAnimation = UnderlineTextAnimation.Instance
+      };
     }
     
     var nameText = new HighlightedText(name, nameHighlighter);

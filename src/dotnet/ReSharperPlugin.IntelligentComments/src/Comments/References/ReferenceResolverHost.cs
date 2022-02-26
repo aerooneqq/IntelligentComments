@@ -53,6 +53,7 @@ public class ReferenceResolverHost
 
 public static class ResolveResultExtensions
 {
+  [NotNull]
   public static RdResolveResult ToRdResolveResult([NotNull] this ResolveResult resolveResult)
   {
     return resolveResult switch

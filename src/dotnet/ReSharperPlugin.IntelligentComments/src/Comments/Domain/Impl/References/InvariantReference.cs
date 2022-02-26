@@ -56,9 +56,9 @@ public class InvariantReference : ReferenceBase, IInvariantReference
       {
         var invariantName = CommentsBuilderUtil.TryGetInvariantName(element);
         var provider = LanguageManager.Instance.GetService<IHighlightersProvider>(primaryPsiFile.Language);
-      
-        if (invariantName == InvariantName &&
-            DocCommentBuilderBase.TryBuildInvariantContentSegment(element, provider) is { } invariantContentSegment)
+        var invariant = DocCommentBuilderBase.TryBuildInvariantContentSegment(element, context.Solution, provider, false);
+        
+        if (invariantName == InvariantName && invariant is { } invariantContentSegment)
         {
           result = new InvariantResolveResult(invariantContentSegment);
         }

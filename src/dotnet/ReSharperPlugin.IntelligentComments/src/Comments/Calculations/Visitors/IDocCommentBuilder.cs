@@ -14,6 +14,7 @@ using JetBrains.Rider.Model;
 using JetBrains.Util;
 using JetBrains.Util.Logging;
 using ReSharperPlugin.IntelligentComments.Comments.Caches;
+using ReSharperPlugin.IntelligentComments.Comments.Caches.Invariants;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.CodeHighlighting;
 using ReSharperPlugin.IntelligentComments.Comments.CodeFragmentsHighlighting;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
@@ -128,8 +129,9 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
 
   protected override void VisitInvariant(XmlElement element)
   {
+    var solution = myResolveContext.Solution;
     if (!IsTopmostContext() ||
-        TryBuildInvariantContentSegment(element, myHighlightersProvider) is not { } invariant)
+        TryBuildInvariantContentSegment(element, solution, myHighlightersProvider, true) is not { } invariant)
     {
       return;
     }
@@ -139,16 +141,30 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
 
   [CanBeNull]
   public static IInvariantContentSegment TryBuildInvariantContentSegment(
-    [NotNull] XmlElement element,
-    [NotNull] IHighlightersProvider highlightersProvider)
+    [NotNull] XmlElement element, 
+    [NotNull] ISolution solution,
+    [NotNull] IHighlightersProvider highlightersProvider,
+    bool checkValidity)
   {
     const string attributeName = CommentsBuilderUtil.InvariantNameAttrName;
+    
     IReference CreateReference([NotNull] string name) => new InvariantReference(name);
+    bool IsReferenceValid(IReference reference) => checkValidity && CheckInvariantReferenceIsValid(reference, solution);
 
-    var tagInfo = CommentsBuilderUtil.TryExtractTagInfo(element, attributeName, highlightersProvider, CreateReference);
+    var tagInfo = CommentsBuilderUtil.TryExtractTagInfo(
+      element, attributeName, highlightersProvider, CreateReference, IsReferenceValid);
+    
     if (tagInfo is not var (nameText, descriptionText)) return null;
 
     return new InvariantContentSegment(nameText, descriptionText);
+  }
+
+  private static bool CheckInvariantReferenceIsValid([NotNull] IReference reference, [NotNull] ISolution solution)
+  {
+    if (reference is not IInvariantReference invariantReference) return false;
+
+    var cache = solution.GetComponent<InvariantsNamesCache>();
+    return cache.GetInvariantNameCount(invariantReference.InvariantName) == 1;
   }
   
   protected override void VisitReference(XmlElement element)
@@ -156,9 +172,13 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
     if (!IsTopmostContext()) return;
     
     const string attributeName = CommentsBuilderUtil.ReferenceSourceAttrName;
-    IReference CreateReference([NotNull] string name) => new InvariantReference(name);
     
-    var tagInfo = CommentsBuilderUtil.TryExtractTagInfo(element, attributeName, myHighlightersProvider, CreateReference);
+    IReference CreateReference([NotNull] string name) => new InvariantReference(name);
+    bool IsReferenceValid(IReference reference) => CheckInvariantReferenceIsValid(reference, myResolveContext.Solution);
+    
+    var tagInfo = CommentsBuilderUtil.TryExtractTagInfo(
+      element, attributeName, myHighlightersProvider, CreateReference, IsReferenceValid);
+    
     if (tagInfo is not var (nameText, descriptionText)) return;
 
     var reference = new InvariantReference(nameText.Text);

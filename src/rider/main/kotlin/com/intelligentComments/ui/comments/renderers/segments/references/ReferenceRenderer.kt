@@ -7,4 +7,4 @@ import com.intelligentComments.ui.core.Renderer
 
 interface ReferenceRenderer : Renderer, RectangleModelBuildContributor
 
-class ReferencesRendererImpl(private val model: ReferenceUiModel) : TextRendererBase(model.name), ReferenceRenderer
+class ReferencesRendererImpl(model: ReferenceUiModel) : TextRendererBase(model.name), ReferenceRenderer

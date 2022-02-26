@@ -86,7 +86,7 @@ fun getFirstLevelHeader(
   val colorsProvider = project.service<ColorsProvider>()
   val textColor = colorsProvider.getColorFor(Colors.TextInSectionsHeadersColor)
   val attributes = TextAttributesImpl(true, 600f, Font.PLAIN)
-  val highlighter = CommonsHighlightersFactory.createHighlighter(adjustedText.length, textColor, attributes)
+  val highlighter = CommonsHighlightersFactory.createHighlighter(adjustedText.length - 1, textColor, attributes)
 
   return HighlightedTextImpl(adjustedText, parent, listOf(highlighter))
 }

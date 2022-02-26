@@ -300,9 +300,7 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
     field("ResolveRequest", RdReferenceResolveRequest)
   }
 
-  val RdResolveResult = basestruct {
-
-  }
+  val RdResolveResult = basestruct { }
 
   val RdInvalidResolveResult = structdef extends RdResolveResult { }
 
