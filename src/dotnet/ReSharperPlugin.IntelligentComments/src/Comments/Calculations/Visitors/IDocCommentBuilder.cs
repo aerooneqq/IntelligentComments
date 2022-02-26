@@ -117,7 +117,7 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
 
     var reference = new FileReference(path);
     IHighlightedText description = HighlightedText.EmptyText;
-    if (ElementHasOneTextChild(element, out var text))
+    if (CommentsBuilderUtil.ElementHasOneTextChild(element, out var text))
     {
       description = new HighlightedText(text);
     }
@@ -128,28 +128,42 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
 
   protected override void VisitInvariant(XmlElement element)
   {
-    if (!IsTopmostContext()) return;
-    
-    var name = element.GetAttribute(CommentsBuilderUtil.InvariantNameAttrName);
-    if (name.IsNullOrWhitespace())
+    if (!IsTopmostContext() ||
+        TryBuildInvariantContentSegment(element, myHighlightersProvider) is not { } invariant)
     {
       return;
     }
-
-    var nameText = new HighlightedText(name);
-    var descriptionText = HighlightedText.CreateEmptyText();
-    if (ElementHasOneTextChild(element, out var description))
-    {
-      var (processedText, _) = PreprocessTextWithContext(description, element);
-      descriptionText.Add(new HighlightedText(processedText));
-    }
-
-    var invariant = new InvariantContentSegment(nameText, descriptionText);
+    
     ExecuteWithTopmostContentSegments(metadata => metadata.ContentSegments.Segments.Add(invariant));
   }
 
+  [CanBeNull]
+  public static IInvariantContentSegment TryBuildInvariantContentSegment(
+    [NotNull] XmlElement element,
+    [NotNull] IHighlightersProvider highlightersProvider)
+  {
+    const string attributeName = CommentsBuilderUtil.InvariantNameAttrName;
+    IReference CreateReference([NotNull] string name) => new InvariantReference(name);
+
+    var tagInfo = CommentsBuilderUtil.TryExtractTagInfo(element, attributeName, highlightersProvider, CreateReference);
+    if (tagInfo is not var (nameText, descriptionText)) return null;
+
+    return new InvariantContentSegment(nameText, descriptionText);
+  }
+  
   protected override void VisitReference(XmlElement element)
   {
+    if (!IsTopmostContext()) return;
+    
+    const string attributeName = CommentsBuilderUtil.ReferenceSourceAttrName;
+    IReference CreateReference([NotNull] string name) => new InvariantReference(name);
+    
+    var tagInfo = CommentsBuilderUtil.TryExtractTagInfo(element, attributeName, myHighlightersProvider, CreateReference);
+    if (tagInfo is not var (nameText, descriptionText)) return;
+
+    var reference = new InvariantReference(nameText.Text);
+    var referenceSegment = new ReferenceContentSegment(reference, nameText, descriptionText);
+    ExecuteWithTopmostContentSegments(metadata => metadata.ContentSegments.Segments.Add(referenceSegment));
   }
 
   public override void VisitSummary(XmlElement element)
@@ -176,7 +190,7 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
   public override void VisitC(XmlElement element)
   {
     VisitedNodes.Add(element);
-    if (ElementHasOneTextChild(element, out var value))
+    if (CommentsBuilderUtil.ElementHasOneTextChild(element, out var value))
     {
       (value, var length) = PreprocessTextWithContext(value, element);
       var highlighter = myHighlightersProvider.GetCXmlElementHighlighter(0, length);
@@ -191,19 +205,6 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
   private static TextProcessingResult PreprocessTextWithContext([NotNull] string text, [NotNull] XmlNode context)
   {
     return CommentsBuilderUtil.PreprocessTextWithContext(text, context);
-  }
-  
-  private static bool ElementHasOneTextChild([NotNull] XmlElement element, [NotNull] out string value)
-  {
-    var hasOneTextChild = element.ChildNodes.Count == 1 && element.FirstChild is XmlText { Value: { } };
-
-    value = hasOneTextChild switch
-    {
-      true => element.FirstChild.Value,
-      false => string.Empty
-    };
-
-    return hasOneTextChild;
   }
 
   private void AddHighlightedText([NotNull] string text, [NotNull] TextHighlighter highlighter)
@@ -400,7 +401,7 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
     [NotNull] Func<string, string, ISeeAlsoContentSegment> factory)
   {
     var attributeValue = element.GetAttribute(attributeName);
-    var innerText = ElementHasOneTextChild(element, out var text) ? text : null;
+    var innerText = CommentsBuilderUtil.ElementHasOneTextChild(element, out var text) ? text : null;
 
     var seeAlso = factory.Invoke(attributeValue, innerText);
     if (IsTopmostContext())
@@ -497,7 +498,7 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
       content = Present(declaredElement);
     }
     
-    if (ElementHasOneTextChild(element, out var text))
+    if (CommentsBuilderUtil.ElementHasOneTextChild(element, out var text))
     {
       content = text;
     }
@@ -610,7 +611,7 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
   public override void VisitCode(XmlElement element)
   {
     VisitedNodes.Add(element);
-    if (ElementHasOneTextChild(element, out var text))
+    if (CommentsBuilderUtil.ElementHasOneTextChild(element, out var text))
     {
       if (CanInlineCode(text))
       {

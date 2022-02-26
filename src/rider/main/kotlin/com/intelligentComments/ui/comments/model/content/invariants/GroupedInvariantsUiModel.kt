@@ -1,17 +1,13 @@
 package com.intelligentComments.ui.comments.model.content.invariants
 
 import com.intelligentComments.core.domain.core.*
-import com.intelligentComments.core.domain.impl.FrontendInvariantReferenceImpl
 import com.intelligentComments.core.domain.impl.GroupedInvariantsSegments
 import com.intelligentComments.core.domain.impl.HighlightedTextImpl
-import com.intelligentComments.ui.colors.Colors
-import com.intelligentComments.ui.colors.ColorsProvider
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intelligentComments.ui.comments.model.content.GroupedContentUiModel
 import com.intelligentComments.ui.comments.model.content.getFirstLevelHeader
 import com.intelligentComments.ui.comments.renderers.segments.invariants.GroupedInvariantsRenderer
 import com.intelligentComments.ui.core.Renderer
-import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 
 private const val InvariantsSectionName = "Invariants"
@@ -29,7 +25,9 @@ class GroupedInvariantsUiModel(
       override val parent: Parentable = model
       override val segments: Collection<ContentSegment> = listOf(object : UniqueEntityImpl(), TextContentSegment {
         override val parent: Parentable = model
-        override val highlightedText: HighlightedText = mergeInvariantsTexts(project, model.segments, this)
+        override val highlightedText: HighlightedText = mergeSegmentsTexts(
+          model.segments, this, { extractTextFromInvariant(it) }
+        )
       })
 
       override fun processSegments(strategy: ContentProcessingStrategy) {
@@ -43,25 +41,28 @@ class GroupedInvariantsUiModel(
   }
 }
 
-private fun mergeInvariantsTexts(
-  project: Project,
+private fun extractTextFromInvariant(segment: ContentSegment) = (segment as TextInvariantSegment).name
+
+fun mergeSegmentsTexts(
   segments: List<ContentSegment>,
-  parent: Parentable
+  parent: Parentable,
+  textSelector: (ContentSegment) -> HighlightedText
 ): HighlightedText {
   var text: HighlightedText = HighlightedTextImpl.createEmpty(parent)
   for (index in segments.indices) {
-    val invariant = segments[index] as TextInvariantSegment
+    val name = textSelector(segments[index])
 
-    val nameText = invariant.name.text
-    val nameParent = invariant.name.parent
-    val invariantColor = project.service<ColorsProvider>().getColorFor(Colors.TextDefaultColor)
-    val references = listOf(FrontendInvariantReferenceImpl(invariant))
-    val highlighter = TextHighlighterImpl(null, 0, nameText.length, invariantColor, references)
-
-    val nameWithHighlighter = HighlightedTextImpl(nameText, nameParent, highlighter)
-    text = text.mergeWith(nameWithHighlighter)
+    text = text.mergeWith(name)
     if (index < segments.size - 1) {
-      text = text.mergeWith(", ")
+      val delimiter = ", "
+      val firstHighlighter = name.highlighters.firstOrNull()
+
+      var highlighter: TextHighlighter? = null
+      if (firstHighlighter != null) {
+        highlighter = CommonsHighlightersFactory.createHighlighter(delimiter.length,  firstHighlighter.textColor)
+      }
+
+      text = text.mergeWith(HighlightedTextImpl(delimiter, highlighter))
     }
   }
 

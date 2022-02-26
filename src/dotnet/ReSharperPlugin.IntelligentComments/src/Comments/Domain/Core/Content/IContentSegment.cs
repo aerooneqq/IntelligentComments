@@ -109,4 +109,6 @@ public interface IInvariantContentSegment : IContentSegment
 public interface IReferenceContentSegment : IContentSegment
 {
   [NotNull] IReference Reference { get; }
+  [NotNull] IHighlightedText Name { get; }
+  [NotNull] IHighlightedText Description { get; }
 }

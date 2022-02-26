@@ -1,10 +1,8 @@
 using JetBrains.Annotations;
-using JetBrains.DocumentModel;
 using JetBrains.ProjectModel;
 using JetBrains.RdBackend.Common.Features.Documents;
 using JetBrains.RdBackend.Common.Features.Util.Ranges;
 using JetBrains.ReSharper.Psi;
-using JetBrains.ReSharper.Psi.Modules;
 using JetBrains.Rider.Backend.Features.Documents;
 using JetBrains.Rider.Backend.Features.TextControls;
 using JetBrains.Rider.Model;
@@ -32,8 +30,11 @@ public class RdReferenceConverter
     myPsiServices = psiServices;
     myDocumentHostBase = documentHost;
   }
-  
-  
+
+
+  [CanBeNull] public IReference TryGetReference([NotNull] RdReferenceResolveRequest request) =>
+    TryGetReference(request.Reference, request.TextControlId);
+
   [CanBeNull]
   public IReference TryGetReference([NotNull] RdReference reference, [NotNull] TextControlId textControlId)
   {
@@ -42,6 +43,7 @@ public class RdReferenceConverter
       RdProxyReference proxyReference => new ProxyReference(proxyReference.RealReferenceId),
       RdXmlDocCodeEntityReference xmlReference => TryGetXmlDocReference(textControlId, xmlReference),
       RdSandboxCodeEntityReference sandBoxReference => TryGetSandboxReference(sandBoxReference),
+      RdInvariantReference invariantReference => new InvariantReference(invariantReference.InvariantName),
       _ => null
     };
   }

@@ -1,13 +1,14 @@
 package com.intelligentComments.ui.comments.model.todo
 
 import com.intelligentComments.core.domain.core.*
+import com.intelligentComments.core.domain.impl.HighlightedTextImpl
 import com.intelligentComments.ui.colors.Colors
 import com.intelligentComments.ui.comments.model.ExpandableUiModel
 import com.intelligentComments.ui.comments.model.HeaderUiModel
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intelligentComments.ui.comments.model.content.ContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.ContentSegmentsUiModel
-import com.intelligentComments.ui.comments.model.references.ReferenceUiModel
+import com.intelligentComments.ui.comments.model.content.references.ReferenceUiModel
 import com.intelligentComments.ui.comments.model.tickets.TicketUiModel
 import com.intelligentComments.ui.comments.renderers.todos.ToDoWithTicketsRenderer
 import com.intelligentComments.ui.core.Renderer
@@ -29,6 +30,8 @@ class ToDoWithTicketsUiModel(
     ReferenceUiModel(project, this, object : UniqueEntityImpl(), ReferenceContentSegment {
       override val reference: Reference = it
       override val parent: Parentable = this
+      override val description: HighlightedText = HighlightedTextImpl.createEmpty(this)
+      override val name: HighlightedText = HighlightedTextImpl(it.rawValue, this)
     })
   }
 

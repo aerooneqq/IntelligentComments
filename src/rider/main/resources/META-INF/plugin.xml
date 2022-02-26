@@ -27,6 +27,7 @@
     <projectService serviceImplementation="com.intelligentComments.core.comments.navigation.CommentsNavigationHost" />
     <projectService serviceImplementation="com.intelligentComments.core.comments.docs.CommentsHoverDocManager" />
     <projectService serviceImplementation="com.intelligentComments.core.comments.popups.IntelligentCommentPopupManager" />
+    <projectService serviceImplementation="com.intelligentComments.core.comments.resolver.FrontendReferenceResolverHost" />
     
     <rdclient.highlighterModelSupport implementation="com.intelligentComments.core.markup.DocCommentsFoldingHighlightersSupport" />
 

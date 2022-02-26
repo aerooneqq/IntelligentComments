@@ -16,6 +16,7 @@ import com.intelligentComments.ui.comments.model.content.params.GroupedParamsUiM
 import com.intelligentComments.ui.comments.model.content.params.GroupedTypeParamsUiModel
 import com.intelligentComments.ui.comments.model.content.params.ParameterUiModel
 import com.intelligentComments.ui.comments.model.content.params.TypeParamUiModel
+import com.intelligentComments.ui.comments.model.content.references.GroupedReferencesUiModel
 import com.intelligentComments.ui.comments.model.content.remarks.GroupedRemarksUiModel
 import com.intelligentComments.ui.comments.model.content.remarks.RemarksUiModel
 import com.intelligentComments.ui.comments.model.content.`return`.GroupedReturnUiModel
@@ -57,6 +58,7 @@ abstract class ContentSegmentUiModel(
         is GroupedSummarySegments -> GroupedSummaryUiModel(project, parent, segment)
         is GroupedRemarksSegments -> GroupedRemarksUiModel(project, parent, segment)
         is GroupedInvariantsSegments -> GroupedInvariantsUiModel(project, parent, segment)
+        is GroupedReferencesSegments -> GroupedReferencesUiModel(project, parent, segment)
         is ExampleContentSegment -> ExampleSegmentUiModel(project, parent, segment)
         is SummaryContentSegment -> SummaryUiModel(project, parent, segment)
         is CodeSegment -> CodeSegmentUiModel(project, parent, segment)

@@ -41,6 +41,7 @@ class IntelligentCommentPopupManager(project: Project) : LifetimedService() {
     editor: Editor,
     relativePoint: RelativePoint
   ) {
+    application.assertIsDispatchThread()
     val popupLifetime = popupLifetimes.next()
     val popup = IntelligentCommentPopup(model, editor)
 

@@ -1,12 +1,18 @@
 package com.intelligentComments.core.comments.docs
 
-import com.intelligentComments.core.domain.core.CommentIdentifier
-import com.intelligentComments.core.domain.core.Reference
+import com.intelligentComments.core.comments.popups.IntelligentCommentPopupManager
+import com.intelligentComments.core.comments.resolver.FrontendReferenceResolverHost
+import com.intelligentComments.core.domain.core.*
+import com.intelligentComments.core.domain.rd.TextInvariantFromRdSegment
 import com.intelligentComments.core.domain.rd.toRdReference
+import com.intelligentComments.ui.comments.model.content.text.TextContentSegmentUiModel
 import com.intellij.codeInsight.documentation.DocumentationManager
+import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.editor.event.EditorMouseEvent
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiDocumentManager
+import com.intellij.ui.awt.RelativePoint
 import com.intellij.ui.popup.PopupFactoryImpl
 import com.intellij.util.application
 import com.jetbrains.rd.ide.model.*
@@ -29,6 +35,8 @@ class CommentClickDocHost(private val project: Project) : LifetimedService() {
   private val documentationManager = DocumentationManager.getInstance(project)
   private val psiDocumentManager = PsiDocumentManager.getInstance(project)
   private val quickDocHost = FrontendQuickDocHost.getInstance(project)
+  private val popupManager = project.service<IntelligentCommentPopupManager>()
+  private val referenceResolver = project.service<FrontendReferenceResolverHost>()
 
   private var myCurrentReference: Reference? = null
 
@@ -58,7 +66,8 @@ class CommentClickDocHost(private val project: Project) : LifetimedService() {
       return
     }
 
-    val request = RdCommentClickDocRequest(rdReference, textControlId)
+    val resolveRequest = RdReferenceResolveRequest(rdReference, textControlId)
+    val request = RdCommentClickDocRequest(resolveRequest)
     commentsModel.requestClickDoc.start(serviceLifetime, request).result.advise(serviceLifetime) {
       val sessionId = it.unwrap() ?: return@advise
       val quickDocSession = quickDocModel.quickDocSessions[sessionId] ?: return@advise
@@ -79,6 +88,23 @@ class CommentClickDocHost(private val project: Project) : LifetimedService() {
 
         editor.putUserData(PopupFactoryImpl.ANCHOR_POPUP_POINT, null)
       }
+    }
+  }
+
+  fun queueShowInvariantDoc(reference: InvariantReference, contextPoint: Point, e: EditorMouseEvent) {
+    referenceResolver.resolveInvariantReference(reference, e.editor) {
+      val invariantResolveResult = it as? RdInvariantResolveResult ?: return@resolveInvariantReference
+      val invariant = TextInvariantFromRdSegment(invariantResolveResult.invariant, null, project)
+
+      val textSegment = object : UniqueEntityImpl(), TextContentSegment {
+        override val highlightedText: HighlightedText = invariant.description
+        override val parent: Parentable? = null
+      }
+
+      val model = TextContentSegmentUiModel(project, null, textSegment)
+      val relativePoint = RelativePoint(e.mouseEvent.component, contextPoint)
+
+      popupManager.showPopupFor(model, e.editor, relativePoint)
     }
   }
 }

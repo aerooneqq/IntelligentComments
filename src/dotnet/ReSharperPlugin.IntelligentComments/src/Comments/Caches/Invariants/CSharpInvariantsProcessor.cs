@@ -1,5 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.Xml;
+using JetBrains.Annotations;
+using JetBrains.Diagnostics;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
@@ -16,16 +19,11 @@ public class CSharpInvariantsProcessor : TreeNodeVisitor<Dictionary<string, int>
     if (file is not ICSharpFile cSharpFile) return;
     foreach (var comment in cSharpFile.Descendants<IDocCommentBlock>().Collect())
     {
-      if (comment.GetXML(null) is not { } xml) return;
-
-      for (var node = xml.FirstChild; node is { }; node = node.NextSibling)
+      comment.ExecuteActionsWithInvariants(element =>
       {
-        if (node is not XmlElement xmlElement ||
-            CommentsBuilderUtil.TryGetInvariantName(xmlElement) is not { } invariantName)
-        {
-          continue;
-        }
-
+        var invariantName = CommentsBuilderUtil.TryGetInvariantName(element);
+        Assertion.AssertNotNull(invariantName, "invariantName != null");
+        
         if (invariantsCount.ContainsKey(invariantName))
         {
           ++invariantsCount[invariantName];
@@ -34,7 +32,27 @@ public class CSharpInvariantsProcessor : TreeNodeVisitor<Dictionary<string, int>
         {
           invariantsCount[invariantName] = 1;
         }
+      });
+    }
+  }
+}
+
+public static class CSharpInvariantsProcessorExtensions
+{
+  public static void ExecuteActionsWithInvariants(
+    [NotNull] this IDocCommentBlock commentBlock, [NotNull] Action<XmlElement> actionWithInvariant)
+  {
+    if (commentBlock.GetXML(null) is not { } xml) return;
+    
+    for (var node = xml.FirstChild; node is { }; node = node.NextSibling)
+    {
+      if (node is not XmlElement xmlElement ||
+          CommentsBuilderUtil.TryGetInvariantName(xmlElement) is not { } invariantName)
+      {
+        continue;
       }
+
+      actionWithInvariant(xmlElement);
     }
   }
 }

@@ -44,3 +44,8 @@ class GroupedInvariantsSegments(
   override val segments: List<InvariantSegment>,
   parent: Parentable?
 ) : GroupedSegmentsBase(parent), GroupedContentSegment<InvariantSegment>
+
+class GroupedReferencesSegments(
+  override val segments: List<ReferenceContentSegment>,
+  parent: Parentable?
+) : GroupedSegmentsBase(parent), GroupedContentSegment<ReferenceContentSegment>

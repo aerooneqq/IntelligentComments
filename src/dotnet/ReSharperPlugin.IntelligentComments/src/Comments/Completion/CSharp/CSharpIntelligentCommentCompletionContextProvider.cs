@@ -26,12 +26,8 @@ public class CSharpIntelligentCommentCompletionContextProvider : ICodeCompletion
   {
     var treeOffset = context.File.Translate(context.CaretDocumentOffset);
     var node = context.File.FindTokenAt(treeOffset);
-    while (node is { } and not IDocCommentBlock)
-    {
-      node = node.Parent;
-    }
-
-    var docCommentBlock = node as IDocCommentBlock;
+    var docCommentBlock = node?.TryFindDocCommentBlock();
+    
     context.PutData(ourDocCommentKey, docCommentBlock);
     return docCommentBlock;
   }
@@ -71,5 +67,19 @@ public class CSharpIntelligentCommentCompletionContextProvider : ICodeCompletion
     var range = contextToken.GetDocumentRange().TrimLeft(1).TrimRight(1);
     
     return new TextLookupRanges(range, range);
+  }
+}
+
+public static class CommentsCompletionExtensions 
+{
+  [CanBeNull]
+  public static IDocCommentBlock TryFindDocCommentBlock([NotNull] this ITreeNode node)
+  {
+    while (node is { } and not IDocCommentBlock)
+    {
+      node = node.Parent;
+    }
+    
+    return node as IDocCommentBlock;
   }
 }

@@ -20,6 +20,7 @@ open class ReferenceFromRd(reference: RdReference) : UniqueEntityImpl(), Referen
         is RdSandboxCodeEntityReference -> SandboxCodeEntityReferenceFromRd(project, reference)
         is RdHttpLinkReference -> HttpLinkReferenceFromRd(reference)
         is RdFileReference -> FileReferenceFromRd(reference)
+        is RdInvariantReference -> InvariantReferenceFromRd(reference)
         else -> throw IllegalArgumentException(reference.toString())
       }
     }
@@ -30,8 +31,7 @@ open class ReferenceFromRd(reference: RdReference) : UniqueEntityImpl(), Referen
 
 open class XmlDocCodeEntityReferenceFromRd(
   reference: RdXmlDocCodeEntityReference
-) : ReferenceFromRd(reference), XmlDocCodeEntityReference {
-}
+) : ReferenceFromRd(reference), XmlDocCodeEntityReference
 
 open class SandboxCodeEntityReferenceFromRd(
   private val project: Project,
@@ -66,6 +66,7 @@ fun Reference.toRdReference(project: Project): RdReference {
       range.toRdTextRange(),
       rawValue
     )
+    is InvariantReference -> RdInvariantReference(this.name, this.name)
     else -> throw IllegalArgumentException(this.javaClass.name)
   }
 }
@@ -76,8 +77,14 @@ class ReferenceContentSegmentFromRd(
   project: Project
 ) : ContentSegmentFromRd(contentSegment, parent), ReferenceContentSegment {
   override val reference: Reference = ReferenceFromRd.getFrom(project, contentSegment.reference)
+  override val description: HighlightedText = contentSegment.description.toIdeaHighlightedText(project, this)
+  override val name: HighlightedText = contentSegment.name.toIdeaHighlightedText(project, this)
 }
 
 class FileReferenceFromRd(reference: RdFileReference) : ExternalReferenceFromRd(reference), FileReference {
   override val file: File? = try { File(reference.path) } catch (e: Exception) { null }
+}
+
+class InvariantReferenceFromRd(reference: RdInvariantReference) : ReferenceFromRd(reference), InvariantReference {
+  override val name: String = reference.invariantName
 }

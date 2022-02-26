@@ -46,14 +46,16 @@ object CommonsHighlightersFactory {
   fun createHighlighter(
     length: Int,
     color: Color,
-    attributes: TextAttributes = TextAttributesImpl.defaultAttributes
+    attributes: TextAttributes = TextAttributesImpl.defaultAttributes,
+    references: List<Reference> = listOf()
   ): TextHighlighter {
     return TextHighlighterImpl(
       null,
       0,
       length,
       color,
-      attributes = attributes
+      attributes = attributes,
+      references = references
     )
   }
 }

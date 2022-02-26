@@ -13,6 +13,7 @@ class ContentProcessingStrategyImpl : ContentProcessingStrategy {
     val settings = RiderIntelligentCommentsSettingsProvider.getInstance()
     removeEmptyRowsAndColsFromTables(settings, segments)
     removeInvalidSegments(segments)
+    moveReferencesAndInvariantsToBottom(segments)
 
     groupSeeAlsoIfNeeded(settings, segments)
     groupReturnsIfNeeded(settings, segments)
@@ -21,7 +22,9 @@ class ContentProcessingStrategyImpl : ContentProcessingStrategy {
     groupExceptionsIfNeeded(settings, segments)
     groupSummaryIfNeeded(settings, segments)
     groupRemarksIfNeeded(settings, segments)
+
     groupInvariants(segments)
+    groupReferences(segments)
   }
 
   private fun groupSeeAlsoIfNeeded(
@@ -100,6 +103,12 @@ class ContentProcessingStrategyImpl : ContentProcessingStrategy {
     groupSegmentsOfType<InvariantSegment>(segments) { GroupedInvariantsSegments(it, segments.first().parent) }
   }
 
+  private fun groupReferences(
+    segments: MutableList<ContentSegment>
+  ) {
+    groupSegmentsOfType<ReferenceContentSegment>(segments) { GroupedReferencesSegments(it, segments.first().parent )}
+  }
+
   private fun removeEmptyRowsAndColsFromTables(
     settings: RiderIntelligentCommentsSettingsProvider,
     segments: MutableList<ContentSegment>
@@ -115,5 +124,17 @@ class ContentProcessingStrategyImpl : ContentProcessingStrategy {
 
   private fun removeInvalidSegments(segments: MutableList<ContentSegment>) {
     removeContentSegmentsRecursively(segments) { !it.isValid() }
+  }
+
+  private fun moveReferencesAndInvariantsToBottom(segments: MutableList<ContentSegment>) {
+    val segmentsToAddToTail = mutableListOf<ContentSegment>()
+    for (segment in segments) {
+      if (segment is ReferenceContentSegment || segment is InvariantSegment) {
+        segmentsToAddToTail.add(segment)
+      }
+    }
+
+    segments.removeAll(segmentsToAddToTail)
+    segments.addAll(segmentsToAddToTail)
   }
 }

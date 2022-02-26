@@ -64,7 +64,7 @@ public static class CommentsUtil
   [NotNull]
   private static RdComment ToRdComment([NotNull] this IDocComment docComment)
   {
-    RdIntelligentCommentContent content = docComment.Content.ToRdContent();
+    var content = docComment.Content.ToRdContent();
     return new RdDocComment(content, docComment.GetRdRange());
   }
   
@@ -106,12 +106,23 @@ public static class CommentsUtil
       IValueSegment valueSegment => valueSegment.ToRdValue(),
       IImageContentSegment imageContentSegment => imageContentSegment.ToRdImage(),
       IInvariantContentSegment contentSegment => contentSegment.ToRdInvariant(),
+      IReferenceContentSegment contentSegment => contentSegment.ToRdReferenceSegment(),
       _ => throw new ArgumentOutOfRangeException(segment.GetType().Name)
     };
   }
+
+  [NotNull]
+  private static RdReferenceContentSegment ToRdReferenceSegment([NotNull] this IReferenceContentSegment contentSegment)
+  {
+    return new RdReferenceContentSegment(
+      contentSegment.Reference.ToRdReference(),
+      contentSegment.Name.ToRdHighlightedText(),
+      contentSegment.Description.ToRdHighlightedText()
+    );
+  }
   
   [NotNull]
-  private static RdTextInvariant ToRdInvariant([NotNull] this IInvariantContentSegment contentSegment)
+  public static RdTextInvariant ToRdInvariant([NotNull] this IInvariantContentSegment contentSegment)
   {
     return new RdTextInvariant(
       contentSegment.Name.ToRdHighlightedText(), contentSegment.Description.ToRdHighlightedText());
@@ -299,7 +310,7 @@ public static class CommentsUtil
   [NotNull]
   public static RdHighlightedText ToRdHighlightedText([NotNull] this IHighlightedText text)
   {
-    List<RdTextHighlighter> rdHighlighters = text.Highlighters.Select(highlighter => highlighter.ToRdHighlighter()).ToList();
+    var rdHighlighters = text.Highlighters.Select(highlighter => highlighter.ToRdHighlighter()).ToList();
     return new RdHighlightedText(text.Text, rdHighlighters);
   }
 
@@ -362,11 +373,11 @@ public static class CommentsUtil
     var items = new List<RdListItem>();
     foreach (var item in listSegment.Items)
     {
-      RdContentSegments rdHeader = item.Header is { } header && header.ContentSegments.Segments.Count > 0
+      var rdHeader = item.Header is { } header && header.ContentSegments.Segments.Count > 0
         ? item.Header.ContentSegments.ToRdContentSegments()
         : null;
 
-      RdContentSegments rdDescription = item.Content is { } content && content.ContentSegments.Segments.Count > 0
+      var rdDescription = item.Content is { } content && content.ContentSegments.Segments.Count > 0
         ? item.Content.ContentSegments.ToRdContentSegments()
         : null;
 

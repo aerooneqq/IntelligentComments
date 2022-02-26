@@ -37,6 +37,7 @@ open class ContentSegmentFromRd(
         is RdTextInvariant -> TextInvariantFromRdSegment(contentSegment, parent, project)
         is RdHackContentSegment -> HackWithTicketsContentSegmentFromRd(contentSegment, parent, project)
         is RdToDoContentSegment -> ToDoContentSegmentFromRd(contentSegment, parent, project)
+        is RdReferenceContentSegment -> ReferenceContentSegmentFromRd(contentSegment, parent, project)
         else -> throw IllegalArgumentException(contentSegment.toString())
       }
     }

@@ -8,12 +8,6 @@ interface Reference : UniqueEntity {
   val rawValue: String
 }
 
-interface FrontendReference : Reference
-
-interface FrontendInvariantReference : FrontendReference {
-  val invariant: TextInvariantSegment
-}
-
 interface BackendReference : Reference
 
 interface ProxyReference : BackendReference {
@@ -40,6 +34,12 @@ interface FileReference : ExternalReference {
   val file: File?
 }
 
+interface InvariantReference : BackendReference {
+  val name: String
+}
+
 interface ReferenceContentSegment : ContentSegment {
   val reference: Reference
+  val name: HighlightedText
+  val description: HighlightedText
 }

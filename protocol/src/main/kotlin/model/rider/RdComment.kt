@@ -198,6 +198,8 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
 
   val RdReferenceContentSegment = structdef extends RdContentSegment {
     field("Reference", RdReference)
+    field("Name", RdHighlightedText)
+    field("Description", RdHighlightedText)
   }
 
   val RdHighlightedText = structdef {
@@ -286,18 +288,32 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
   }
 
   val RdCommentClickDocRequest = structdef {
+    field("ResolveRequest", RdReferenceResolveRequest)
+  }
+
+  val RdReferenceResolveRequest = structdef {
     field("Reference", RdReference)
     field("TextControlId", TextControlId)
   }
 
   val RdNavigationRequest = structdef {
-    field("Reference", RdReference)
-    field("TextControlId", TextControlId)
+    field("ResolveRequest", RdReferenceResolveRequest)
+  }
+
+  val RdResolveResult = basestruct {
+
+  }
+
+  val RdInvalidResolveResult = structdef extends RdResolveResult { }
+
+  val RdInvariantResolveResult = structdef extends RdResolveResult {
+    field("Invariant", RdTextInvariant)
   }
 
   init {
     call("HighlightCode", RdCodeHighlightingRequest, RdHighlightedText.nullable)
     call("RequestClickDoc", RdCommentClickDocRequest, PredefinedType.int.nullable)
     call("PerformNavigation", RdNavigationRequest, PredefinedType.void)
+    call("ResolveReference", RdReferenceResolveRequest, RdResolveResult)
   }
 }

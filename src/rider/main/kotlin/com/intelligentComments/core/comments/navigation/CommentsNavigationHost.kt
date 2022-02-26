@@ -1,15 +1,10 @@
 package com.intelligentComments.core.comments.navigation
 
-import com.intelligentComments.core.domain.core.CodeEntityReference
-import com.intelligentComments.core.domain.core.ProxyReference
 import com.intelligentComments.core.domain.core.Reference
 import com.intelligentComments.core.domain.rd.toRdReference
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
-import com.jetbrains.rd.ide.model.RdCodeEntityReference
-import com.jetbrains.rd.ide.model.RdNavigationRequest
-import com.jetbrains.rd.ide.model.RdProxyReference
-import com.jetbrains.rd.ide.model.rdCommentsModel
+import com.jetbrains.rd.ide.model.*
 import com.jetbrains.rd.platform.util.getLogger
 import com.jetbrains.rd.platform.util.idea.LifetimedService
 import com.jetbrains.rdclient.document.textControlId
@@ -33,7 +28,8 @@ class CommentsNavigationHost(private val project: Project) : LifetimedService() 
       return
     }
 
-    val request = RdNavigationRequest(rdReference, textControlId)
+    val resolveRequest = RdReferenceResolveRequest(rdReference, textControlId)
+    val request = RdNavigationRequest(resolveRequest)
     model.performNavigation.start(serviceLifetime, request)
   }
 }

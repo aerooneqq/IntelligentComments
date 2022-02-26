@@ -1,17 +1,24 @@
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 using JetBrains.Annotations;
 using JetBrains.Diagnostics;
+using JetBrains.ReSharper.Feature.Services.Daemon.Attributes;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.ExtensionsAPI;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.ReSharper.Psi.Util;
 using JetBrains.ReSharper.Psi.Xml.Tree;
+using JetBrains.Util;
+using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
+using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
+using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Visitors;
 
 internal record struct TextProcessingResult(string ProcessedText, int EffectiveLength);
+internal record struct TagInfo([NotNull] IHighlightedText NameText, [NotNull] IHighlightedText DescriptionText);
 
 internal static class CommentsBuilderUtil
 {
@@ -198,5 +205,45 @@ internal static class CommentsBuilderUtil
   {
     Assertion.Assert(attribute.AttributeName == InvariantNameAttrName, "attribute.AttributeName == InvariantNameAttrName");
     return PreprocessText(attribute.UnquotedValue, null);
+  }
+  
+  internal static TagInfo? TryExtractTagInfo(
+    [NotNull] XmlElement element, 
+    [NotNull] string attributeName,
+    IHighlightersProvider highlightersProvider,
+    [CanBeNull] Func<string, IReference> nameReferenceCreator = null)
+  {
+    var name = element.GetAttribute(attributeName);
+    if (name.IsNullOrWhitespace()) return null;
+
+    var nameHighlighter = highlightersProvider.TryGetReSharperHighlighter(DefaultLanguageAttributeIds.DOC_COMMENT, name.Length);
+    if (nameHighlighter is { } && nameReferenceCreator is { })
+    {
+      nameHighlighter = nameHighlighter with { References = new[] { nameReferenceCreator(name) } };
+    }
+    
+    var nameText = new HighlightedText(name, nameHighlighter);
+    var descriptionText = HighlightedText.CreateEmptyText();
+    if (ElementHasOneTextChild(element, out var description))
+    {
+      var (processedText, length) = PreprocessTextWithContext(description, element);
+      var descriptionHighlighter = highlightersProvider.TryGetReSharperHighlighter(DefaultLanguageAttributeIds.DOC_COMMENT, length);
+      descriptionText.Add(new HighlightedText(processedText, descriptionHighlighter));
+    }
+
+    return new TagInfo(nameText, descriptionText);
+  }
+  
+  internal static bool ElementHasOneTextChild([NotNull] XmlElement element, [NotNull] out string value)
+  {
+    var hasOneTextChild = element.ChildNodes.Count == 1 && element.FirstChild is XmlText { Value: { } };
+
+    value = hasOneTextChild switch
+    {
+      true => element.FirstChild.Value,
+      false => string.Empty
+    };
+
+    return hasOneTextChild;
   }
 }
