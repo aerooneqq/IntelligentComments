@@ -11,9 +11,15 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Calculations;
 
 public interface IHighlightersProvider
 {
-  [CanBeNull] TextHighlighter TryGetReSharperHighlighter([NotNull] string resharperAttributeId, int length);
-  [CanBeNull] TextHighlighter TryGetReSharperHighlighter(
-    int textLength, [NotNull] IReference reference, [NotNull] IResolveContext context);
+  [CanBeNull] 
+  TextHighlighter TryGetReSharperHighlighter([NotNull] string resharperAttributeId, int length);
+  
+  [CanBeNull] 
+  TextHighlighter TryGetReSharperHighlighter(int textLength, [NotNull] IReference reference, [NotNull] IResolveContext context);
+
+  [CanBeNull] 
+  TextHighlighter TryGetDocCommentHighlighterWithErrorSquiggles(int length);
+  
   
   [NotNull] TextHighlighter GetCXmlElementHighlighter(int startOffset, int endOffset);
   [NotNull] TextHighlighter GetParamRefElementHighlighter(int startOffset, int endOffset);
@@ -22,9 +28,7 @@ public interface IHighlightersProvider
   [NotNull] TextHighlighter GetSeeCodeEntityHighlighter(int startOffset, int endOffset);
   [NotNull] TextHighlighter GetSeeHttpLinkHighlighter(int startOffset, int endOffset);
   [NotNull] TextHighlighter GetSeeLangWordHighlighter(int startOffset, int endOffset);
-
   [NotNull] TextHighlighter GetExceptionHighlighter(int startOffset, int endOffset);
-
   [NotNull] TextHighlighter GetErrorHighlighter(int startOffset, int endOffset);
   
   
@@ -68,16 +72,38 @@ public abstract class HighlightersProvider : IHighlightersProvider
   }
 
   
-  public TextHighlighter GetCXmlElementHighlighter(int startOffset, int endOffset) => Get(CElementKey, startOffset, endOffset);
-  public TextHighlighter GetParamRefElementHighlighter(int startOffset, int endOffset) => Get(ParamRefKey, startOffset, endOffset);
-  public TextHighlighter GetSeeAlsoLinkHighlighter(int startOffset, int endOffset) => Get(SeeAlsoLinkKey, startOffset, endOffset);
-  public TextHighlighter GetSeeAlsoMemberHighlighter(int startOffset, int endOffset) => Get(SeeAlsoMemberKey, startOffset, endOffset);
-  public TextHighlighter GetSeeCodeEntityHighlighter(int startOffset, int endOffset) => Get(SeeCodeEntityKey, startOffset, endOffset);
-  public TextHighlighter GetSeeHttpLinkHighlighter(int startOffset, int endOffset) => Get(SeeHttpKey, startOffset, endOffset);
-  public TextHighlighter GetSeeLangWordHighlighter(int startOffset, int endOffset) => Get(SeeLangWord, startOffset, endOffset);
-  public TextHighlighter GetExceptionHighlighter(int startOffset, int endOffset) => Get(Exception, startOffset, endOffset);
+  public TextHighlighter GetCXmlElementHighlighter(int startOffset, int endOffset) => 
+    Get(CElementKey, startOffset, endOffset);
+  public TextHighlighter GetParamRefElementHighlighter(int startOffset, int endOffset) => 
+    Get(ParamRefKey, startOffset, endOffset);
+  public TextHighlighter GetSeeAlsoLinkHighlighter(int startOffset, int endOffset) => 
+    Get(SeeAlsoLinkKey, startOffset, endOffset);
+  public TextHighlighter GetSeeAlsoMemberHighlighter(int startOffset, int endOffset) => 
+    Get(SeeAlsoMemberKey, startOffset, endOffset);
+  public TextHighlighter GetSeeCodeEntityHighlighter(int startOffset, int endOffset) => 
+    Get(SeeCodeEntityKey, startOffset, endOffset);
+  public TextHighlighter GetSeeHttpLinkHighlighter(int startOffset, int endOffset) => 
+    Get(SeeHttpKey, startOffset, endOffset);
+  public TextHighlighter GetSeeLangWordHighlighter(int startOffset, int endOffset) => 
+    Get(SeeLangWord, startOffset, endOffset);
+  public TextHighlighter GetExceptionHighlighter(int startOffset, int endOffset) => 
+    Get(Exception, startOffset, endOffset);
 
   public TextHighlighter GetErrorHighlighter(int startOffset, int endOffset) => Get(ErrorElementKey, startOffset, endOffset);
+
+  public TextHighlighter TryGetDocCommentHighlighterWithErrorSquiggles(int length)
+  {
+    if (TryGetReSharperHighlighter(DefaultLanguageAttributeIds.DOC_COMMENT, length) is not { } highlighter)
+    {
+      return null;
+    }
+
+    return highlighter with
+    {
+      Squiggles = new Squiggles(SquigglesKind.Wave, ErrorElementKey)
+    };
+  }
+  
   
   private static TextHighlighter Get(string key, int startOffset, int endOffset) =>
     new(key, startOffset, endOffset, TextHighlighterAttributes.DefaultAttributes, TextAnimation: UnderlineTextAnimation.Instance);

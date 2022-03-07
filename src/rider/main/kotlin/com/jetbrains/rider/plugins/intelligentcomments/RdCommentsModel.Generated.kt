@@ -72,6 +72,8 @@ class RdCommentsModel private constructor(
             serializers.register(RdReferenceContentSegment)
             serializers.register(RdHighlightedText)
             serializers.register(RdTextHighlighter)
+            serializers.register(RdSquiggles)
+            serializers.register(RdSquigglesKind.marshaller)
             serializers.register(RdTextAttributes)
             serializers.register(RdBackgroundStyle)
             serializers.register(RdColor)
@@ -111,7 +113,7 @@ class RdCommentsModel private constructor(
         private val __RdHighlightedTextNullableSerializer = RdHighlightedText.nullable()
         private val __IntNullableSerializer = FrameworkMarshallers.Int.nullable()
         
-        const val serializationHash = 5997960915538853793L
+        const val serializationHash = -2116475751685036988L
         
     }
     override val serializersOwner: ISerializersOwner get() = RdCommentsModel
@@ -188,7 +190,7 @@ enum class ListKind {
 
 
 /**
- * #### Generated from [RdComment.kt:227]
+ * #### Generated from [RdComment.kt:238]
  */
 data class RdBackgroundStyle (
     val backgroundColor: RdColor,
@@ -416,7 +418,7 @@ class RdCodeEntityReference_Unknown (
 
 
 /**
- * #### Generated from [RdComment.kt:286]
+ * #### Generated from [RdComment.kt:297]
  */
 data class RdCodeHighlightingRequest (
     val id: Int
@@ -473,7 +475,7 @@ data class RdCodeHighlightingRequest (
 
 
 /**
- * #### Generated from [RdComment.kt:233]
+ * #### Generated from [RdComment.kt:244]
  */
 data class RdColor (
     val hex: String
@@ -561,7 +563,7 @@ abstract class RdComment (
 
 
 /**
- * #### Generated from [RdComment.kt:290]
+ * #### Generated from [RdComment.kt:301]
  */
 data class RdCommentClickDocRequest (
     val resolveRequest: RdReferenceResolveRequest
@@ -1553,7 +1555,7 @@ class RdFileReference (
 
 
 /**
- * #### Generated from [RdComment.kt:247]
+ * #### Generated from [RdComment.kt:258]
  */
 enum class RdFontStyle {
     Regular, 
@@ -1568,7 +1570,7 @@ enum class RdFontStyle {
 
 
 /**
- * #### Generated from [RdComment.kt:239]
+ * #### Generated from [RdComment.kt:250]
  */
 class RdForegroundColorAnimation (
     val hoveredColor: RdColor
@@ -1696,7 +1698,7 @@ class RdGroupOfLineComments (
 
 
 /**
- * #### Generated from [RdComment.kt:272]
+ * #### Generated from [RdComment.kt:283]
  */
 abstract class RdHack (
     val name: String,
@@ -1731,7 +1733,7 @@ abstract class RdHack (
 
 
 /**
- * #### Generated from [RdComment.kt:282]
+ * #### Generated from [RdComment.kt:293]
  */
 class RdHackContentSegment (
     val hack: RdHackWithTickets
@@ -1791,7 +1793,7 @@ class RdHackContentSegment (
 
 
 /**
- * #### Generated from [RdComment.kt:278]
+ * #### Generated from [RdComment.kt:289]
  */
 class RdHackWithTickets (
     val tickets: List<RdTicket>,
@@ -2278,7 +2280,7 @@ class RdInvalidComment (
 
 
 /**
- * #### Generated from [RdComment.kt:307]
+ * #### Generated from [RdComment.kt:316]
  */
 class RdInvalidResolveResult (
 ) : RdResolveResult (
@@ -2427,7 +2429,7 @@ class RdInvariantReference (
 
 
 /**
- * #### Generated from [RdComment.kt:309]
+ * #### Generated from [RdComment.kt:318]
  */
 class RdInvariantResolveResult (
     val invariant: RdTextInvariant
@@ -2803,7 +2805,7 @@ class RdMultilineComment (
 
 
 /**
- * #### Generated from [RdComment.kt:299]
+ * #### Generated from [RdComment.kt:310]
  */
 data class RdNavigationRequest (
     val resolveRequest: RdReferenceResolveRequest
@@ -3061,7 +3063,7 @@ class RdParam_Unknown (
 
 
 /**
- * #### Generated from [RdComment.kt:243]
+ * #### Generated from [RdComment.kt:254]
  */
 class RdPredefinedForegroundColorAnimation (
     val key: String
@@ -3291,7 +3293,7 @@ class RdReferenceContentSegment (
 
 
 /**
- * #### Generated from [RdComment.kt:294]
+ * #### Generated from [RdComment.kt:305]
  */
 data class RdReferenceResolveRequest (
     val reference: RdReference,
@@ -3475,7 +3477,7 @@ class RdRemarksSegment (
 
 
 /**
- * #### Generated from [RdComment.kt:303]
+ * #### Generated from [RdComment.kt:314]
  */
 abstract class RdResolveResult (
 ) : IPrintable {
@@ -4014,6 +4016,83 @@ class RdSegmentWithContent_Unknown (
 
 
 /**
+ * #### Generated from [RdComment.kt:222]
+ */
+data class RdSquiggles (
+    val kind: RdSquigglesKind,
+    val colorKey: String
+) : IPrintable {
+    //companion
+    
+    companion object : IMarshaller<RdSquiggles> {
+        override val _type: KClass<RdSquiggles> = RdSquiggles::class
+        
+        @Suppress("UNCHECKED_CAST")
+        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdSquiggles  {
+            val kind = buffer.readEnum<RdSquigglesKind>()
+            val colorKey = buffer.readString()
+            return RdSquiggles(kind, colorKey)
+        }
+        
+        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: RdSquiggles)  {
+            buffer.writeEnum(value.kind)
+            buffer.writeString(value.colorKey)
+        }
+        
+        
+    }
+    //fields
+    //methods
+    //initializer
+    //secondary constructor
+    //equals trait
+    override fun equals(other: Any?): Boolean  {
+        if (this === other) return true
+        if (other == null || other::class != this::class) return false
+        
+        other as RdSquiggles
+        
+        if (kind != other.kind) return false
+        if (colorKey != other.colorKey) return false
+        
+        return true
+    }
+    //hash code trait
+    override fun hashCode(): Int  {
+        var __r = 0
+        __r = __r*31 + kind.hashCode()
+        __r = __r*31 + colorKey.hashCode()
+        return __r
+    }
+    //pretty print
+    override fun print(printer: PrettyPrinter)  {
+        printer.println("RdSquiggles (")
+        printer.indent {
+            print("kind = "); kind.print(printer); println()
+            print("colorKey = "); colorKey.print(printer); println()
+        }
+        printer.print(")")
+    }
+    //deepClone
+    //contexts
+}
+
+
+/**
+ * #### Generated from [RdComment.kt:227]
+ */
+enum class RdSquigglesKind {
+    Wave, 
+    Dotted;
+    
+    companion object {
+        val marshaller = FrameworkMarshallers.enum<RdSquigglesKind>()
+        
+    }
+}
+
+
+/**
  * #### Generated from [RdComment.kt:68]
  */
 class RdSummarySegment (
@@ -4330,7 +4409,7 @@ class RdTableSegment (
 
 
 /**
- * #### Generated from [RdComment.kt:237]
+ * #### Generated from [RdComment.kt:248]
  */
 abstract class RdTextAnimation (
 ) : IPrintable {
@@ -4411,7 +4490,7 @@ class RdTextAnimation_Unknown (
 
 
 /**
- * #### Generated from [RdComment.kt:221]
+ * #### Generated from [RdComment.kt:232]
  */
 data class RdTextAttributes (
     val fontStyle: RdFontStyle? = null,
@@ -4490,7 +4569,8 @@ data class RdTextHighlighter (
     val backgroundStyle: RdBackgroundStyle? = null,
     val animation: RdTextAnimation? = null,
     val references: List<RdReference>? = null,
-    val isResharperHighlighter: Boolean? = null
+    val isResharperHighlighter: Boolean? = null,
+    val squiggles: RdSquiggles? = null
 ) : IPrintable {
     //companion
     
@@ -4507,7 +4587,8 @@ data class RdTextHighlighter (
             val animation = buffer.readNullable { ctx.serializers.readPolymorphic<RdTextAnimation>(ctx, buffer, RdTextAnimation) }
             val references = buffer.readNullable { buffer.readList { ctx.serializers.readPolymorphic<RdReference>(ctx, buffer, RdReference) } }
             val isResharperHighlighter = buffer.readNullable { buffer.readBool() }
-            return RdTextHighlighter(key, startOffset, endOffset, attributes, backgroundStyle, animation, references, isResharperHighlighter)
+            val squiggles = buffer.readNullable { RdSquiggles.read(ctx, buffer) }
+            return RdTextHighlighter(key, startOffset, endOffset, attributes, backgroundStyle, animation, references, isResharperHighlighter, squiggles)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: RdTextHighlighter)  {
@@ -4519,6 +4600,7 @@ data class RdTextHighlighter (
             buffer.writeNullable(value.animation) { ctx.serializers.writePolymorphic(ctx, buffer, it) }
             buffer.writeNullable(value.references) { buffer.writeList(it) { v -> ctx.serializers.writePolymorphic(ctx, buffer, v) } }
             buffer.writeNullable(value.isResharperHighlighter) { buffer.writeBool(it) }
+            buffer.writeNullable(value.squiggles) { RdSquiggles.write(ctx, buffer, it) }
         }
         
         
@@ -4542,6 +4624,7 @@ data class RdTextHighlighter (
         if (animation != other.animation) return false
         if (references != other.references) return false
         if (isResharperHighlighter != other.isResharperHighlighter) return false
+        if (squiggles != other.squiggles) return false
         
         return true
     }
@@ -4556,6 +4639,7 @@ data class RdTextHighlighter (
         __r = __r*31 + if (animation != null) animation.hashCode() else 0
         __r = __r*31 + if (references != null) references.hashCode() else 0
         __r = __r*31 + if (isResharperHighlighter != null) isResharperHighlighter.hashCode() else 0
+        __r = __r*31 + if (squiggles != null) squiggles.hashCode() else 0
         return __r
     }
     //pretty print
@@ -4570,6 +4654,7 @@ data class RdTextHighlighter (
             print("animation = "); animation.print(printer); println()
             print("references = "); references.print(printer); println()
             print("isResharperHighlighter = "); isResharperHighlighter.print(printer); println()
+            print("squiggles = "); squiggles.print(printer); println()
         }
         printer.print(")")
     }
@@ -4705,7 +4790,7 @@ class RdTextSegment (
 
 
 /**
- * #### Generated from [RdComment.kt:267]
+ * #### Generated from [RdComment.kt:278]
  */
 data class RdTicket (
     val url: String,
@@ -4768,7 +4853,7 @@ data class RdTicket (
 
 
 /**
- * #### Generated from [RdComment.kt:253]
+ * #### Generated from [RdComment.kt:264]
  */
 abstract class RdToDo (
     val name: String,
@@ -4870,7 +4955,7 @@ class RdToDoComment (
 
 
 /**
- * #### Generated from [RdComment.kt:263]
+ * #### Generated from [RdComment.kt:274]
  */
 class RdToDoContentSegment (
     val toDo: RdToDoWithTickets
@@ -4930,7 +5015,7 @@ class RdToDoContentSegment (
 
 
 /**
- * #### Generated from [RdComment.kt:259]
+ * #### Generated from [RdComment.kt:270]
  */
 class RdToDoWithTickets (
     val tickets: List<RdTicket>,
@@ -5151,7 +5236,7 @@ class RdTypeParam (
 
 
 /**
- * #### Generated from [RdComment.kt:238]
+ * #### Generated from [RdComment.kt:249]
  */
 class RdUnderlineTextAnimation (
 ) : RdTextAnimation (

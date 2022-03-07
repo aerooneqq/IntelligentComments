@@ -24,7 +24,8 @@ public record TextHighlighter(
   TextHighlighterAttributes Attributes,
   [CanBeNull] IReadOnlyList<IReference> References = null,
   [CanBeNull] TextAnimation TextAnimation = null,
-  bool IsResharperHighlighter = false)
+  bool IsResharperHighlighter = false,
+  [CanBeNull] Squiggles Squiggles = null)
 {
   public bool IsValid() => StartOffset >= 0 && StartOffset < EndOffset;
   
@@ -32,6 +33,14 @@ public record TextHighlighter(
   {
     return this with { StartOffset = StartOffset + delta, EndOffset = EndOffset + delta };
   }
+}
+
+public record Squiggles(SquigglesKind Kind, [NotNull] string ColorKey);
+
+public enum SquigglesKind
+{
+  Wave,
+  Dotted
 }
 
 public abstract class TextAnimation

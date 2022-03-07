@@ -153,7 +153,7 @@ class RiderCommentsConfigurable : BoundConfigurable("Intelligent comments", null
   }
 }
 
-fun Cell<JBCheckBox>.associateWith(property: KProperty<Boolean>): Cell<JBCheckBox> {
+private fun Cell<JBCheckBox>.associateWith(property: KProperty<Boolean>): Cell<JBCheckBox> {
   addListener(this.component.selected, property)
   if (property is KMutableProperty0<Boolean>) bindSelected(property)
 
@@ -169,7 +169,7 @@ private fun addListener(predicate: ComponentPredicate, property: KProperty<Boole
 }
 
 @JvmName("associateWithJBRadioButton")
-fun Cell<JBRadioButton>.associateWith(property: KProperty<Boolean>): Cell<JBRadioButton> {
+private fun Cell<JBRadioButton>.associateWith(property: KProperty<Boolean>): Cell<JBRadioButton> {
   addListener(this.component.selected, property)
   if (property is KMutableProperty0<Boolean>) bindSelected(property)
 

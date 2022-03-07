@@ -1,18 +1,19 @@
 package com.intelligentComments.ui.util
 
+import com.intelligentComments.core.domain.core.SquigglesKind
 import com.intelligentComments.core.settings.RiderIntelligentCommentsSettingsProvider
+import com.intelligentComments.ui.colors.ColorName
+import com.intelligentComments.ui.colors.ColorsProvider
 import com.intelligentComments.ui.comments.model.highlighters.HighlightedTextUiWrapper
 import com.intelligentComments.ui.comments.model.highlighters.HighlighterUiModel
 import com.intelligentComments.ui.core.AttributedCharsIterator
 import com.intelligentComments.ui.core.RectangleModelBuildContext
+import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.impl.EditorImpl
 import com.intellij.openapi.util.use
 import com.intellij.util.Range
-import java.awt.Font
-import java.awt.FontMetrics
-import java.awt.Graphics
-import java.awt.Rectangle
+import java.awt.*
 import javax.swing.Icon
 import kotlin.math.max
 import kotlin.math.min
@@ -351,10 +352,64 @@ class TextUtil {
           }
         }
 
-        g.drawString(AttributedCharsIterator(editor, line, from, to, highlighterModel), rect.x + currentTextLength + xDelta, adjustedY)
+        val squiggles = highlighterModel.squiggles
+        val project = editor.project
+
+        if (squiggles != null && project != null) {
+          val color = project.service<ColorsProvider>().getColorFor(ColorName(squiggles.colorKey))
+          drawSquiggles(g, currentTextLength, rect.x, adjustedY, color, squiggles.kind)
+        }
+
+        val iterator = AttributedCharsIterator(editor, line, from, to, highlighterModel)
+        g.drawString(iterator, rect.x + currentTextLength + xDelta, adjustedY)
       }
 
       return textWidth
+    }
+
+    private fun drawSquiggles(
+      g: Graphics,
+      width: Int,
+      initialX: Int,
+      initialY: Int,
+      color: Color,
+      kind: SquigglesKind
+    ) {
+      if (kind == SquigglesKind.Wave) {
+        drawWaveSquiggles(g, width, initialX, initialY, color)
+      }
+    }
+
+    private fun drawWaveSquiggles(
+      g: Graphics,
+      width: Int,
+      initialX: Int,
+      initialY: Int,
+      color: Color,
+      squigglesHeight: Int = 2,
+      wavePartWidth: Int = 2
+    ) {
+      val points = mutableListOf(Point(initialX, initialY + squigglesHeight))
+
+      var currentX = initialX + wavePartWidth
+      while (currentX < initialX + width) {
+        val lastPoint = points.last()
+        if (lastPoint.y == initialY) {
+          points.add(Point(lastPoint.y + squigglesHeight, lastPoint.x + wavePartWidth))
+        } else {
+          points.add(Point(initialY, lastPoint.x + wavePartWidth))
+        }
+
+        currentX += wavePartWidth
+      }
+
+      UpdatedGraphicsCookie(g, color = color).use {
+        for (i in 0 until points.size) {
+          val firstPoint = points[i]
+          val secondPoint = points[i + 1]
+          g.drawLine(firstPoint.x, firstPoint.y, secondPoint.x, secondPoint.y)
+        }
+      }
     }
 
     private fun adjustYCoordinateForTextDraw(y: Int, metrics: FontMetrics) = y - metrics.descent
