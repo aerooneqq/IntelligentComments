@@ -114,7 +114,7 @@ class RdCommentsModel private constructor(
         private val __RdHighlightedTextNullableSerializer = RdHighlightedText.nullable()
         private val __IntNullableSerializer = FrameworkMarshallers.Int.nullable()
         
-        const val serializationHash = 2755631899436038530L
+        const val serializationHash = -8206756196537183295L
         
     }
     override val serializersOwner: ISerializersOwner get() = RdCommentsModel
@@ -2345,6 +2345,7 @@ class RdInvalidComment (
  * #### Generated from [RdComment.kt:318]
  */
 class RdInvalidResolveResult (
+    val error: RdHighlightedText?
 ) : RdResolveResult (
 ) {
     //companion
@@ -2354,10 +2355,12 @@ class RdInvalidResolveResult (
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdInvalidResolveResult  {
-            return RdInvalidResolveResult()
+            val error = buffer.readNullable { RdHighlightedText.read(ctx, buffer) }
+            return RdInvalidResolveResult(error)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: RdInvalidResolveResult)  {
+            buffer.writeNullable(value.error) { RdHighlightedText.write(ctx, buffer, it) }
         }
         
         
@@ -2373,17 +2376,22 @@ class RdInvalidResolveResult (
         
         other as RdInvalidResolveResult
         
+        if (error != other.error) return false
         
         return true
     }
     //hash code trait
     override fun hashCode(): Int  {
         var __r = 0
+        __r = __r*31 + if (error != null) error.hashCode() else 0
         return __r
     }
     //pretty print
     override fun print(printer: PrettyPrinter)  {
         printer.println("RdInvalidResolveResult (")
+        printer.indent {
+            print("error = "); error.print(printer); println()
+        }
         printer.print(")")
     }
     
@@ -2491,7 +2499,7 @@ class RdInvariantReference (
 
 
 /**
- * #### Generated from [RdComment.kt:320]
+ * #### Generated from [RdComment.kt:322]
  */
 class RdInvariantResolveResult (
     val invariant: RdTextInvariant

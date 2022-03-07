@@ -101,7 +101,7 @@ namespace JetBrains.Rider.Model
     public static  CtxWriteDelegate<RdHighlightedText> WriteRdHighlightedTextNullable = RdHighlightedText.Write.NullableClass();
     public static  CtxWriteDelegate<int?> WriteIntNullable = JetBrains.Rd.Impl.Serializers.WriteInt.NullableStruct();
     
-    protected override long SerializationHash => 2755631899436038530L;
+    protected override long SerializationHash => -8206756196537183295L;
     
     protected override Action<ISerializers> Register => RegisterDeclaredTypesSerializers;
     public static void RegisterDeclaredTypesSerializers(ISerializers serializers)
@@ -3004,22 +3004,33 @@ namespace JetBrains.Rider.Model
   {
     //fields
     //public fields
+    [CanBeNull] public RdHighlightedText Error {get; private set;}
     
     //private fields
     //primary constructor
+    public RdInvalidResolveResult(
+      [CanBeNull] RdHighlightedText error
+    )
+    {
+      Error = error;
+    }
     //secondary constructor
     //deconstruct trait
     //statics
     
     public static new CtxReadDelegate<RdInvalidResolveResult> Read = (ctx, reader) => 
     {
-      var _result = new RdInvalidResolveResult();
+      var error = ReadRdHighlightedTextNullable(ctx, reader);
+      var _result = new RdInvalidResolveResult(error);
       return _result;
     };
+    public static CtxReadDelegate<RdHighlightedText> ReadRdHighlightedTextNullable = RdHighlightedText.Read.NullableClass();
     
     public static new CtxWriteDelegate<RdInvalidResolveResult> Write = (ctx, writer, value) => 
     {
+      WriteRdHighlightedTextNullable(ctx, writer, value.Error);
     };
+    public static  CtxWriteDelegate<RdHighlightedText> WriteRdHighlightedTextNullable = RdHighlightedText.Write.NullableClass();
     
     //constants
     
@@ -3037,13 +3048,14 @@ namespace JetBrains.Rider.Model
     {
       if (ReferenceEquals(null, other)) return false;
       if (ReferenceEquals(this, other)) return true;
-      return true;
+      return Equals(Error, other.Error);
     }
     //hash code trait
     public override int GetHashCode()
     {
       unchecked {
         var hash = 0;
+        hash = hash * 31 + (Error != null ? Error.GetHashCode() : 0);
         return hash;
       }
     }
@@ -3051,6 +3063,9 @@ namespace JetBrains.Rider.Model
     public void Print(PrettyPrinter printer)
     {
       printer.Println("RdInvalidResolveResult (");
+      using (printer.IndentCookie()) {
+        printer.Print("error = "); Error.PrintEx(printer); printer.Println();
+      }
       printer.Print(")");
     }
     //toString
@@ -3181,7 +3196,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:320</p>
+  /// <p>Generated from: RdComment.kt:322</p>
   /// </summary>
   public sealed class RdInvariantResolveResult : RdResolveResult
   {

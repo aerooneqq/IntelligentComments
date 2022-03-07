@@ -36,3 +36,14 @@ public class EmptyResolveResult : ResolveResult
   {
   }
 }
+
+public class InvalidResolveResult : ResolveResult
+{
+  public string Error { get; }
+
+  
+  public InvalidResolveResult(string error)
+  {
+    Error = error;
+  }
+}

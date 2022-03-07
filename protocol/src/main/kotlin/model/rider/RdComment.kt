@@ -315,7 +315,9 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
 
   val RdResolveResult = basestruct { }
 
-  val RdInvalidResolveResult = structdef extends RdResolveResult { }
+  val RdInvalidResolveResult = structdef extends RdResolveResult {
+    field("Error", RdHighlightedText.nullable)
+  }
 
   val RdInvariantResolveResult = structdef extends RdResolveResult {
     field("Invariant", RdTextInvariant)

@@ -32,7 +32,13 @@ public class InvariantReference : ReferenceBase, IInvariantReference
   {
     var cache = context.Solution.GetComponent<InvariantsNamesCache>();
     var invariantNameCount = cache.GetInvariantNameCount(InvariantName);
-    if (invariantNameCount != 1) return EmptyResolveResult.Instance;
+    
+    InvalidResolveResult CreateInvalidResolveResult()
+    {
+      return new InvalidResolveResult($"Failed to resolve invariant \"{InvariantName}\" for this the reference");
+    }
+    
+    if (invariantNameCount != 1) return CreateInvalidResolveResult();
 
     var trigramIndex = context.Solution.GetComponent<SourcesTrigramIndex>();
     var filesContainingQuery = trigramIndex.GetFilesContainingQuery(InvariantName, false);
@@ -52,7 +58,7 @@ public class InvariantReference : ReferenceBase, IInvariantReference
         if (docCommentBlock is null) continue;
 
         ResolveResult result = EmptyResolveResult.Instance;
-        docCommentBlock.ExecuteActionsWithInvariants(element =>
+        docCommentBlock.ExecuteActionWithInvariants(element =>
         {
           var invariantName = CommentsBuilderUtil.TryGetInvariantName(element);
           var provider = LanguageManager.Instance.GetService<IHighlightersProvider>(primaryPsiFile.Language);
@@ -68,7 +74,7 @@ public class InvariantReference : ReferenceBase, IInvariantReference
       }
     }
 
-    return EmptyResolveResult.Instance;
+    return CreateInvalidResolveResult();
   }
 }
 

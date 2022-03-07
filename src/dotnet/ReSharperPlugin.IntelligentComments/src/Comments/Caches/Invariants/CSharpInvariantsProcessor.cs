@@ -19,7 +19,7 @@ public class CSharpInvariantsProcessor : TreeNodeVisitor<Dictionary<string, int>
     if (file is not ICSharpFile cSharpFile) return;
     foreach (var comment in cSharpFile.Descendants<IDocCommentBlock>().Collect())
     {
-      comment.ExecuteActionsWithInvariants(element =>
+      comment.ExecuteActionWithInvariants(element =>
       {
         var invariantName = CommentsBuilderUtil.TryGetInvariantName(element);
         Assertion.AssertNotNull(invariantName, "invariantName != null");
@@ -39,7 +39,7 @@ public class CSharpInvariantsProcessor : TreeNodeVisitor<Dictionary<string, int>
 
 public static class CSharpInvariantsProcessorExtensions
 {
-  public static void ExecuteActionsWithInvariants(
+  public static void ExecuteActionWithInvariants(
     [NotNull] this IDocCommentBlock commentBlock, [NotNull] Action<XmlElement> actionWithInvariant)
   {
     if (commentBlock.GetXML(null) is not { } xml) return;

@@ -2,11 +2,15 @@ using System;
 using JetBrains.Annotations;
 using JetBrains.ProjectModel;
 using JetBrains.RdBackend.Common.Features;
+using JetBrains.ReSharper.Psi;
+using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.Rider.Backend.Features.Documents;
 using JetBrains.Rider.Model;
 using JetBrains.Util;
+using ReSharperPlugin.IntelligentComments.Comments.Calculations;
 using ReSharperPlugin.IntelligentComments.Comments.Domain;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
+using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.References;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.References;
@@ -26,7 +30,7 @@ public class ReferenceResolverHost
       void LogErrorAndSetInvalidResolveResult([NotNull] string message)
       {
         logger.Error(message);
-        result.Set(new RdInvalidResolveResult());
+        result.Set(new RdInvalidResolveResult(new RdHighlightedText(message)));
       }
 
       if (referenceConverter.TryGetReference(resolveRequest) is not { } reference)
@@ -56,10 +60,18 @@ public static class ResolveResultExtensions
   [NotNull]
   public static RdResolveResult ToRdResolveResult([NotNull] this ResolveResult resolveResult)
   {
+    if (resolveResult is InvalidResolveResult invalidResolveResult)
+    {
+      var text = invalidResolveResult.Error;
+      var highlighter = LanguageManager.Instance.GetService<IHighlightersProvider>(CSharpLanguage.Instance).TryGetDocCommentHighlighter(text.Length);
+      var highlightedText = new HighlightedText(text, highlighter);
+      return new RdInvalidResolveResult(highlightedText.ToRdHighlightedText());
+    }
+    
     return resolveResult switch
     {
       InvariantResolveResult result => new RdInvariantResolveResult(result.Invariant.ToRdInvariant()),
-      EmptyResolveResult => new RdInvalidResolveResult(),
+      EmptyResolveResult => new RdInvalidResolveResult(null),
       _ => throw new ArgumentOutOfRangeException(resolveResult.GetType().Name)
     };
   }

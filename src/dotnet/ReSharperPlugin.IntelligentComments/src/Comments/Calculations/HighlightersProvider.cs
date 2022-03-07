@@ -1,4 +1,5 @@
 using JetBrains.Annotations;
+using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Daemon.CSharp.Highlighting;
 using JetBrains.ReSharper.Feature.Services.Daemon.Attributes;
 using JetBrains.ReSharper.Psi;
@@ -19,6 +20,9 @@ public interface IHighlightersProvider
 
   [CanBeNull] 
   TextHighlighter TryGetDocCommentHighlighterWithErrorSquiggles(int length);
+
+  [CanBeNull]
+  TextHighlighter TryGetDocCommentHighlighter(int length);
   
   
   [NotNull] TextHighlighter GetCXmlElementHighlighter(int startOffset, int endOffset);
@@ -44,7 +48,7 @@ public interface IHighlightersProvider
   TextHighlighter GetReSharperExceptionHighlighter(
     int startOffset, int endOffset, [CanBeNull] IReference reference, [NotNull] IResolveContext context);
 }
-  
+
 
 public abstract class HighlightersProvider : IHighlightersProvider
 {
@@ -74,18 +78,25 @@ public abstract class HighlightersProvider : IHighlightersProvider
   
   public TextHighlighter GetCXmlElementHighlighter(int startOffset, int endOffset) => 
     Get(CElementKey, startOffset, endOffset);
+  
   public TextHighlighter GetParamRefElementHighlighter(int startOffset, int endOffset) => 
     Get(ParamRefKey, startOffset, endOffset);
+  
   public TextHighlighter GetSeeAlsoLinkHighlighter(int startOffset, int endOffset) => 
     Get(SeeAlsoLinkKey, startOffset, endOffset);
+  
   public TextHighlighter GetSeeAlsoMemberHighlighter(int startOffset, int endOffset) => 
     Get(SeeAlsoMemberKey, startOffset, endOffset);
+  
   public TextHighlighter GetSeeCodeEntityHighlighter(int startOffset, int endOffset) => 
     Get(SeeCodeEntityKey, startOffset, endOffset);
+  
   public TextHighlighter GetSeeHttpLinkHighlighter(int startOffset, int endOffset) => 
     Get(SeeHttpKey, startOffset, endOffset);
+  
   public TextHighlighter GetSeeLangWordHighlighter(int startOffset, int endOffset) => 
     Get(SeeLangWord, startOffset, endOffset);
+  
   public TextHighlighter GetExceptionHighlighter(int startOffset, int endOffset) => 
     Get(Exception, startOffset, endOffset);
 
@@ -104,6 +115,10 @@ public abstract class HighlightersProvider : IHighlightersProvider
     };
   }
   
+  public TextHighlighter TryGetDocCommentHighlighter(int length)
+  {
+    return TryGetReSharperHighlighter(DefaultLanguageAttributeIds.DOC_COMMENT, length);
+  }
   
   private static TextHighlighter Get(string key, int startOffset, int endOffset) =>
     new(key, startOffset, endOffset, TextHighlighterAttributes.DefaultAttributes, TextAnimation: UnderlineTextAnimation.Instance);
