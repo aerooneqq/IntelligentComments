@@ -25,7 +25,7 @@ public record TextHighlighter(
   [CanBeNull] IReadOnlyList<IReference> References = null,
   [CanBeNull] TextAnimation TextAnimation = null,
   bool IsResharperHighlighter = false,
-  [CanBeNull] Squiggles Squiggles = null)
+  [CanBeNull] Squiggles ErrorSquiggles = null)
 {
   public bool IsValid() => StartOffset >= 0 && StartOffset < EndOffset;
   

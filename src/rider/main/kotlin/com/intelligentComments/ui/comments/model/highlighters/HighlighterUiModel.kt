@@ -35,7 +35,7 @@ class HighlighterUiModel(
   var textColor = highlighter.textColor
   var backgroundStyle = highlighter.backgroundStyle
   var underline = highlighter.attributes.underline
-  val squiggles = highlighter.squiggles
+  val squiggles = highlighter.errorSquiggles
 
   override fun handleMouseInInternal(e: EditorMouseEvent): Boolean = applyMouseInOutAnimation(true)
 

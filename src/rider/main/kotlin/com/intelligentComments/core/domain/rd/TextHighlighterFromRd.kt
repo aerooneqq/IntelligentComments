@@ -31,7 +31,7 @@ private fun RdTextHighlighter.toIdeaHighlighterInternal(
   val attributes = attributes.toIntelligentCommentsAttributes()
   val mouseInOutAnimation = animation?.toTextAnimation(finalTextColor, project)
   val references = references?.map { ReferenceFromRd.getFrom(project, it) } ?: emptyList()
-  val ideaSquiggles = squiggles?.toIdeaSquiggles()
+  val ideaSquiggles = errorSquiggles?.toIdeaSquiggles()
   val backgroundStyle = if (backgroundStyle != null) {
     BackgroundStyleFromRd(backgroundStyle)
   } else {

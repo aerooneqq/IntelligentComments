@@ -100,7 +100,7 @@ public abstract class HighlightersProvider : IHighlightersProvider
 
     return highlighter with
     {
-      Squiggles = new Squiggles(SquigglesKind.Wave, ErrorElementKey)
+      ErrorSquiggles = new Squiggles(SquigglesKind.Wave, ErrorElementKey)
     };
   }
   

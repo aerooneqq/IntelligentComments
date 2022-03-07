@@ -114,7 +114,7 @@ class RdCommentsModel private constructor(
         private val __RdHighlightedTextNullableSerializer = RdHighlightedText.nullable()
         private val __IntNullableSerializer = FrameworkMarshallers.Int.nullable()
         
-        const val serializationHash = 8449090034807922198L
+        const val serializationHash = 2755631899436038530L
         
     }
     override val serializersOwner: ISerializersOwner get() = RdCommentsModel
@@ -4632,7 +4632,7 @@ data class RdTextHighlighter (
     val animation: RdTextAnimation? = null,
     val references: List<RdReference>? = null,
     val isResharperHighlighter: Boolean? = null,
-    val squiggles: RdSquiggles? = null
+    val errorSquiggles: RdSquiggles? = null
 ) : IPrintable {
     //companion
     
@@ -4649,8 +4649,8 @@ data class RdTextHighlighter (
             val animation = buffer.readNullable { ctx.serializers.readPolymorphic<RdTextAnimation>(ctx, buffer, RdTextAnimation) }
             val references = buffer.readNullable { buffer.readList { ctx.serializers.readPolymorphic<RdReference>(ctx, buffer, RdReference) } }
             val isResharperHighlighter = buffer.readNullable { buffer.readBool() }
-            val squiggles = buffer.readNullable { RdSquiggles.read(ctx, buffer) }
-            return RdTextHighlighter(key, startOffset, endOffset, attributes, backgroundStyle, animation, references, isResharperHighlighter, squiggles)
+            val errorSquiggles = buffer.readNullable { RdSquiggles.read(ctx, buffer) }
+            return RdTextHighlighter(key, startOffset, endOffset, attributes, backgroundStyle, animation, references, isResharperHighlighter, errorSquiggles)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: RdTextHighlighter)  {
@@ -4662,7 +4662,7 @@ data class RdTextHighlighter (
             buffer.writeNullable(value.animation) { ctx.serializers.writePolymorphic(ctx, buffer, it) }
             buffer.writeNullable(value.references) { buffer.writeList(it) { v -> ctx.serializers.writePolymorphic(ctx, buffer, v) } }
             buffer.writeNullable(value.isResharperHighlighter) { buffer.writeBool(it) }
-            buffer.writeNullable(value.squiggles) { RdSquiggles.write(ctx, buffer, it) }
+            buffer.writeNullable(value.errorSquiggles) { RdSquiggles.write(ctx, buffer, it) }
         }
         
         
@@ -4686,7 +4686,7 @@ data class RdTextHighlighter (
         if (animation != other.animation) return false
         if (references != other.references) return false
         if (isResharperHighlighter != other.isResharperHighlighter) return false
-        if (squiggles != other.squiggles) return false
+        if (errorSquiggles != other.errorSquiggles) return false
         
         return true
     }
@@ -4701,7 +4701,7 @@ data class RdTextHighlighter (
         __r = __r*31 + if (animation != null) animation.hashCode() else 0
         __r = __r*31 + if (references != null) references.hashCode() else 0
         __r = __r*31 + if (isResharperHighlighter != null) isResharperHighlighter.hashCode() else 0
-        __r = __r*31 + if (squiggles != null) squiggles.hashCode() else 0
+        __r = __r*31 + if (errorSquiggles != null) errorSquiggles.hashCode() else 0
         return __r
     }
     //pretty print
@@ -4716,7 +4716,7 @@ data class RdTextHighlighter (
             print("animation = "); animation.print(printer); println()
             print("references = "); references.print(printer); println()
             print("isResharperHighlighter = "); isResharperHighlighter.print(printer); println()
-            print("squiggles = "); squiggles.print(printer); println()
+            print("errorSquiggles = "); errorSquiggles.print(printer); println()
         }
         printer.print(")")
     }

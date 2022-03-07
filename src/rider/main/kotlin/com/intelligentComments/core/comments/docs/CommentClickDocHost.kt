@@ -40,7 +40,7 @@ class CommentClickDocHost(private val project: Project) : LifetimedService() {
   private val popupManager = project.service<IntelligentCommentPopupManager>()
   private val referenceResolver = project.service<FrontendReferenceResolverHost>()
 
-  private var myCurrentReference: Reference? = null
+  private var reference: Reference? = null
 
 
   fun tryRequestHoverDoc(
@@ -51,8 +51,8 @@ class CommentClickDocHost(private val project: Project) : LifetimedService() {
   ) {
     application.assertIsDispatchThread()
 
-    if (myCurrentReference == reference) {
-      myCurrentReference = null
+    if (this.reference == reference) {
+      this.reference = null
       return
     }
 
@@ -81,7 +81,7 @@ class CommentClickDocHost(private val project: Project) : LifetimedService() {
         y += additionalYDelta
       })
 
-      myCurrentReference = reference
+      this.reference = reference
       documentationManager.showJavaDocInfo(editor, contextElement, null, true) {
         val sessions = quickDocModel.quickDocSessions
         if (sessions.containsKey(sessionId)) {

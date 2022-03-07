@@ -14,7 +14,7 @@ interface TextHighlighter : UniqueEntity, Parentable {
   val backgroundStyle: BackgroundStyle?
   val mouseInOutAnimation: MouseInOutAnimation?
   val references: Collection<Reference>
-  val squiggles: Squiggles?
+  val errorSquiggles: Squiggles?
 
   fun shift(delta: Int): TextHighlighter
 
@@ -31,7 +31,7 @@ class TextHighlighterImpl(
   override val attributes: TextAttributes = TextAttributesImpl.defaultAttributes,
   override val backgroundStyle: BackgroundStyle? = null,
   override val mouseInOutAnimation: MouseInOutAnimation? = null,
-  override val squiggles: Squiggles? = null
+  override val errorSquiggles: Squiggles? = null
 ) : UniqueEntityImpl(), TextHighlighter {
 
   override var parent: Parentable? = parent
@@ -53,7 +53,7 @@ class TextHighlighterImpl(
       attributes,
       backgroundStyle,
       mouseInOutAnimation,
-      squiggles
+      errorSquiggles
     )
   }
 

@@ -330,7 +330,7 @@ public static class CommentsUtil
       references: highlighter.References?.Select(reference => reference.ToRdReference()).ToList(),
       animation: highlighter.TextAnimation?.ToRdAnimation(),
       isResharperHighlighter: highlighter.IsResharperHighlighter,
-      squiggles: highlighter.Squiggles?.ToRdSquiggles());
+      errorSquiggles: highlighter.ErrorSquiggles?.ToRdSquiggles());
   }
   
   public static RdSquiggles ToRdSquiggles(this Squiggles squiggles)

@@ -218,7 +218,7 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
     field("Animation", RdTextAnimation.nullable).optional
     field("References", immutableList(RdReference).nullable).optional
     field("IsResharperHighlighter", PredefinedType.bool.nullable).optional
-    field("Squiggles", RdSquiggles.nullable).optional
+    field("ErrorSquiggles", RdSquiggles.nullable).optional
   }
 
   val RdSquiggles = structdef {

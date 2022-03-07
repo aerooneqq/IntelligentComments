@@ -101,7 +101,7 @@ namespace JetBrains.Rider.Model
     public static  CtxWriteDelegate<RdHighlightedText> WriteRdHighlightedTextNullable = RdHighlightedText.Write.NullableClass();
     public static  CtxWriteDelegate<int?> WriteIntNullable = JetBrains.Rd.Impl.Serializers.WriteInt.NullableStruct();
     
-    protected override long SerializationHash => 8449090034807922198L;
+    protected override long SerializationHash => 2755631899436038530L;
     
     protected override Action<ISerializers> Register => RegisterDeclaredTypesSerializers;
     public static void RegisterDeclaredTypesSerializers(ISerializers serializers)
@@ -6008,7 +6008,7 @@ namespace JetBrains.Rider.Model
     [CanBeNull] public RdTextAnimation Animation {get; private set;}
     [CanBeNull] public List<RdReference> References {get; private set;}
     [CanBeNull] public bool? IsResharperHighlighter {get; private set;}
-    [CanBeNull] public RdSquiggles Squiggles {get; private set;}
+    [CanBeNull] public RdSquiggles ErrorSquiggles {get; private set;}
     
     //private fields
     //primary constructor
@@ -6021,7 +6021,7 @@ namespace JetBrains.Rider.Model
       [CanBeNull] RdTextAnimation animation = null,
       [CanBeNull] List<RdReference> references = null,
       [CanBeNull] bool? isResharperHighlighter = null,
-      [CanBeNull] RdSquiggles squiggles = null
+      [CanBeNull] RdSquiggles errorSquiggles = null
     )
     {
       if (key == null) throw new ArgumentNullException("key");
@@ -6035,11 +6035,11 @@ namespace JetBrains.Rider.Model
       Animation = animation;
       References = references;
       IsResharperHighlighter = isResharperHighlighter;
-      Squiggles = squiggles;
+      ErrorSquiggles = errorSquiggles;
     }
     //secondary constructor
     //deconstruct trait
-    public void Deconstruct([NotNull] out string key, out int startOffset, out int endOffset, [NotNull] out RdTextAttributes attributes, [CanBeNull] out RdBackgroundStyle backgroundStyle, [CanBeNull] out RdTextAnimation animation, [CanBeNull] out List<RdReference> references, [CanBeNull] out bool? isResharperHighlighter, [CanBeNull] out RdSquiggles squiggles)
+    public void Deconstruct([NotNull] out string key, out int startOffset, out int endOffset, [NotNull] out RdTextAttributes attributes, [CanBeNull] out RdBackgroundStyle backgroundStyle, [CanBeNull] out RdTextAnimation animation, [CanBeNull] out List<RdReference> references, [CanBeNull] out bool? isResharperHighlighter, [CanBeNull] out RdSquiggles errorSquiggles)
     {
       key = Key;
       startOffset = StartOffset;
@@ -6049,7 +6049,7 @@ namespace JetBrains.Rider.Model
       animation = Animation;
       references = References;
       isResharperHighlighter = IsResharperHighlighter;
-      squiggles = Squiggles;
+      errorSquiggles = ErrorSquiggles;
     }
     //statics
     
@@ -6063,8 +6063,8 @@ namespace JetBrains.Rider.Model
       var animation = ReadRdTextAnimationNullable(ctx, reader);
       var references = ReadRdReferenceListNullable(ctx, reader);
       var isResharperHighlighter = ReadBoolNullable(ctx, reader);
-      var squiggles = ReadRdSquigglesNullable(ctx, reader);
-      var _result = new RdTextHighlighter(key, startOffset, endOffset, attributes, backgroundStyle, animation, references, isResharperHighlighter, squiggles);
+      var errorSquiggles = ReadRdSquigglesNullable(ctx, reader);
+      var _result = new RdTextHighlighter(key, startOffset, endOffset, attributes, backgroundStyle, animation, references, isResharperHighlighter, errorSquiggles);
       return _result;
     };
     public static CtxReadDelegate<RdBackgroundStyle> ReadRdBackgroundStyleNullable = RdBackgroundStyle.Read.NullableClass();
@@ -6083,7 +6083,7 @@ namespace JetBrains.Rider.Model
       WriteRdTextAnimationNullable(ctx, writer, value.Animation);
       WriteRdReferenceListNullable(ctx, writer, value.References);
       WriteBoolNullable(ctx, writer, value.IsResharperHighlighter);
-      WriteRdSquigglesNullable(ctx, writer, value.Squiggles);
+      WriteRdSquigglesNullable(ctx, writer, value.ErrorSquiggles);
     };
     public static  CtxWriteDelegate<RdBackgroundStyle> WriteRdBackgroundStyleNullable = RdBackgroundStyle.Write.NullableClass();
     public static  CtxWriteDelegate<RdTextAnimation> WriteRdTextAnimationNullable = RdTextAnimation.Write.NullableClass();
@@ -6107,7 +6107,7 @@ namespace JetBrains.Rider.Model
     {
       if (ReferenceEquals(null, other)) return false;
       if (ReferenceEquals(this, other)) return true;
-      return Key == other.Key && StartOffset == other.StartOffset && EndOffset == other.EndOffset && Equals(Attributes, other.Attributes) && Equals(BackgroundStyle, other.BackgroundStyle) && Equals(Animation, other.Animation) && Equals(References, other.References) && Equals(IsResharperHighlighter, other.IsResharperHighlighter) && Equals(Squiggles, other.Squiggles);
+      return Key == other.Key && StartOffset == other.StartOffset && EndOffset == other.EndOffset && Equals(Attributes, other.Attributes) && Equals(BackgroundStyle, other.BackgroundStyle) && Equals(Animation, other.Animation) && Equals(References, other.References) && Equals(IsResharperHighlighter, other.IsResharperHighlighter) && Equals(ErrorSquiggles, other.ErrorSquiggles);
     }
     //hash code trait
     public override int GetHashCode()
@@ -6122,7 +6122,7 @@ namespace JetBrains.Rider.Model
         hash = hash * 31 + (Animation != null ? Animation.GetHashCode() : 0);
         hash = hash * 31 + (References != null ? References.ContentHashCode() : 0);
         hash = hash * 31 + (IsResharperHighlighter != null ? IsResharperHighlighter.GetHashCode() : 0);
-        hash = hash * 31 + (Squiggles != null ? Squiggles.GetHashCode() : 0);
+        hash = hash * 31 + (ErrorSquiggles != null ? ErrorSquiggles.GetHashCode() : 0);
         return hash;
       }
     }
@@ -6139,7 +6139,7 @@ namespace JetBrains.Rider.Model
         printer.Print("animation = "); Animation.PrintEx(printer); printer.Println();
         printer.Print("references = "); References.PrintEx(printer); printer.Println();
         printer.Print("isResharperHighlighter = "); IsResharperHighlighter.PrintEx(printer); printer.Println();
-        printer.Print("squiggles = "); Squiggles.PrintEx(printer); printer.Println();
+        printer.Print("errorSquiggles = "); ErrorSquiggles.PrintEx(printer); printer.Println();
       }
       printer.Print(")");
     }
