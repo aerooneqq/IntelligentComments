@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
-using JetBrains.DocumentModel;
 using JetBrains.RdBackend.Common.Features.Documents;
 using JetBrains.RdBackend.Common.Features.Util.Ranges;
 using JetBrains.Rider.Model;
@@ -330,7 +329,23 @@ public static class CommentsUtil
       attributes,
       references: highlighter.References?.Select(reference => reference.ToRdReference()).ToList(),
       animation: highlighter.TextAnimation?.ToRdAnimation(),
-      isResharperHighlighter: highlighter.IsResharperHighlighter);
+      isResharperHighlighter: highlighter.IsResharperHighlighter,
+      squiggles: highlighter.Squiggles?.ToRdSquiggles());
+  }
+  
+  public static RdSquiggles ToRdSquiggles(this Squiggles squiggles)
+  {
+    return new RdSquiggles(squiggles.Kind.ToRdSquigglesKind(), squiggles.ColorKey);
+  }
+  
+  public static RdSquigglesKind ToRdSquigglesKind(this SquigglesKind kind)
+  {
+    return kind switch
+    {
+      SquigglesKind.Dotted => RdSquigglesKind.Dotted,
+      SquigglesKind.Wave => RdSquigglesKind.Wave,
+      _ => throw new ArgumentOutOfRangeException(kind.ToString())
+    };
   }
 
   [NotNull]

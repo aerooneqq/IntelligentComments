@@ -357,7 +357,8 @@ class TextUtil {
 
         if (squiggles != null && project != null) {
           val color = project.service<ColorsProvider>().getColorFor(ColorName(squiggles.colorKey))
-          drawSquiggles(g, currentTextLength, rect.x, adjustedY, color, squiggles.kind)
+          val additionalYDeltaForSquiggles = 1
+          drawSquiggles(g, textWidth, rect.x, adjustedY + additionalYDeltaForSquiggles, color, squiggles.kind)
         }
 
         val iterator = AttributedCharsIterator(editor, line, from, to, highlighterModel)
@@ -392,19 +393,27 @@ class TextUtil {
       val points = mutableListOf(Point(initialX, initialY + squigglesHeight))
 
       var currentX = initialX + wavePartWidth
-      while (currentX < initialX + width) {
+
+      fun addNextPoint() {
         val lastPoint = points.last()
         if (lastPoint.y == initialY) {
-          points.add(Point(lastPoint.y + squigglesHeight, lastPoint.x + wavePartWidth))
+          points.add(Point( lastPoint.x + wavePartWidth, lastPoint.y + squigglesHeight))
         } else {
-          points.add(Point(initialY, lastPoint.x + wavePartWidth))
+          points.add(Point(lastPoint.x + wavePartWidth, initialY))
         }
+      }
 
+      while (currentX < initialX + width) {
+        addNextPoint()
         currentX += wavePartWidth
       }
 
+      if (points.last().y == initialY) {
+        addNextPoint()
+      }
+
       UpdatedGraphicsCookie(g, color = color).use {
-        for (i in 0 until points.size) {
+        for (i in 0 until points.size - 1) {
           val firstPoint = points[i]
           val secondPoint = points[i + 1]
           g.drawLine(firstPoint.x, firstPoint.y, secondPoint.x, secondPoint.y)

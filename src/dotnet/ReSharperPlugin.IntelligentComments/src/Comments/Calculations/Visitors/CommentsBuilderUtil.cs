@@ -233,7 +233,7 @@ internal static class CommentsBuilderUtil
         {
           Attributes = nameHighlighter.Attributes with { FontStyle = FontStyle.Italic },
           References = new[] { nameReferenceCreator(name) },
-          TextAnimation = UnderlineTextAnimation.Instance
+          TextAnimation = isValid ? UnderlineTextAnimation.Instance : null
         };
       }
     }
