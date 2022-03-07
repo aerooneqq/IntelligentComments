@@ -14,7 +14,6 @@ using JetBrains.Util;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl;
-using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.References;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Visitors;
 
@@ -31,7 +30,6 @@ internal static class CommentsBuilderUtil
   [NotNull] internal const string InvariantNameAttrName = "name";
   [NotNull] internal const string InheritDocTagName = "inheritdoc";
   [NotNull] internal const string CRef = "cref";
-
 
   
   [NotNull] private static readonly ISet<char> ourCharsWithNoNeedToAddSpaceAfter = new HashSet<char>
@@ -226,15 +224,18 @@ internal static class CommentsBuilderUtil
 
       if (!isValid)
       {
-        nameHighlighter = highlightersProvider.GetErrorHighlighter(0, name.Length);
+        nameHighlighter = highlightersProvider.TryGetDocCommentHighlighterWithErrorSquiggles(name.Length);
       }
-      
-      nameHighlighter = nameHighlighter with
+
+      if (nameHighlighter is { })
       {
-        Attributes = nameHighlighter.Attributes with { FontStyle = FontStyle.Italic },
-        References = new[] { nameReferenceCreator(name) },
-        TextAnimation = UnderlineTextAnimation.Instance
-      };
+        nameHighlighter = nameHighlighter with
+        {
+          Attributes = nameHighlighter.Attributes with { FontStyle = FontStyle.Italic },
+          References = new[] { nameReferenceCreator(name) },
+          TextAnimation = UnderlineTextAnimation.Instance
+        };
+      }
     }
     
     var nameText = new HighlightedText(name, nameHighlighter);

@@ -31,6 +31,7 @@ private fun RdTextHighlighter.toIdeaHighlighterInternal(
   val attributes = attributes.toIntelligentCommentsAttributes()
   val mouseInOutAnimation = animation?.toTextAnimation(finalTextColor, project)
   val references = references?.map { ReferenceFromRd.getFrom(project, it) } ?: emptyList()
+  val ideaSquiggles = squiggles?.toIdeaSquiggles()
   val backgroundStyle = if (backgroundStyle != null) {
     BackgroundStyleFromRd(backgroundStyle)
   } else {
@@ -38,7 +39,7 @@ private fun RdTextHighlighter.toIdeaHighlighterInternal(
   }
 
   return TextHighlighterImpl(
-     parent, startOffset, endOffset, finalTextColor, references, attributes, backgroundStyle, mouseInOutAnimation)
+     parent, startOffset, endOffset, finalTextColor, references, attributes, backgroundStyle, mouseInOutAnimation, ideaSquiggles)
 }
 
 private fun RdTextHighlighter.toIdeaHighlighterFromReSharper(
@@ -65,9 +66,13 @@ fun tryGetTextAttributes(key: String): TextAttributes? {
 }
 
 class BackgroundStyleFromRd(rdBackgroundStyle: RdBackgroundStyle) : BackgroundStyle {
-  override val backgroundColor: Color = Color.decode(rdBackgroundStyle.backgroundColor.hex)
+  override val backgroundColor: Color = rdBackgroundStyle.backgroundColor.toIdeaColor()
   override val roundedRect: Boolean = rdBackgroundStyle.roundedRect
   override val leftRightPadding: Int = rdBackgroundStyle.leftRightMargin
+}
+
+fun RdColor.toIdeaColor(): Color {
+  return Color.decode(hex)
 }
 
 fun RdTextAnimation.toTextAnimation(textColor: Color , project: Project): MouseInOutAnimation {
@@ -94,4 +99,15 @@ fun RdTextAttributes.toIntelligentCommentsAttributes(): TextAttributesImpl {
   }
 
   return TextAttributesImpl(underline, weight, style)
+}
+
+fun RdSquiggles.toIdeaSquiggles(): Squiggles {
+  return SquigglesImpl(kind.toRdSquigglesKind(), colorKey)
+}
+
+fun RdSquigglesKind.toRdSquigglesKind(): SquigglesKind {
+  return when(this) {
+    RdSquigglesKind.Dotted -> SquigglesKind.Dotted
+    RdSquigglesKind.Wave -> SquigglesKind.Wave
+  }
 }

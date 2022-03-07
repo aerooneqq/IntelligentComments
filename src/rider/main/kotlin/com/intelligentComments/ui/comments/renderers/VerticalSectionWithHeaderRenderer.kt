@@ -100,7 +100,12 @@ abstract class VerticalSectionWithHeaderRenderer(
     additionalRenderInfo: RenderAdditionalInfo
   ): Int {
     val width = TextUtil.calculateWidthOfTextWithIcon(editor, icon, deltaBetweenIconAndTextInHeader, highlightedText)
-    return if (shouldRenderContent) max(width, calculateContentWidth(editor, additionalRenderInfo) + leftContentIndent) else width
+
+    return if (shouldRenderContent) {
+      max(width, calculateContentWidth(editor, additionalRenderInfo) + leftContentIndent)
+    } else {
+      width
+    }
   }
 
   protected abstract fun calculateContentHeight(editor: Editor, additionalRenderInfo: RenderAdditionalInfo): Int

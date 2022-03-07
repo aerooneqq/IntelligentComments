@@ -47,7 +47,7 @@ public static class CSharpInvariantsProcessorExtensions
     for (var node = xml.FirstChild; node is { }; node = node.NextSibling)
     {
       if (node is not XmlElement xmlElement ||
-          CommentsBuilderUtil.TryGetInvariantName(xmlElement) is not { } invariantName)
+          CommentsBuilderUtil.TryGetInvariantName(xmlElement) is not { })
       {
         continue;
       }

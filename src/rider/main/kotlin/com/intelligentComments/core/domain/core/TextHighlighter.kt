@@ -14,6 +14,7 @@ interface TextHighlighter : UniqueEntity, Parentable {
   val backgroundStyle: BackgroundStyle?
   val mouseInOutAnimation: MouseInOutAnimation?
   val references: Collection<Reference>
+  val squiggles: Squiggles?
 
   fun shift(delta: Int): TextHighlighter
 
@@ -30,6 +31,7 @@ class TextHighlighterImpl(
   override val attributes: TextAttributes = TextAttributesImpl.defaultAttributes,
   override val backgroundStyle: BackgroundStyle? = null,
   override val mouseInOutAnimation: MouseInOutAnimation? = null,
+  override val squiggles: Squiggles? = null
 ) : UniqueEntityImpl(), TextHighlighter {
 
   override var parent: Parentable? = parent
@@ -51,6 +53,7 @@ class TextHighlighterImpl(
       attributes,
       backgroundStyle,
       mouseInOutAnimation,
+      squiggles
     )
   }
 
@@ -82,6 +85,21 @@ interface MouseInOutAnimation {
   fun applyTo(uiModel: HighlighterUiModel, mouseIn: Boolean): Boolean
 }
 
+interface Squiggles {
+  val kind: SquigglesKind
+  val colorKey: String
+}
+
+enum class SquigglesKind {
+  Wave,
+  Dotted
+}
+
+data class SquigglesImpl(
+  override val kind: SquigglesKind,
+  override val colorKey: String
+) : Squiggles
+
 interface TextAttributes {
   val underline: Boolean
   val weight: Float
@@ -91,7 +109,7 @@ interface TextAttributes {
 data class TextAttributesImpl(
   override val underline: Boolean,
   override val weight: Float,
-  override val style: Int
+  override val style: Int,
 ) : TextAttributes {
   companion object {
     val defaultAttributes = TextAttributesImpl(false, TextAttribute.WEIGHT_REGULAR, Font.PLAIN)
