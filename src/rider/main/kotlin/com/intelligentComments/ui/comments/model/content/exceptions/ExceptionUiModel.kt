@@ -14,7 +14,7 @@ class ExceptionUiModel(
   project: Project,
   parent: UiInteractionModelBase?,
   exceptionSegment: ExceptionSegment
-) : ContentSegmentUiModel(project, parent, exceptionSegment) {
+) : ContentSegmentUiModel(project, parent) {
   val name = HighlightedTextUiWrapper(project, this, exceptionSegment.name)
   val content = ContentSegmentsUiModel(project, this, exceptionSegment.content)
 

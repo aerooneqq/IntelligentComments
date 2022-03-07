@@ -13,7 +13,7 @@ class ImageContentSegmentUiModel(
   project: Project,
   parent: UiInteractionModelBase?,
   imageSegment: ImageContentSegment
-) : ContentSegmentUiModel(project, parent, imageSegment) {
+) : ContentSegmentUiModel(project, parent) {
   val description: HighlightedTextUiWrapper?
   val imageHolder = ImageHolder(imageSegment)
 

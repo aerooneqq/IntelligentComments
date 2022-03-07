@@ -18,7 +18,7 @@ abstract class GroupedUiModel(
   parent: UiInteractionModelBase?,
   groupedModel: GroupedContentSegment<*>,
   header: HighlightedText
-) : ContentSegmentUiModel(project, parent, groupedModel) {
+) : ContentSegmentUiModel(project, parent) {
   val header = HighlightedTextUiWrapper(project, this, header)
 }
 

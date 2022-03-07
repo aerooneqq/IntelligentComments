@@ -16,7 +16,7 @@ open class SeeAlsoUiModel(
   project: Project,
   parent: UiInteractionModelBase?,
   seeAlso: SeeAlsoSegment
-) : ContentSegmentUiModel(project, parent, seeAlso) {
+) : ContentSegmentUiModel(project, parent) {
   companion object {
     fun getFor(project: Project, parent: UiInteractionModelBase?, seeAlso: SeeAlsoSegment): SeeAlsoUiModel {
       return when(seeAlso) {

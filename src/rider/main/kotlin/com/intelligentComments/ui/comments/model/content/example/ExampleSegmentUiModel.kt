@@ -13,7 +13,7 @@ class ExampleSegmentUiModel(
   project: Project,
   parent: UiInteractionModelBase?,
   exampleSegment: ExampleContentSegment
-) : ContentSegmentUiModel(project, parent, exampleSegment) {
+) : ContentSegmentUiModel(project, parent) {
 
   val content = ContentSegmentsUiModel(project, this, exampleSegment.content)
 

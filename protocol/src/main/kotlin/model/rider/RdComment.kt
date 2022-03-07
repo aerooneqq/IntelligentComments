@@ -52,6 +52,8 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
     field("Content", RdContentSegments)
   }
 
+  val RdDefaultSegmentWithContent = structdef extends RdSegmentWithContent { }
+
   val RdIntelligentCommentContent = structdef extends RdSegmentWithContent {
   }
 
@@ -160,7 +162,7 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
 
   val RdTextInvariant = structdef extends RdInvariant {
     field("Name", RdHighlightedText)
-    field("Description", RdHighlightedText)
+    field("Description", RdDefaultSegmentWithContent)
     call("Evaluate", PredefinedType.int, PredefinedType.bool)
   }
 
@@ -199,7 +201,7 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
   val RdReferenceContentSegment = structdef extends RdContentSegment {
     field("Reference", RdReference)
     field("Name", RdHighlightedText)
-    field("Description", RdHighlightedText)
+    field("Description", RdDefaultSegmentWithContent)
   }
 
   val RdHighlightedText = structdef {

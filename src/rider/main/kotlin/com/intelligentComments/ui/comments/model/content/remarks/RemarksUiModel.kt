@@ -13,7 +13,7 @@ class RemarksUiModel(
   project: Project,
   parent: UiInteractionModelBase?,
   remarksSegment: RemarksSegment
-) : ContentSegmentUiModel(project, parent, remarksSegment) {
+) : ContentSegmentUiModel(project, parent) {
   val content = ContentSegmentsUiModel(project, this, remarksSegment.content)
 
 

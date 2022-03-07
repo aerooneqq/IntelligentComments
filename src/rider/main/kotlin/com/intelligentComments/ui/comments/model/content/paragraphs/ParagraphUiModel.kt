@@ -13,7 +13,7 @@ class ParagraphUiModel(
   project: Project,
   parent: UiInteractionModelBase?,
   paragraph: ParagraphContentSegment
-) : ContentSegmentUiModel(project, parent, paragraph) {
+) : ContentSegmentUiModel(project, parent) {
   val content = ContentSegmentsUiModel(project, this, paragraph.content)
 
 

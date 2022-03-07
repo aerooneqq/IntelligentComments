@@ -103,12 +103,12 @@ public interface IToDoContentSegment : IContentSegment
 public interface IInvariantContentSegment : IContentSegment
 {
   [NotNull] IHighlightedText Name { get; }
-  [NotNull] IHighlightedText Description { get; }
+  [NotNull] IEntityWithContentSegments Description { get; }
 }
 
 public interface IReferenceContentSegment : IContentSegment
 {
   [NotNull] IReference Reference { get; }
   [NotNull] IHighlightedText Name { get; }
-  [NotNull] IHighlightedText Description { get; }
+  [NotNull] IEntityWithContentSegments Description { get; }
 }

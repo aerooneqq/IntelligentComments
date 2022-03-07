@@ -19,7 +19,7 @@ class HackWithTicketsUiModel(
   project: Project,
   parent: UiInteractionModelBase?,
   segment: HackWithTicketsContentSegment,
-) : ContentSegmentUiModel(project, parent, segment), ExpandableUiModel {
+) : ContentSegmentUiModel(project, parent), ExpandableUiModel {
   private val hack = segment.hack
 
   val description = ContentSegmentsUiModel(project, this, hack.description)
@@ -27,7 +27,7 @@ class HackWithTicketsUiModel(
     ReferenceUiModel(project, this, object : UniqueEntityImpl(), ReferenceContentSegment {
       override val reference: Reference = it
       override val parent: Parentable = this
-      override val description: HighlightedText = HighlightedTextImpl.createEmpty(this)
+      override val description: EntityWithContentSegments = createEmptyEntityWithContentSegments()
       override val name: HighlightedText = HighlightedTextImpl(it.rawValue, this)
     })
   }

@@ -77,7 +77,7 @@ class ReferenceContentSegmentFromRd(
   project: Project
 ) : ContentSegmentFromRd(contentSegment, parent), ReferenceContentSegment {
   override val reference: Reference = ReferenceFromRd.getFrom(project, contentSegment.reference)
-  override val description: HighlightedText = contentSegment.description.toIdeaHighlightedText(project, this)
+  override val description: EntityWithContentSegments = EntityWithContentSegmentsFromRd(contentSegment.description, this, project)
   override val name: HighlightedText = contentSegment.name.toIdeaHighlightedText(project, this)
 }
 

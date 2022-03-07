@@ -33,7 +33,6 @@ import com.intellij.openapi.project.Project
 abstract class ContentSegmentUiModel(
   project: Project,
   parent: UiInteractionModelBase?,
-  private val segment: ContentSegment
 ) : UiInteractionModelBase(project, parent) {
   companion object {
     fun getFrom(project: Project, parent: UiInteractionModelBase?, segment: ContentSegment): ContentSegmentUiModel {
@@ -64,6 +63,7 @@ abstract class ContentSegmentUiModel(
         is CodeSegment -> CodeSegmentUiModel(project, parent, segment)
         is ValueSegment -> ValueUiModel(project, parent, segment)
         is TextInvariantSegment -> TextInvariantUiModel(project, parent, segment)
+        is EntityWithContentSegments -> ContentSegmentsUiModel(project, parent, segment.content)
         else -> throw IllegalArgumentException(segment.javaClass.name)
       }
     }

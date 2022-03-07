@@ -2,10 +2,12 @@ package com.intelligentComments.core.comments.docs
 
 import com.intelligentComments.core.comments.popups.IntelligentCommentPopupManager
 import com.intelligentComments.core.comments.resolver.FrontendReferenceResolverHost
-import com.intelligentComments.core.domain.core.*
+import com.intelligentComments.core.domain.core.CommentIdentifier
+import com.intelligentComments.core.domain.core.InvariantReference
+import com.intelligentComments.core.domain.core.Reference
 import com.intelligentComments.core.domain.rd.TextInvariantFromRdSegment
 import com.intelligentComments.core.domain.rd.toRdReference
-import com.intelligentComments.ui.comments.model.content.text.TextContentSegmentUiModel
+import com.intelligentComments.ui.comments.model.content.ContentSegmentsUiModel
 import com.intellij.codeInsight.documentation.DocumentationManager
 import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.Editor
@@ -94,14 +96,11 @@ class CommentClickDocHost(private val project: Project) : LifetimedService() {
   fun queueShowInvariantDoc(reference: InvariantReference, contextPoint: Point, e: EditorMouseEvent) {
     referenceResolver.resolveInvariantReference(reference, e.editor) {
       val invariantResolveResult = it as? RdInvariantResolveResult ?: return@resolveInvariantReference
+
       val invariant = TextInvariantFromRdSegment(invariantResolveResult.invariant, null, project)
+      if (invariant.description.content.segments.isEmpty()) return@resolveInvariantReference
 
-      val textSegment = object : UniqueEntityImpl(), TextContentSegment {
-        override val highlightedText: HighlightedText = invariant.description
-        override val parent: Parentable? = null
-      }
-
-      val model = TextContentSegmentUiModel(project, null, textSegment)
+      val model = ContentSegmentsUiModel(project, null, invariant.description.content)
       val relativePoint = RelativePoint(e.mouseEvent.component, contextPoint)
 
       popupManager.showPopupFor(model, e.editor, relativePoint)

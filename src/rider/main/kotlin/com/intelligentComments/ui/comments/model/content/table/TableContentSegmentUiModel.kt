@@ -12,7 +12,7 @@ class TableContentSegmentUiModel(
   project: Project,
   parent: UiInteractionModelBase?,
   segment: TableContentSegment
-) : ContentSegmentUiModel(project, parent, segment) {
+) : ContentSegmentUiModel(project, parent) {
   val rows = segment.rows.map { TableRowSegmentUiModel(it, this, project) }
 
   private val header = segment.header

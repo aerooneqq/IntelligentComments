@@ -36,36 +36,39 @@ public class InvariantReference : ReferenceBase, IInvariantReference
 
     var trigramIndex = context.Solution.GetComponent<SourcesTrigramIndex>();
     var filesContainingQuery = trigramIndex.GetFilesContainingQuery(InvariantName, false);
-    if (filesContainingQuery.FirstOrDefault() is not { } psiSourceFile) return EmptyResolveResult.Instance;
-
     using (ReadLockCookie.Create())
     {
-      var index = psiSourceFile.Document.GetText().IndexOf(InvariantName, StringComparison.Ordinal);
-      var primaryPsiFile = psiSourceFile.GetPrimaryPsiFile();
-      if (primaryPsiFile is null) return EmptyResolveResult.Instance;
-      
-      var range = new DocumentRange(psiSourceFile.Document, index);
-      var treeTextRange = primaryPsiFile.Translate(range);
-      var token = primaryPsiFile.FindTokenAt(treeTextRange.StartOffset);
-
-      var docCommentBlock = token?.TryFindDocCommentBlock();
-      if (docCommentBlock is null) return EmptyResolveResult.Instance;
-
-      ResolveResult result = EmptyResolveResult.Instance;
-      docCommentBlock.ExecuteActionsWithInvariants(element =>
+      foreach (var psiSourceFile in filesContainingQuery)
       {
-        var invariantName = CommentsBuilderUtil.TryGetInvariantName(element);
-        var provider = LanguageManager.Instance.GetService<IHighlightersProvider>(primaryPsiFile.Language);
-        var invariant = DocCommentBuilderBase.TryBuildInvariantContentSegment(element, context.Solution, provider, false);
-        
-        if (invariantName == InvariantName && invariant is { } invariantContentSegment)
-        {
-          result = new InvariantResolveResult(invariantContentSegment);
-        }
-      });
+        var index = psiSourceFile.Document.GetText().IndexOf(InvariantName, StringComparison.Ordinal);
+        var primaryPsiFile = psiSourceFile.GetPrimaryPsiFile();
+        if (primaryPsiFile is null) continue;
+      
+        var range = new DocumentRange(psiSourceFile.Document, index);
+        var treeTextRange = primaryPsiFile.Translate(range);
+        var token = primaryPsiFile.FindTokenAt(treeTextRange.StartOffset);
 
-      return result; 
+        var docCommentBlock = token?.TryFindDocCommentBlock();
+        if (docCommentBlock is null) continue;
+
+        ResolveResult result = EmptyResolveResult.Instance;
+        docCommentBlock.ExecuteActionsWithInvariants(element =>
+        {
+          var invariantName = CommentsBuilderUtil.TryGetInvariantName(element);
+          var provider = LanguageManager.Instance.GetService<IHighlightersProvider>(primaryPsiFile.Language);
+          var invariant = DocCommentBuilderBase.TryBuildInvariantContentSegment(element, context.Solution, provider, false);
+        
+          if (invariantName == InvariantName && invariant is { } invariantContentSegment)
+          {
+            result = new InvariantResolveResult(invariantContentSegment);
+          }
+        });
+
+        if (result is not EmptyResolveResult) return result;
+      }
     }
+
+    return EmptyResolveResult.Instance;
   }
 }
 

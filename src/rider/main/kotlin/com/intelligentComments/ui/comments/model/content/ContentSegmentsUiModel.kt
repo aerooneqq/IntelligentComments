@@ -5,11 +5,11 @@ import com.intelligentComments.core.domain.core.ContentSegments
 import com.intelligentComments.ui.comments.model.ModelWithContent
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intelligentComments.ui.comments.model.sections.SectionUiModel
-import com.intelligentComments.ui.comments.renderers.NotSupportedForRenderingError
+import com.intelligentComments.ui.comments.renderers.segments.DefaultSegmentsRenderer
 import com.intelligentComments.ui.core.Renderer
 import com.intellij.openapi.project.Project
 
-class ContentSegmentsUiModel : UiInteractionModelBase, ModelWithContent {
+class ContentSegmentsUiModel : ContentSegmentUiModel, ModelWithContent {
   override val contentSection: SectionUiModel
 
 
@@ -18,8 +18,8 @@ class ContentSegmentsUiModel : UiInteractionModelBase, ModelWithContent {
     parent: UiInteractionModelBase?,
     content: ContentSegments
   ) : super(project, parent) {
-    val content = content.segments.map { ContentSegmentUiModel.getFrom(project, this, it) }
-    contentSection = SectionUiModel(project, parent, content)
+    val models = content.segments.map { getFrom(project, this, it) }
+    contentSection = SectionUiModel(project, parent, models)
   }
 
   constructor(
@@ -27,8 +27,8 @@ class ContentSegmentsUiModel : UiInteractionModelBase, ModelWithContent {
     parent: UiInteractionModelBase?,
     content: Collection<ContentSegment>
   ) : super(project, parent) {
-    val content = content.map { ContentSegmentUiModel.getFrom(project, this, it) }
-    contentSection = SectionUiModel(project, parent, content)
+    val models = content.map { getFrom(project, this, it) }
+    contentSection = SectionUiModel(project, parent, models)
   }
 
 
@@ -36,5 +36,5 @@ class ContentSegmentsUiModel : UiInteractionModelBase, ModelWithContent {
     return contentSection.calculateStateHash()
   }
 
-  override fun createRenderer(): Renderer = throw NotSupportedForRenderingError()
+  override fun createRenderer(): Renderer = DefaultSegmentsRenderer(contentSection)
 }

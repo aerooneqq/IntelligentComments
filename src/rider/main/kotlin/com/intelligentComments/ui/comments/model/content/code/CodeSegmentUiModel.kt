@@ -13,7 +13,7 @@ class CodeSegmentUiModel(
   project: Project,
   parent: UiInteractionModelBase?,
   private val codeSegment: CodeSegment
-) : ContentSegmentUiModel(project, parent, codeSegment) {
+) : ContentSegmentUiModel(project, parent) {
   private var previousHash: Int? = null
   private var cachedText: HighlightedTextUiWrapper? = null
 

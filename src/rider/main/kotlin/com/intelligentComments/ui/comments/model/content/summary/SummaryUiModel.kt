@@ -13,7 +13,7 @@ class SummaryUiModel(
   project: Project,
   parent: UiInteractionModelBase?,
   summary: SummaryContentSegment
-) : ContentSegmentUiModel(project, parent, summary) {
+) : ContentSegmentUiModel(project, parent) {
   val content = ContentSegmentsUiModel(project, this, summary.content)
 
   override fun calculateStateHash(): Int {

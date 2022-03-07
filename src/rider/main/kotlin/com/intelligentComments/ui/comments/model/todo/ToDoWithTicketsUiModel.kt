@@ -19,7 +19,7 @@ class ToDoWithTicketsUiModel(
   project: Project,
   parent: UiInteractionModelBase?,
   segment : ToDoWithTicketsContentSegment,
-) : ContentSegmentUiModel(project, parent, segment), ExpandableUiModel {
+) : ContentSegmentUiModel(project, parent), ExpandableUiModel {
   override var isExpanded: Boolean = true
 
   val toDo = segment.toDo
@@ -30,7 +30,7 @@ class ToDoWithTicketsUiModel(
     ReferenceUiModel(project, this, object : UniqueEntityImpl(), ReferenceContentSegment {
       override val reference: Reference = it
       override val parent: Parentable = this
-      override val description: HighlightedText = HighlightedTextImpl.createEmpty(this)
+      override val description: EntityWithContentSegments = createEmptyEntityWithContentSegments()
       override val name: HighlightedText = HighlightedTextImpl(it.rawValue, this)
     })
   }

@@ -14,12 +14,9 @@ class TextInvariantUiModel(
   project: Project,
   parent: UiInteractionModelBase?,
   segment: TextInvariantSegment,
-) : ContentSegmentUiModel(project, parent, segment) {
+) : ContentSegmentUiModel(project, parent) {
   val name = HighlightedTextUiWrapper(project, this, segment.name)
-  val content = ContentSegmentsUiModel(project, this, listOf(object : UniqueEntityImpl(), TextContentSegment {
-    override val highlightedText: HighlightedText = segment.description
-    override val parent: Parentable = segment
-  }))
+  val content = ContentSegmentsUiModel(project, this, segment.description.content)
 
   override fun calculateStateHash(): Int {
     return HashUtil.hashCode(name.calculateStateHash(), content.calculateStateHash())

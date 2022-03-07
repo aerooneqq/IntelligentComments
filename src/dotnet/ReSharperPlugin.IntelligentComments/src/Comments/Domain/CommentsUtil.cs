@@ -117,15 +117,20 @@ public static class CommentsUtil
     return new RdReferenceContentSegment(
       contentSegment.Reference.ToRdReference(),
       contentSegment.Name.ToRdHighlightedText(),
-      contentSegment.Description.ToRdHighlightedText()
+      contentSegment.Description.ToRdContentSegment()
     );
+  }
+  
+  public static RdDefaultSegmentWithContent ToRdContentSegment(this IEntityWithContentSegments entity)
+  {
+    return new RdDefaultSegmentWithContent(entity.ContentSegments.ToRdContentSegments());
   }
   
   [NotNull]
   public static RdTextInvariant ToRdInvariant([NotNull] this IInvariantContentSegment contentSegment)
   {
     return new RdTextInvariant(
-      contentSegment.Name.ToRdHighlightedText(), contentSegment.Description.ToRdHighlightedText());
+      contentSegment.Name.ToRdHighlightedText(), contentSegment.Description.ToRdContentSegment());
   }
 
   [NotNull]

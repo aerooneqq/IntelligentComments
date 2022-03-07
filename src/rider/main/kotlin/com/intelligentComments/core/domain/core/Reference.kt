@@ -41,5 +41,5 @@ interface InvariantReference : BackendReference {
 interface ReferenceContentSegment : ContentSegment {
   val reference: Reference
   val name: HighlightedText
-  val description: HighlightedText
+  val description: EntityWithContentSegments
 }

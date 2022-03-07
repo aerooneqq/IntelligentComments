@@ -16,7 +16,7 @@ class ListContentSegmentUiModel(
   project: Project,
   parent: UiInteractionModelBase?,
   listSegment: ListContentSegment
-) : ContentSegmentUiModel(project, parent, listSegment), ExpandableUiModel {
+) : ContentSegmentUiModel(project, parent), ExpandableUiModel {
   private val header = listSegment.header
   val headerUiModel = if (header == null) null else {
     ListContentSegmentHeaderUiModel(project, this, header)

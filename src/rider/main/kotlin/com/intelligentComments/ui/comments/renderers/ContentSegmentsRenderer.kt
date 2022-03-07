@@ -12,7 +12,7 @@ import com.intellij.openapi.editor.Editor
 import java.awt.Graphics
 import java.awt.Rectangle
 
-open class ContentSegmentsRenderer : Renderer, RectangleModelBuildContributor {
+abstract class ContentSegmentsRenderer : Renderer, RectangleModelBuildContributor {
   private val segments: Collection<ContentSegmentUiModel>
 
 

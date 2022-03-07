@@ -140,13 +140,13 @@ public record ImageContentSegment(IReference SourceReference, IHighlightedText D
 public record InvariantContentSegment
 (
   IHighlightedText Name,
-  IHighlightedText Description
+  IEntityWithContentSegments Description
 ) : IInvariantContentSegment;
 
 public record ReferenceContentSegment
 (
   IReference Reference,
   IHighlightedText Name,
-  IHighlightedText Description
+  IEntityWithContentSegments Description
 ) : IReferenceContentSegment;
   

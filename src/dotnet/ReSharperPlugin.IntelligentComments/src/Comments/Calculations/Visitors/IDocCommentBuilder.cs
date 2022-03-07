@@ -156,7 +156,14 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
     
     if (tagInfo is not var (nameText, descriptionText)) return null;
 
-    return new InvariantContentSegment(nameText, descriptionText);
+    var segments = new List<IContentSegment>();
+    if (!descriptionText.Text.IsNullOrWhitespace())
+    {
+      segments.Add(new TextContentSegment(descriptionText));
+    }
+
+    var content = new EntityWithContentSegments(new ContentSegments(segments));
+    return new InvariantContentSegment(nameText, content);
   }
 
   private static bool CheckInvariantReferenceIsValid([NotNull] IReference reference, [NotNull] ISolution solution)
@@ -182,7 +189,9 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
     if (tagInfo is not var (nameText, descriptionText)) return;
 
     var reference = new InvariantReference(nameText.Text);
-    var referenceSegment = new ReferenceContentSegment(reference, nameText, descriptionText);
+    var segments = new ContentSegments(new List<IContentSegment> { new TextContentSegment(descriptionText) });
+    var content = new EntityWithContentSegments(segments);
+    var referenceSegment = new ReferenceContentSegment(reference, nameText, content);
     ExecuteWithTopmostContentSegments(metadata => metadata.ContentSegments.Segments.Add(referenceSegment));
   }
 

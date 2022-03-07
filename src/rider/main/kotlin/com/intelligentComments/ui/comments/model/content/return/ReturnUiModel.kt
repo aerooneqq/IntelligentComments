@@ -15,7 +15,7 @@ class ReturnUiModel(
   project: Project,
   parent: UiInteractionModelBase?,
   ret: ReturnSegment
-) : ContentSegmentUiModel(project, parent, ret) {
+) : ContentSegmentUiModel(project, parent) {
   val content = ContentSegmentsUiModel(project, this, ret.content)
 
   private val highlightedHeader = getFirstLevelHeader(

@@ -14,7 +14,7 @@ class TextContentSegmentUiModel(
   project: Project,
   parent: UiInteractionModelBase?,
   textSegment: TextContentSegment
-) : ContentSegmentUiModel(project, parent, textSegment) {
+) : ContentSegmentUiModel(project, parent) {
   val highlightedTextWrapper = HighlightedTextUiWrapper(project, this, textSegment.highlightedText.apply {
     ensureThatAllLinesAreNoLongerThan(RiderIntelligentCommentsSettingsProvider.getInstance().maxCharsInLine.value)
   })

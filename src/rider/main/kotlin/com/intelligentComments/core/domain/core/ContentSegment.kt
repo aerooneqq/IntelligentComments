@@ -26,6 +26,19 @@ interface EntityWithContentSegments : ContentSegment {
   val content: ContentSegments
 }
 
+fun createEmptyEntityWithContentSegments(): EntityWithContentSegments {
+  return object : UniqueEntityImpl(), EntityWithContentSegments {
+    override val parent: Parentable? = null
+    override val content: ContentSegments = object : ContentSegments {
+      override val segments: Collection<ContentSegment> = emptyList()
+      override val parent: Parentable? = null
+
+      override fun processSegments(strategy: ContentProcessingStrategy) {
+      }
+    }
+  }
+}
+
 interface ValueSegment : EntityWithContentSegments
 
 interface ParagraphContentSegment : EntityWithContentSegments

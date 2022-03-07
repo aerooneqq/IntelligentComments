@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using JetBrains.DocumentModel;
 using JetBrains.ReSharper.Daemon.CodeFolding;
 using JetBrains.ReSharper.Feature.Services.Daemon;
@@ -18,7 +19,7 @@ public class CommentFoldingHighlighting : CodeFoldingHighlighting
 {
   private const string DocCommentAttributeId = "IntelligentCommentsDocCommentFolding";
     
-  public static CommentFoldingHighlighting Create(ICommentBase comment)
+  public static CommentFoldingHighlighting Create([NotNull] ICommentBase comment)
   {
     return new CommentFoldingHighlighting(
       comment,
@@ -30,13 +31,13 @@ public class CommentFoldingHighlighting : CodeFoldingHighlighting
   }
   
   
-  public ICommentBase Comment { get; }
+  [NotNull] public ICommentBase Comment { get; }
   
   
   public CommentFoldingHighlighting(
-    ICommentBase comment,
-    string attributeId, 
-    string placeholderText, 
+    [NotNull] ICommentBase comment,
+    [NotNull] string attributeId, 
+    [NotNull] string placeholderText, 
     DocumentRange range, 
     bool collapsedByDefault, 
     int foldingPriority) 

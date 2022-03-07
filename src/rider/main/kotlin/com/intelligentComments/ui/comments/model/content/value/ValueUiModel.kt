@@ -13,7 +13,7 @@ class ValueUiModel(
   project: Project,
   parent: UiInteractionModelBase?,
   value: ValueSegment,
-) : ContentSegmentUiModel(project, parent, value) {
+) : ContentSegmentUiModel(project, parent) {
   val content = ContentSegmentsUiModel(project, this, value.content)
 
   override fun calculateStateHash(): Int {
