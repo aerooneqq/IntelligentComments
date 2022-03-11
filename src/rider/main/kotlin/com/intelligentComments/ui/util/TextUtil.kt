@@ -378,6 +378,27 @@ class TextUtil {
     ) {
       if (kind == SquigglesKind.Wave) {
         drawWaveSquiggles(g, width, initialX, initialY, color)
+      } else if (kind == SquigglesKind.Dotted) {
+        drawDottedSquiggles(g, width, initialX, initialY, color)
+      }
+    }
+
+    private fun drawDottedSquiggles(
+      g: Graphics,
+      width: Int,
+      initialX: Int,
+      initialY: Int,
+      color: Color,
+      dotWidth: Int = 3,
+      dotHeight: Int = 1,
+      deltaBetweenDots: Int = 2
+    ) {
+      var currentX = initialX
+      while (currentX < initialX + width) {
+        UpdatedGraphicsCookie(g, color).use {
+          g.fillRect(currentX, initialY, dotWidth, dotHeight)
+          currentX += dotWidth + deltaBetweenDots
+        }
       }
     }
 
@@ -402,11 +423,11 @@ class TextUtil {
           points.add(Point(lastPoint.x + wavePartWidth, initialY))
         }
       }
-
       while (currentX < initialX + width) {
         addNextPoint()
         currentX += wavePartWidth
       }
+
 
       if (points.last().y == initialY) {
         addNextPoint()

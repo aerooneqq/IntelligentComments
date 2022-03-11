@@ -23,18 +23,7 @@ public class ReferenceBase : IReference
   }
 }
 
-public class ResolveContextImpl : IResolveContext
-{
-  public ISolution Solution { get; }
-  public IDocument Document { get; }
-
-
-  public ResolveContextImpl([NotNull] ISolution solution, [CanBeNull] IDocument document)
-  {
-    Solution = solution;
-    Document = document;
-  }
-}
+public record ResolveContextImpl([NotNull] ISolution Solution, [CanBeNull] IDocument Document) : IResolveContext;
 
 public class ProxyReference : ReferenceBase, IProxyReference
 {
@@ -54,7 +43,7 @@ public class ProxyReference : ReferenceBase, IProxyReference
     var cache = context.Solution.GetComponent<ReferencesCache>();
     if (cache.TryGetValue(document, RealReferenceId)?.Reference is not { } realReference)
     {
-      return EmptyResolveResult.Instance;
+      return new InvalidResolveResult($"Failed to resolve proxy reference with real reference id: {RealReferenceId}");
     }
 
     return realReference.Resolve(context);
