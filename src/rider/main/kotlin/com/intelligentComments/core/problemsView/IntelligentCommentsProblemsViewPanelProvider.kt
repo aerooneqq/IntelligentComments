@@ -5,6 +5,7 @@ import com.intellij.analysis.problemsView.toolWindow.ProblemsViewPanelProvider
 import com.intellij.analysis.problemsView.toolWindow.ProblemsViewTab
 import com.intellij.openapi.project.Project
 import com.intellij.ui.OnePixelSplitter
+import com.intellij.ui.components.JBScrollPane
 import com.jetbrains.rd.platform.util.lifetime
 import com.jetbrains.rd.util.lifetime.Lifetime
 import com.jetbrains.rider.RiderProjectExtensionsConfigurator
@@ -88,7 +89,7 @@ class IntelligentCommentProblemsViewTab(
     tree.cellRenderer = CellRenderer(project)
     tree.addTreeExpansionListener(this)
 
-    firstComponent = tree
+    firstComponent = JBScrollPane(tree)
   }
 
   override fun getName(count: Int): String {

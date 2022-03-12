@@ -6,6 +6,7 @@ enum class NodeChangeKind {
   Remove,
   Change
 }
+
 internal data class NodesChangeDto(
   val nodeChangeKind: NodeChangeKind,
   val changedIndices: IntArray,

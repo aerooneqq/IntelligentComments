@@ -3,9 +3,9 @@ package com.intelligentComments.core.problemsView.tree
 import com.jetbrains.rd.platform.diagnostics.logAssertion
 import com.jetbrains.rd.platform.util.getLogger
 
-internal class ListWithSet<TId, TValue> {
+internal class VisibilityBasedItemsStorage<TId, TValue> {
   companion object {
-    private val logger = getLogger<ListWithSet<*, *>>()
+    private val logger = getLogger<VisibilityBasedItemsStorage<*, *>>()
   }
 
   private var thread: Thread = Thread.currentThread()
@@ -80,7 +80,7 @@ internal class ListWithSet<TId, TValue> {
         NodesChangeDto(
           NodeChangeKind.Change,
           IntArray(visibleItems.size - index) { it + index },
-          visibleItems.subList(index, visibleItems.size - 1).map { it as Any }.toTypedArray()
+          visibleItems.subList(index, visibleItems.size).map { it as Any }.toTypedArray()
         )
       )
     }

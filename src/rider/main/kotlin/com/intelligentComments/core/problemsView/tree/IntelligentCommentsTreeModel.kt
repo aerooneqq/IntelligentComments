@@ -15,7 +15,7 @@ internal class IntelligentCommentsTreeModel(
   private val lifetime: Lifetime
 ) : AbstractTreeModel() {
   private val fileWatchingLifetimes = mutableMapOf<String, LifetimeDefinition>()
-  private val files = ListWithSet<String, FileTreeModel>()
+  private val files = VisibilityBasedItemsStorage<String, FileTreeModel>()
 
   val filesCount
     get() = files.size
