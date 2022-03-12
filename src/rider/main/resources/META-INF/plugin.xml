@@ -28,7 +28,8 @@
     <projectService serviceImplementation="com.intelligentComments.core.comments.docs.CommentsHoverDocManager" />
     <projectService serviceImplementation="com.intelligentComments.core.comments.popups.IntelligentCommentPopupManager" />
     <projectService serviceImplementation="com.intelligentComments.core.comments.resolver.FrontendReferenceResolverHost" />
-    
+
+    <problemsViewPanelProvider implementation="com.intelligentComments.core.problemsView.IntelligentCommentsProblemsViewPanelProvider" />
     <rdclient.highlighterModelSupport implementation="com.intelligentComments.core.markup.DocCommentsFoldingHighlightersSupport" />
 
     <editorFactoryListener implementation="com.intelligentComments.core.comments.listeners.RiderEditorsListener" />
@@ -70,6 +71,12 @@
     </component>
     <component>
       <implementation-class>com.intelligentComments.core.comments.listeners.RiderEditorsListener</implementation-class>
+    </component>
+    <component>
+      <implementation-class>
+        com.intelligentComments.core.problemsView.IntelligentCommentsExtensionsRegistrar
+      </implementation-class>
+      <loadForDefaultProject />
     </component>
   </project-components>
 </idea-plugin>
