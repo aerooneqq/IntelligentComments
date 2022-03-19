@@ -14,7 +14,7 @@ public class CSharpReferenceCompletionProvider : ItemsProviderOfSpecificContext<
   protected override bool AddLookupItems(IntelligentCommentCompletionContext context, IItemsCollector collector)
   {
     var attribute = context.TryGetContextAttribute();
-    if (!CommentsBuilderUtil.IsReferenceSourceAttribute(attribute)) return false;
+    if (!CommentsBuilderUtil.IsInvariantReferenceSourceAttribute(attribute)) return false;
 
     var cache = context.GetSolution().GetComponent<InvariantsNamesCache>();
     foreach (var name in cache.GetAllInvariantsNames())

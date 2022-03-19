@@ -21,10 +21,12 @@ internal class IntelligentCommentReferenceErrorTreeModel(
 ) : IntelligentCommentErrorTreeModelBase(parentModel, originalError, presentationText)
 
 
+const val intelligentCommentErrorPrefix = "[IC]:"
+
 internal fun SolutionAnalysisErrorWithIgnore.toIntelligentCommentErrorTreeModel(
   parentModel: FileTreeModel
 ): IntelligentCommentErrorTreeModel? {
-  if (this.text.startsWith("Failed to resolve referenceSource")) {
+  if (this.text.startsWith(intelligentCommentErrorPrefix)) {
     return IntelligentCommentReferenceErrorTreeModel(parentModel, this, this.text)
   }
 
