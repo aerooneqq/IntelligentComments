@@ -68,7 +68,7 @@ public class ClickDocHost
     
     myShellLocks.QueueReadLock(myLifetime, $"{nameof(ClickDocHost)}::ServingRequest", () =>
     {
-      var (rdReference, textControlId) = request.ResolveRequest;
+      var (_, textControlId) = request.ResolveRequest;
       if (myTextControlHost.TryGetTextControl(textControlId) is not { } textControl)
       {
         LogErrorAndSetNull($"Text control was null for {textControlId}");

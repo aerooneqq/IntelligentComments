@@ -10,6 +10,7 @@ using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.UI.Icons;
 using JetBrains.UI.RichText;
+using ReSharperPlugin.IntelligentComments.Comments.Calculations.Visitors;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Completion.CSharp;
 
@@ -23,9 +24,9 @@ public class CSharpDocCommentCompletionItemsProvider : ItemsProviderOfSpecificCo
 
   [ItemNotNull] [NotNull] private static readonly TagInfo[] ourClosedTags =
   {
-    new("image", new[] { "source" }, true),
-    new("invariant", new[] { "name" }, false),
-    new("reference", new[] { "referenceSource" }, false)
+    new("image", new[] { CommentsBuilderUtil.ImageSourceAttrName }, true),
+    new("invariant", new[] { CommentsBuilderUtil.InvariantNameAttrName }, false),
+    new("reference", new[] { CommentsBuilderUtil.InvariantReferenceSourceAttrName }, false)
   };
   
   protected override bool AddLookupItems(ContextInDocComment context, IItemsCollector collector)

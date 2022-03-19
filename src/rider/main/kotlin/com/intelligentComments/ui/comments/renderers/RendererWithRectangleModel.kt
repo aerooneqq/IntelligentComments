@@ -136,7 +136,7 @@ abstract class RendererWithRectangleModel(
 
     UpdatedGraphicsCookie(g, defaultTextColor, TextUtil.getFont(editor)).use {
       for (rectangle in rectanglesModel!!.allRectangles) {
-        //g.drawRect(rectangle.x + targetRegion.x, rectangle.y + targetRegion.y, rectangle.width, rectangle.height)
+        //g.drawRect((rectangle.x + targetRegion.x).toInt(), (rectangle.y + targetRegion.y).toInt(), rectangle.width, rectangle.height)
       }
     }
   }
@@ -166,12 +166,12 @@ abstract class RendererWithRectangleModel(
 
   override fun calculateExpectedHeightInPixels(editor: Editor, additionalRenderInfo: RenderAdditionalInfo): Int {
     application.assertIsDispatchThread()
-    return calculateExpectedWidth(editor)
+    return calculateExpectedHeight(editor)
   }
 
   override fun calculateExpectedWidthInPixels(editor: Editor, additionalRenderInfo: RenderAdditionalInfo): Int {
     application.assertIsDispatchThread()
-    return calculateExpectedHeight(editor)
+    return calculateExpectedWidth(editor)
   }
 
   override fun render(
