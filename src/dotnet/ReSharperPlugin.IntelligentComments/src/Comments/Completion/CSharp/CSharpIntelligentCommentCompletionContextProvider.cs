@@ -1,5 +1,6 @@
 using JetBrains.Annotations;
 using JetBrains.Diagnostics;
+using JetBrains.DocumentModel;
 using JetBrains.ReSharper.Feature.Services.CodeCompletion.Infrastructure;
 using JetBrains.ReSharper.Features.ReSpeller.Analyzers;
 using JetBrains.ReSharper.Psi;
@@ -36,17 +37,23 @@ public class CSharpIntelligentCommentCompletionContextProvider : ICodeCompletion
   {
     var docCommentBlock = context.GetData(ourDocCommentKey);
     Assertion.AssertNotNull(docCommentBlock, "docCommentBlock != null");
-    
-    var psiHelper = LanguageManager.Instance.GetService<IPsiHelper>(docCommentBlock.Language);
-    if (psiHelper.GetXmlDocPsi(docCommentBlock)?.XmlFile is not { } xmlFile) return null;
 
-    var offset = xmlFile.Translate(context.CaretDocumentOffset);
-    
-    if (xmlFile.FindTokenAt(offset) as ITokenNode is not { } contextDocCommentNode) return null;
+    if (TryGetXmlToken(docCommentBlock, context.CaretDocumentOffset) is not { } contextDocCommentNode) return null;
     if (TryCreateTextLookupRanges(contextDocCommentNode) is not { } ranges) return null;
     if (!ranges.InsertRange.IsValid() || !ranges.ReplaceRange.IsValid()) return null;
     
     return new IntelligentCommentCompletionContext(context, contextDocCommentNode, ranges, docCommentBlock);
+  }
+  
+  [CanBeNull]
+  internal static ITokenNode TryGetXmlToken(IDocCommentBlock docCommentBlock, DocumentOffset caretDocumentOffset)
+  {
+    var psiHelper = LanguageManager.Instance.GetService<IPsiHelper>(docCommentBlock.Language);
+    if (psiHelper.GetXmlDocPsi(docCommentBlock)?.XmlFile is not { } xmlFile) return null;
+
+    var adjustedOffset = xmlFile.Translate(caretDocumentOffset);
+
+    return xmlFile.FindTokenAt(adjustedOffset) as ITokenNode;
   }
   
   [CanBeNull]
