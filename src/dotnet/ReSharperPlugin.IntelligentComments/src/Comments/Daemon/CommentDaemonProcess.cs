@@ -30,7 +30,7 @@ public class CommentDaemonProcess : IDaemonStageProcess
     
     foreach (var file in files)
     {
-      var processor = CommentsProcessorsProvider.CreateProcessorFor(file.Language);
+      var processor = CommentsProcessorsProvider.CreateProcessorFor(file.Language, myDaemonProcessKind);
       file.ProcessThisAndDescendants(processor);
       foreach (var (highlightingInfos, commentBase) in processor.ProcessedComments)
       {

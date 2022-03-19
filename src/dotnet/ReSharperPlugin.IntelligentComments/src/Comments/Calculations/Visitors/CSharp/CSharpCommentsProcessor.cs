@@ -17,11 +17,17 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Visitors.CSh
 
 public class CSharpCommentsProcessor : CommentsProcessorBase
 {
+  public CSharpCommentsProcessor(DaemonProcessKind processKind) : base(processKind)
+  {
+  }
+  
+  
   public override void ProcessBeforeInterior(ITreeNode element)
   {
     if (VisitedComments.Contains(element)) return;
 
-    if (element is not ICSharpDocCommentBlock && 
+    if (ProcessKind is DaemonProcessKind.VISIBLE_DOCUMENT &&
+        element is not ICSharpDocCommentBlock && 
         element is ICSharpCommentNode cSharpComment && 
         TryGetInspectionDisablingCommentDto(cSharpComment) is { } inspectionDisablingComment)
     {
@@ -108,24 +114,32 @@ public class CSharpCommentsProcessor : CommentsProcessorBase
   {
     VisitedComments.Add(docCommentBlock);
 
-    var errorsCollector = new CSharpCommentProblemsCollector(docCommentBlock);
-    if (errorsCollector.Run() is { Count: > 0 } errors)
+    if (ProcessKind is DaemonProcessKind.VISIBLE_DOCUMENT or DaemonProcessKind.SOLUTION_ANALYSIS)
     {
-      var range = docCommentBlock.GetDocumentRange();
-      Comments.Add(CommentProcessingResult.CreateWithErrors(errors, CSharpLanguage.Instance!, range));
-      return;
+      var errorsCollector = new CSharpCommentProblemsCollector(docCommentBlock);
+      if (errorsCollector.Run() is { Count: > 0 } errors)
+      {
+        var range = docCommentBlock.GetDocumentRange();
+        Comments.Add(CommentProcessingResult.CreateWithErrors(errors, CSharpLanguage.Instance!, range));
+        return;
+      } 
     }
-    
-    var builder = new CSharpDocCommentBuilder(docCommentBlock);
 
-    if (builder.Build() is { } comment)
+    if (ProcessKind is DaemonProcessKind.VISIBLE_DOCUMENT)
     {
-      Comments.Add(CommentProcessingResult.CreateWithoutErrors(comment));
+      var builder = new CSharpDocCommentBuilder(docCommentBlock);
+
+      if (builder.Build() is { } comment)
+      {
+        Comments.Add(CommentProcessingResult.CreateWithoutErrors(comment));
+      } 
     }
   }
 
   private void ProcessLineComment([NotNull] ICSharpCommentNode commentNode)
   {
+    if (ProcessKind is not DaemonProcessKind.VISIBLE_DOCUMENT) return;
+    
     var builder = new CSharpGroupOfLineCommentsBuilder(commentNode);
 
     VisitedComments.Add(commentNode);
@@ -139,7 +153,7 @@ public class CSharpCommentsProcessor : CommentsProcessorBase
   private record struct InspectionDisablingCommentDto(IEnumerable<string> InspectionNames);
 
   [CanBeNull]
-  private InspectionDisablingCommentDto? TryGetInspectionDisablingCommentDto([NotNull] ICSharpCommentNode commentNode)
+  private static InspectionDisablingCommentDto? TryGetInspectionDisablingCommentDto([NotNull] ICSharpCommentNode commentNode)
   {
     var constructInfo = ReSharperControlConstruct.ParseCommentText(commentNode.CommentText);
     if (constructInfo.IsRecognized && constructInfo.IsDisable)
@@ -152,8 +166,9 @@ public class CSharpCommentsProcessor : CommentsProcessorBase
 
   private void ProcessMultilineComment([NotNull] ICSharpCommentNode commentNode)
   {
-    var builder = new CSharpMultilineCommentBuilder(commentNode);
+    if (ProcessKind is not DaemonProcessKind.VISIBLE_DOCUMENT) return;
     
+    var builder = new CSharpMultilineCommentBuilder(commentNode);
     VisitedComments.Add(commentNode);
     
     if (builder.Build() is { } multilineComment)
