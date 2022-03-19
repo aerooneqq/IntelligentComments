@@ -11,7 +11,10 @@ using JetBrains.ReSharper.Psi.Xml.Tree;
 using JetBrains.Util;
 using System.Linq;
 using JetBrains.ProjectModel;
+using JetBrains.Util.Logging;
 using ReSharperPlugin.IntelligentComments.Comments.Caches.Invariants;
+using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
+using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.References;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Visitors;
 
@@ -23,8 +26,8 @@ public class CommentError : IHighlighting
   
   public string ToolTip { get; }
   public string ErrorStripeToolTip { get; }
-  
-  
+
+
   public CommentError(DocumentRange range, string errorMessage)
   {
     myRange = range;
@@ -45,17 +48,18 @@ public interface ICommentProblemsCollector : IRecursiveElementProcessor<Context>
 
 public abstract class CommentProblemsCollectorBase : ICommentProblemsCollector
 {
+  [NotNull] private static readonly ILogger ourLogger = Logger.GetLogger<CommentProblemsCollectorBase>();
+  
   [NotNull] private readonly IDocCommentBlock myInitialComment;
   [NotNull] private readonly List<HighlightingInfo> myHighlightings;
-  [NotNull] private readonly IDictionary<string,Action<IXmlTag>> myTagsProcessors;
+  [NotNull] private readonly IDictionary<string, Action<IXmlTag, Context>> myTagsProcessors;
   
   
-  // ReSharper disable once NotNullMemberIsNotInitialized
   protected CommentProblemsCollectorBase([NotNull] IDocCommentBlock comment)
   {
     myInitialComment = comment;
     myHighlightings = new List<HighlightingInfo>();
-    myTagsProcessors = new Dictionary<string, Action<IXmlTag>>
+    myTagsProcessors = new Dictionary<string, Action<IXmlTag, Context>>
     {
       [CommentsBuilderUtil.ImageTagName] = ProcessImage,
       [CommentsBuilderUtil.InvariantTagName] = ProcessInvariant,
@@ -96,11 +100,11 @@ public abstract class CommentProblemsCollectorBase : ICommentProblemsCollector
     if (element is not IXmlTag xmlTag) return;
     if (myTagsProcessors.TryGetValue(xmlTag.GetTagName(), out var processor))
     {
-      processor.Invoke(xmlTag);
+      processor.Invoke(xmlTag, context);
     }
   }
 
-  private void ProcessImage([NotNull] IXmlTag imageTag)
+  private void ProcessImage([NotNull] IXmlTag imageTag, [NotNull] Context context)
   {
     CheckAttributePresenceAndNonEmptyValue(imageTag, CommentsBuilderUtil.ImageSourceAttrName);
   }
@@ -141,15 +145,15 @@ public abstract class CommentProblemsCollectorBase : ICommentProblemsCollector
     return false;
   }
 
-  private void ProcessReference([NotNull] IXmlTag referenceTag)
+  private void ProcessReference([NotNull] IXmlTag referenceTag, [NotNull] Context context)
   {
-    CheckAttributePresenceAndNonEmptyValue(referenceTag, CommentsBuilderUtil.ReferenceSourceAttrName);
+    if (!CheckAttributePresenceAndNonEmptyValue(referenceTag, CommentsBuilderUtil.ReferenceSourceAttrName)) return;
+    CheckIfReferenceSourceIsResolved(referenceTag, context);
   }
 
-  private void ProcessInvariant([NotNull] IXmlTag invariantTag)
+  private void ProcessInvariant([NotNull] IXmlTag invariantTag, [NotNull] Context context)
   {
     if (!CheckAttributePresenceAndNonEmptyValue(invariantTag, CommentsBuilderUtil.InvariantNameAttrName)) return;
-
     CheckThatInvariantNameOccursOnce(invariantTag);
   }
 
@@ -167,6 +171,32 @@ public abstract class CommentProblemsCollectorBase : ICommentProblemsCollector
     var range = invariantNameAttribute.Value.GetDocumentRange();
     AddError(range, $"The invariant name \"{name}\" must occur only once in solution");
     return false;
+  }
+
+  private bool CheckIfReferenceSourceIsResolved([NotNull] IXmlTag referenceTag, [NotNull] Context context)
+  {
+    var referenceSourceAttr = referenceTag.GetAttribute(CommentsBuilderUtil.ReferenceSourceAttrName);
+    Assertion.Assert(referenceSourceAttr is { }, "referenceSourceAttr is { }");
+
+    var referenceSourceText = referenceSourceAttr.UnquotedValue;
+    var reference = new InvariantReference(referenceSourceText);
+    var solution = context.AdjustedComment.GetSolution();
+    var document = context.AdjustedComment.GetSourceFile()?.Document;
+    
+    if (document is null)
+    {
+      ourLogger.Error($"Failed to get document for \"{context.AdjustedComment.GetContainingFile()}\"");
+      return false;
+    }
+
+    if (reference.Resolve(new ResolveContextImpl(solution, document)) is InvalidResolveResult)
+    {
+      var text = $"Failed to resolve referenceSource \"{referenceSourceText}\"";
+      AddError(referenceSourceAttr.Value.GetDocumentRange(), text);
+      return false;
+    }
+
+    return true;
   }
   
   public bool InteriorShouldBeProcessed(ITreeNode element, Context context) => true;

@@ -49,7 +49,7 @@ public abstract class TextAnimation
 
 public class UnderlineTextAnimation : TextAnimation
 {
-  public static UnderlineTextAnimation Instance { get; } = new UnderlineTextAnimation();
+  public static UnderlineTextAnimation Instance { get; } = new();
   
   
   private UnderlineTextAnimation() { }

@@ -11,11 +11,14 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Daemon;
 
 public class CommentDaemonProcess : IDaemonStageProcess
 {
+  private readonly DaemonProcessKind myDaemonProcessKind;
+  
   public IDaemonProcess DaemonProcess { get; }
 
 
-  public CommentDaemonProcess([NotNull] IDaemonProcess process)
+  public CommentDaemonProcess([NotNull] IDaemonProcess process, DaemonProcessKind daemonProcessKind)
   {
+    myDaemonProcessKind = daemonProcessKind;
     DaemonProcess = process;
   }
   
@@ -31,7 +34,7 @@ public class CommentDaemonProcess : IDaemonStageProcess
       file.ProcessThisAndDescendants(processor);
       foreach (var (highlightingInfos, commentBase) in processor.ProcessedComments)
       {
-        if (commentBase is { } comment)
+        if (commentBase is { } comment && myDaemonProcessKind == DaemonProcessKind.VISIBLE_DOCUMENT)
         {
           result.Add(new HighlightingInfo(comment.Range, CommentFoldingHighlighting.Create(comment)));
         }
