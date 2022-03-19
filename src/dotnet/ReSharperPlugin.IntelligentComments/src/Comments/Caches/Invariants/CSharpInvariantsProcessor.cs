@@ -7,6 +7,7 @@ using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
 using JetBrains.ReSharper.Psi.Tree;
+using JetBrains.Util;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Visitors;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Caches.Invariants;
@@ -23,6 +24,8 @@ public class CSharpInvariantsProcessor : TreeNodeVisitor<Dictionary<string, int>
       {
         var invariantName = CommentsBuilderUtil.TryGetInvariantName(element);
         Assertion.AssertNotNull(invariantName, "invariantName != null");
+
+        if (invariantName.IsNullOrWhitespace()) return;
         
         if (invariantsCount.ContainsKey(invariantName))
         {

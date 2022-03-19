@@ -9,7 +9,7 @@ using ReSharperPlugin.IntelligentComments.Comments.Calculations.Visitors;
 namespace ReSharperPlugin.IntelligentComments.Comments.Completion.CSharp;
 
 [Language(typeof(CSharpLanguage))]
-public class CSharpReferenceCompletionProvider : ItemsProviderOfSpecificContext<IntelligentCommentCompletionContext>
+public class CSharpReferenceSourceCompletionProvider : ItemsProviderOfSpecificContext<IntelligentCommentCompletionContext>
 {
   protected override bool AddLookupItems(IntelligentCommentCompletionContext context, IItemsCollector collector)
   {
