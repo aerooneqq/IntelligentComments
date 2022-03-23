@@ -14,10 +14,11 @@ public class CSharpReferenceSourceCompletionProvider : ItemsProviderOfSpecificCo
   protected override bool AddLookupItems(IntelligentCommentCompletionContext context, IItemsCollector collector)
   {
     var attribute = context.TryGetContextAttribute();
-    if (!CommentsBuilderUtil.IsInvariantReferenceSourceAttribute(attribute)) return false;
+    if (attribute is null || !CommentsBuilderUtil.IsInvariantReferenceSourceAttribute(attribute)) return false;
 
+    var prefix = CommentsBuilderUtil.PreprocessText(attribute.UnquotedValue, null);
     var cache = context.GetSolution().GetComponent<InvariantsNamesCache>();
-    foreach (var name in cache.GetAllNamesFor(string.Empty))
+    foreach (var name in cache.GetAllNamesFor(prefix))
     {
       var lookupItem = new CommentLookupItem(name);
       lookupItem.InitializeRanges(context.TextLookupRanges, context.BasicContext);
