@@ -25,13 +25,21 @@ internal static class CommentsBuilderUtil
   [NotNull] internal const string ImageTagName = "image";
   [NotNull] internal const string ImageSourceAttrName = "source";
   [NotNull] internal const string ReferenceTagName = "reference";
-  [NotNull] internal const string ReferenceSourceAttrName = "referenceSource";
+  [NotNull] internal const string InvariantReferenceSourceAttrName = "invariant";
   [NotNull] internal const string InvariantTagName = "invariant";
   [NotNull] internal const string InvariantNameAttrName = "name";
   [NotNull] internal const string InheritDocTagName = "inheritdoc";
   [NotNull] internal const string CRef = "cref";
 
-  
+  [NotNull] internal static HashSet<string> PossibleReferenceTagAttributes { get; } = new() 
+  {
+    InvariantReferenceSourceAttrName
+  };
+
+  [NotNull] internal static string PossibleReferenceTagAttributesPresentation { get; } = 
+    string.Join(", ", PossibleReferenceTagAttributes);
+
+
   [NotNull] private static readonly ISet<char> ourCharsWithNoNeedToAddSpaceAfter = new HashSet<char>
   {
     '(', '[', '{',
@@ -189,9 +197,9 @@ internal static class CommentsBuilderUtil
     return attribute?.AttributeName == InvariantNameAttrName;
   }
   
-  internal static bool IsReferenceSourceAttribute([CanBeNull] IXmlAttribute attribute)
+  internal static bool IsInvariantReferenceSourceAttribute([CanBeNull] IXmlAttribute attribute)
   {
-    return attribute?.AttributeName == ReferenceSourceAttrName;
+    return attribute?.AttributeName == InvariantReferenceSourceAttrName;
   }
 
   [CanBeNull]

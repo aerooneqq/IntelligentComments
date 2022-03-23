@@ -111,7 +111,8 @@ public abstract class CommentProblemsCollectorBase : ICommentProblemsCollector
 
   private void AddError(DocumentRange range, [NotNull] string message)
   {
-    var error = new CommentError(range, message);
+    var adjustedMessage = $"[IC]: {message}";
+    var error = new CommentError(range, adjustedMessage);
     var info = new HighlightingInfo(range, error);
     myHighlightings.Add(info);
   }
@@ -147,14 +148,56 @@ public abstract class CommentProblemsCollectorBase : ICommentProblemsCollector
 
   private void ProcessReference([NotNull] IXmlTag referenceTag, [NotNull] Context context)
   {
-    if (!CheckAttributePresenceAndNonEmptyValue(referenceTag, CommentsBuilderUtil.ReferenceSourceAttrName)) return;
-    CheckIfReferenceSourceIsResolved(referenceTag, context);
+    if (!CheckThatReferenceHasExactlyOneOfNeededTags(referenceTag, context)) return;
+
+    var referenceSourceAttribute = referenceTag.GetAttributes()
+      .FirstOrDefault(attr => CommentsBuilderUtil.PossibleReferenceTagAttributes.Contains(attr.AttributeName));
+    
+    Assertion.AssertNotNull(referenceSourceAttribute, "referenceSourceAttribute != null");
+
+    if (referenceSourceAttribute.AttributeName == CommentsBuilderUtil.InvariantReferenceSourceAttrName)
+    {
+      CheckIfInvariantReferenceSourceIsResolved(referenceTag, context);
+    }
   }
 
   private void ProcessInvariant([NotNull] IXmlTag invariantTag, [NotNull] Context context)
   {
     if (!CheckAttributePresenceAndNonEmptyValue(invariantTag, CommentsBuilderUtil.InvariantNameAttrName)) return;
     CheckThatInvariantNameOccursOnce(invariantTag);
+  }
+
+  private bool CheckThatReferenceHasExactlyOneOfNeededTags([NotNull] IXmlTag referenceTag, [NotNull] Context context)
+  {
+    var needAttrsCount = 0;
+    var tagRange = referenceTag.GetDocumentRange();
+    
+    foreach (var attribute in referenceTag.GetAttributes())
+    {
+      if (CommentsBuilderUtil.PossibleReferenceTagAttributes.Contains(attribute.AttributeName))
+      {
+        if (needAttrsCount > 0)
+        {
+          AddError(tagRange, "Reference tag can not reference more than one entity");
+          return false;
+        }
+
+        ++needAttrsCount;
+        continue;
+      }
+      
+      AddError(tagRange, $"Reference tag can not contain attribute {attribute.AttributeName}");
+      return false;
+    }
+
+    if (needAttrsCount != 1)
+    {
+      var possibleAttrs = CommentsBuilderUtil.PossibleReferenceTagAttributesPresentation;
+      AddError(tagRange, $"Reference tag must contain exactly one reference-source attribute ({possibleAttrs})");
+      return false;
+    }
+    
+    return true;
   }
 
   private bool CheckThatInvariantNameOccursOnce([NotNull] IXmlTag invariantTag)
@@ -173,10 +216,10 @@ public abstract class CommentProblemsCollectorBase : ICommentProblemsCollector
     return false;
   }
 
-  private bool CheckIfReferenceSourceIsResolved([NotNull] IXmlTag referenceTag, [NotNull] Context context)
+  private bool CheckIfInvariantReferenceSourceIsResolved([NotNull] IXmlTag referenceTag, [NotNull] Context context)
   {
-    var referenceSourceAttr = referenceTag.GetAttribute(CommentsBuilderUtil.ReferenceSourceAttrName);
-    Assertion.Assert(referenceSourceAttr is { }, "referenceSourceAttr is { }");
+    var referenceSourceAttr = referenceTag.GetAttribute(CommentsBuilderUtil.InvariantReferenceSourceAttrName);
+    Assertion.AssertNotNull(referenceSourceAttr, "referenceSourceAttr is { }");
 
     var referenceSourceText = referenceSourceAttr.UnquotedValue;
     var reference = new InvariantReference(referenceSourceText);
@@ -191,7 +234,7 @@ public abstract class CommentProblemsCollectorBase : ICommentProblemsCollector
 
     if (reference.Resolve(new ResolveContextImpl(solution, document)) is InvalidResolveResult)
     {
-      var text = $"Failed to resolve referenceSource \"{referenceSourceText}\"";
+      var text = $"Failed to resolve {CommentsBuilderUtil.InvariantReferenceSourceAttrName} \"{referenceSourceText}\"";
       AddError(referenceSourceAttr.Value.GetDocumentRange(), text);
       return false;
     }

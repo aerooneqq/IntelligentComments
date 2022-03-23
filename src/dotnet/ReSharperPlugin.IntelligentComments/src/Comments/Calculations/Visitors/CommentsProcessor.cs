@@ -53,14 +53,16 @@ public abstract class CommentsProcessorBase : ICommentsProcessor
 {
   [NotNull] [ItemNotNull] protected readonly IList<CommentProcessingResult> Comments;
   [NotNull] [ItemNotNull] protected readonly IList<ITreeNode> VisitedComments;
+  protected readonly DaemonProcessKind ProcessKind;
 
   
   [NotNull] [ItemNotNull] public IReadOnlyList<CommentProcessingResult> ProcessedComments => Comments.AsIReadOnlyList();
   public bool ProcessingIsFinished => false;
 
 
-  protected CommentsProcessorBase()
+  protected CommentsProcessorBase(DaemonProcessKind processKind)
   {
+    ProcessKind = processKind;
     Comments = new List<CommentProcessingResult>();
     VisitedComments = new List<ITreeNode>();
   }

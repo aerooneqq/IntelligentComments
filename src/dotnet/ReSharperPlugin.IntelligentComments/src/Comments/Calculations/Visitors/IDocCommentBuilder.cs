@@ -178,7 +178,7 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
   {
     if (!IsTopmostContext()) return;
     
-    const string attributeName = CommentsBuilderUtil.ReferenceSourceAttrName;
+    const string attributeName = CommentsBuilderUtil.InvariantReferenceSourceAttrName;
     
     IReference CreateReference([NotNull] string name) => new InvariantReference(name);
     bool IsReferenceValid(IReference reference) => CheckInvariantReferenceIsValid(reference, myResolveContext.Solution);

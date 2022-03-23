@@ -38,11 +38,12 @@ public class CSharpIntelligentCommentsAutoPopupStrategy : IAutomaticCodeCompleti
     return this.MatchToken(file, textControl, node =>
     {
       var docComment = node.TryFindDocCommentBlock();
-      var token = CSharpIntelligentCommentCompletionContextProvider.TryGetXmlToken(docComment, textControl.Caret.DocumentOffset());
-      return token is IXmlValueToken
-      {
-        Parent: IXmlAttribute { AttributeName: CommentsBuilderUtil.ReferenceSourceAttrName or CommentsBuilderUtil.InvariantNameAttrName }
-      };
+      var offset = textControl.Caret.DocumentOffset();
+      var token = CSharpIntelligentCommentCompletionContextProvider.TryGetXmlToken(docComment, offset);
+      if (token is not IXmlValueToken { Parent: IXmlAttribute parent }) return false;
+
+      return CommentsBuilderUtil.PossibleReferenceTagAttributes.Contains(parent.AttributeName) ||
+             parent.AttributeName == CommentsBuilderUtil.InvariantNameAttrName;
     });
   }
 }
