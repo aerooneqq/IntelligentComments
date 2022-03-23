@@ -17,7 +17,7 @@ public class CSharpReferenceSourceCompletionProvider : ItemsProviderOfSpecificCo
     if (!CommentsBuilderUtil.IsReferenceSourceAttribute(attribute)) return false;
 
     var cache = context.GetSolution().GetComponent<InvariantsNamesCache>();
-    foreach (var name in cache.GetAllInvariantsNames())
+    foreach (var name in cache.GetAllNamesFor(string.Empty))
     {
       var lookupItem = new CommentLookupItem(name);
       lookupItem.InitializeRanges(context.TextLookupRanges, context.BasicContext);
