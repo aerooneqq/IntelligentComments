@@ -32,24 +32,24 @@ public class RdReferenceConverter
   }
 
 
-  [CanBeNull] public IReference TryGetReference([NotNull] RdReferenceResolveRequest request) =>
+  [CanBeNull] public IDomainReference TryGetReference([NotNull] RdReferenceResolveRequest request) =>
     TryGetReference(request.Reference, request.TextControlId);
 
   [CanBeNull]
-  public IReference TryGetReference([NotNull] RdReference reference, [NotNull] TextControlId textControlId)
+  public IDomainReference TryGetReference([NotNull] RdReference reference, [NotNull] TextControlId textControlId)
   {
     return reference switch
     {
-      RdProxyReference proxyReference => new ProxyReference(proxyReference.RealReferenceId),
+      RdProxyReference proxyReference => new ProxyDomainReference(proxyReference.RealReferenceId),
       RdXmlDocCodeEntityReference xmlReference => TryGetXmlDocReference(textControlId, xmlReference),
       RdSandboxCodeEntityReference sandBoxReference => TryGetSandboxReference(sandBoxReference),
-      RdInvariantReference invariantReference => new InvariantReference(invariantReference.InvariantName),
+      RdInvariantReference invariantReference => new InvariantDomainReference(invariantReference.InvariantName),
       _ => null
     };
   }
   
   [CanBeNull]
-  private IXmlDocCodeEntityReference TryGetXmlDocReference(
+  private IXmlDocCodeEntityDomainReference TryGetXmlDocReference(
     [NotNull] TextControlId textControlId,
     [NotNull] RdXmlDocCodeEntityReference reference)
   {
@@ -66,18 +66,18 @@ public class RdReferenceConverter
     
     var module = sourceFile.PsiModule;
     var rawName = reference.RawValue;
-    return new XmlDocCodeEntityReference(rawName, myPsiServices, module);
+    return new XmlDocCodeEntityDomainReference(rawName, myPsiServices, module);
   }
   
   [CanBeNull]
-  private ISandBoxCodeEntityReference TryGetSandboxReference([NotNull] RdSandboxCodeEntityReference reference)
+  private ISandBoxCodeEntityDomainReference TryGetSandboxReference([NotNull] RdSandboxCodeEntityReference reference)
   {
     if (reference.OriginalDocumentId is null) return null;
     
     var document = myDocumentHostBase.TryGetHostDocument(reference.OriginalDocumentId);
     if (document is null) return null;
 
-    return new SandBoxCodeEntityReference(
+    return new SandBoxCodeEntityDomainReference(
       reference.RawValue, reference.SandboxFileId, document, reference.Range.ToTextRange());
   }
 }

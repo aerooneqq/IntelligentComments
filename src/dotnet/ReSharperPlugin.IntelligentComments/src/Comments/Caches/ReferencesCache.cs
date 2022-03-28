@@ -10,7 +10,7 @@ using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Caches;
 
-public record ReferenceInfo(IReference Reference);
+public record ReferenceInfo(IDomainReference DomainReference);
 
 [SolutionComponent]
 public class ReferencesCache : AbstractOpenedDocumentBasedCache<int, ReferenceInfo>
@@ -24,14 +24,14 @@ public class ReferencesCache : AbstractOpenedDocumentBasedCache<int, ReferenceIn
   }
 
   
-  public int AddReferenceIfNotPresent(IDocument document, IReference reference)
+  public int AddReferenceIfNotPresent(IDocument document, IDomainReference domainReference)
   {
-    var info = new ReferenceInfo(reference);
+    var info = new ReferenceInfo(domainReference);
     var id = CreateId(document, info);
 
     if (TryGetValue(document, id) is { }) return id;
 
-    return Add(document, new ReferenceInfo(reference));
+    return Add(document, new ReferenceInfo(domainReference));
   }
 
   protected override void BeforeRemoval(IDocument document, IEnumerable<ReferenceInfo> values)
@@ -41,7 +41,7 @@ public class ReferencesCache : AbstractOpenedDocumentBasedCache<int, ReferenceIn
   protected override int CreateId(IDocument document, ReferenceInfo value)
   {
     var documentHash = Hash.Create(document.Moniker).Value;
-    var referenceHash = value.Reference.GetHashCode();
+    var referenceHash = value.DomainReference.GetHashCode();
     return Hash.Combine(documentHash, referenceHash);
   }
 }

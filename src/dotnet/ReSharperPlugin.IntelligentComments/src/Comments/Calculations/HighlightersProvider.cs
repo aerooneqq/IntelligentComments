@@ -16,7 +16,7 @@ public interface IHighlightersProvider
   TextHighlighter TryGetReSharperHighlighter([NotNull] string resharperAttributeId, int length);
   
   [CanBeNull] 
-  TextHighlighter TryGetReSharperHighlighter(int textLength, [NotNull] IReference reference, [NotNull] IResolveContext context);
+  TextHighlighter TryGetReSharperHighlighter(int textLength, [NotNull] IDomainReference domainReference, [NotNull] IResolveContext context);
 
   [CanBeNull] 
   TextHighlighter TryGetDocCommentHighlighterWithErrorSquiggles(int length);
@@ -38,15 +38,15 @@ public interface IHighlightersProvider
   
   [NotNull]
   TextHighlighter GetReSharperSeeCodeEntityHighlighter(
-    int startOffset, int endOffset, [CanBeNull] IReference reference, [NotNull] IResolveContext context);
+    int startOffset, int endOffset, [CanBeNull] IDomainReference domainReference, [NotNull] IResolveContext context);
   
   [NotNull]
   TextHighlighter GetSeeAlsoReSharperMemberHighlighter(
-    int startOffset, int endOffset, [CanBeNull] IReference reference, [NotNull] IResolveContext context);
+    int startOffset, int endOffset, [CanBeNull] IDomainReference domainReference, [NotNull] IResolveContext context);
   
   [NotNull]
   TextHighlighter GetReSharperExceptionHighlighter(
-    int startOffset, int endOffset, [CanBeNull] IReference reference, [NotNull] IResolveContext context);
+    int startOffset, int endOffset, [CanBeNull] IDomainReference domainReference, [NotNull] IResolveContext context);
 }
 
 
@@ -124,21 +124,21 @@ public abstract class HighlightersProvider : IHighlightersProvider
     new(key, startOffset, endOffset, TextHighlighterAttributes.DefaultAttributes, TextAnimation: UnderlineTextAnimation.Instance);
   
   public TextHighlighter GetReSharperSeeCodeEntityHighlighter(
-    int startOffset, int endOffset, IReference reference, IResolveContext context)
+    int startOffset, int endOffset, IDomainReference domainReference, IResolveContext context)
   {
-    return TryGetHighlighterWithReSharperId(startOffset, endOffset, reference, context) ??
+    return TryGetHighlighterWithReSharperId(startOffset, endOffset, domainReference, context) ??
            GetSeeCodeEntityHighlighter(startOffset, endOffset);
   }
   
   [CanBeNull]
   private TextHighlighter TryGetHighlighterWithReSharperId(
-    int startOffset, int endOffset, [CanBeNull] IReference reference, IResolveContext context)
+    int startOffset, int endOffset, [CanBeNull] IDomainReference domainReference, IResolveContext context)
   {
-    if (reference is { } && TryGetAttributeId(reference, context) is { } attributeId)
+    if (domainReference is { } && TryGetAttributeId(domainReference, context) is { } attributeId)
     {
       return new TextHighlighter(
         attributeId, startOffset, endOffset, TextHighlighterAttributes.DefaultAttributes,
-        References: new [] { reference },
+        References: new [] { domainReference },
         TextAnimation: UnderlineTextAnimation.Instance,
         IsResharperHighlighter: true);
     }
@@ -153,15 +153,15 @@ public abstract class HighlightersProvider : IHighlightersProvider
   }
 
   public TextHighlighter TryGetReSharperHighlighter(
-    int textLength, IReference reference, IResolveContext context)
+    int textLength, IDomainReference domainReference, IResolveContext context)
   {
-    return TryGetHighlighterWithReSharperId(0, textLength, reference, context);
+    return TryGetHighlighterWithReSharperId(0, textLength, domainReference, context);
   } 
   
   [CanBeNull]
-  private string TryGetAttributeId([CanBeNull] IReference reference, IResolveContext context)
+  private string TryGetAttributeId([CanBeNull] IDomainReference domainReference, IResolveContext context)
   {
-    if (reference?.Resolve(context) is DeclaredElementResolveResult { DeclaredElement: { } declaredElement } && 
+    if (domainReference?.Resolve(context) is DeclaredElementResolveResult { DeclaredElement: { } declaredElement } && 
         myAttributeIdProvider.GetHighlightingAttributeId(declaredElement, false) is { } attributeId)
     {
       return myHighlighterNamesProvider.GetExternalName(attributeId);
@@ -171,16 +171,16 @@ public abstract class HighlightersProvider : IHighlightersProvider
   }
   
   public TextHighlighter GetSeeAlsoReSharperMemberHighlighter(
-    int startOffset, int endOffset, IReference reference, IResolveContext context)
+    int startOffset, int endOffset, IDomainReference domainReference, IResolveContext context)
   {
-    return TryGetHighlighterWithReSharperId(startOffset, endOffset, reference, context) ??
+    return TryGetHighlighterWithReSharperId(startOffset, endOffset, domainReference, context) ??
            GetSeeAlsoMemberHighlighter(startOffset, endOffset);
   }
 
   public TextHighlighter GetReSharperExceptionHighlighter(
-    int startOffset, int endOffset, IReference reference, IResolveContext context)
+    int startOffset, int endOffset, IDomainReference domainReference, IResolveContext context)
   {
-    return TryGetHighlighterWithReSharperId(startOffset, endOffset, reference, context) ??
+    return TryGetHighlighterWithReSharperId(startOffset, endOffset, domainReference, context) ??
            GetExceptionHighlighter(startOffset, endOffset);
   }
 }

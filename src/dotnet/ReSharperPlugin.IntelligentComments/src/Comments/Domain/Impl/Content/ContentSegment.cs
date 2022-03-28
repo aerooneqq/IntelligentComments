@@ -59,28 +59,28 @@ public class ExceptionContentSegment : EntityWithContentSegments, IExceptionSegm
 public abstract class SeeAlsoContentSegment : ISeeAlsoContentSegment
 {
   public IHighlightedText HighlightedText { get; }
-  public IReference Reference { get; }
+  public IDomainReference DomainReference { get; }
 
 
-  public SeeAlsoContentSegment([NotNull] IHighlightedText highlightedText, [NotNull] IReference reference)
+  public SeeAlsoContentSegment([NotNull] IHighlightedText highlightedText, [NotNull] IDomainReference domainReference)
   {
-    Reference = reference;
+    DomainReference = domainReference;
     HighlightedText = highlightedText;
   }
 }
 
 public class SeeAlsoMemberContentSegment : SeeAlsoContentSegment, ISeeAlsoMemberContentSegment 
 {
-  public SeeAlsoMemberContentSegment([NotNull] IHighlightedText highlightedText, [NotNull] IReference reference) 
-    : base(highlightedText, reference)
+  public SeeAlsoMemberContentSegment([NotNull] IHighlightedText highlightedText, [NotNull] IDomainReference domainReference) 
+    : base(highlightedText, domainReference)
   {
   }
 }
 
 public class SeeAlsoLinkContentSegment : SeeAlsoContentSegment, ISeeAlsoLinkContentSegment
 {
-  public SeeAlsoLinkContentSegment([NotNull] IHighlightedText highlightedText, [NotNull] IExternalReference reference) 
-    : base(highlightedText, reference)
+  public SeeAlsoLinkContentSegment([NotNull] IHighlightedText highlightedText, [NotNull] IExternalDomainReference domainReference) 
+    : base(highlightedText, domainReference)
   {
   }
 }
@@ -135,7 +135,7 @@ public record TableCell(IContentSegments Content, TableCellProperties Properties
 
 public record CodeSegment(IHighlightedText Code, int HighlightingRequestId) : ICodeSegment;
 
-public record ImageContentSegment(IReference SourceReference, IHighlightedText Description) : IImageContentSegment;
+public record ImageContentSegment(IDomainReference SourceDomainReference, IHighlightedText Description) : IImageContentSegment;
 
 public record InvariantContentSegment
 (
@@ -145,7 +145,7 @@ public record InvariantContentSegment
 
 public record ReferenceContentSegment
 (
-  IReference Reference,
+  IDomainReference DomainReference,
   IHighlightedText Name,
   IEntityWithContentSegments Description
 ) : IReferenceContentSegment;

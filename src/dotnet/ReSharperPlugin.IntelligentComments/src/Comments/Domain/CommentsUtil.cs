@@ -114,7 +114,7 @@ public static class CommentsUtil
   private static RdReferenceContentSegment ToRdReferenceSegment([NotNull] this IReferenceContentSegment contentSegment)
   {
     return new RdReferenceContentSegment(
-      contentSegment.Reference.ToRdReference(),
+      contentSegment.DomainReference.ToRdReference(),
       contentSegment.Name.ToRdHighlightedText(),
       contentSegment.Description.ToRdContentSegment()
     );
@@ -136,7 +136,7 @@ public static class CommentsUtil
   private static RdImageSegment ToRdImage([NotNull] this IImageContentSegment imageContentSegment)
   {
     return new RdImageSegment(
-      imageContentSegment.SourceReference.ToRdReference(), imageContentSegment.Description.ToRdHighlightedText());
+      imageContentSegment.SourceDomainReference.ToRdReference(), imageContentSegment.Description.ToRdHighlightedText());
   }
   
   [NotNull]
@@ -202,78 +202,78 @@ public static class CommentsUtil
   private static RdSeeAlsoLinkContentSegment ToRdSeeAlso([NotNull] this ISeeAlsoLinkContentSegment seeAlso)
   {
     return new RdSeeAlsoLinkContentSegment(
-      seeAlso.Reference.ToRdReference(), seeAlso.HighlightedText.ToRdHighlightedText());
+      seeAlso.DomainReference.ToRdReference(), seeAlso.HighlightedText.ToRdHighlightedText());
   }
 
   [NotNull]
   private static RdSeeAlsoMemberContentSegment ToRdSeeAlso([NotNull] this ISeeAlsoMemberContentSegment seeAlso)
   {
     return new RdSeeAlsoMemberContentSegment(
-      seeAlso.Reference.ToRdReference(), seeAlso.HighlightedText.ToRdHighlightedText());
+      seeAlso.DomainReference.ToRdReference(), seeAlso.HighlightedText.ToRdHighlightedText());
   }
 
   [NotNull]
-  private static RdReference ToRdReference([NotNull] this IReference reference)
+  private static RdReference ToRdReference([NotNull] this IDomainReference domainReference)
   {
-    return reference switch
+    return domainReference switch
     {
-      IProxyReference proxyReference => new RdProxyReference(proxyReference.RealReferenceId, string.Empty),
-      ICodeEntityReference codeEntityReference => codeEntityReference.ToRdReference(),
-      IExternalReference externalReference => externalReference.ToRdReference(),
-      ILangWordReference langWordReference => langWordReference.ToRdReference(),
-      IInvariantReference invariantReference => invariantReference.ToRdReference(),
-      _ => throw new ArgumentOutOfRangeException(reference.GetType().Name),
+      IProxyDomainReference proxyReference => new RdProxyReference(proxyReference.RealReferenceId, string.Empty),
+      ICodeEntityDomainReference codeEntityReference => codeEntityReference.ToRdReference(),
+      IExternalDomainReference externalReference => externalReference.ToRdReference(),
+      ILangWordDomainReference langWordReference => langWordReference.ToRdReference(),
+      IInvariantDomainReference invariantReference => invariantReference.ToRdReference(),
+      _ => throw new ArgumentOutOfRangeException(domainReference.GetType().Name),
     };
   }
   
   [NotNull]
-  private static RdInvariantReference ToRdReference([NotNull] this IInvariantReference reference)
+  private static RdInvariantReference ToRdReference([NotNull] this IInvariantDomainReference domainReference)
   {
-    return new RdInvariantReference(reference.InvariantName, reference.InvariantName);
+    return new RdInvariantReference(domainReference.InvariantName, domainReference.InvariantName);
   }
 
   [NotNull]
-  private static RdCodeEntityReference ToRdReference([NotNull] this ICodeEntityReference codeEntityReference)
+  private static RdCodeEntityReference ToRdReference([NotNull] this ICodeEntityDomainReference codeEntityDomainReference)
   {
-    return codeEntityReference switch
+    return codeEntityDomainReference switch
     {
-      IXmlDocCodeEntityReference reference => new RdXmlDocCodeEntityReference(reference.RawValue),
-      ISandBoxCodeEntityReference reference => new RdSandboxCodeEntityReference(
+      IXmlDocCodeEntityDomainReference reference => new RdXmlDocCodeEntityReference(reference.RawValue),
+      ISandBoxCodeEntityDomainReference reference => new RdSandboxCodeEntityReference(
         reference.SandboxDocumentId,
         reference.OriginalDocument.GetData(DocumentHostBase.DocumentIdKey),
         reference.Range.ToRdTextRange(),
         reference.RawValue
       ),
-      _ => throw new ArgumentOutOfRangeException(codeEntityReference.GetType().Name)
+      _ => throw new ArgumentOutOfRangeException(codeEntityDomainReference.GetType().Name)
     };
   }
 
   [NotNull]
-  private static RdExternalReference ToRdReference([NotNull] this IExternalReference externalReference)
+  private static RdExternalReference ToRdReference([NotNull] this IExternalDomainReference externalDomainReference)
   {
-    return externalReference switch
+    return externalDomainReference switch
     {
-      IFileReference fileReference => fileReference.ToRdReference(),
-      IHttpReference httpReference => httpReference.ToRdReference(),
-      _ => throw new ArgumentOutOfRangeException(externalReference.GetType().Name)
+      IFileDomainReference fileReference => fileReference.ToRdReference(),
+      IHttpDomainReference httpReference => httpReference.ToRdReference(),
+      _ => throw new ArgumentOutOfRangeException(externalDomainReference.GetType().Name)
     };
   }
 
-  private static RdFileReference ToRdReference([NotNull] this IFileReference fileReference)
+  private static RdFileReference ToRdReference([NotNull] this IFileDomainReference fileDomainReference)
   {
-    return new RdFileReference(fileReference.Path.FullPath, fileReference.RawValue);
+    return new RdFileReference(fileDomainReference.Path.FullPath, fileDomainReference.RawValue);
   }
 
   [NotNull]
-  private static RdLangWordReference ToRdReference([NotNull] this ILangWordReference langWordReference)
+  private static RdLangWordReference ToRdReference([NotNull] this ILangWordDomainReference langWordDomainReference)
   {
-    return new RdLangWordReference(langWordReference.RawValue);
+    return new RdLangWordReference(langWordDomainReference.RawValue);
   }
 
   [NotNull]
-  private static RdHttpLinkReference ToRdReference([NotNull] this IHttpReference reference)
+  private static RdHttpLinkReference ToRdReference([NotNull] this IHttpDomainReference domainReference)
   {
-    return new RdHttpLinkReference(reference.RawValue);
+    return new RdHttpLinkReference(domainReference.RawValue);
   }
 
   [NotNull]

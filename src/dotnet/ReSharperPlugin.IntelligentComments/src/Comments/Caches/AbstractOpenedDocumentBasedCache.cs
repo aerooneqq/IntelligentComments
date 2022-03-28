@@ -12,7 +12,6 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Caches;
 public abstract class AbstractOpenedDocumentBasedCache<TId, TValue> where TValue : class
 {
   [NotNull] private readonly object mySyncObject = new();
-  
   [NotNull] private readonly IDictionary<IDocument, IDictionary<TId, TValue>> myFilesPerDocument;
 
 
@@ -56,7 +55,7 @@ public abstract class AbstractOpenedDocumentBasedCache<TId, TValue> where TValue
     lock (mySyncObject)
     {
       var id = CreateId(document, entry);
-      var documentEntities = myFilesPerDocument.GetOrCreate(document, () => new Dictionary<TId, TValue>());
+      var documentEntities = myFilesPerDocument.GetOrCreate(document, static () => new Dictionary<TId, TValue>());
       documentEntities[id] = entry;
       return id;
     }

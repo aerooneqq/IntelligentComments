@@ -2,7 +2,6 @@ using JetBrains.Annotations;
 using JetBrains.Collections;
 using JetBrains.Util;
 using JetBrains.Util.Logging;
-using JetBrains.Util.Memory;
 using System;
 using System.Collections.Generic;
 

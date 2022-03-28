@@ -6,12 +6,12 @@ using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.References;
 
-public class ReferenceBase : IReference
+public class DomainReferenceBase : IDomainReference
 {
   public string RawValue { get; }
 
 
-  protected ReferenceBase(string rawValue)
+  protected DomainReferenceBase(string rawValue)
   {
     RawValue = rawValue;
   }
@@ -25,12 +25,12 @@ public class ReferenceBase : IReference
 
 public record ResolveContextImpl([NotNull] ISolution Solution, [CanBeNull] IDocument Document) : IResolveContext;
 
-public class ProxyReference : ReferenceBase, IProxyReference
+public class ProxyDomainReference : DomainReferenceBase, IProxyDomainReference
 {
   public int RealReferenceId { get; }
 
 
-  public ProxyReference(int realReferenceId) : base(string.Empty)
+  public ProxyDomainReference(int realReferenceId) : base(string.Empty)
   {
     RealReferenceId = realReferenceId;
   }
@@ -41,7 +41,7 @@ public class ProxyReference : ReferenceBase, IProxyReference
     if (context.Document is not { } document) return EmptyResolveResult.Instance;
     
     var cache = context.Solution.GetComponent<ReferencesCache>();
-    if (cache.TryGetValue(document, RealReferenceId)?.Reference is not { } realReference)
+    if (cache.TryGetValue(document, RealReferenceId)?.DomainReference is not { } realReference)
     {
       return new InvalidResolveResult($"Failed to resolve proxy reference with real reference id: {RealReferenceId}");
     }

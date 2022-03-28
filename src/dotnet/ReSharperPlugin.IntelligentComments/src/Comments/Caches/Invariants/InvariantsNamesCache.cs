@@ -108,8 +108,10 @@ public class InvariantsNamesCache : SimpleICache<Dictionary<string, int>>
 
   public override void Drop(IPsiSourceFile sourceFile)
   {
-    var oldValue = Map[sourceFile];
-    IncreaseOrDecreaseCounts(oldValue, false);
+    if (Map.TryGetValue(sourceFile, out var oldValue))
+    {
+      IncreaseOrDecreaseCounts(oldValue, false);
+    }
     
     base.Drop(sourceFile);
   }

@@ -67,7 +67,7 @@ public class CSharpFullCodeFragmentHighlighter : CodeHighlighterBase, IFullCodeH
               var originalDocument = context.AdditionalData.GetData(CodeHighlightingKeys.OriginalDocument);
               var cache = element.GetSolution().GetComponent<ReferencesCache>();
               var id = cache.AddReferenceIfNotPresent(originalDocument, codeEntityReference);
-              highlighter = highlighter with { References = new[] { new ProxyReference(id) } };
+              highlighter = highlighter with { References = new[] { new ProxyDomainReference(id) } };
             }
           }
           else
@@ -85,7 +85,7 @@ public class CSharpFullCodeFragmentHighlighter : CodeHighlighterBase, IFullCodeH
   }
   
   [CanBeNull]
-  private ICodeEntityReference TryGetReferenceFrom(
+  private ICodeEntityDomainReference TryGetReferenceFrom(
     [NotNull] ITreeNode node,
     [NotNull] IEnumerable<IReference> references, 
     [NotNull] CodeHighlightingContext context)
@@ -101,7 +101,7 @@ public class CSharpFullCodeFragmentHighlighter : CodeHighlighterBase, IFullCodeH
 
         if (resolveResult is null || sandboxDocId is null || originalDocument is null) return null;
         
-        return new SandBoxCodeEntityReference(
+        return new SandBoxCodeEntityDomainReference(
           resolveResult.ShortName, sandboxDocId, originalDocument, textRange, resolveResult);
       }
       catch (Exception ex)

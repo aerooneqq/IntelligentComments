@@ -4,7 +4,7 @@ using JetBrains.ProjectModel;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
 
-public interface IReference
+public interface IDomainReference
 {
   [NotNull] string RawValue { get; }
 
@@ -12,7 +12,7 @@ public interface IReference
   [NotNull] ResolveResult Resolve(IResolveContext context);
 }
 
-public interface IProxyReference : IReference
+public interface IProxyDomainReference : IDomainReference
 {
   int RealReferenceId { get; }
 }
