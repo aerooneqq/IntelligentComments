@@ -4,15 +4,15 @@ using JetBrains.Util;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
 
-public interface IExternalReference : IReference
+public interface IExternalDomainReference : IDomainReference
 {
 }
 
-public interface IHttpReference : IExternalReference
+public interface IHttpDomainReference : IExternalDomainReference
 {
 }
 
-public interface IFileReference : IExternalReference
+public interface IFileDomainReference : IExternalDomainReference
 {
   [NotNull] FileSystemPath Path { get; }
 }

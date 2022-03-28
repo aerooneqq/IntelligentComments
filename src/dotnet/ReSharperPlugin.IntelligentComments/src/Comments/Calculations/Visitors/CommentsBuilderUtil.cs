@@ -31,13 +31,14 @@ internal static class CommentsBuilderUtil
   [NotNull] internal const string InheritDocTagName = "inheritdoc";
   [NotNull] internal const string CRef = "cref";
 
-  [NotNull] internal static HashSet<string> PossibleReferenceTagAttributes { get; } = new() 
+  [NotNull] 
+  internal static HashSet<string> PossibleReferenceTagAttributes { get; } = new() 
   {
     InvariantReferenceSourceAttrName
   };
 
-  [NotNull] internal static string PossibleReferenceTagAttributesPresentation { get; } = 
-    string.Join(", ", PossibleReferenceTagAttributes);
+  [NotNull] 
+  internal static string PossibleReferenceTagAttributesPresentation { get; } = string.Join(", ", PossibleReferenceTagAttributes);
 
 
   [NotNull] private static readonly ISet<char> ourCharsWithNoNeedToAddSpaceAfter = new HashSet<char>
@@ -48,6 +49,7 @@ internal static class CommentsBuilderUtil
   [NotNull] private static readonly ISet<char> ourWhitespaceChars = new HashSet<char> { ' ', '\n', '\r', '\t' };
 
 
+  [NotNull]
   public static string PreprocessText([NotNull] string text, char? trailingCharToAdd)
   {
     if (text.Length == 0) return text;
@@ -121,11 +123,13 @@ internal static class CommentsBuilderUtil
     return new TextProcessingResult(text, trailingCharToAdd is { } ? text.Length - 1 : text.Length);
   }
 
+  [CanBeNull] 
   internal static XmlNode TryGetXml([NotNull] IDocCommentBlock comment) => comment.GetXML(null); 
   
   internal static bool IsInheritDocComment([NotNull] IDocCommentBlock comment)
   {
-    var xmlNode = TryGetXml(comment);
+    if (TryGetXml(comment) is not { } xmlNode) return false;
+
     return IsInheritDocComment(xmlNode);
   }
 
@@ -218,8 +222,8 @@ internal static class CommentsBuilderUtil
     [NotNull] XmlElement element, 
     [NotNull] string attributeName,
     [NotNull] IHighlightersProvider highlightersProvider,
-    [CanBeNull] Func<string, IReference> nameReferenceCreator = null,
-    [CanBeNull] Func<IReference, bool> referenceValidityChecker = null)
+    [CanBeNull] Func<string, IDomainReference> nameReferenceCreator = null,
+    [CanBeNull] Func<IDomainReference, bool> referenceValidityChecker = null)
   {
     var name = element.GetAttribute(attributeName);
     if (name.IsNullOrWhitespace()) return null;

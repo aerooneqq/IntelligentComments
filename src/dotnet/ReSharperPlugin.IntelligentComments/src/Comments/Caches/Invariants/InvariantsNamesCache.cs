@@ -9,6 +9,7 @@ using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Caches;
 using JetBrains.ReSharper.Psi.Files;
 using JetBrains.Util.PersistentMap;
+using ReSharperPlugin.IntelligentComments.Comments.Caches.Text.Trie;
 using System.Linq;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Caches.Invariants;
@@ -27,7 +28,7 @@ public class InvariantsNamesCache : SimpleICache<Dictionary<string, int>>
       collection => new Dictionary<string, int>(collection)
     );
 
-  [NotNull] private readonly Dictionary<string, int> myNamesToCount;
+  [NotNull] private readonly Trie myTrie;
   
   public override string Version => "3";
   
@@ -38,7 +39,7 @@ public class InvariantsNamesCache : SimpleICache<Dictionary<string, int>>
     [NotNull] IPersistentIndexManager persistentIndexManager)
     : base(lifetime, locks, persistentIndexManager, ourMarshaller)
   {
-    myNamesToCount = new Dictionary<string, int>();
+    myTrie = new Trie();
   }
   
 
@@ -88,49 +89,40 @@ public class InvariantsNamesCache : SimpleICache<Dictionary<string, int>>
   {
     foreach (var (name, count) in namesCount)
     {
-      if (!increase && !myNamesToCount.ContainsKey(name))
+      bool containsKey = myTrie.ContainsKey(name);
+      if (!increase && !containsKey)
       {
         return;
       }
 
-      if (increase && !myNamesToCount.ContainsKey(name))
+      if (increase && !myTrie.ContainsKey(name))
       {
-        myNamesToCount[name] = 0;
+        myTrie.CreatePathIfNeeded(name);
       }
 
-      Assertion.Assert(myNamesToCount.ContainsKey(name), "myNameHashToCount.ContainsKey(hash)");
-      
-      var adjustedCount = increase ? count : -count;
-      myNamesToCount[name] += adjustedCount;
-      Assertion.Assert(myNamesToCount[name] >= 0, "myNameHashToCount[hash] > 0");
+      Assertion.Assert(myTrie.ContainsKey(name), "myNameHashToCount.ContainsKey(hash)");
 
-      if (myNamesToCount[name] == 0)
-      {
-        myNamesToCount.Remove(name);
-      }
+      myTrie.SetValue(name, count); 
     }
   }
 
   public override void Drop(IPsiSourceFile sourceFile)
   {
-    var oldValue = Map[sourceFile];
-    IncreaseOrDecreaseCounts(oldValue, false);
+    if (Map.TryGetValue(sourceFile, out var oldValue))
+    {
+      IncreaseOrDecreaseCounts(oldValue, false);
+    }
     
     base.Drop(sourceFile);
   }
 
   public int GetInvariantNameCount([NotNull] string name)
   {
-    if (myNamesToCount.TryGetValue(name, out var count))
-    {
-      return count;
-    }
-
-    return 0;
+    return myTrie.TryGet(name) ?? 0;
   }
   
-  public IEnumerable<string> GetAllInvariantsNames()
+  public IEnumerable<string> GetAllNamesFor([NotNull] string prefix)
   {
-    return myNamesToCount.Keys.ToList();
+    return prefix == string.Empty ? myTrie.GetAllInvariantsNames() : myTrie.GetInvariantNamesStartsWith(prefix);
   }
 }

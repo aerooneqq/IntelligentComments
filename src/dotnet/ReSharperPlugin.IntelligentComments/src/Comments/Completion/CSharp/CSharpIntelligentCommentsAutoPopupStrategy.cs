@@ -14,7 +14,7 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Completion.CSharp;
 [SolutionComponent]
 public class CSharpIntelligentCommentsAutoPopupStrategy : IAutomaticCodeCompletionStrategy
 {
-  public PsiLanguageType Language => CSharpLanguage.Instance;
+  public PsiLanguageType Language => CSharpLanguage.Instance!;
   public bool ForceHideCompletion => false;
   
   
@@ -39,7 +39,7 @@ public class CSharpIntelligentCommentsAutoPopupStrategy : IAutomaticCodeCompleti
     {
       var docComment = node.TryFindDocCommentBlock();
       var offset = textControl.Caret.DocumentOffset();
-      var token = CSharpIntelligentCommentCompletionContextProvider.TryGetXmlToken(docComment, offset);
+      var token = docComment.TryGetXmlToken(offset);
       if (token is not IXmlValueToken { Parent: IXmlAttribute parent }) return false;
 
       return CommentsBuilderUtil.PossibleReferenceTagAttributes.Contains(parent.AttributeName) ||

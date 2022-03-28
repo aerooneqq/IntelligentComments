@@ -22,7 +22,7 @@ public record TextHighlighter(
   int StartOffset,
   int EndOffset,
   TextHighlighterAttributes Attributes,
-  [CanBeNull] IReadOnlyList<IReference> References = null,
+  [CanBeNull] IReadOnlyList<IDomainReference> References = null,
   [CanBeNull] TextAnimation TextAnimation = null,
   bool IsResharperHighlighter = false,
   [CanBeNull] Squiggles ErrorSquiggles = null)

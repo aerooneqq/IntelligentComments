@@ -222,7 +222,7 @@ public abstract class CommentProblemsCollectorBase : ICommentProblemsCollector
     Assertion.AssertNotNull(referenceSourceAttr, "referenceSourceAttr is { }");
 
     var referenceSourceText = referenceSourceAttr.UnquotedValue;
-    var reference = new InvariantReference(referenceSourceText);
+    var reference = new InvariantDomainReference(referenceSourceText);
     var solution = context.AdjustedComment.GetSolution();
     var document = context.AdjustedComment.GetSourceFile()?.Document;
     

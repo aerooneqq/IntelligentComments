@@ -86,7 +86,7 @@ public interface ICodeSegment : IContentSegment
 
 public interface IImageContentSegment : IContentSegment
 {
-  [NotNull] IReference SourceReference { get; }
+  [NotNull] IDomainReference SourceDomainReference { get; }
   [NotNull] IHighlightedText Description { get; }
 }
 
@@ -108,7 +108,7 @@ public interface IInvariantContentSegment : IContentSegment
 
 public interface IReferenceContentSegment : IContentSegment
 {
-  [NotNull] IReference Reference { get; }
+  [NotNull] IDomainReference DomainReference { get; }
   [NotNull] IHighlightedText Name { get; }
   [NotNull] IEntityWithContentSegments Description { get; }
 }

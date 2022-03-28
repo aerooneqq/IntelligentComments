@@ -23,7 +23,6 @@ using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.Content;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.References;
-using IReference = ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References.IReference;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Visitors;
 
@@ -116,7 +115,7 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
     var path = FileSystemPath.TryParse(sourceAttribute.Value);
     if (path == FileSystemPath.Empty) return;
 
-    var reference = new FileReference(path);
+    var reference = new FileDomainReference(path);
     IHighlightedText description = HighlightedText.EmptyText;
     if (CommentsBuilderUtil.ElementHasOneTextChild(element, out var text))
     {
@@ -148,8 +147,8 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
   {
     const string attributeName = CommentsBuilderUtil.InvariantNameAttrName;
     
-    IReference CreateReference([NotNull] string name) => new InvariantReference(name);
-    bool IsReferenceValid(IReference reference) => checkValidity && CheckInvariantReferenceIsValid(reference, solution);
+    IDomainReference CreateReference([NotNull] string name) => new InvariantDomainReference(name);
+    bool IsReferenceValid(IDomainReference reference) => checkValidity && CheckInvariantReferenceIsValid(reference, solution);
 
     var tagInfo = CommentsBuilderUtil.TryExtractTagInfo(
       element, attributeName, highlightersProvider, CreateReference, IsReferenceValid);
@@ -166,9 +165,9 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
     return new InvariantContentSegment(nameText, content);
   }
 
-  private static bool CheckInvariantReferenceIsValid([NotNull] IReference reference, [NotNull] ISolution solution)
+  private static bool CheckInvariantReferenceIsValid([NotNull] IDomainReference domainReference, [NotNull] ISolution solution)
   {
-    if (reference is not IInvariantReference invariantReference) return false;
+    if (domainReference is not IInvariantDomainReference invariantReference) return false;
 
     var cache = solution.GetComponent<InvariantsNamesCache>();
     return cache.GetInvariantNameCount(invariantReference.InvariantName) == 1;
@@ -180,15 +179,15 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
     
     const string attributeName = CommentsBuilderUtil.InvariantReferenceSourceAttrName;
     
-    IReference CreateReference([NotNull] string name) => new InvariantReference(name);
-    bool IsReferenceValid(IReference reference) => CheckInvariantReferenceIsValid(reference, myResolveContext.Solution);
+    IDomainReference CreateReference([NotNull] string name) => new InvariantDomainReference(name);
+    bool IsReferenceValid(IDomainReference reference) => CheckInvariantReferenceIsValid(reference, myResolveContext.Solution);
     
     var tagInfo = CommentsBuilderUtil.TryExtractTagInfo(
       element, attributeName, myHighlightersProvider, CreateReference, IsReferenceValid);
     
     if (tagInfo is not var (nameText, descriptionText)) return;
 
-    var reference = new InvariantReference(nameText.Text);
+    var reference = new InvariantDomainReference(nameText.Text);
     var segments = new ContentSegments(new List<IContentSegment> { new TextContentSegment(descriptionText) });
     var content = new EntityWithContentSegments(segments);
     var referenceSegment = new ReferenceContentSegment(reference, nameText, content);
@@ -420,7 +419,7 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
       
       var highlighter = myHighlightersProvider.GetSeeAlsoLinkHighlighter(0, length);
       var highlightedText = new HighlightedText(description, new[] { highlighter });
-      return new SeeAlsoLinkContentSegment(highlightedText, new HttpReference(referenceRawText));
+      return new SeeAlsoLinkContentSegment(highlightedText, new HttpDomainReference(referenceRawText));
     });
   }
 
@@ -471,11 +470,11 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
     });
   }
   
-  private IReference CreateCodeEntityReference([NotNull] string rawValue)
+  private IDomainReference CreateCodeEntityReference([NotNull] string rawValue)
   {
-    var realReference = new XmlDocCodeEntityReference(rawValue, myPsiServices, myPsiModule);
+    var realReference = new XmlDocCodeEntityDomainReference(rawValue, myPsiServices, myPsiModule);
     var referenceId = myReferencesCache.AddReferenceIfNotPresent(myResolveContext.Document, realReference);
-    return new ProxyReference(referenceId);
+    return new ProxyDomainReference(referenceId);
   }
 
   public override void VisitTypeParam(XmlElement element)
@@ -505,24 +504,24 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
       return;
     }
 
-    IReference reference = null;
+    IDomainReference domainReference = null;
     if (element.GetAttribute(CommentsBuilderUtil.CRef) is { } cRefAttrValue && !cRefAttrValue.IsEmpty())
     {
-      reference = CreateCodeEntityReference(cRefAttrValue);
+      domainReference = CreateCodeEntityReference(cRefAttrValue);
     }
     else if (element.GetAttribute(Href) is { } hrefAttrValue && !hrefAttrValue.IsEmpty())
     {
-      reference = new HttpReference(hrefAttrValue);
+      domainReference = new HttpDomainReference(hrefAttrValue);
     }
     else if (element.GetAttribute(LangWord) is { } langWordAttrValue && !langWordAttrValue.IsEmpty())
     {
-      reference = new LangWordReference(langWordAttrValue);
+      domainReference = new LangWordDomainReference(langWordAttrValue);
     }
 
-    if (reference is null) return;
-    var content = BeautifyCodeEntityId(reference.RawValue);
+    if (domainReference is null) return;
+    var content = BeautifyCodeEntityId(domainReference.RawValue);
 
-    if (reference.Resolve(myResolveContext) is DeclaredElementResolveResult { DeclaredElement: { } declaredElement })
+    if (domainReference.Resolve(myResolveContext) is DeclaredElementResolveResult { DeclaredElement: { } declaredElement })
     {
       content = Present(declaredElement);
     }
@@ -532,20 +531,20 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
       content = text;
     }
     
-    ProcessSee(content, reference, element);
+    ProcessSee(content, domainReference, element);
   }
 
-  private void ProcessSee([NotNull] string content, [NotNull] IReference reference, [NotNull] XmlElement element)
+  private void ProcessSee([NotNull] string content, [NotNull] IDomainReference domainReference, [NotNull] XmlElement element)
   {
     (content, var length) = PreprocessTextWithContext(content, element);
     
-    var highlighter = reference switch
+    var highlighter = domainReference switch
     {
-      ICodeEntityReference or IProxyReference => 
-        myHighlightersProvider.GetReSharperSeeCodeEntityHighlighter(0, length, reference, myResolveContext),
-      IHttpReference => myHighlightersProvider.GetSeeHttpLinkHighlighter(0, length),
-      ILangWordReference => myHighlightersProvider.GetSeeLangWordHighlighter(0, length),
-      _ => throw new ArgumentOutOfRangeException(reference.GetType().Name)
+      ICodeEntityDomainReference or IProxyDomainReference => 
+        myHighlightersProvider.GetReSharperSeeCodeEntityHighlighter(0, length, domainReference, myResolveContext),
+      IHttpDomainReference => myHighlightersProvider.GetSeeHttpLinkHighlighter(0, length),
+      ILangWordDomainReference => myHighlightersProvider.GetSeeLangWordHighlighter(0, length),
+      _ => throw new ArgumentOutOfRangeException(domainReference.GetType().Name)
     };
     
     AddHighlightedText(content, highlighter);

@@ -38,23 +38,13 @@ public class CSharpIntelligentCommentCompletionContextProvider : ICodeCompletion
     var docCommentBlock = context.GetData(ourDocCommentKey);
     Assertion.AssertNotNull(docCommentBlock, "docCommentBlock != null");
 
-    if (TryGetXmlToken(docCommentBlock, context.CaretDocumentOffset) is not { } contextDocCommentNode) return null;
+    if (docCommentBlock.TryGetXmlToken(context.CaretDocumentOffset) is not { } contextDocCommentNode) return null;
     if (TryCreateTextLookupRanges(contextDocCommentNode) is not { } ranges) return null;
     if (!ranges.InsertRange.IsValid() || !ranges.ReplaceRange.IsValid()) return null;
     
     return new IntelligentCommentCompletionContext(context, contextDocCommentNode, ranges, docCommentBlock);
   }
   
-  [CanBeNull]
-  internal static ITokenNode TryGetXmlToken(IDocCommentBlock docCommentBlock, DocumentOffset caretDocumentOffset)
-  {
-    var psiHelper = LanguageManager.Instance.GetService<IPsiHelper>(docCommentBlock.Language);
-    if (psiHelper.GetXmlDocPsi(docCommentBlock)?.XmlFile is not { } xmlFile) return null;
-
-    var adjustedOffset = xmlFile.Translate(caretDocumentOffset);
-
-    return xmlFile.FindTokenAt(adjustedOffset) as ITokenNode;
-  }
   
   [CanBeNull]
   private static TextLookupRanges TryCreateTextLookupRanges([NotNull] ITokenNode contextToken)
@@ -77,8 +67,19 @@ public class CSharpIntelligentCommentCompletionContextProvider : ICodeCompletion
   }
 }
 
-public static class CommentsCompletionExtensions 
+internal static class CommentsCompletionExtensions 
 {
+  [CanBeNull]
+  public static ITokenNode TryGetXmlToken(this IDocCommentBlock docCommentBlock, DocumentOffset caretDocumentOffset)
+  {
+    var psiHelper = LanguageManager.Instance.GetService<IPsiHelper>(docCommentBlock.Language);
+    if (psiHelper.GetXmlDocPsi(docCommentBlock)?.XmlFile is not { } xmlFile) return null;
+
+    var adjustedOffset = xmlFile.Translate(caretDocumentOffset);
+
+    return xmlFile.FindTokenAt(adjustedOffset) as ITokenNode;
+  }
+  
   [CanBeNull]
   public static IDocCommentBlock TryFindDocCommentBlock([NotNull] this ITreeNode node)
   {

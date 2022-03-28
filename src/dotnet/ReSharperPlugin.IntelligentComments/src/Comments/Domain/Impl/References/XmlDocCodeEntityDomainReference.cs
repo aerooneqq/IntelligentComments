@@ -13,13 +13,13 @@ using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.References;
 
-public class XmlDocCodeEntityReference : ReferenceBase, IXmlDocCodeEntityReference
+public class XmlDocCodeEntityDomainReference : DomainReferenceBase, IXmlDocCodeEntityDomainReference
 {
   [NotNull] private readonly IPsiServices myServices;
   [NotNull] private readonly IPsiModule myModule;
 
   
-  public XmlDocCodeEntityReference(
+  public XmlDocCodeEntityDomainReference(
     [CanBeNull] string rawMemberName, 
     [NotNull] IPsiServices services, 
     [NotNull] IPsiModule module) 
@@ -37,7 +37,7 @@ public class XmlDocCodeEntityReference : ReferenceBase, IXmlDocCodeEntityReferen
   }
 }
 
-public class SandBoxCodeEntityReference : ReferenceBase, ISandBoxCodeEntityReference
+public class SandBoxCodeEntityDomainReference : DomainReferenceBase, ISandBoxCodeEntityDomainReference
 {
   [CanBeNull] private readonly IDeclaredElement myAlreadyResolvedElement;
   
@@ -47,7 +47,7 @@ public class SandBoxCodeEntityReference : ReferenceBase, ISandBoxCodeEntityRefer
   public TextRange Range { get; }
   
   
-  public SandBoxCodeEntityReference(
+  public SandBoxCodeEntityDomainReference(
     [NotNull] string rawValue,
     [NotNull] string sandboxDocumentId,
     [NotNull] IDocument document,
@@ -76,9 +76,9 @@ public class SandBoxCodeEntityReference : ReferenceBase, ISandBoxCodeEntityRefer
   }
 }
 
-public class LangWordReference : ReferenceBase, ILangWordReference
+public class LangWordDomainReference : DomainReferenceBase, ILangWordDomainReference
 {
-  public LangWordReference(string rawLangWord) : base(rawLangWord)
+  public LangWordDomainReference(string rawLangWord) : base(rawLangWord)
   {
   }
 }

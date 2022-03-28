@@ -11,4 +11,4 @@ public static class CodeHighlightingKeys
   [NotNull] public static Key<IDocument> OriginalDocument { get; } = new(nameof(OriginalDocument));
 }
 
-public record CodeHighlightingContext(IHighlightedText Text, IUserDataHolder AdditionalData);
+public record CodeHighlightingContext([NotNull] IHighlightedText Text, [NotNull] IUserDataHolder AdditionalData);

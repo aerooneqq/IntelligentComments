@@ -6,15 +6,15 @@ using JetBrains.Util;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
 
-public interface ICodeEntityReference : IReference
+public interface ICodeEntityDomainReference : IDomainReference
 {
 }
 
-public interface IXmlDocCodeEntityReference : ICodeEntityReference
+public interface IXmlDocCodeEntityDomainReference : ICodeEntityDomainReference
 {
 }
 
-public interface ISandBoxCodeEntityReference : ICodeEntityReference
+public interface ISandBoxCodeEntityDomainReference : ICodeEntityDomainReference
 {
   public string SandboxDocumentId { get; }
   public IDocument OriginalDocument { get; }
@@ -32,6 +32,6 @@ public class DeclaredElementResolveResult : ResolveResult
   }
 }
 
-public interface ILangWordReference : IReference
+public interface ILangWordDomainReference : IDomainReference
 {
 }
