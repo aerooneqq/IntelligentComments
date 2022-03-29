@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Xml;
 using JetBrains.Annotations;
 using JetBrains.Diagnostics;
+using JetBrains.ReSharper.Features.ReSpeller.Analyzers;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
 using JetBrains.ReSharper.Psi.Tree;
+using JetBrains.ReSharper.Psi.Xml.Tree;
 using JetBrains.Util;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Visitors;
 
@@ -56,6 +58,21 @@ public static class CSharpInvariantsProcessorExtensions
       }
 
       actionWithInvariant(xmlElement);
+    }
+  }
+  
+  public static void ExecuteWithReferences(
+    [NotNull] this IDocCommentBlock commentBlock, [NotNull] Action<IXmlTag> actionWithReference)
+  {
+    var psiHelper = LanguageManager.Instance.TryGetService<IPsiHelper>(commentBlock.Language);
+    if (psiHelper?.GetXmlDocPsi(commentBlock) is not { } xmlDocPsi) return;
+
+    foreach (var tag in xmlDocPsi.XmlFile.Descendants<IXmlTag>().Collect())
+    {
+      if (CommentsBuilderUtil.IsReferenceTagWithInvariantSource(tag))
+      {
+        actionWithReference(tag);
+      }
     }
   }
 }

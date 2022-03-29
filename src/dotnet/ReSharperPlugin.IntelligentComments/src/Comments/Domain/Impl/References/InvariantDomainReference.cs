@@ -6,14 +6,15 @@ using JetBrains.ReSharper.Feature.Services.Text;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Files;
 using JetBrains.ReSharper.Psi.Tree;
-using JetBrains.ReSharper.Psi.Xml.Tree;
 using JetBrains.ReSharper.Resources.Shell;
+using JetBrains.Util;
 using ReSharperPlugin.IntelligentComments.Comments.Caches.Invariants;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Visitors;
 using ReSharperPlugin.IntelligentComments.Comments.Completion.CSharp;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.Content;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
+using System.Collections.Generic;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.References;
 
@@ -28,12 +29,12 @@ public class InvariantDomainReference : DomainReferenceBase, IInvariantDomainRef
   }
 
 
-  public override ResolveResult Resolve(IResolveContext context) => InvariantResolveUtil.ResolveInvariantByName(InvariantName, context);
+  public override ResolveResult Resolve(IDomainResolveContext context) => InvariantResolveUtil.ResolveInvariantByName(InvariantName, context);
 }
 
 internal static class InvariantResolveUtil
 {
-  public static ResolveResult ResolveInvariantByName([NotNull] string invariantName, IResolveContext context)
+  public static ResolveResult ResolveInvariantByName([NotNull] string invariantName, IDomainResolveContext context)
   {
     var cache = context.Solution.GetComponent<InvariantsNamesCache>();
     var invariantNameCount = cache.GetInvariantNameCount(invariantName);
@@ -81,6 +82,39 @@ internal static class InvariantResolveUtil
     }
 
     return CreateInvalidResolveResult();
+  }
+
+  public record struct ReferenceForInvariantDescriptor([NotNull] IPsiSourceFile SourceFile, DocumentOffset Offset);
+  
+  [NotNull]
+  public static IEnumerable<ReferenceForInvariantDescriptor> FindAllReferencesForInvariantName(
+    [NotNull] string name, 
+    [NotNull] ISolution solution)
+  {
+    var cache = solution.GetComponent<InvariantsNamesCache>();
+    if (cache.GetInvariantNameCount(name) != 1) return EmptyList<ReferenceForInvariantDescriptor>.Enumerable;
+    
+    var trigramIndex = solution.GetComponent<SourcesTrigramIndex>();
+    var filesContainingQuery = trigramIndex.GetFilesContainingQuery(name, false);
+
+    var result = new LocalList<ReferenceForInvariantDescriptor>();
+    foreach (var file in filesContainingQuery)
+    {
+      var primaryFile = file.GetPrimaryPsiFile();
+      foreach (var docComment in primaryFile.Descendants<IDocCommentBlock>().Collect())
+      {
+        docComment.ExecuteWithReferences(referenceTag =>
+        {
+          var invariantReferenceSourceAttr = CommentsBuilderUtil.TryGetInvariantReferenceSourceAttribute(referenceTag);
+          if (invariantReferenceSourceAttr is null) return;
+
+          var offset = invariantReferenceSourceAttr.GetDocumentStartOffset();
+          result.Add(new ReferenceForInvariantDescriptor(file, offset));
+        });
+      }
+    }
+
+    return result.ResultingList();
   }
 }
 

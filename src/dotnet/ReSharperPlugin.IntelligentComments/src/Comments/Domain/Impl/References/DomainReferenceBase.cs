@@ -17,13 +17,13 @@ public class DomainReferenceBase : IDomainReference
   }
   
   
-  public virtual ResolveResult Resolve(IResolveContext context)
+  public virtual ResolveResult Resolve(IDomainResolveContext context)
   {
     return EmptyResolveResult.Instance;
   }
 }
 
-public record ResolveContextImpl([NotNull] ISolution Solution, [CanBeNull] IDocument Document) : IResolveContext;
+public record DomainResolveContextImpl([NotNull] ISolution Solution, [CanBeNull] IDocument Document) : IDomainResolveContext;
 
 public class ProxyDomainReference : DomainReferenceBase, IProxyDomainReference
 {
@@ -36,7 +36,7 @@ public class ProxyDomainReference : DomainReferenceBase, IProxyDomainReference
   }
 
 
-  public override ResolveResult Resolve(IResolveContext context)
+  public override ResolveResult Resolve(IDomainResolveContext context)
   {
     if (context.Document is not { } document) return EmptyResolveResult.Instance;
     

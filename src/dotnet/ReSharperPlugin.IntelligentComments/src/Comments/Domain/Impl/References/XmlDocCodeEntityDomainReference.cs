@@ -30,7 +30,7 @@ public class XmlDocCodeEntityDomainReference : DomainReferenceBase, IXmlDocCodeE
   }
   
   
-  public override ResolveResult Resolve(IResolveContext context)
+  public override ResolveResult Resolve(IDomainResolveContext context)
   {
     var declaredElement = XMLDocUtil.ResolveId(myServices, RawValue, myModule, true);
     return new DeclaredElementResolveResult(declaredElement);
@@ -62,7 +62,7 @@ public class SandBoxCodeEntityDomainReference : DomainReferenceBase, ISandBoxCod
   }
 
   
-  public override ResolveResult Resolve(IResolveContext context)
+  public override ResolveResult Resolve(IDomainResolveContext context)
   {
     if (myAlreadyResolvedElement is { }) return new DeclaredElementResolveResult(myAlreadyResolvedElement);
 

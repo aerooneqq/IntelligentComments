@@ -198,18 +198,39 @@ internal static class CommentsBuilderUtil
   
   internal static bool IsInvariantNameAttribute([CanBeNull] IXmlAttribute attribute)
   {
-    return attribute?.AttributeName == InvariantNameAttrName;
+    return attribute is { AttributeName: InvariantNameAttrName } &&
+           CheckIfAttributeBelongsToTag(attribute, InvariantTagName);
   }
+  
+  internal static bool IsReferenceTagWithInvariantSource(IXmlTag xmlTag)
+  {
+    return xmlTag.Header.Name.XmlName == ReferenceTagName &&
+           xmlTag.GetAttribute(InvariantReferenceSourceAttrName) is { };
+  }
+  
+  private static bool CheckIfAttributeBelongsToTag([NotNull] IXmlAttribute attribute, [NotNull] string tagName)
+  {
+    if (attribute.Parent is not IXmlTagHeader xmlTagHeader) return false;
+    return xmlTagHeader.Name.XmlName == tagName;
+  }
+  
   
   internal static bool IsInvariantReferenceSourceAttribute([CanBeNull] IXmlAttribute attribute)
   {
-    return attribute?.AttributeName == InvariantReferenceSourceAttrName;
+    return attribute is { AttributeName: InvariantReferenceSourceAttrName } &&
+           CheckIfAttributeBelongsToTag(attribute, ReferenceTagName);
   }
 
   [CanBeNull]
   internal static IXmlAttribute TryGetInvariantAttribute([CanBeNull] IXmlTag invariantTag)
   {
     return invariantTag?.GetAttribute(InvariantNameAttrName);
+  }
+  
+  [CanBeNull]
+  internal static IXmlAttribute TryGetInvariantReferenceSourceAttribute([CanBeNull] IXmlTag referenceTag)
+  {
+    return referenceTag?.GetAttribute(InvariantReferenceSourceAttrName);
   }
 
   internal static string GetInvariantName(IXmlAttribute attribute)

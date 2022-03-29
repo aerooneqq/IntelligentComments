@@ -46,7 +46,7 @@ public class ReferenceResolverHost
         return result;
       }
 
-      var resolveContext = new ResolveContextImpl(solution, document);
+      var resolveContext = new DomainResolveContextImpl(solution, document);
       var resolveResult = reference.Resolve(resolveContext);
       
       result.Set(resolveResult.ToRdResolveResult());

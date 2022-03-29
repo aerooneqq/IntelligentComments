@@ -9,7 +9,7 @@ public interface IDomainReference
   [NotNull] string RawValue { get; }
 
 
-  [NotNull] ResolveResult Resolve(IResolveContext context);
+  [NotNull] ResolveResult Resolve(IDomainResolveContext context);
 }
 
 public interface IProxyDomainReference : IDomainReference
@@ -17,7 +17,7 @@ public interface IProxyDomainReference : IDomainReference
   int RealReferenceId { get; }
 }
 
-public interface IResolveContext
+public interface IDomainResolveContext
 {
   [NotNull] ISolution Solution { get; }
   [CanBeNull] IDocument Document { get; }

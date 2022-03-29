@@ -59,7 +59,7 @@ public class CSharpFullCodeFragmentHighlighter : CodeHighlighterBase, IFullCodeH
           TextHighlighter highlighter;
           if (TryGetReferenceFrom(element, references, context) is { } codeEntityReference)
           {
-            var resolveContext = new ResolveContextImpl(element.GetSolution(), element.GetSourceFile()?.Document);
+            var resolveContext = new DomainResolveContextImpl(element.GetSolution(), element.GetSourceFile()?.Document);
             highlighter = HighlightersProvider.TryGetReSharperHighlighter(text.Length, codeEntityReference, resolveContext);
             
             if (highlighter is { })

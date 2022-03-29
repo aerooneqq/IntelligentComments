@@ -75,7 +75,7 @@ public class CommentsNavigationHost
         return;
       }
 
-      var resolveContext = new ResolveContextImpl(mySolution, document);
+      var resolveContext = new DomainResolveContextImpl(mySolution, document);
       var resolveResult = reference.Resolve(resolveContext);
       if (resolveResult is not DeclaredElementResolveResult { DeclaredElement: { } declaredElement })
       {

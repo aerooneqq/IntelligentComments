@@ -49,7 +49,7 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
   [NotNull] private readonly IPsiModule myPsiModule;
   [NotNull] private readonly CodeFragmentHighlightingManager myCodeFragmentHighlightingManager;
   [NotNull] private readonly ILanguageManager myLanguageManager;
-  [NotNull] private readonly IResolveContext myResolveContext;
+  [NotNull] private readonly IDomainResolveContext myDomainResolveContext;
   [NotNull] private readonly string myDocCommentAttributeId;
   [NotNull] private readonly string myParamAttributeId;
   [NotNull] private readonly string myTypeParamAttributeId;
@@ -58,7 +58,7 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
 
   protected DocCommentBuilderBase([NotNull] IDocCommentBlock comment) : base(comment)
   {
-    myResolveContext = new ResolveContextImpl(comment.GetSolution(), comment.GetSourceFile()?.Document);
+    myDomainResolveContext = new DomainResolveContextImpl(comment.GetSolution(), comment.GetSourceFile()?.Document);
     myLanguageManager = LanguageManager.Instance;
     myHighlightersProvider = myLanguageManager.GetService<IHighlightersProvider>(comment.Language);
     myContentSegmentsStack = new Stack<ContentSegmentsMetadata>();
@@ -128,7 +128,7 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
 
   protected override void VisitInvariant(XmlElement element)
   {
-    var solution = myResolveContext.Solution;
+    var solution = myDomainResolveContext.Solution;
     if (!IsTopmostContext() ||
         TryBuildInvariantContentSegment(element, solution, myHighlightersProvider, true) is not { } invariant)
     {
@@ -180,7 +180,7 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
     const string attributeName = CommentsBuilderUtil.InvariantReferenceSourceAttrName;
     
     IDomainReference CreateReference([NotNull] string name) => new InvariantDomainReference(name);
-    bool IsReferenceValid(IDomainReference reference) => CheckInvariantReferenceIsValid(reference, myResolveContext.Solution);
+    bool IsReferenceValid(IDomainReference reference) => CheckInvariantReferenceIsValid(reference, myDomainResolveContext.Solution);
     
     var tagInfo = CommentsBuilderUtil.TryExtractTagInfo(
       element, attributeName, myHighlightersProvider, CreateReference, IsReferenceValid);
@@ -352,14 +352,14 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
 
     var reference = CreateCodeEntityReference(exceptionName);
 
-    exceptionName = (reference.Resolve(myResolveContext) as DeclaredElementResolveResult)?.DeclaredElement switch
+    exceptionName = (reference.Resolve(myDomainResolveContext) as DeclaredElementResolveResult)?.DeclaredElement switch
     {
       { } declaredElement => Present(declaredElement),
       null => BeautifyCodeEntityId(exceptionName)
     };
 
     var highlighter = myHighlightersProvider.GetReSharperExceptionHighlighter(
-      0, exceptionName.Length, reference, myResolveContext);
+      0, exceptionName.Length, reference, myDomainResolveContext);
     
     var exceptionSegment = new ExceptionContentSegment(new HighlightedText(exceptionName, highlighter));
     ProcessEntityWithContentSegments(exceptionSegment, element);
@@ -451,7 +451,7 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
     {
       var reference = CreateCodeEntityReference(referenceRawText);
       
-      var resolveResult = reference.Resolve(myResolveContext) as DeclaredElementResolveResult;
+      var resolveResult = reference.Resolve(myDomainResolveContext) as DeclaredElementResolveResult;
       var declaredElement = resolveResult?.DeclaredElement;
       
       description = description switch
@@ -463,7 +463,7 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
 
       (description, var length) = PreprocessTextWithContext(description, element);
 
-      var highlighter = myHighlightersProvider.GetSeeAlsoReSharperMemberHighlighter(0, length, reference, myResolveContext);
+      var highlighter = myHighlightersProvider.GetSeeAlsoReSharperMemberHighlighter(0, length, reference, myDomainResolveContext);
       
       var highlightedText = new HighlightedText(description, new[] { highlighter });
       return new SeeAlsoMemberContentSegment(highlightedText, reference);
@@ -473,7 +473,7 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
   private IDomainReference CreateCodeEntityReference([NotNull] string rawValue)
   {
     var realReference = new XmlDocCodeEntityDomainReference(rawValue, myPsiServices, myPsiModule);
-    var referenceId = myReferencesCache.AddReferenceIfNotPresent(myResolveContext.Document, realReference);
+    var referenceId = myReferencesCache.AddReferenceIfNotPresent(myDomainResolveContext.Document, realReference);
     return new ProxyDomainReference(referenceId);
   }
 
@@ -521,7 +521,7 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
     if (domainReference is null) return;
     var content = BeautifyCodeEntityId(domainReference.RawValue);
 
-    if (domainReference.Resolve(myResolveContext) is DeclaredElementResolveResult { DeclaredElement: { } declaredElement })
+    if (domainReference.Resolve(myDomainResolveContext) is DeclaredElementResolveResult { DeclaredElement: { } declaredElement })
     {
       content = Present(declaredElement);
     }
@@ -541,7 +541,7 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
     var highlighter = domainReference switch
     {
       ICodeEntityDomainReference or IProxyDomainReference => 
-        myHighlightersProvider.GetReSharperSeeCodeEntityHighlighter(0, length, domainReference, myResolveContext),
+        myHighlightersProvider.GetReSharperSeeCodeEntityHighlighter(0, length, domainReference, myDomainResolveContext),
       IHttpDomainReference => myHighlightersProvider.GetSeeHttpLinkHighlighter(0, length),
       ILangWordDomainReference => myHighlightersProvider.GetSeeLangWordHighlighter(0, length),
       _ => throw new ArgumentOutOfRangeException(domainReference.GetType().Name)

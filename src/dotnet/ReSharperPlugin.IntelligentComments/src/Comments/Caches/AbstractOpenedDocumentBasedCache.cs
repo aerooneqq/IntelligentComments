@@ -12,7 +12,7 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Caches;
 public abstract class AbstractOpenedDocumentBasedCache<TId, TValue> where TValue : class
 {
   [NotNull] private readonly object mySyncObject = new();
-  [NotNull] private readonly IDictionary<IDocument, IDictionary<TId, TValue>> myFilesPerDocument;
+  [NotNull] private readonly IDictionary<IDocument, IDictionary<TId, TValue>> myCachesPerDocument;
 
 
   protected AbstractOpenedDocumentBasedCache(
@@ -20,7 +20,7 @@ public abstract class AbstractOpenedDocumentBasedCache<TId, TValue> where TValue
     [NotNull] ITextControlManager textControlManager,
     [NotNull] IThreading threading)
   {
-    myFilesPerDocument = new Dictionary<IDocument, IDictionary<TId, TValue>>();
+    myCachesPerDocument = new Dictionary<IDocument, IDictionary<TId, TValue>>();
     textControlManager.TextControls.AddRemove.Advise(lifetime, args =>
     {
       threading.Queue(lifetime, $"{GetType().Name}::InvalidatingCache", () =>
@@ -32,13 +32,13 @@ public abstract class AbstractOpenedDocumentBasedCache<TId, TValue> where TValue
           lock (mySyncObject)
           {
             var allOpenedDocuments = textControlManager.TextControls.Select(editor => editor.Document).ToSet();
-            var documentsToRemove = myFilesPerDocument.Keys.ToSet().Except(allOpenedDocuments);
+            var documentsToRemove = myCachesPerDocument.Keys.ToSet().Except(allOpenedDocuments);
             foreach (var document in documentsToRemove)
             {
-              if (myFilesPerDocument.TryGetValue(document, out var documentEntities))
+              if (myCachesPerDocument.TryGetValue(document, out var documentEntities))
               {
                 BeforeRemoval(document, documentEntities.Values);
-                myFilesPerDocument.Remove(document);
+                myCachesPerDocument.Remove(document);
               }
             }
           }
@@ -55,7 +55,7 @@ public abstract class AbstractOpenedDocumentBasedCache<TId, TValue> where TValue
     lock (mySyncObject)
     {
       var id = CreateId(document, entry);
-      var documentEntities = myFilesPerDocument.GetOrCreate(document, static () => new Dictionary<TId, TValue>());
+      var documentEntities = myCachesPerDocument.GetOrCreate(document, static () => new Dictionary<TId, TValue>());
       documentEntities[id] = entry;
       return id;
     }
@@ -67,7 +67,7 @@ public abstract class AbstractOpenedDocumentBasedCache<TId, TValue> where TValue
   {
     lock (mySyncObject)
     {
-      if (myFilesPerDocument.TryGetValue(document, out var documentEntities) &&
+      if (myCachesPerDocument.TryGetValue(document, out var documentEntities) &&
           documentEntities.TryGetValue(id, out var entry))
       {
         return entry;

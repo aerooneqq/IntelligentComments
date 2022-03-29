@@ -5,7 +5,7 @@ using JetBrains.ReSharper.Feature.Services.Navigation;
 namespace ReSharperPlugin.IntelligentComments.Comments.Navigation.GoToInvariant;
 
 [ShellFeaturePart]
-public class InvariantContextSearch : IContextSearch
+public class InvariantReferenceContextSearch : IContextSearch
 {
   public bool IsAvailable(IDataContext dataContext)
   {
@@ -14,6 +14,6 @@ public class InvariantContextSearch : IContextSearch
 
   public bool IsContextApplicable(IDataContext dataContext)
   {
-    return GoToInvariantUtil.TryExtractInvariantNameFrom(dataContext) is { };
+    return NavigationUtil.TryExtractInvariantNameFromReference(dataContext) is { };
   }
 }

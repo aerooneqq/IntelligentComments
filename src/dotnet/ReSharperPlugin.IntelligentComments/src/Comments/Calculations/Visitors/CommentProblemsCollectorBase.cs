@@ -232,7 +232,7 @@ public abstract class CommentProblemsCollectorBase : ICommentProblemsCollector
       return false;
     }
 
-    if (reference.Resolve(new ResolveContextImpl(solution, document)) is InvalidResolveResult)
+    if (reference.Resolve(new DomainResolveContextImpl(solution, document)) is InvalidResolveResult)
     {
       var text = $"Failed to resolve {CommentsBuilderUtil.InvariantReferenceSourceAttrName} \"{referenceSourceText}\"";
       AddError(referenceSourceAttr.Value.GetDocumentRange(), text);

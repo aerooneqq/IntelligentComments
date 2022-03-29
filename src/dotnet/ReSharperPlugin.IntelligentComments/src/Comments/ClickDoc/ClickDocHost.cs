@@ -81,7 +81,7 @@ public class ClickDocHost
         return;
       }
       
-      var resolveContext = new ResolveContextImpl(mySolution, textControl.Document);
+      var resolveContext = new DomainResolveContextImpl(mySolution, textControl.Document);
       if (reference.Resolve(resolveContext) is not DeclaredElementResolveResult { DeclaredElement: { } declaredElement })
       {
         LogErrorAndSetNull($"Declared element was null for {request.PrintToString()}");
