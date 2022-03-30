@@ -161,7 +161,7 @@ public abstract class HighlightersProvider : IHighlightersProvider
   [CanBeNull]
   private string TryGetAttributeId([CanBeNull] IDomainReference domainReference, IDomainResolveContext context)
   {
-    if (domainReference?.Resolve(context) is DeclaredElementResolveResult { DeclaredElement: { } declaredElement } && 
+    if (domainReference?.Resolve(context) is DeclaredElementDomainResolveResult { DeclaredElement: { } declaredElement } && 
         myAttributeIdProvider.GetHighlightingAttributeId(declaredElement, false) is { } attributeId)
     {
       return myHighlighterNamesProvider.GetExternalName(attributeId);

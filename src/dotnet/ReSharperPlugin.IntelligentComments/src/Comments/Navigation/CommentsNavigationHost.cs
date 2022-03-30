@@ -77,7 +77,7 @@ public class CommentsNavigationHost
 
       var resolveContext = new DomainResolveContextImpl(mySolution, document);
       var resolveResult = reference.Resolve(resolveContext);
-      if (resolveResult is not DeclaredElementResolveResult { DeclaredElement: { } declaredElement })
+      if (resolveResult is not DeclaredElementDomainResolveResult { DeclaredElement: { } declaredElement })
       {
         LogWarnAndSetNull("Need declared element in order to perform navigation");
         return;

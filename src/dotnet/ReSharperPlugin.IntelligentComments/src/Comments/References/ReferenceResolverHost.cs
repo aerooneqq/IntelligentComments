@@ -58,9 +58,9 @@ public class ReferenceResolverHost
 public static class ResolveResultExtensions
 {
   [NotNull]
-  public static RdResolveResult ToRdResolveResult([NotNull] this ResolveResult resolveResult)
+  public static RdResolveResult ToRdResolveResult([NotNull] this DomainResolveResult domainResolveResult)
   {
-    if (resolveResult is InvalidResolveResult invalidResolveResult)
+    if (domainResolveResult is InvalidDomainResolveResult invalidResolveResult)
     {
       var text = invalidResolveResult.Error;
       var highlighter = LanguageManager.Instance.GetService<IHighlightersProvider>(CSharpLanguage.Instance).TryGetDocCommentHighlighter(text.Length);
@@ -68,11 +68,11 @@ public static class ResolveResultExtensions
       return new RdInvalidResolveResult(highlightedText.ToRdHighlightedText());
     }
     
-    return resolveResult switch
+    return domainResolveResult switch
     {
-      InvariantResolveResult result => new RdInvariantResolveResult(result.Invariant.ToRdInvariant()),
-      EmptyResolveResult => new RdInvalidResolveResult(null),
-      _ => throw new ArgumentOutOfRangeException(resolveResult.GetType().Name)
+      InvariantDomainResolveResult result => new RdInvariantResolveResult(result.Invariant.ToRdInvariant()),
+      EmptyDomainResolveResult => new RdInvalidResolveResult(null),
+      _ => throw new ArgumentOutOfRangeException(domainResolveResult.GetType().Name)
     };
   }
 }

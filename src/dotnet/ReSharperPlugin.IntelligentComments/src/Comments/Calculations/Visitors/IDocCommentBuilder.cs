@@ -352,7 +352,7 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
 
     var reference = CreateCodeEntityReference(exceptionName);
 
-    exceptionName = (reference.Resolve(myDomainResolveContext) as DeclaredElementResolveResult)?.DeclaredElement switch
+    exceptionName = (reference.Resolve(myDomainResolveContext) as DeclaredElementDomainResolveResult)?.DeclaredElement switch
     {
       { } declaredElement => Present(declaredElement),
       null => BeautifyCodeEntityId(exceptionName)
@@ -451,7 +451,7 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
     {
       var reference = CreateCodeEntityReference(referenceRawText);
       
-      var resolveResult = reference.Resolve(myDomainResolveContext) as DeclaredElementResolveResult;
+      var resolveResult = reference.Resolve(myDomainResolveContext) as DeclaredElementDomainResolveResult;
       var declaredElement = resolveResult?.DeclaredElement;
       
       description = description switch
@@ -521,7 +521,7 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
     if (domainReference is null) return;
     var content = BeautifyCodeEntityId(domainReference.RawValue);
 
-    if (domainReference.Resolve(myDomainResolveContext) is DeclaredElementResolveResult { DeclaredElement: { } declaredElement })
+    if (domainReference.Resolve(myDomainResolveContext) is DeclaredElementDomainResolveResult { DeclaredElement: { } declaredElement })
     {
       content = Present(declaredElement);
     }

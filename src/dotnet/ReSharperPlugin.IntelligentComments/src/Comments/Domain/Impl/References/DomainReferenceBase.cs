@@ -17,9 +17,9 @@ public class DomainReferenceBase : IDomainReference
   }
   
   
-  public virtual ResolveResult Resolve(IDomainResolveContext context)
+  public virtual DomainResolveResult Resolve(IDomainResolveContext context)
   {
-    return EmptyResolveResult.Instance;
+    return EmptyDomainResolveResult.Instance;
   }
 }
 
@@ -36,14 +36,14 @@ public class ProxyDomainReference : DomainReferenceBase, IProxyDomainReference
   }
 
 
-  public override ResolveResult Resolve(IDomainResolveContext context)
+  public override DomainResolveResult Resolve(IDomainResolveContext context)
   {
-    if (context.Document is not { } document) return EmptyResolveResult.Instance;
+    if (context.Document is not { } document) return EmptyDomainResolveResult.Instance;
     
     var cache = context.Solution.GetComponent<ReferencesCache>();
     if (cache.TryGetValue(document, RealReferenceId)?.DomainReference is not { } realReference)
     {
-      return new InvalidResolveResult($"Failed to resolve proxy reference with real reference id: {RealReferenceId}");
+      return new InvalidDomainResolveResult($"Failed to resolve proxy reference with real reference id: {RealReferenceId}");
     }
 
     return realReference.Resolve(context);

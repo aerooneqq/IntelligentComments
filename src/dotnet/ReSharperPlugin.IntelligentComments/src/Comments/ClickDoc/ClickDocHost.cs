@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using JetBrains.Annotations;
 using JetBrains.Application.DataContext;
 using JetBrains.Application.Threading;
@@ -82,7 +81,7 @@ public class ClickDocHost
       }
       
       var resolveContext = new DomainResolveContextImpl(mySolution, textControl.Document);
-      if (reference.Resolve(resolveContext) is not DeclaredElementResolveResult { DeclaredElement: { } declaredElement })
+      if (reference.Resolve(resolveContext) is not DeclaredElementDomainResolveResult { DeclaredElement: { } declaredElement })
       {
         LogErrorAndSetNull($"Declared element was null for {request.PrintToString()}");
         return;

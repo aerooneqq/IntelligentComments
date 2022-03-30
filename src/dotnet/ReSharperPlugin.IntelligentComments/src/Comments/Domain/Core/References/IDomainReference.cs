@@ -9,7 +9,7 @@ public interface IDomainReference
   [NotNull] string RawValue { get; }
 
 
-  [NotNull] ResolveResult Resolve(IDomainResolveContext context);
+  [NotNull] DomainResolveResult Resolve(IDomainResolveContext context);
 }
 
 public interface IProxyDomainReference : IDomainReference
@@ -23,26 +23,26 @@ public interface IDomainResolveContext
   [CanBeNull] IDocument Document { get; }
 }
 
-public abstract class ResolveResult
+public abstract class DomainResolveResult
 {
 }
 
-public class EmptyResolveResult : ResolveResult
+public class EmptyDomainResolveResult : DomainResolveResult
 {
-  public static EmptyResolveResult Instance { get; } = new();
+  public static EmptyDomainResolveResult Instance { get; } = new();
   
   
-  private EmptyResolveResult()
+  private EmptyDomainResolveResult()
   {
   }
 }
 
-public class InvalidResolveResult : ResolveResult
+public class InvalidDomainResolveResult : DomainResolveResult
 {
   public string Error { get; }
 
   
-  public InvalidResolveResult(string error)
+  public InvalidDomainResolveResult(string error)
   {
     Error = error;
   }

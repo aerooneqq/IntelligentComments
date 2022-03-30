@@ -21,12 +21,12 @@ public interface ISandBoxCodeEntityDomainReference : ICodeEntityDomainReference
   public TextRange Range { get; }
 }
 
-public class DeclaredElementResolveResult : ResolveResult
+public class DeclaredElementDomainResolveResult : DomainResolveResult
 {
   [CanBeNull] public IDeclaredElement DeclaredElement { get; }
 
 
-  public DeclaredElementResolveResult([CanBeNull] IDeclaredElement declaredElement)
+  public DeclaredElementDomainResolveResult([CanBeNull] IDeclaredElement declaredElement)
   {
     DeclaredElement = declaredElement;
   }

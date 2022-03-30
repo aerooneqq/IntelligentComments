@@ -30,10 +30,10 @@ public class XmlDocCodeEntityDomainReference : DomainReferenceBase, IXmlDocCodeE
   }
   
   
-  public override ResolveResult Resolve(IDomainResolveContext context)
+  public override DomainResolveResult Resolve(IDomainResolveContext context)
   {
     var declaredElement = XMLDocUtil.ResolveId(myServices, RawValue, myModule, true);
-    return new DeclaredElementResolveResult(declaredElement);
+    return new DeclaredElementDomainResolveResult(declaredElement);
   }
 }
 
@@ -62,9 +62,9 @@ public class SandBoxCodeEntityDomainReference : DomainReferenceBase, ISandBoxCod
   }
 
   
-  public override ResolveResult Resolve(IDomainResolveContext context)
+  public override DomainResolveResult Resolve(IDomainResolveContext context)
   {
-    if (myAlreadyResolvedElement is { }) return new DeclaredElementResolveResult(myAlreadyResolvedElement);
+    if (myAlreadyResolvedElement is { }) return new DeclaredElementDomainResolveResult(myAlreadyResolvedElement);
 
     var solution = context.Solution;
     var sourceFile = solution.GetComponent<SandboxesCache>().TryGetSandboxPsiSourceFile(OriginalDocument, SandboxDocumentId);
@@ -72,7 +72,7 @@ public class SandBoxCodeEntityDomainReference : DomainReferenceBase, ISandBoxCod
     var range = new TreeTextRange(new TreeOffset(Range.StartOffset), new TreeOffset(Range.EndOffset));
     var node = sourceFile?.GetPrimaryPsiFile()?.FindNodeAt(range);
     var declaredElement = node?.Parent?.GetReferences().FirstOrDefault()?.Resolve().DeclaredElement;
-    return new DeclaredElementResolveResult(declaredElement);
+    return new DeclaredElementDomainResolveResult(declaredElement);
   }
 }
 

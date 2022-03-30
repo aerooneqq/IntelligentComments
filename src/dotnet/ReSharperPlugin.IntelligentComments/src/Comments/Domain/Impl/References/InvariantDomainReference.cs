@@ -29,19 +29,20 @@ public class InvariantDomainReference : DomainReferenceBase, IInvariantDomainRef
   }
 
 
-  public override ResolveResult Resolve(IDomainResolveContext context) => InvariantResolveUtil.ResolveInvariantByName(InvariantName, context);
+  public override DomainResolveResult Resolve(IDomainResolveContext context) => InvariantResolveUtil.ResolveInvariantByName(InvariantName, context);
 }
 
 internal static class InvariantResolveUtil
 {
-  public static ResolveResult ResolveInvariantByName([NotNull] string invariantName, IDomainResolveContext context)
+  public static DomainResolveResult ResolveInvariantByName(
+    [NotNull] string invariantName, [NotNull] IDomainResolveContext context)
   {
     var cache = context.Solution.GetComponent<InvariantsNamesCache>();
     var invariantNameCount = cache.GetInvariantNameCount(invariantName);
     
-    InvalidResolveResult CreateInvalidResolveResult()
+    InvalidDomainResolveResult CreateInvalidResolveResult()
     {
-      return new InvalidResolveResult($"Failed to resolve invariant \"{invariantName}\" for this reference");
+      return new InvalidDomainResolveResult($"Failed to resolve invariant \"{invariantName}\" for this reference");
     }
     
     if (invariantNameCount != 1) return CreateInvalidResolveResult();
@@ -64,7 +65,7 @@ internal static class InvariantResolveUtil
         var docCommentBlock = token?.TryFindDocCommentBlock();
         if (docCommentBlock is null) continue;
 
-        ResolveResult result = EmptyResolveResult.Instance;
+        DomainResolveResult result = EmptyDomainResolveResult.Instance;
         docCommentBlock.ExecuteActionWithInvariants(element =>
         {
           var currentInvariantName = CommentsBuilderUtil.TryGetInvariantName(element);
@@ -73,11 +74,11 @@ internal static class InvariantResolveUtil
         
           if (currentInvariantName == invariantName && invariant is { } invariantContentSegment)
           {
-            result = new InvariantResolveResult(invariantContentSegment, docCommentBlock, documentOffset);
+            result = new InvariantDomainResolveResult(invariantContentSegment, docCommentBlock, documentOffset);
           }
         });
 
-        if (result is not EmptyResolveResult) return result;
+        if (result is not EmptyDomainResolveResult) return result;
       }
     }
 
@@ -118,14 +119,14 @@ internal static class InvariantResolveUtil
   }
 }
 
-public class InvariantResolveResult : ResolveResult
+public class InvariantDomainResolveResult : DomainResolveResult
 {
   [NotNull] public IInvariantContentSegment Invariant { get; }
   [NotNull] public IDocCommentBlock ParentDocCommentBlock { get; }
   public DocumentOffset InvariantDocumentOffset { get; }
 
 
-  public InvariantResolveResult(
+  public InvariantDomainResolveResult(
     [NotNull] IInvariantContentSegment invariant, 
     [NotNull] IDocCommentBlock parentBlock, 
     DocumentOffset invariantDocumentOffset)

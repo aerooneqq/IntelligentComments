@@ -111,7 +111,7 @@ internal static class NavigationUtil
 
     var resolveContext = new DomainResolveContextImpl(solution, document);
     var resolveResult = InvariantResolveUtil.ResolveInvariantByName(name, resolveContext);
-    if (resolveResult is not InvariantResolveResult invariantResolveResult)
+    if (resolveResult is not InvariantDomainResolveResult invariantResolveResult)
     {
       host ??= solution.GetComponent<INavigationExecutionHost>();
       host.ShowToolip(context, "Failed to resolve invariant for this reference");
