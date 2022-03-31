@@ -1,6 +1,7 @@
 package com.intelligentComments.core.domain.rd
 
 import com.intelligentComments.core.domain.core.*
+import com.intelligentComments.core.settings.RiderIntelligentCommentsSettingsProvider
 import com.intelligentComments.ui.colors.ColorName
 import com.intelligentComments.ui.colors.ColorsProvider
 import com.intellij.openapi.components.service
@@ -28,7 +29,13 @@ private fun RdTextHighlighter.toIdeaHighlighterInternal(
 ): TextHighlighter {
   val finalTextColor = textColor ?: project.service<ColorsProvider>().getColorFor(ColorName(key))
 
-  val attributes = attributes.toIntelligentCommentsAttributes()
+  var attributes = attributes.toIntelligentCommentsAttributes()
+
+  val settings = RiderIntelligentCommentsSettingsProvider.getInstance()
+  if (settings.useItalicFont.value) {
+    attributes = attributes.copy(style = Font.ITALIC)
+  }
+
   val mouseInOutAnimation = animation?.toTextAnimation(finalTextColor, project)
   val references = references?.map { ReferenceFromRd.getFrom(project, it) } ?: emptyList()
   val ideaSquiggles = errorSquiggles?.toIdeaSquiggles()

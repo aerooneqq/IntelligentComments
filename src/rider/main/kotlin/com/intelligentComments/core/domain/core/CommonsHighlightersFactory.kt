@@ -2,7 +2,9 @@ package com.intelligentComments.core.domain.core
 
 import com.intelligentComments.core.domain.rd.BackendHighlightersKeys
 import com.intelligentComments.core.domain.rd.tryGetTextAttributes
+import com.intelligentComments.core.settings.RiderIntelligentCommentsSettingsProvider
 import java.awt.Color
+import java.awt.Font
 
 object CommonsHighlightersFactory {
   fun createWithRoundedBackgroundRect(
@@ -16,6 +18,7 @@ object CommonsHighlightersFactory {
       0,
       textLength,
       textColor,
+      attributes = getOrAdjustAttributes(),
       backgroundStyle = BackgroundStyleImpl(backgroundColor, true, 2)
     )
   }
@@ -39,8 +42,27 @@ object CommonsHighlightersFactory {
       0,
       textLength,
       attributes.foregroundColor.darker(),
-      attributes = TextAttributesImpl.defaultAttributes
+      attributes = getOrAdjustAttributes()
     )
+  }
+
+  private fun getOrAdjustAttributes(existingAttributes: TextAttributes? = null): TextAttributes {
+    val useItalicFont = RiderIntelligentCommentsSettingsProvider.getInstance().useItalicFont.value
+
+    if (existingAttributes != null) {
+      if (useItalicFont && existingAttributes is TextAttributesImpl) {
+        return existingAttributes.copy(style = Font.ITALIC)
+      }
+
+      return existingAttributes
+    }
+
+    val attributes = TextAttributesImpl.defaultAttributes
+    if (useItalicFont) {
+      return attributes.copy(style = Font.ITALIC)
+    }
+
+    return attributes
   }
 
   fun createHighlighter(
@@ -54,7 +76,7 @@ object CommonsHighlightersFactory {
       0,
       length,
       color,
-      attributes = attributes,
+      attributes = getOrAdjustAttributes(attributes),
       references = references
     )
   }

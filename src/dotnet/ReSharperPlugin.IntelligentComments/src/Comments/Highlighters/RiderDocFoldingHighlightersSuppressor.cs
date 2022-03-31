@@ -2,7 +2,6 @@ using JetBrains.ProjectModel;
 using JetBrains.RdBackend.Common.Features.Daemon;
 using JetBrains.ReSharper.Daemon.CodeFolding;
 using JetBrains.TextControl.DocumentMarkup;
-using JetBrains.Util.Logging;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Highlighters;
 

@@ -4,7 +4,6 @@ using JetBrains.Application.DataContext;
 using JetBrains.Application.UI.TreeModels;
 using JetBrains.DocumentModel;
 using JetBrains.ProjectModel;
-using JetBrains.ProjectModel.DataContext;
 using JetBrains.ReSharper.Feature.Services.Navigation.ContextNavigation;
 using JetBrains.ReSharper.Feature.Services.Navigation.Descriptors;
 using JetBrains.ReSharper.Feature.Services.Navigation.Requests;
@@ -12,10 +11,8 @@ using JetBrains.ReSharper.Feature.Services.Occurrences;
 using JetBrains.ReSharper.Feature.Services.Tree;
 using JetBrains.ReSharper.Feature.Services.Tree.SectionsManagement;
 using JetBrains.ReSharper.Psi;
-using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.References;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Navigation.FindReferences;
 

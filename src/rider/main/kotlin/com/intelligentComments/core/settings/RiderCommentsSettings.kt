@@ -39,6 +39,8 @@ class RiderCommentsSettings : PersistentStateComponent<Element> {
   var showEmptyContent: Boolean = false
   var showFirstLevelHeaderWhenOneElement: Boolean = false
 
+  var useItalicFontForComments = true
+
 
   fun applyToSettings(settings: RiderIntelligentCommentsSettingsProvider) {
     settings.commentsDisplayKind.set(computeDisplayKind())
@@ -53,6 +55,7 @@ class RiderCommentsSettings : PersistentStateComponent<Element> {
 
     settings.showEmptyContent.set(showEmptyContent)
     settings.showFirstLevelHeaderWhenOneElement.set(showFirstLevelHeaderWhenOneElement)
+    settings.useItalicFont.set(useItalicFontForComments)
   }
 
   private fun computeDisplayKind(): CommentsDisplayKind {
@@ -75,7 +78,8 @@ class RiderCommentsSettings : PersistentStateComponent<Element> {
       groupParams != settings.groupParams.value ||
       groupExceptions != settings.groupExceptions.value ||
       showEmptyContent != settings.showEmptyContent.value ||
-      showFirstLevelHeaderWhenOneElement != settings.showFirstLevelHeaderWhenOneElement.value
+      showFirstLevelHeaderWhenOneElement != settings.showFirstLevelHeaderWhenOneElement.value ||
+      useItalicFontForComments != settings.useItalicFont.value
   }
 
   fun reset(settings: RiderIntelligentCommentsSettingsProvider) {
@@ -93,6 +97,8 @@ class RiderCommentsSettings : PersistentStateComponent<Element> {
 
     showEmptyContent = settings.showEmptyContent.value
     showFirstLevelHeaderWhenOneElement = settings.showFirstLevelHeaderWhenOneElement.value
+
+    useItalicFontForComments = settings.useItalicFont.value
   }
 
   fun createSettingsChange(settings: RiderIntelligentCommentsSettingsProvider): SettingsChange {

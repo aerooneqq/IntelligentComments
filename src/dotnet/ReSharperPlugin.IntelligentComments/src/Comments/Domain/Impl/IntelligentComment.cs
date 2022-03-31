@@ -1,7 +1,6 @@
 using JetBrains.DocumentModel;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.Content;
-using System.Collections.Generic;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Domain.Impl;
 

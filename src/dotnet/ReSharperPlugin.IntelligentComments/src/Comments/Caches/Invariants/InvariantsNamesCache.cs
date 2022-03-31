@@ -10,7 +10,6 @@ using JetBrains.ReSharper.Psi.Caches;
 using JetBrains.ReSharper.Psi.Files;
 using JetBrains.Util.PersistentMap;
 using ReSharperPlugin.IntelligentComments.Comments.Caches.Text.Trie;
-using System.Linq;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Caches.Invariants;
 

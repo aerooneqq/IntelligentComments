@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
-using JetBrains.DocumentModel;
 using JetBrains.ProjectModel;
 using JetBrains.RdBackend.Common.Features.SyntaxHighlighting.CSharp;
 using JetBrains.ReSharper.Daemon.CSharp.Stages;

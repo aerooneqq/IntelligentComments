@@ -148,6 +148,10 @@ class RiderCommentsConfigurable : BoundConfigurable("Intelligent comments", null
         row {
           checkBox("Show header of a single section in comment").associateWith(viewModel::showFirstLevelHeaderWhenOneElement)
         }
+
+        row {
+          radioButton("Use italic font for comments").associateWith(viewModel::useItalicFontForComments)
+        }
       }
     }
   }

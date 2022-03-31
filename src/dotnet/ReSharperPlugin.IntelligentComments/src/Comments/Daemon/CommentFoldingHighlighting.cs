@@ -2,7 +2,6 @@ using JetBrains.Annotations;
 using JetBrains.DocumentModel;
 using JetBrains.ReSharper.Daemon.CodeFolding;
 using JetBrains.ReSharper.Feature.Services.Daemon;
-using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.TextControl.DocumentMarkup;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 

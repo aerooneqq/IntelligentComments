@@ -35,6 +35,8 @@ interface RiderIntelligentCommentsSettingsProvider {
   val boldFontSize: Property<Float>
 
   val maxCharsInLine: Property<Int>
+
+  val useItalicFont: Property<Boolean>
 }
 
 class RiderIntelligentCommentsSettingsProviderImpl : LifetimedService(), RiderIntelligentCommentsSettingsProvider {
@@ -55,4 +57,6 @@ class RiderIntelligentCommentsSettingsProviderImpl : LifetimedService(), RiderIn
   override val boldFontSize: Property<Float> = Property(14f)
 
   override val maxCharsInLine: Property<Int> = Property(120)
+
+  override val useItalicFont: Property<Boolean> = Property(true)
 }

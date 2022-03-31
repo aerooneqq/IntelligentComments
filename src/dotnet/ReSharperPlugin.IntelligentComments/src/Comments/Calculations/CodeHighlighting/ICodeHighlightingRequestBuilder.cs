@@ -1,6 +1,5 @@
 using JetBrains.Annotations;
 using JetBrains.ReSharper.Psi;
-using JetBrains.ReSharper.Psi.CSharp.Tree;
 using JetBrains.ReSharper.Psi.Tree;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.CodeHighlighting;

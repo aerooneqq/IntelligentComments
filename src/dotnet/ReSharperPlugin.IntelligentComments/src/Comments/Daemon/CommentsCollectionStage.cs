@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using JetBrains.Application.Settings;
 using JetBrains.ReSharper.Daemon.CSharp.Stages;
 using JetBrains.ReSharper.Feature.Services.Daemon;
-using JetBrains.Util;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Daemon;
 
