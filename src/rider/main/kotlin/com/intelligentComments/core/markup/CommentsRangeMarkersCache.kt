@@ -47,8 +47,17 @@ class CommentsRangeMarkersCache {
   private fun invalidate() {
     ++myStamp
     val itemsToRemove = mutableListOf<Int>()
+    val seenStartRanges = hashSetOf<Int>()
+
     for (index in cachedRangesInfos.indices) {
       val info = cachedRangesInfos[index]
+      val startOffset = info.rangeMarker.startOffset
+      if (seenStartRanges.contains(startOffset)) {
+        itemsToRemove.add(index)
+        continue
+      }
+
+      seenStartRanges.add(startOffset)
       if (!info.rangeMarker.isValid || info.stamp - myStamp > itemLifeTime) {
         itemsToRemove.add(index)
       }

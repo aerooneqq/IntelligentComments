@@ -55,7 +55,7 @@ class DocCommentsFoldingAdapter(private val editor: EditorImpl) : FrontendMarkup
   }
 
 
-  private var addingHighlighters = Property(false)
+  private val updateScheduler = HighlightersUpdatesScheduler()
   private val rangeMarkerCache = CommentsRangeMarkersCache()
   private val settings = RiderIntelligentCommentsSettingsProvider.getInstance()
 
@@ -75,9 +75,8 @@ class DocCommentsFoldingAdapter(private val editor: EditorImpl) : FrontendMarkup
 
   override fun afterBulkAdd(highlighters: List<RangeHighlighterEx>) {
     editor.project?.let {
-      addingHighlighters.value = true
-      application.executeOnPooledThread {
-        val controller = it.getComponent(RiderCommentsController::class.java) ?: return@executeOnPooledThread
+      updateScheduler.queueUpdate { continuation ->
+        val controller = it.getComponent(RiderCommentsController::class.java) ?: return@queueUpdate
         val commentsCreator = it.service<RiderCommentsCreator>()
 
         rangeMarkerCache.invalidateAndSort()
@@ -100,7 +99,7 @@ class DocCommentsFoldingAdapter(private val editor: EditorImpl) : FrontendMarkup
             }
           }
 
-          addingHighlighters.value = false
+          continuation(Unit)
         }
       }
     }
@@ -123,25 +122,24 @@ class DocCommentsFoldingAdapter(private val editor: EditorImpl) : FrontendMarkup
 
   override fun beforeBulkRemove(highlighters: List<RangeHighlighterEx>) {
     editor.project?.let {
-      fun removeHighlighters() {
-        executeOverDocHighlighters(highlighters) { highlighter, _ ->
-          val existingComment = highlighter.getUserData(commentKey)
-
-          if (existingComment != null) {
-            highlighter.putUserData(commentKey, null)
-            rangeMarkerCache.store(existingComment.identifier.rangeMarker)
-          }
+      updateScheduler.queueUpdate { continuation ->
+        application.invokeLater {
+          removeHighlighters(highlighters)
+          continuation(Unit)
         }
       }
+    }
+  }
 
-      if (addingHighlighters.value) {
-        val lifetimeDefinition = it.lifetime.createNested()
-        addingHighlighters.whenTrue(lifetimeDefinition.lifetime) {
-          removeHighlighters()
-          lifetimeDefinition.terminate()
-        }
-      } else {
-        removeHighlighters()
+  private fun removeHighlighters(highlighters: List<RangeHighlighterEx>) {
+    executeOverDocHighlighters(highlighters) { highlighter, _ ->
+      if (!highlighter.isValid) return@executeOverDocHighlighters
+
+      val existingComment = highlighter.getUserData(commentKey)
+
+      if (existingComment != null) {
+        highlighter.putUserData(commentKey, null)
+        rangeMarkerCache.store(existingComment.identifier.rangeMarker)
       }
     }
   }
