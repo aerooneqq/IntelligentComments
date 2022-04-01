@@ -37,7 +37,7 @@ public class CSharpIntelligentCommentsAutoPopupStrategy : IAutomaticCodeCompleti
   {
     return this.MatchToken(file, textControl, node =>
     {
-      var docComment = node.TryFindDocCommentBlock();
+      if (node.TryFindDocCommentBlock() is not { } docComment) return false;
       var offset = textControl.Caret.DocumentOffset();
       var token = docComment.TryGetXmlToken(offset);
       if (token is not IXmlValueToken { Parent: IXmlAttribute parent }) return false;

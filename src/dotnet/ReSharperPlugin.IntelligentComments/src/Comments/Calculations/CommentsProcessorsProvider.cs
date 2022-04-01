@@ -2,6 +2,7 @@ using System;
 using JetBrains.ReSharper.Feature.Services.Daemon;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp;
+using ReSharperPlugin.IntelligentComments.Comments.Calculations.Visitors;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Visitors.CSharp;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Calculations;

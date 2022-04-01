@@ -11,7 +11,7 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Calculations;
 
 public interface IHighlightersProvider
 {
-  [CanBeNull] 
+  [CanBeNull]
   TextHighlighter TryGetReSharperHighlighter([NotNull] string resharperAttributeId, int length);
   
   [CanBeNull] 

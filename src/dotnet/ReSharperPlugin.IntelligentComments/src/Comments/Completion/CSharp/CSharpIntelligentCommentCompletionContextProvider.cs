@@ -70,7 +70,7 @@ public class CSharpIntelligentCommentCompletionContextProvider : ICodeCompletion
 internal static class CommentsCompletionExtensions 
 {
   [CanBeNull]
-  public static ITokenNode TryGetXmlToken(this IDocCommentBlock docCommentBlock, DocumentOffset caretDocumentOffset)
+  public static ITokenNode TryGetXmlToken([NotNull] this IDocCommentBlock docCommentBlock, DocumentOffset caretDocumentOffset)
   {
     var psiHelper = LanguageManager.Instance.GetService<IPsiHelper>(docCommentBlock.Language);
     if (psiHelper.GetXmlDocPsi(docCommentBlock)?.XmlFile is not { } xmlFile) return null;

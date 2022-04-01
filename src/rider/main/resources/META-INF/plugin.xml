@@ -37,7 +37,8 @@
 
   <actions>
     <action class="com.intelligentComments.core.actions.HideOrShowCommentsInEditorAction"
-            id="HideOrRenderComments">
+            id="HideOrRenderComments"
+            text="Hide Or Render All Comments">
       <keyboard-shortcut first-keystroke="control shift A" keymap="$default" />
       <keyboard-shortcut first-keystroke="control shift A" keymap="Mac OS X" />
       <keyboard-shortcut first-keystroke="control shift A" keymap="Mac OS X 10.5+" />

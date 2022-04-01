@@ -107,7 +107,7 @@ internal static class InvariantResolveUtil
         docComment.ExecuteWithReferences(referenceTag =>
         {
           var invariantReferenceSourceAttr = CommentsBuilderUtil.TryGetInvariantReferenceSourceAttribute(referenceTag);
-          if (invariantReferenceSourceAttr is null) return;
+          if (invariantReferenceSourceAttr is null || invariantReferenceSourceAttr.UnquotedValue != name) return;
 
           var offset = invariantReferenceSourceAttr.GetDocumentStartOffset();
           result.Add(new ReferenceForInvariantDescriptor(file, offset));

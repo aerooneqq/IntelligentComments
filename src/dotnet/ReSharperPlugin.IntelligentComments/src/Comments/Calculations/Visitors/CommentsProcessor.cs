@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using JetBrains.Annotations;
 using JetBrains.DocumentModel;
 using JetBrains.ReSharper.Feature.Services.Daemon;
@@ -9,9 +10,8 @@ using JetBrains.Util;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.Content;
-using System.Linq;
 
-namespace ReSharperPlugin.IntelligentComments.Comments.Calculations;
+namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Visitors;
 
 public record CommentProcessingResult(
   [NotNull] ICollection<HighlightingInfo> Errors,
