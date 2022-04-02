@@ -122,7 +122,7 @@ internal static class NavigationUtil
   public static void NavigateToInvariantIfFound(
     [NotNull] IDataContext context, [CanBeNull] INavigationExecutionHost host = null)
   {
-    if (NavigationUtil.TryExtractInvariantNameFromReference(context) is not { } name) return;
+    if (TryExtractInvariantNameFromReference(context) is not { } name) return;
     if (context.GetData(ProjectModelDataConstants.SOLUTION) is not { } solution) return;
     if (context.GetData(DocumentModelDataConstants.DOCUMENT) is not { } document) return;
 

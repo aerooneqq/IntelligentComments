@@ -150,7 +150,15 @@ class RiderCommentsConfigurable : BoundConfigurable("Intelligent comments", null
         }
 
         row {
-          radioButton("Use italic font for comments").associateWith(viewModel::useItalicFontForComments)
+          checkBox("Use italic font for comments").associateWith(viewModel::useItalicFontForComments)
+        }
+
+        row {
+          checkBox("Show only summary").associateWith(viewModel::showOnlySummary)
+        }
+
+        row {
+          checkBox("Render comments only for decompiled sources").associateWith(viewModel::renderCommentsOnlyInDecompiledSources)
         }
       }
     }

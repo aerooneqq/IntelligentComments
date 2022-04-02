@@ -7,7 +7,7 @@ using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.CSharp;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Calculations;
 
-public class CommentsProcessorsProvider
+public static class CommentsProcessorsProvider
 {
   public static ICommentsProcessor CreateProcessorFor(PsiLanguageType languageType, DaemonProcessKind daemonProcessKind)
   {

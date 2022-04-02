@@ -37,6 +37,8 @@ interface RiderIntelligentCommentsSettingsProvider {
   val maxCharsInLine: Property<Int>
 
   val useItalicFont: Property<Boolean>
+  val showOnlySummary: Property<Boolean>
+  val renderCommentsOnlyInDecompiledSources: Property<Boolean>
 }
 
 class RiderIntelligentCommentsSettingsProviderImpl : LifetimedService(), RiderIntelligentCommentsSettingsProvider {
@@ -59,4 +61,6 @@ class RiderIntelligentCommentsSettingsProviderImpl : LifetimedService(), RiderIn
   override val maxCharsInLine: Property<Int> = Property(120)
 
   override val useItalicFont: Property<Boolean> = Property(true)
+  override val showOnlySummary: Property<Boolean> = Property(false)
+  override val renderCommentsOnlyInDecompiledSources: Property<Boolean> = Property(false)
 }

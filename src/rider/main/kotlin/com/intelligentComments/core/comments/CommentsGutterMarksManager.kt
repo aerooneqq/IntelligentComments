@@ -2,8 +2,8 @@ package com.intelligentComments.core.comments
 
 import com.intelligentComments.core.comments.listeners.GutterMarkVisibilityMouseMoveListener
 import com.intelligentComments.core.comments.states.RiderCommentsStateManager
+import com.intelligentComments.core.comments.states.canChangeFromCodeToRender
 import com.intelligentComments.core.domain.core.CommentBase
-import com.intelligentComments.core.settings.CommentsDisplayKind
 import com.intelligentComments.core.settings.RiderIntelligentCommentsSettingsProvider
 import com.intelligentComments.ui.comments.renderers.DocCommentSwitchRenderModeGutterMark
 import com.intelligentComments.ui.comments.renderers.RendererWithRectangleModel
@@ -37,7 +37,7 @@ class CommentsGutterMarksManager(project: Project) {
   fun getGutterVisibilityFor(comment: CommentBase) = visibleCommentsGutters.contains(comment)
 
   private fun updateGutterFor(editor: Editor, offset: Int) {
-    if (settings.commentsDisplayKind.value == CommentsDisplayKind.Code) return
+    if (!canChangeFromCodeToRender(editor)) return
 
     val renderer = tryFindRendererFor(editor, offset)
     if (renderer == null) {
@@ -50,7 +50,7 @@ class CommentsGutterMarksManager(project: Project) {
         val offsetLine = editor.document.getLineNumber(offset)
         val commentStartLine = editor.document.getLineNumber(comment.identifier.rangeMarker.startOffset)
         val range = comment.identifier.rangeMarker.range
-        val gutterMark = comment.correspondingHighlighter.gutterIconRenderer as DocCommentSwitchRenderModeGutterMark
+        val gutterMark = comment.correspondingHighlighter.gutterIconRenderer as? DocCommentSwitchRenderModeGutterMark ?: return
 
         if (range != null && (range.contains(offset) || offsetLine == commentStartLine)) {
           val state = statesManager.getExistingCommentState(editor, comment.identifier)

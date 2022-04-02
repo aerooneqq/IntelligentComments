@@ -40,6 +40,8 @@ class RiderCommentsSettings : PersistentStateComponent<Element> {
   var showFirstLevelHeaderWhenOneElement: Boolean = false
 
   var useItalicFontForComments = true
+  var showOnlySummary = false
+  var renderCommentsOnlyInDecompiledSources = false
 
 
   fun applyToSettings(settings: RiderIntelligentCommentsSettingsProvider) {
@@ -55,7 +57,10 @@ class RiderCommentsSettings : PersistentStateComponent<Element> {
 
     settings.showEmptyContent.set(showEmptyContent)
     settings.showFirstLevelHeaderWhenOneElement.set(showFirstLevelHeaderWhenOneElement)
+
     settings.useItalicFont.set(useItalicFontForComments)
+    settings.showOnlySummary.set(showOnlySummary)
+    settings.renderCommentsOnlyInDecompiledSources.set(renderCommentsOnlyInDecompiledSources)
   }
 
   private fun computeDisplayKind(): CommentsDisplayKind {
@@ -79,7 +84,9 @@ class RiderCommentsSettings : PersistentStateComponent<Element> {
       groupExceptions != settings.groupExceptions.value ||
       showEmptyContent != settings.showEmptyContent.value ||
       showFirstLevelHeaderWhenOneElement != settings.showFirstLevelHeaderWhenOneElement.value ||
-      useItalicFontForComments != settings.useItalicFont.value
+      useItalicFontForComments != settings.useItalicFont.value ||
+      showOnlySummary != settings.showOnlySummary.value ||
+      renderCommentsOnlyInDecompiledSources != settings.renderCommentsOnlyInDecompiledSources.value
   }
 
   fun reset(settings: RiderIntelligentCommentsSettingsProvider) {
@@ -99,6 +106,8 @@ class RiderCommentsSettings : PersistentStateComponent<Element> {
     showFirstLevelHeaderWhenOneElement = settings.showFirstLevelHeaderWhenOneElement.value
 
     useItalicFontForComments = settings.useItalicFont.value
+    showOnlySummary = settings.showOnlySummary.value
+    renderCommentsOnlyInDecompiledSources = settings.renderCommentsOnlyInDecompiledSources.value
   }
 
   fun createSettingsChange(settings: RiderIntelligentCommentsSettingsProvider): SettingsChange {
@@ -107,6 +116,11 @@ class RiderCommentsSettings : PersistentStateComponent<Element> {
     val newDisplayKind = computeDisplayKind()
     if (settings.commentsDisplayKind.value != newDisplayKind) {
       changes[settings.commentsDisplayKind] = SettingChange(settings.commentsDisplayKind.value, newDisplayKind)
+    }
+
+    val renderOnlyDecompiledFiles = settings.renderCommentsOnlyInDecompiledSources.value
+    if (renderOnlyDecompiledFiles != renderCommentsOnlyInDecompiledSources) {
+      changes[settings.renderCommentsOnlyInDecompiledSources] = SettingChange(renderOnlyDecompiledFiles, renderCommentsOnlyInDecompiledSources)
     }
 
     return SettingsChange(changes)

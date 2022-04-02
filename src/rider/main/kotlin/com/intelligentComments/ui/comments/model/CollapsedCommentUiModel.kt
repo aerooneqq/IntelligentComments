@@ -3,6 +3,7 @@ package com.intelligentComments.ui.comments.model
 import com.intelligentComments.core.comments.docs.CommentsHoverDocManager
 import com.intelligentComments.core.domain.core.*
 import com.intelligentComments.core.domain.impl.HighlightedTextImpl
+import com.intelligentComments.core.domain.impl.emptyCommentPlaceholder
 import com.intelligentComments.core.settings.CommentsDisplayKind
 import com.intelligentComments.core.settings.RiderIntelligentCommentsSettingsProvider
 import com.intelligentComments.ui.comments.model.content.text.TextContentSegmentUiModel
@@ -19,13 +20,14 @@ import com.intellij.util.application
 import com.jetbrains.rd.platform.diagnostics.logAssertion
 import com.jetbrains.rd.platform.util.getLogger
 
+
 class CollapsedCommentUiModel(
   comment: CommentBase,
   project: Project,
   editor: Editor
 ) : CommentUiModelBase(comment, project, editor) {
   companion object {
-    private const val placeholder = "..."
+    private const val placeholder = emptyCommentPlaceholder
     private val logger = getLogger<CollapsedCommentUiModel>()
   }
 

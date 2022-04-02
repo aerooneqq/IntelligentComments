@@ -14,6 +14,8 @@ import com.intellij.openapi.components.Storage
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.VirtualFileManager
+import com.intellij.psi.PsiDocumentManager
 import com.intellij.refactoring.suggested.range
 import com.intellij.util.application
 import com.intellij.util.xmlb.annotations.Attribute
@@ -23,6 +25,8 @@ import com.jetbrains.rd.platform.diagnostics.logAssertion
 import com.jetbrains.rd.util.getOrCreate
 import com.jetbrains.rdclient.editors.getPsiFile
 import com.jetbrains.rdclient.util.idea.LifetimedProjectComponent
+import com.jetbrains.rider.ideaInterop.find.scopes.RiderSolutionScope
+import kotlin.io.path.Path
 
 @State(
   name = "SolutionCommentsState",
@@ -44,19 +48,26 @@ class RiderCommentsStateManager(
 
   override fun handleChange(change: Change) {
     if (change is SettingsChange) {
-      val displayKindChange = change.changes[settingsProvider.commentsDisplayKind] ?: return
-      val newValue = displayKindChange.newValue as? CommentsDisplayKind ?: return
+      val displayKindChange = change.changes[settingsProvider.commentsDisplayKind]
+      var newValue = displayKindChange?.newValue as? CommentsDisplayKind
 
-      updateAllStates {
-        newValue
+      val renderInDecompiledChange = change.changes[settingsProvider.renderCommentsOnlyInDecompiledSources]
+      if (renderInDecompiledChange != null) {
+        newValue = newValue ?: settingsProvider.commentsDisplayKind.value
+      }
+
+      if (newValue != null) {
+        updateAllStates { _, editorId ->
+          return@updateAllStates adjustFinalStateWithSettings(newValue, editorId)
+        }
       }
     }
   }
 
-  private fun updateAllStates(newDisplayKindCalculator: (CommentsDisplayKind) -> CommentsDisplayKind) {
-    for ((_, editorStates) in states) {
+  private fun updateAllStates(newDisplayKindCalculator: (CommentsDisplayKind, EditorId) -> CommentsDisplayKind) {
+    for ((editorId, editorStates) in states) {
       for ((_, state) in editorStates.getAllKeysAndValues()) {
-        state.setDisplayKind(newDisplayKindCalculator(state.displayKind))
+        state.setDisplayKind(newDisplayKindCalculator(state.displayKind, editorId))
       }
     }
   }
@@ -69,15 +80,15 @@ class RiderCommentsStateManager(
 
   fun restoreOrCreateCommentState(editor: Editor, commentIdentifier: CommentIdentifier): CommentState {
     application.assertIsDispatchThread()
-    val editorId = editor.getEditorId() ?: return CommentState.defaultInstance
 
+    val editorId = editor.getEditorId() ?: return CommentState.defaultInstance
     val editorCommentsStates = states.getOrCreate(editorId) { CommentsIdentifierStorage() }
     val existingState = editorCommentsStates.getWithAdditionalSearch(commentIdentifier)
     if (existingState != null) return existingState
 
     val persistentState = getPersistentState(editorId, commentIdentifier)
     return editorCommentsStates.getOrCreate(commentIdentifier) {
-      if (persistentState != null) {
+      val state = if (persistentState != null) {
         persistentState
       } else {
         var displayKind = settingsProvider.commentsDisplayKind.value
@@ -89,6 +100,9 @@ class RiderCommentsStateManager(
 
         CommentState(displayKind)
       }
+
+      state.setDisplayKind(adjustFinalStateWithSettings(state.displayKind, editor))
+      return@getOrCreate state
     }
   }
 
@@ -127,7 +141,7 @@ class RiderCommentsStateManager(
   ): CommentState? {
     application.assertIsDispatchThread()
     return executeWithCurrentState(editor, commentIdentifier) {
-      it.setDisplayKind(displayKind)
+      it.setDisplayKind(adjustFinalStateWithSettings(displayKind, editor))
     }
   }
 
@@ -153,7 +167,23 @@ class RiderCommentsStateManager(
   ): CommentState? {
     application.assertIsDispatchThread()
     return executeWithCurrentState(editor, commentIdentifier) {
-      it.setDisplayKind(transform(it.displayKind))
+      it.setDisplayKind(adjustFinalStateWithSettings(transform(it.displayKind), editor))
+    }
+  }
+
+  private fun adjustFinalStateWithSettings(displayKind: CommentsDisplayKind, editor: Editor): CommentsDisplayKind {
+    return if (settingsProvider.renderCommentsOnlyInDecompiledSources.value && !isDecompiledEditor(editor)) {
+      CommentsDisplayKind.Code
+    } else {
+      displayKind
+    }
+  }
+
+  private fun adjustFinalStateWithSettings(displayKind: CommentsDisplayKind, editorId: EditorId): CommentsDisplayKind {
+    return if (settingsProvider.renderCommentsOnlyInDecompiledSources.value && !isDecompiledEditor(project, editorId)) {
+      CommentsDisplayKind.Code
+    } else {
+      displayKind
     }
   }
 
@@ -214,4 +244,26 @@ class CommentStateSnapshot {
   @Attribute("endOffset") var endOffset: Int = 0
   @Attribute("displayKind") var displayKind: CommentsDisplayKind = CommentsDisplayKind.Code
   @Attribute("lastRelativeCaretPositionWithinComment") var lastRelativeCaretPositionWithinComment: Int = 0
+}
+
+fun canChangeFromCodeToRender(editor: Editor): Boolean {
+  val settings = RiderIntelligentCommentsSettingsProvider.getInstance()
+
+  return settings.commentsDisplayKind.value != CommentsDisplayKind.Code &&
+    !(settings.renderCommentsOnlyInDecompiledSources.value && !isDecompiledEditor(editor))
+}
+
+fun isDecompiledEditor(editor: Editor): Boolean {
+  val project = editor.project ?: return false
+  val scope = RiderSolutionScope(project, true)
+  val document = editor.document
+  val psiFile = PsiDocumentManager.getInstance(project).getPsiFile(document) ?: return false
+  val virtualFile = psiFile.virtualFile
+
+  return !scope.contains(virtualFile)
+}
+
+fun isDecompiledEditor(project: Project, editorId: EditorId): Boolean {
+  val file = VirtualFileManager.getInstance().findFileByNioPath(Path(editorId.moniker)) ?: return false
+  return !RiderSolutionScope(project, true).contains(file)
 }

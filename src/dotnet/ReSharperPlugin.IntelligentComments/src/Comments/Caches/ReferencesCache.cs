@@ -16,9 +16,9 @@ public record ReferenceInfo(IDomainReference DomainReference);
 public class ReferencesCache : AbstractOpenedDocumentBasedCache<int, ReferenceInfo>
 {
   public ReferencesCache(
-    Lifetime lifetime, 
+    Lifetime lifetime,
     [NotNull] ITextControlManager textControlManager,
-    [NotNull] IShellLocks shellLocks) 
+    [NotNull] IShellLocks shellLocks)
     : base(lifetime, textControlManager, shellLocks)
   {
   }

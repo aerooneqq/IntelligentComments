@@ -3,6 +3,7 @@ package com.intelligentComments.core.domain.impl
 import com.intelligentComments.core.domain.core.*
 import com.intelligentComments.core.settings.RiderIntelligentCommentsSettingsProvider
 
+const val emptyCommentPlaceholder = "..."
 class ContentProcessingStrategyImpl : ContentProcessingStrategy {
 
   override fun process(segments: MutableList<ContentSegment>) {
@@ -25,6 +26,11 @@ class ContentProcessingStrategyImpl : ContentProcessingStrategy {
 
     groupInvariants(segments)
     groupReferences(segments)
+
+    if (settings.showOnlySummary.value) {
+      removeAllSegmentsButSummaries(segments)
+      addEmptyContentSegmentIfNeeded(segments)
+    }
   }
 
   private fun groupSeeAlsoIfNeeded(
@@ -136,5 +142,19 @@ class ContentProcessingStrategyImpl : ContentProcessingStrategy {
 
     segments.removeAll(segmentsToAddToTail)
     segments.addAll(segmentsToAddToTail)
+  }
+
+  private fun removeAllSegmentsButSummaries(segments: MutableList<ContentSegment>) {
+    segments.removeAll { !(it is SummaryContentSegment || it is GroupedSummarySegments) }
+  }
+
+  private fun addEmptyContentSegmentIfNeeded(segments: MutableList<ContentSegment>) {
+    if (segments.size != 0) return
+
+    val highlighter = CommonsHighlightersFactory.tryCreateCommentHighlighter(null, emptyCommentPlaceholder.length)
+    segments.add(object : UniqueEntityImpl(), TextContentSegment {
+      override val highlightedText: HighlightedText = HighlightedTextImpl(emptyCommentPlaceholder, this, highlighter)
+      override val parent: Parentable? = null
+    })
   }
 }
