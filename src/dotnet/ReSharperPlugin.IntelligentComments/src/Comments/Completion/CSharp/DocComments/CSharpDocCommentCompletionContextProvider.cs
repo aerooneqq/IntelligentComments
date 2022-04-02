@@ -1,3 +1,4 @@
+using System.Linq;
 using JetBrains.Annotations;
 using JetBrains.Diagnostics;
 using JetBrains.DocumentModel;
@@ -6,13 +7,12 @@ using JetBrains.ReSharper.Features.ReSpeller.Analyzers;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.ReSharper.Psi.Xml.Tree;
-using System.Linq;
 using JetBrains.Util;
 
-namespace ReSharperPlugin.IntelligentComments.Comments.Completion.CSharp;
+namespace ReSharperPlugin.IntelligentComments.Comments.Completion.CSharp.DocComments;
 
 [IntellisensePart]
-public class CSharpIntelligentCommentCompletionContextProvider : ICodeCompletionContextProvider
+public class CSharpDocCommentCompletionContextProvider : ICodeCompletionContextProvider
 {
   [NotNull] private static readonly Key<IDocCommentBlock> ourDocCommentKey = new(nameof(ourDocCommentKey)); 
   
@@ -42,7 +42,7 @@ public class CSharpIntelligentCommentCompletionContextProvider : ICodeCompletion
     if (TryCreateTextLookupRanges(contextDocCommentNode) is not { } ranges) return null;
     if (!ranges.InsertRange.IsValid() || !ranges.ReplaceRange.IsValid()) return null;
     
-    return new IntelligentCommentCompletionContext(context, contextDocCommentNode, ranges, docCommentBlock);
+    return new DocCommentCompletionContext(context, contextDocCommentNode, ranges, docCommentBlock);
   }
   
   

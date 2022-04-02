@@ -6,7 +6,6 @@ using JetBrains.Annotations;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Feature.Services.Daemon.Attributes;
 using JetBrains.ReSharper.Psi;
-using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.ReSharper.Psi.Modules;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.ReSharper.Psi.Util;
@@ -365,10 +364,10 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
     ProcessEntityWithContentSegments(exceptionSegment, element);
   }
 
-  private static string Present([NotNull] IDeclaredElement element)
+  private string Present([NotNull] IDeclaredElement element)
   {
     return DeclaredElementPresenter.Format(
-      CSharpLanguage.Instance, XmlDocPresenterUtil.LinkedElementPresentationStyle, element).Text;
+      AdjustedComment.Language, XmlDocPresenterUtil.LinkedElementPresentationStyle, element).Text;
   }
   
   private static string BeautifyCodeEntityId([NotNull] string id)

@@ -20,6 +20,7 @@ using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.References;
 using ReSharperPlugin.IntelligentComments.Comments.Navigation.FindReferences;
 using System;
 using System.Linq;
+using ReSharperPlugin.IntelligentComments.Comments.Completion.CSharp.DocComments;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Navigation;
 
@@ -31,12 +32,11 @@ internal static class NavigationUtil
     var token = TryFindTokenUnderCaret(dataContext, out var caretDocumentOffset);
     if (token is null || !caretDocumentOffset.HasValue) return null;
 
-    return TryExtractAttributeValueFromTag(
-      token, 
-      caretDocumentOffset.Value, 
-      CommentsBuilderUtil.IsInvariantReferenceSourceAttribute);
+    var caretOffset = caretDocumentOffset.Value;
+    return TryExtractAttributeValueFromTag(token, caretOffset, CommentsBuilderUtil.IsInvariantReferenceSourceAttribute) ??
+           TryExtractInvariantNameFromInlinedReference(token, caretOffset);
   }
-  
+
   [CanBeNull]
   private static string TryExtractAttributeValueFromTag(
     [NotNull] ITreeNode tokenUnderCaret,
@@ -75,10 +75,27 @@ internal static class NavigationUtil
     var token = TryFindTokenUnderCaret(dataContext, out var caretDocumentOffset);
     if (token is null || !caretDocumentOffset.HasValue) return null;
 
-    return TryExtractAttributeValueFromTag(
-      token, 
-      caretDocumentOffset.Value, 
-      CommentsBuilderUtil.IsInvariantNameAttribute);
+    var caretOffset = caretDocumentOffset.Value;
+    return TryExtractAttributeValueFromTag(token, caretOffset, CommentsBuilderUtil.IsInvariantNameAttribute);
+  }
+
+  [CanBeNull]
+  private static string TryExtractInvariantNameFromInlinedReference(
+    [NotNull] ITreeNode token, 
+    DocumentOffset caretOffset)
+  {
+    if (InvariantResolveUtil.TryFindAnyCommentNode(token) is not { } commentNode) return null;
+    if (LanguageManager.Instance.TryGetService<InlineReferenceCommentCreator>(token.Language) is not { } creator)
+      return null;
+
+    if (creator.TryExtractInlineReferenceInfo(commentNode) is not { } info) return null;
+    if (caretOffset >= info.InvariantNameOffset &&
+        caretOffset.Offset <= info.InvariantNameOffset.Offset + info.InvariantName.Length)
+    {
+      return info.InvariantName;
+    }
+
+    return null;
   }
 
   public static void FindReferencesToInvariant(

@@ -25,7 +25,7 @@ class CollapsedCommentUiModel(
   editor: Editor
 ) : CommentUiModelBase(comment, project, editor) {
   companion object {
-    private const val placeholder = "Collapsed comment..."
+    private const val placeholder = "..."
     private val logger = getLogger<CollapsedCommentUiModel>()
   }
 

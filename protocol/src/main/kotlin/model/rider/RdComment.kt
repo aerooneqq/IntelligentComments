@@ -22,6 +22,10 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
     field("Range", RdTextRange)
   }
 
+  val RdInlineReferenceComment = structdef extends RdComment {
+    field("ReferenceContentSegment", RdInlineReferenceContentSegment)
+  }
+
   val RdCommentWithOneTextSegment = basestruct extends RdComment {
     field("Text", RdTextSegment)
   }
@@ -202,6 +206,11 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
     field("Reference", RdReference)
     field("Name", RdHighlightedText)
     field("Description", RdDefaultSegmentWithContent)
+  }
+
+  val RdInlineReferenceContentSegment = structdef extends RdContentSegment {
+    field("NameText", RdHighlightedText)
+    field("Description", RdHighlightedText.nullable).optional
   }
 
   val RdHighlightedText = structdef {

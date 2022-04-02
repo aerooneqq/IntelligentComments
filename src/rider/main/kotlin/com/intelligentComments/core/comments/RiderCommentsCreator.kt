@@ -29,6 +29,7 @@ class RiderCommentsCreator(private val project: Project) {
       is RdMultilineComment -> createMultilineComments(rdComment, project, commentRange, highlighter)
       is RdInvalidComment -> createInvalidComment(rdComment, project, commentRange, highlighter)
       is RdDisableInspectionComment -> createDisablingInspectionsComment(rdComment, project, commentRange, highlighter)
+      is RdInlineReferenceComment -> createInlineReferenceComment(rdComment, project, commentRange, highlighter)
       else -> throw IllegalArgumentException(rdComment.javaClass.name)
     }
   }
@@ -84,5 +85,15 @@ class RiderCommentsCreator(private val project: Project) {
   ): DisablingInspectionsComment {
     application.assertIsDispatchThread()
     return DisablingCommentFromRd(rdInvalidComment, project, highlighter, rangeMarker)
+  }
+
+  fun createInlineReferenceComment(
+    rdInlineReferenceComment: RdInlineReferenceComment,
+    project: Project,
+    rangeMarker: RangeMarker,
+    highlighter: RangeHighlighter
+  ): InlineReferenceCommentFromRd {
+    application.assertIsDispatchThread()
+    return InlineReferenceCommentFromRd(rdInlineReferenceComment, project, highlighter, rangeMarker)
   }
 }

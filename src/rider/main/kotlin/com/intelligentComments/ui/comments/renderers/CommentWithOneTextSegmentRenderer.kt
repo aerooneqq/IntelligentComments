@@ -8,7 +8,9 @@ import com.intellij.openapi.editor.markup.TextAttributes
 import java.awt.Graphics
 import java.awt.Rectangle
 
-class CommentWithOneTextSegmentRenderer(private val model: CommentWithOneTextSegmentUiModel) : RendererWithRectangleModel(model) {
+class CommentWithOneTextSegmentRenderer(
+  private val model: CommentWithOneTextSegmentUiModel
+) : RendererWithRectangleModel(model) {
 
   override fun paintInternal(
     editor: Editor,

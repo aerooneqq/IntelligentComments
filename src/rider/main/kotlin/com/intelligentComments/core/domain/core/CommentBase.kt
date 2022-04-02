@@ -27,3 +27,4 @@ interface GroupOfLineComments : CommentWithOneTextSegment
 interface MultilineComment : CommentWithOneTextSegment
 interface InvalidComment : CommentWithOneTextSegment
 interface DisablingInspectionsComment : CommentWithOneTextSegment
+interface InlineReferenceComment : CommentWithOneTextSegment

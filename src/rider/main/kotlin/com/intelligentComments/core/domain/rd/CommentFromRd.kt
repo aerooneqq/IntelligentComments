@@ -2,6 +2,7 @@ package com.intelligentComments.core.domain.rd
 
 import com.intelligentComments.core.comments.RiderCommentsCreator
 import com.intelligentComments.core.domain.core.*
+import com.intelligentComments.core.domain.impl.HighlightedTextImpl
 import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.RangeMarker
@@ -14,6 +15,8 @@ abstract class CommentFromRd(
   rangeMarker: RangeMarker,
   final override val correspondingHighlighter: RangeHighlighter
 ) : UniqueEntityImpl(), CommentBase {
+  protected val commentsCreator = project.service<RiderCommentsCreator>()
+
   final override val parent: Parentable? = null
   final override val identifier: CommentIdentifier = CommentIdentifier.create(project, rangeMarker)
 
@@ -37,8 +40,7 @@ class DocCommentFromRd(
   }
 
   override fun recreate(editor: Editor): CommentBase {
-    val creator = project.service<RiderCommentsCreator>()
-    return creator.createDocComment(rdDocComment, project, identifier.rangeMarker, correspondingHighlighter)
+    return commentsCreator.createDocComment(rdDocComment, project, identifier.rangeMarker, correspondingHighlighter)
   }
 }
 
@@ -59,8 +61,7 @@ class GroupOfLineCommentsFromRd(
 ) : CommentWithOneTextSegmentFromRd(rdComment, project, rangeMarker, highlighter), GroupOfLineComments {
 
   override fun recreate(editor: Editor): CommentBase {
-    val creator = project.service<RiderCommentsCreator>()
-    return creator.createGroupOfLinesComment(rdComment, project, identifier.rangeMarker, correspondingHighlighter)
+    return commentsCreator.createGroupOfLinesComment(rdComment, project, identifier.rangeMarker, correspondingHighlighter)
   }
 }
 
@@ -71,8 +72,7 @@ class MultilineCommentFromRd(
   rangeMarker: RangeMarker
 ) : CommentWithOneTextSegmentFromRd(rdMultilineComment, project, rangeMarker, highlighter), MultilineComment {
   override fun recreate(editor: Editor): CommentBase {
-    val creator = project.service<RiderCommentsCreator>()
-    return creator.createMultilineComments(rdMultilineComment, project, identifier.rangeMarker, correspondingHighlighter)
+    return commentsCreator.createMultilineComments(rdMultilineComment, project, identifier.rangeMarker, correspondingHighlighter)
   }
 }
 
@@ -83,8 +83,7 @@ class InvalidCommentFromRd(
   rangeMarker: RangeMarker
 ) : CommentWithOneTextSegmentFromRd(rdInvalidComment, project, rangeMarker, highlighter), InvalidComment {
   override fun recreate(editor: Editor): CommentBase {
-    val creator = project.service<RiderCommentsCreator>()
-    return creator.createInvalidComment(rdInvalidComment, project, identifier.rangeMarker, correspondingHighlighter)
+    return commentsCreator.createInvalidComment(rdInvalidComment, project, identifier.rangeMarker, correspondingHighlighter)
   }
 }
 
@@ -95,7 +94,40 @@ class DisablingCommentFromRd(
   rangeMarker: RangeMarker
 ) : CommentWithOneTextSegmentFromRd(rdDisableInspectionComment, project, rangeMarker, highlighter), DisablingInspectionsComment {
   override fun recreate(editor: Editor): CommentBase {
-    val creator = project.service<RiderCommentsCreator>()
-    return creator.createDisablingInspectionsComment(rdDisableInspectionComment, project, identifier.rangeMarker, correspondingHighlighter)
+    return commentsCreator.createDisablingInspectionsComment(rdDisableInspectionComment, project, identifier.rangeMarker, correspondingHighlighter)
+  }
+}
+
+class InlineReferenceCommentFromRd(
+  private val rdComment: RdInlineReferenceComment,
+  private val project: Project,
+  highlighter: RangeHighlighter,
+  rangeMarker: RangeMarker
+) : CommentFromRd(project, rangeMarker, highlighter), InlineReferenceComment {
+  override val text: TextContentSegment
+
+
+  init {
+    val parent = this
+    text = object : UniqueEntityImpl(), TextContentSegment {
+      override val highlightedText: HighlightedText
+      override val parent: Parentable = parent
+
+      init {
+        val segment = rdComment.referenceContentSegment
+        var text = segment.nameText.toIdeaHighlightedText(project, this)
+        val description = segment.description
+        if (description != null) {
+          text = text.mergeWith(description.toIdeaHighlightedText(project, this))
+        }
+
+        highlightedText = text
+      }
+    }
+  }
+
+
+  override fun recreate(editor: Editor): CommentBase {
+    return commentsCreator.createInlineReferenceComment(rdComment, project, identifier.rangeMarker, correspondingHighlighter)
   }
 }

@@ -4,6 +4,7 @@ using JetBrains.Util;
 using JetBrains.Util.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Caches.Text.Trie;
 
@@ -97,6 +98,11 @@ public class Trie
     }
 
     var result = new HashSet<string>();
+    var children = node.GetChildren().ToList();
+    if (children.Count == 0 && node.Value != 0)
+    {
+      return new[] { prefix };
+    }
     
     foreach (var (childTransitionChar, child) in node.GetChildren())
     {

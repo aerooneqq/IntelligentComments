@@ -149,4 +149,8 @@ public record ReferenceContentSegment
   IHighlightedText Name,
   IEntityWithContentSegments Description
 ) : IReferenceContentSegment;
-  
+
+public record InlineReferenceContentSegment(
+  IHighlightedText NameText, 
+  IHighlightedText DescriptionText
+) : IInlineReferenceContentSegment;

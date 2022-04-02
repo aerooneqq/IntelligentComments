@@ -9,7 +9,6 @@ import java.awt.Graphics
 import java.awt.Rectangle
 
 class DocCommentRenderer(val model: DocCommentUiModel) : RendererWithRectangleModel(model) {
-
   override fun paintInternal(
     editor: Editor,
     g: Graphics,

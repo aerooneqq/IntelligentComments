@@ -5,12 +5,12 @@ using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.ReSharper.Psi.Tree;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Visitors;
 
-namespace ReSharperPlugin.IntelligentComments.Comments.Completion.CSharp;
+namespace ReSharperPlugin.IntelligentComments.Comments.Completion.CSharp.DocComments;
 
 [Language(typeof(CSharpLanguage))]
-public class CSharpInvariantNameCompletionProvider : ItemsProviderOfSpecificContext<IntelligentCommentCompletionContext>
+public class CSharpInvariantNameCompletionProvider : ItemsProviderOfSpecificContext<DocCommentCompletionContext>
 {
-  protected override bool AddLookupItems(IntelligentCommentCompletionContext context, IItemsCollector collector)
+  protected override bool AddLookupItems(DocCommentCompletionContext context, IItemsCollector collector)
   {
     if (!CommentsBuilderUtil.IsInvariantNameAttribute(context.TryGetContextAttribute())) return false;
     if (context.TryFindDocumentedEntity() is not IDeclaration declaration) return false;

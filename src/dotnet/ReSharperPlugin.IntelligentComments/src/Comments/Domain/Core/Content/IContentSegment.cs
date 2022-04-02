@@ -112,3 +112,9 @@ public interface IReferenceContentSegment : IContentSegment
   [NotNull] IHighlightedText Name { get; }
   [NotNull] IEntityWithContentSegments Description { get; }
 }
+
+public interface IInlineReferenceContentSegment : IContentSegment
+{
+  [NotNull] IHighlightedText NameText { get; }
+  [CanBeNull] IHighlightedText DescriptionText { get; }
+}

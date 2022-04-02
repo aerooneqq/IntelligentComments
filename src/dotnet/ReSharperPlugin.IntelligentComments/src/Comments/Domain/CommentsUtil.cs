@@ -24,8 +24,15 @@ public static class CommentsUtil
       IMultilineComment multilineComment => multilineComment.ToRdComment(),
       IInvalidComment invalidComment => invalidComment.ToRdComment(),
       IDisablingComment disablingComment => disablingComment.ToRdComment(),
+      IInlineReferenceComment comment => comment.ToRdComment(),
       _ => throw new ArgumentOutOfRangeException(commentBase.GetType().Name)
     };
+  }
+
+  [NotNull]
+  private static RdInlineReferenceComment ToRdComment([NotNull] this IInlineReferenceComment comment)
+  {
+    return new RdInlineReferenceComment(comment.Segment.ToRdSegment(), comment.GetRdRange());
   }
 
   [NotNull]
@@ -106,6 +113,7 @@ public static class CommentsUtil
       IImageContentSegment imageContentSegment => imageContentSegment.ToRdImage(),
       IInvariantContentSegment contentSegment => contentSegment.ToRdInvariant(),
       IReferenceContentSegment contentSegment => contentSegment.ToRdReferenceSegment(),
+      IInlineReferenceContentSegment contentSegment => contentSegment.ToRdSegment(),
       _ => throw new ArgumentOutOfRangeException(segment.GetType().Name)
     };
   }
@@ -210,6 +218,13 @@ public static class CommentsUtil
   {
     return new RdSeeAlsoMemberContentSegment(
       seeAlso.DomainReference.ToRdReference(), seeAlso.HighlightedText.ToRdHighlightedText());
+  }
+
+  [NotNull]
+  private static RdInlineReferenceContentSegment ToRdSegment([NotNull] this IInlineReferenceContentSegment segment)
+  {
+    return new RdInlineReferenceContentSegment(
+      segment.NameText.ToRdHighlightedText(), segment.DescriptionText?.ToRdHighlightedText());
   }
 
   [NotNull]

@@ -40,7 +40,7 @@ public record CommentProcessingResult(
     return new CommentProcessingResult(errors, new InvalidComment(textSegment, commentRange));
   }
 
-  [NotNull] public static CommentProcessingResult CreateWithoutErrors([NotNull] ICommentBase comment) =>
+  [NotNull] public static CommentProcessingResult CreateSuccess([NotNull] ICommentBase comment) =>
     new(EmptyList<HighlightingInfo>.Instance, comment);
 }
 
@@ -52,7 +52,8 @@ public interface ICommentsProcessor : IRecursiveElementProcessor
 public abstract class CommentsProcessorBase : ICommentsProcessor
 {
   [NotNull] [ItemNotNull] protected readonly IList<CommentProcessingResult> Comments;
-  [NotNull] [ItemNotNull] protected readonly IList<ITreeNode> VisitedComments;
+  [NotNull] [ItemNotNull] protected readonly IList<ITreeNode> VisitedNodes;
+  [NotNull] protected readonly ILanguageManager LanguageManager;
   protected readonly DaemonProcessKind ProcessKind;
 
   
@@ -62,9 +63,10 @@ public abstract class CommentsProcessorBase : ICommentsProcessor
 
   protected CommentsProcessorBase(DaemonProcessKind processKind)
   {
+    LanguageManager = JetBrains.ReSharper.Psi.LanguageManager.Instance;
     ProcessKind = processKind;
     Comments = new List<CommentProcessingResult>();
-    VisitedComments = new List<ITreeNode>();
+    VisitedNodes = new List<ITreeNode>();
   }
 
   

@@ -22,14 +22,12 @@ public abstract class MultilineCommentBuilderBase : IMultilineCommentsBuilder
   
   [NotNull] private readonly ICSharpCommentNode myCommentNode;
   [NotNull] private readonly IHighlightersProvider myHighlightersProvider;
-  [NotNull] private readonly string myCommentAttributeId;
 
 
   protected MultilineCommentBuilderBase([NotNull] ICSharpCommentNode commentNode)
   {
     myCommentNode = commentNode;
     myHighlightersProvider = LanguageManager.Instance.GetService<IHighlightersProvider>(commentNode.Language);
-    myCommentAttributeId = DefaultLanguageAttributeIds.DOC_COMMENT;
   }
   
   
@@ -47,7 +45,7 @@ public abstract class MultilineCommentBuilderBase : IMultilineCommentsBuilder
     }).Join("\n");
 
     text = CommentsBuilderUtil.PreprocessText(text, null);
-    var highlighter = myHighlightersProvider.TryGetReSharperHighlighter(myCommentAttributeId, text.Length);
+    var highlighter = myHighlightersProvider.TryGetDocCommentHighlighter(text.Length);
     var highlightedText = new HighlightedText(text, highlighter);
     var textSegment = new TextContentSegment(highlightedText);
     var range = myCommentNode.GetDocumentRange();

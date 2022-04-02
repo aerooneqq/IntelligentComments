@@ -38,3 +38,8 @@ public interface IDocComment : ICommentBase
 {
   [NotNull] IIntelligentCommentContent Content { get; }
 }
+
+public interface IInlineReferenceComment : ICommentBase
+{
+  [NotNull] IInlineReferenceContentSegment Segment { get; }
+}

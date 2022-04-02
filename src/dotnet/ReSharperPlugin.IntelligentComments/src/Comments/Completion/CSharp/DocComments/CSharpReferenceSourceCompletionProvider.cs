@@ -6,12 +6,12 @@ using JetBrains.ReSharper.Psi.CSharp;
 using ReSharperPlugin.IntelligentComments.Comments.Caches.Invariants;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Visitors;
 
-namespace ReSharperPlugin.IntelligentComments.Comments.Completion.CSharp;
+namespace ReSharperPlugin.IntelligentComments.Comments.Completion.CSharp.DocComments;
 
 [Language(typeof(CSharpLanguage))]
-public class CSharpReferenceSourceCompletionProvider : ItemsProviderOfSpecificContext<IntelligentCommentCompletionContext>
+public class CSharpReferenceSourceCompletionProvider : ItemsProviderOfSpecificContext<DocCommentCompletionContext>
 {
-  protected override bool AddLookupItems(IntelligentCommentCompletionContext context, IItemsCollector collector)
+  protected override bool AddLookupItems(DocCommentCompletionContext context, IItemsCollector collector)
   {
     var attribute = context.TryGetContextAttribute();
     if (attribute is null || !CommentsBuilderUtil.IsInvariantReferenceSourceAttribute(attribute)) return false;
