@@ -8,7 +8,4 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Visitors.CSh
 [Language(typeof(CSharpLanguage))]
 public class CSharpCommentProblemsCollector : CommentProblemsCollectorBase
 {
-  public CSharpCommentProblemsCollector([NotNull] IDocCommentBlock comment) : base(comment)
-  {
-  }
 }

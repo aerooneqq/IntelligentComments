@@ -13,27 +13,18 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Visitors;
 
 public interface IMultilineCommentsBuilder
 {
-  [NotNull] IMultilineComment Build();
+  [NotNull] IMultilineComment Build([NotNull] ICSharpCommentNode commentNode);
 }
 
 public abstract class MultilineCommentBuilderBase : IMultilineCommentsBuilder
 {
   [NotNull] private const string Star = "*";
-  
-  [NotNull] private readonly ICSharpCommentNode myCommentNode;
-  [NotNull] private readonly IHighlightersProvider myHighlightersProvider;
 
 
-  protected MultilineCommentBuilderBase([NotNull] ICSharpCommentNode commentNode)
+  public IMultilineComment Build([NotNull] ICSharpCommentNode commentNode)
   {
-    myCommentNode = commentNode;
-    myHighlightersProvider = LanguageManager.Instance.GetService<IHighlightersProvider>(commentNode.Language);
-  }
-  
-  
-  public IMultilineComment Build()
-  {
-    var text = CommentsBuilderUtil.PreprocessText(myCommentNode.CommentText, null);
+    var highlightersProvider = LanguageManager.Instance.GetService<IHighlightersProvider>(commentNode.Language);
+    var text = CommentsBuilderUtil.PreprocessText(commentNode.CommentText, null);
     text = text.Split('\n').Select(line =>
     {
       if (line.StartsWith(Star))
@@ -45,10 +36,10 @@ public abstract class MultilineCommentBuilderBase : IMultilineCommentsBuilder
     }).Join("\n");
 
     text = CommentsBuilderUtil.PreprocessText(text, null);
-    var highlighter = myHighlightersProvider.TryGetDocCommentHighlighter(text.Length);
+    var highlighter = highlightersProvider.TryGetDocCommentHighlighter(text.Length);
     var highlightedText = new HighlightedText(text, highlighter);
     var textSegment = new TextContentSegment(highlightedText);
-    var range = myCommentNode.GetDocumentRange();
+    var range = commentNode.GetDocumentRange();
 
     return new MultilineComment(textSegment, range);
   }

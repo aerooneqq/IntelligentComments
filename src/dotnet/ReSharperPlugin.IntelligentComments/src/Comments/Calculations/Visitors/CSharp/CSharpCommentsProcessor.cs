@@ -80,8 +80,8 @@ public class CSharpCommentsProcessor : CommentsProcessorBase
 
     if (ProcessKind is DaemonProcessKind.VISIBLE_DOCUMENT or DaemonProcessKind.SOLUTION_ANALYSIS)
     {
-      var errorsCollector = new CSharpCommentProblemsCollector(docCommentBlock);
-      if (errorsCollector.Run() is { Count: > 0 } errors)
+      var errorsCollector = LanguageManager.GetService<CommentProblemsCollectorBase>(docCommentBlock.Language);
+      if (errorsCollector.Run(docCommentBlock) is { Count: > 0 } errors)
       {
         var range = docCommentBlock.GetDocumentRange();
         Comments.Add(CommentProcessingResult.CreateWithErrors(errors, CSharpLanguage.Instance!, range));
@@ -103,12 +103,10 @@ public class CSharpCommentsProcessor : CommentsProcessorBase
   private void ProcessLineComment([NotNull] ICSharpCommentNode commentNode)
   {
     if (ProcessKind is not DaemonProcessKind.VISIBLE_DOCUMENT) return;
-    
-    var builder = new CSharpGroupOfLineCommentsBuilder(commentNode);
-
     VisitedNodes.Add(commentNode);
 
-    if (builder.Build() is not var (groupOfLineComments, includedCommentsNodes)) return;
+    var builder = LanguageManager.GetService<IGroupOfLineCommentsBuilder>(commentNode.Language);
+    if (builder.Build(commentNode) is not var (groupOfLineComments, includedCommentsNodes)) return;
     
     Comments.Add(CommentProcessingResult.CreateSuccess(groupOfLineComments));
     VisitedNodes.AddRange(includedCommentsNodes);
@@ -118,10 +116,10 @@ public class CSharpCommentsProcessor : CommentsProcessorBase
   {
     if (ProcessKind is not DaemonProcessKind.VISIBLE_DOCUMENT) return;
     
-    var builder = new CSharpMultilineCommentBuilder(commentNode);
     VisitedNodes.Add(commentNode);
     
-    if (builder.Build() is { } multilineComment)
+    var builder = LanguageManager.GetService<IMultilineCommentsBuilder>(commentNode.Language);
+    if (builder.Build(commentNode) is { } multilineComment)
     {
       Comments.Add(CommentProcessingResult.CreateSuccess(multilineComment));
     }
