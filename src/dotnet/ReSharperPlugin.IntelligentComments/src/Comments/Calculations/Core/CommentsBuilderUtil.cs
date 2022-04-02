@@ -265,7 +265,7 @@ internal static class CommentsBuilderUtil
         nameHighlighter = nameHighlighter with
         {
           Attributes = nameHighlighter.Attributes with { FontStyle = FontStyle.Bold },
-          References = new[] { nameReferenceCreator(name) },
+          References = new[] { reference },
           TextAnimation = UnderlineTextAnimation.Instance
         };
       }

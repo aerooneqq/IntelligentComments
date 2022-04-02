@@ -40,25 +40,20 @@ class HighlightersClickHandler(private val project: Project) {
     }
 
     if (singleReference is BackendReference) {
-      val reference = tryGetCodeEntityOrProxyReferenceFrom(highlighter)
+      val reference = tryGetReferenceFrom(highlighter)
       clickDocHost.tryRequestHoverDoc(comment.identifier, reference ?: return, editor, contextPoint)
       return
     }
   }
 
-  private fun tryGetCodeEntityOrProxyReferenceFrom(highlighter: TextHighlighter): Reference? {
-    var reference = highlighter.references.firstOrNull { it is CodeEntityReference }
-    if (reference == null) {
-      reference = highlighter.references.firstOrNull { it is ProxyReference }
-    }
-
-    return reference
+  private fun tryGetReferenceFrom(highlighter: TextHighlighter): Reference? {
+    return highlighter.references.firstOrNull { it is CodeEntityReference || it is ProxyReference || it is InvariantReference }
   }
 
   fun handleCtrlClick(highlighter: TextHighlighter, editor: Editor) {
     application.assertIsDispatchThread()
 
-    val reference = tryGetCodeEntityOrProxyReferenceFrom(highlighter)
+    val reference = tryGetReferenceFrom(highlighter)
     navigationHost.performNavigation(reference ?: return, editor)
   }
 }

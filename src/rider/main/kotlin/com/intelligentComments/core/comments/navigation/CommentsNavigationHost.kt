@@ -17,11 +17,6 @@ class CommentsNavigationHost(private val project: Project) : LifetimedService() 
 
   fun performNavigation(reference: Reference, editor: Editor) {
     val rdReference = reference.toRdReference(project)
-    if (rdReference !is RdCodeEntityReference && rdReference !is RdProxyReference) {
-      logger.error("Expected CodeEntityReference or ProxyReference, got ${reference.javaClass.name}")
-      return
-    }
-
     val textControlId = editor.textControlId
     if (textControlId == null) {
       logger.error("Failed to get textControlId for $editor")

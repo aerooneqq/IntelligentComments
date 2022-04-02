@@ -8,6 +8,7 @@ using JetBrains.RdBackend.Common.Features;
 using JetBrains.RdBackend.Common.Features.Documents;
 using JetBrains.RdBackend.Common.Features.Services;
 using JetBrains.ReSharper.Feature.Services.Navigation;
+using JetBrains.ReSharper.Feature.Services.Navigation.NavigationExtensions;
 using JetBrains.ReSharper.Psi;
 using JetBrains.Rider.Backend.Features.Documents;
 using JetBrains.Rider.Model;
@@ -77,13 +78,22 @@ public class CommentsNavigationHost
 
       var resolveContext = new DomainResolveContextImpl(mySolution, document);
       var resolveResult = reference.Resolve(resolveContext);
-      if (resolveResult is not DeclaredElementDomainResolveResult { DeclaredElement: { } declaredElement })
+
+      switch (resolveResult)
       {
-        LogWarnAndSetNull("Need declared element in order to perform navigation");
-        return;
+        case DeclaredElementDomainResolveResult { DeclaredElement: { } declaredElement }:
+        {
+          myNavigationService.Navigate(declaredElement, RiderMainWindowCenteredPopupWindowContextStub.Source, true);
+          break; 
+        }
+        case InvariantDomainResolveResult invariantResolveResult:
+        {
+          var offset = invariantResolveResult.InvariantDocumentOffset;
+          offset.Document.GetPsiSourceFile(mySolution).Navigate(new TextRange(offset.Offset), true);
+          break;
+        }
       }
-      
-      myNavigationService.Navigate(declaredElement, RiderMainWindowCenteredPopupWindowContextStub.Source, true);
+
       task.Set(Unit.Instance);
     });
 
