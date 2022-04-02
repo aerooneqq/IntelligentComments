@@ -14,12 +14,12 @@ using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.ReSharper.Psi.Xml.Tree;
 using JetBrains.TextControl.DataContext;
 using JetBrains.Util;
-using ReSharperPlugin.IntelligentComments.Comments.Calculations.Visitors;
 using ReSharperPlugin.IntelligentComments.Comments.Completion.CSharp;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.References;
 using ReSharperPlugin.IntelligentComments.Comments.Navigation.FindReferences;
 using System;
 using System.Linq;
+using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core;
 using ReSharperPlugin.IntelligentComments.Comments.Completion.CSharp.DocComments;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Navigation;

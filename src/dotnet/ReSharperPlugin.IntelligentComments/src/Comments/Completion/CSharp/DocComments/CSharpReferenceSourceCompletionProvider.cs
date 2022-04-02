@@ -4,7 +4,7 @@ using JetBrains.ReSharper.Feature.Services.CodeCompletion.Infrastructure.LookupI
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp;
 using ReSharperPlugin.IntelligentComments.Comments.Caches.Invariants;
-using ReSharperPlugin.IntelligentComments.Comments.Calculations.Visitors;
+using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Completion.CSharp.DocComments;
 

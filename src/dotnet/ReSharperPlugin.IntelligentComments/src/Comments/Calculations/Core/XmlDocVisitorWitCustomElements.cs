@@ -5,7 +5,7 @@ using JetBrains.Annotations;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.ReSharper.Psi.Util;
 
-namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Visitors;
+namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core;
 
 public abstract class XmlDocVisitorWitCustomElements : XmlDocVisitor
 {

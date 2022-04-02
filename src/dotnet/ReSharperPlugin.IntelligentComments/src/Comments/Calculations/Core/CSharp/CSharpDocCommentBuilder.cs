@@ -1,9 +1,7 @@
 using JetBrains.Annotations;
-using JetBrains.ReSharper.Psi;
-using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.ReSharper.Psi.Tree;
 
-namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Visitors.CSharp;
+namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.CSharp;
 
 public class CSharpDocCommentBuilder : DocCommentBuilderBase
 {

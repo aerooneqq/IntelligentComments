@@ -5,7 +5,7 @@ using JetBrains.ReSharper.Psi.CSharp.Tree;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Util;
 
-namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Visitors.CSharp;
+namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.CSharp;
 
 /// <summary>
 /// Specification:

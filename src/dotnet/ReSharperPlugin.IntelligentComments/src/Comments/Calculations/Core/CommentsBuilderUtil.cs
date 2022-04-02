@@ -15,7 +15,7 @@ using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl;
 
-namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Visitors;
+namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core;
 
 internal record struct TextProcessingResult(string ProcessedText, int EffectiveLength);
 internal record struct TagInfo([NotNull] IHighlightedText NameText, [NotNull] IHighlightedText DescriptionText);

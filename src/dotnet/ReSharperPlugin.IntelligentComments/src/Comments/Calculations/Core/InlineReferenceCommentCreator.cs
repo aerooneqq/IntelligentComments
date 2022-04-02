@@ -9,7 +9,7 @@ using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.Content;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.References;
 
-namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Visitors;
+namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core;
 
 public abstract class InlineReferenceCommentCreator : IReferenceInCommentFinder
 {

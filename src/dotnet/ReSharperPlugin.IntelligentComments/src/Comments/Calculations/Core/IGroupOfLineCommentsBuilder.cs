@@ -3,7 +3,7 @@ using JetBrains.Annotations;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 
-namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Visitors;
+namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core;
 
 public record struct GroupOfLineCommentsBuildResult(
   [NotNull] IGroupOfLineComments GroupOfLineComments,

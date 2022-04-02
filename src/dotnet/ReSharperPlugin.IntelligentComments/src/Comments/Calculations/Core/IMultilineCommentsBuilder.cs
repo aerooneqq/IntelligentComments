@@ -1,6 +1,5 @@
 using System.Linq;
 using JetBrains.Annotations;
-using JetBrains.ReSharper.Feature.Services.Daemon.Attributes;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
 using JetBrains.ReSharper.Psi.Tree;
@@ -9,7 +8,7 @@ using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.Content;
 
-namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Visitors;
+namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core;
 
 public interface IMultilineCommentsBuilder
 {

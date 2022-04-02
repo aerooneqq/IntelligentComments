@@ -4,7 +4,7 @@ using JetBrains.DocumentModel;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Tree;
 
-namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Visitors;
+namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core;
 
 public record struct ReferenceInFileDescriptor([NotNull] IPsiSourceFile SourceFile, DocumentOffset Offset);
 

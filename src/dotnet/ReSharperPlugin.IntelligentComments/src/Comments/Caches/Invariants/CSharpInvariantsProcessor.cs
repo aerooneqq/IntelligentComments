@@ -10,7 +10,7 @@ using JetBrains.ReSharper.Psi.CSharp.Tree;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.ReSharper.Psi.Xml.Tree;
 using JetBrains.Util;
-using ReSharperPlugin.IntelligentComments.Comments.Calculations.Visitors;
+using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Caches.Invariants;
 
