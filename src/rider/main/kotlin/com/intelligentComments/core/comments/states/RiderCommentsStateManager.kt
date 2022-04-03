@@ -47,6 +47,8 @@ class RiderCommentsStateManager(
 
 
   override fun handleChange(change: Change) {
+    application.assertIsDispatchThread()
+
     if (change is SettingsChange) {
       val displayKindChange = change.changes[settingsProvider.commentsDisplayKind]
       var newValue = displayKindChange?.newValue as? CommentsDisplayKind
@@ -57,14 +59,16 @@ class RiderCommentsStateManager(
       }
 
       if (newValue != null) {
-        updateAllStates { _, editorId ->
-          return@updateAllStates adjustFinalStateWithSettings(newValue, editorId)
+        application.invokeLater {
+          updateAllVisibleStates { _, editorId ->
+            return@updateAllVisibleStates adjustFinalStateWithSettings(newValue, editorId)
+          }
         }
       }
     }
   }
 
-  private fun updateAllStates(newDisplayKindCalculator: (CommentsDisplayKind, EditorId) -> CommentsDisplayKind) {
+  private fun updateAllVisibleStates(newDisplayKindCalculator: (CommentsDisplayKind, EditorId) -> CommentsDisplayKind) {
     for ((editorId, editorStates) in states) {
       for ((_, state) in editorStates.getAllKeysAndValues()) {
         state.setDisplayKind(newDisplayKindCalculator(state.displayKind, editorId))

@@ -202,7 +202,10 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
     commentsStorage.recreateAllCommentsFor(editor)
     for (comment in commentsStorage.getAllComments(editor)) {
       val state = commentsStateManager.getExistingCommentState(editor, comment.identifier) ?: continue
-      doUpdateCommentToMathState(comment.identifier, editor, state)
+
+      application.invokeLater {
+        doUpdateCommentToMathState(comment.identifier, editor, state)
+      }
     }
   }
 
@@ -294,7 +297,7 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
       return CollapsedCommentRenderer(collapsedUiModel)
     }
 
-    val model = comment.createCommentUiModel(project, editor as EditorImpl)
+    val model = comment.createCommentUiModel(project, editor)
     return model.renderer
   }
 }

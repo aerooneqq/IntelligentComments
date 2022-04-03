@@ -6,6 +6,7 @@ import com.intellij.openapi.editor.CustomFoldRegion
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.impl.EditorImpl
 import com.intellij.openapi.project.Project
+import com.intellij.util.application
 import com.jetbrains.rdclient.editors.FrontendTextControlHost
 import com.jetbrains.rdclient.util.idea.LifetimedProjectComponent
 
@@ -21,15 +22,17 @@ class RiderCommentsUpdater(project: Project) : LifetimedProjectComponent(project
 
   override fun handleChange(change: Change) {
     if (change is RenderAffectedCommentChange) {
-      for ((_, editor) in textControlHost.openedEditors) {
-        val folding = controller.getFolding(change.id, editor as EditorImpl)
+      for (editor in textControlHost.visibleEditorsChange.value.newVisible) {
+        val folding = controller.getFolding(change.id, editor)
         updateFolding(editor, folding)
       }
     }
 
     if (change is ThemeChange || change is SettingsChange) {
-      for ((_, editor) in textControlHost.openedEditors) {
-        controller.reRenderAllComments(editor as EditorImpl)
+      for (editor in textControlHost.visibleEditorsChange.value.newVisible) {
+        application.invokeLater {
+          controller.reRenderAllComments(editor)
+        }
       }
     }
   }
