@@ -116,7 +116,7 @@ class RdCommentsModel private constructor(
         private val __RdHighlightedTextNullableSerializer = RdHighlightedText.nullable()
         private val __IntNullableSerializer = FrameworkMarshallers.Int.nullable()
         
-        const val serializationHash = -2066025020440905125L
+        const val serializationHash = 9103058499924564329L
         
     }
     override val serializersOwner: ISerializersOwner get() = RdCommentsModel
@@ -421,7 +421,7 @@ class RdCodeEntityReference_Unknown (
 
 
 /**
- * #### Generated from [RdComment.kt:308]
+ * #### Generated from [RdComment.kt:307]
  */
 data class RdCodeHighlightingRequest (
     val id: Int
@@ -566,7 +566,7 @@ abstract class RdComment (
 
 
 /**
- * #### Generated from [RdComment.kt:312]
+ * #### Generated from [RdComment.kt:311]
  */
 data class RdCommentClickDocRequest (
     val resolveRequest: RdReferenceResolveRequest
@@ -1762,7 +1762,7 @@ class RdGroupOfLineComments (
 
 
 /**
- * #### Generated from [RdComment.kt:294]
+ * #### Generated from [RdComment.kt:293]
  */
 abstract class RdHack (
     val name: String,
@@ -1797,7 +1797,7 @@ abstract class RdHack (
 
 
 /**
- * #### Generated from [RdComment.kt:304]
+ * #### Generated from [RdComment.kt:303]
  */
 class RdHackContentSegment (
     val hack: RdHackWithTickets
@@ -1857,7 +1857,7 @@ class RdHackContentSegment (
 
 
 /**
- * #### Generated from [RdComment.kt:300]
+ * #### Generated from [RdComment.kt:299]
  */
 class RdHackWithTickets (
     val tickets: List<RdTicket>,
@@ -2477,7 +2477,7 @@ class RdInvalidComment (
 
 
 /**
- * #### Generated from [RdComment.kt:327]
+ * #### Generated from [RdComment.kt:326]
  */
 class RdInvalidResolveResult (
     val error: RdHighlightedText?
@@ -2634,7 +2634,7 @@ class RdInvariantReference (
 
 
 /**
- * #### Generated from [RdComment.kt:331]
+ * #### Generated from [RdComment.kt:330]
  */
 class RdInvariantResolveResult (
     val invariant: RdTextInvariant
@@ -3010,7 +3010,7 @@ class RdMultilineComment (
 
 
 /**
- * #### Generated from [RdComment.kt:321]
+ * #### Generated from [RdComment.kt:320]
  */
 data class RdNavigationRequest (
     val resolveRequest: RdReferenceResolveRequest
@@ -3498,7 +3498,7 @@ class RdReferenceContentSegment (
 
 
 /**
- * #### Generated from [RdComment.kt:316]
+ * #### Generated from [RdComment.kt:315]
  */
 data class RdReferenceResolveRequest (
     val reference: RdReference,
@@ -3682,7 +3682,7 @@ class RdRemarksSegment (
 
 
 /**
- * #### Generated from [RdComment.kt:325]
+ * #### Generated from [RdComment.kt:324]
  */
 abstract class RdResolveResult (
 ) : IPrintable {
@@ -4995,7 +4995,7 @@ class RdTextSegment (
 
 
 /**
- * #### Generated from [RdComment.kt:289]
+ * #### Generated from [RdComment.kt:288]
  */
 data class RdTicket (
     val url: String,
@@ -5061,8 +5061,7 @@ data class RdTicket (
  * #### Generated from [RdComment.kt:275]
  */
 abstract class RdToDo (
-    val name: String,
-    val description: RdContentSegments,
+    val text: RdHighlightedText,
     val blockingReferences: List<RdReference>
 ) : IPrintable {
     //companion
@@ -5070,12 +5069,11 @@ abstract class RdToDo (
     companion object : IAbstractDeclaration<RdToDo> {
         override fun readUnknownInstance(ctx: SerializationCtx, buffer: AbstractBuffer, unknownId: RdId, size: Int): RdToDo  {
             val objectStartPosition = buffer.position
-            val name = buffer.readString()
-            val description = RdContentSegments.read(ctx, buffer)
+            val text = RdHighlightedText.read(ctx, buffer)
             val blockingReferences = buffer.readList { ctx.serializers.readPolymorphic<RdReference>(ctx, buffer, RdReference) }
             val unknownBytes = ByteArray(objectStartPosition + size - buffer.position)
             buffer.readByteArrayRaw(unknownBytes)
-            return RdToDo_Unknown(name, description, blockingReferences, unknownId, unknownBytes)
+            return RdToDo_Unknown(text, blockingReferences, unknownId, unknownBytes)
         }
         
         
@@ -5160,7 +5158,7 @@ class RdToDoComment (
 
 
 /**
- * #### Generated from [RdComment.kt:285]
+ * #### Generated from [RdComment.kt:284]
  */
 class RdToDoContentSegment (
     val toDo: RdToDoWithTickets
@@ -5220,16 +5218,14 @@ class RdToDoContentSegment (
 
 
 /**
- * #### Generated from [RdComment.kt:281]
+ * #### Generated from [RdComment.kt:280]
  */
 class RdToDoWithTickets (
     val tickets: List<RdTicket>,
-    name: String,
-    description: RdContentSegments,
+    text: RdHighlightedText,
     blockingReferences: List<RdReference>
 ) : RdToDo (
-    name,
-    description,
+    text,
     blockingReferences
 ) {
     //companion
@@ -5239,16 +5235,14 @@ class RdToDoWithTickets (
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdToDoWithTickets  {
-            val name = buffer.readString()
-            val description = RdContentSegments.read(ctx, buffer)
+            val text = RdHighlightedText.read(ctx, buffer)
             val blockingReferences = buffer.readList { ctx.serializers.readPolymorphic<RdReference>(ctx, buffer, RdReference) }
             val tickets = buffer.readList { RdTicket.read(ctx, buffer) }
-            return RdToDoWithTickets(tickets, name, description, blockingReferences)
+            return RdToDoWithTickets(tickets, text, blockingReferences)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: RdToDoWithTickets)  {
-            buffer.writeString(value.name)
-            RdContentSegments.write(ctx, buffer, value.description)
+            RdHighlightedText.write(ctx, buffer, value.text)
             buffer.writeList(value.blockingReferences) { v -> ctx.serializers.writePolymorphic(ctx, buffer, v) }
             buffer.writeList(value.tickets) { v -> RdTicket.write(ctx, buffer, v) }
         }
@@ -5267,8 +5261,7 @@ class RdToDoWithTickets (
         other as RdToDoWithTickets
         
         if (tickets != other.tickets) return false
-        if (name != other.name) return false
-        if (description != other.description) return false
+        if (text != other.text) return false
         if (blockingReferences != other.blockingReferences) return false
         
         return true
@@ -5277,8 +5270,7 @@ class RdToDoWithTickets (
     override fun hashCode(): Int  {
         var __r = 0
         __r = __r*31 + tickets.hashCode()
-        __r = __r*31 + name.hashCode()
-        __r = __r*31 + description.hashCode()
+        __r = __r*31 + text.hashCode()
         __r = __r*31 + blockingReferences.hashCode()
         return __r
     }
@@ -5287,8 +5279,7 @@ class RdToDoWithTickets (
         printer.println("RdToDoWithTickets (")
         printer.indent {
             print("tickets = "); tickets.print(printer); println()
-            print("name = "); name.print(printer); println()
-            print("description = "); description.print(printer); println()
+            print("text = "); text.print(printer); println()
             print("blockingReferences = "); blockingReferences.print(printer); println()
         }
         printer.print(")")
@@ -5301,14 +5292,12 @@ class RdToDoWithTickets (
 
 
 class RdToDo_Unknown (
-    name: String,
-    description: RdContentSegments,
+    text: RdHighlightedText,
     blockingReferences: List<RdReference>,
     override val unknownId: RdId,
     val unknownBytes: ByteArray
 ) : RdToDo (
-    name,
-    description,
+    text,
     blockingReferences
 ), IUnknownInstance {
     //companion
@@ -5322,8 +5311,7 @@ class RdToDo_Unknown (
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: RdToDo_Unknown)  {
-            buffer.writeString(value.name)
-            RdContentSegments.write(ctx, buffer, value.description)
+            RdHighlightedText.write(ctx, buffer, value.text)
             buffer.writeList(value.blockingReferences) { v -> ctx.serializers.writePolymorphic(ctx, buffer, v) }
             buffer.writeByteArrayRaw(value.unknownBytes)
         }
@@ -5341,8 +5329,7 @@ class RdToDo_Unknown (
         
         other as RdToDo_Unknown
         
-        if (name != other.name) return false
-        if (description != other.description) return false
+        if (text != other.text) return false
         if (blockingReferences != other.blockingReferences) return false
         
         return true
@@ -5350,8 +5337,7 @@ class RdToDo_Unknown (
     //hash code trait
     override fun hashCode(): Int  {
         var __r = 0
-        __r = __r*31 + name.hashCode()
-        __r = __r*31 + description.hashCode()
+        __r = __r*31 + text.hashCode()
         __r = __r*31 + blockingReferences.hashCode()
         return __r
     }
@@ -5359,8 +5345,7 @@ class RdToDo_Unknown (
     override fun print(printer: PrettyPrinter)  {
         printer.println("RdToDo_Unknown (")
         printer.indent {
-            print("name = "); name.print(printer); println()
-            print("description = "); description.print(printer); println()
+            print("text = "); text.print(printer); println()
             print("blockingReferences = "); blockingReferences.print(printer); println()
         }
         printer.print(")")

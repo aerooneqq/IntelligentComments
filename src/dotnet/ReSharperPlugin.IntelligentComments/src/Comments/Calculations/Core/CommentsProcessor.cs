@@ -69,8 +69,16 @@ public abstract class CommentsProcessorBase : ICommentsProcessor
     VisitedNodes = new List<ITreeNode>();
   }
 
+
+  public void ProcessBeforeInterior(ITreeNode element)
+  {
+    if (VisitedNodes.Contains(element)) return;
+    VisitedNodes.Add(element);
+    
+    ProcessBeforeInteriorInternal(element);
+  }
   
-  public abstract void ProcessBeforeInterior(ITreeNode element);
+  public abstract void ProcessBeforeInteriorInternal(ITreeNode element);
   
   public bool InteriorShouldBeProcessed(ITreeNode element) => true;
   public void ProcessAfterInterior(ITreeNode element)

@@ -154,3 +154,8 @@ public record InlineReferenceContentSegment(
   IHighlightedText NameText, 
   IHighlightedText DescriptionText
 ) : IInlineReferenceContentSegment;
+
+
+public record ToDo(IHighlightedText Text, IEnumerable<IDomainReference> BlockingReferences) : IToDo;
+
+public record ToDoContentSegment(IToDo ToDo) : IToDoContentSegment;

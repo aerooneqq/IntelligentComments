@@ -5,6 +5,7 @@ import com.intelligentComments.core.settings.RiderIntelligentCommentsSettingsPro
 import com.intelligentComments.ui.colors.ColorName
 import com.intelligentComments.ui.colors.ColorsProvider
 import com.intellij.openapi.components.service
+import com.intellij.openapi.editor.colors.ColorKey
 import com.intellij.openapi.editor.colors.EditorColorsManager
 import com.intellij.openapi.editor.markup.TextAttributes
 import com.intellij.openapi.project.Project

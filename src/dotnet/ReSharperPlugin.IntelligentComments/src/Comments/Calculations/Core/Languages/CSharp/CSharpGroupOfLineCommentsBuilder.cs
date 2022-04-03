@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
+using JetBrains.Diagnostics.Internal;
 using JetBrains.DocumentModel;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CodeStyle;
@@ -18,8 +19,9 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.Languag
 [Language(typeof(CSharpLanguage))]
 public class CSharpGroupOfLineCommentsBuilder : GroupOfLineCommentsBuilderBase
 {
-  public override GroupOfLineCommentsBuildResult? Build([NotNull] ICSharpCommentNode startCommentNode)
+  public override GroupOfLineCommentsBuildResult? Build(ITreeNode node)
   {
+    if (node is not ICSharpCommentNode startCommentNode) return null;
     if (!CanProcessLineComment(startCommentNode)) return null;
     
     var groupOfLineComments = CollectLineComments(startCommentNode);

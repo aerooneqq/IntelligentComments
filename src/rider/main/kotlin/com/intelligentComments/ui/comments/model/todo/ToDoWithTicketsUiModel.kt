@@ -7,10 +7,9 @@ import com.intelligentComments.ui.comments.model.ExpandableUiModel
 import com.intelligentComments.ui.comments.model.HeaderUiModel
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intelligentComments.ui.comments.model.content.ContentSegmentUiModel
-import com.intelligentComments.ui.comments.model.content.ContentSegmentsUiModel
 import com.intelligentComments.ui.comments.model.content.references.ReferenceUiModel
 import com.intelligentComments.ui.comments.model.tickets.TicketUiModel
-import com.intelligentComments.ui.comments.renderers.todos.ToDoWithTicketsRenderer
+import com.intelligentComments.ui.comments.renderers.NotSupportedForRenderingError
 import com.intelligentComments.ui.core.Renderer
 import com.intelligentComments.ui.util.HashUtil
 import com.intellij.openapi.project.Project
@@ -23,7 +22,6 @@ class ToDoWithTicketsUiModel(
   override var isExpanded: Boolean = true
 
   val toDo = segment.toDo
-  val description = ContentSegmentsUiModel(project, this, toDo.description)
   val headerUiModel = HeaderUiModel(project, this, toDo.name, Colors.ToDoHeaderBackgroundColor, Colors.ToDoHeaderHoveredBackgroundColor)
 
   val blockingReferences = toDo.blockingReferences.map {
@@ -40,7 +38,6 @@ class ToDoWithTicketsUiModel(
   override fun calculateStateHash(): Int {
     val hash = HashUtil.hashCode(
       isExpanded.hashCode(),
-      description.calculateStateHash(),
       headerUiModel.calculateStateHash(),
       HashUtil.calculateHashFor(blockingReferences) { it.calculateStateHash() }
     )
@@ -48,5 +45,5 @@ class ToDoWithTicketsUiModel(
     return HashUtil.hashCode(hash, HashUtil.calculateHashFor(tickets) { it.calculateStateHash() })
   }
 
-  override fun createRenderer(): Renderer = ToDoWithTicketsRenderer(this)
+  override fun createRenderer(): Renderer = throw NotSupportedForRenderingError()
 }

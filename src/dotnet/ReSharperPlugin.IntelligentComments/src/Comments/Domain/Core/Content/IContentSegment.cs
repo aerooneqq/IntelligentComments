@@ -92,7 +92,8 @@ public interface IImageContentSegment : IContentSegment
 
 public interface IToDo
 {
-  [NotNull] string Text { get; }
+  [NotNull] IHighlightedText Text { get; }
+  [NotNull] IEnumerable<IDomainReference> BlockingReferences { get; }
 }
 
 public interface IToDoContentSegment : IContentSegment

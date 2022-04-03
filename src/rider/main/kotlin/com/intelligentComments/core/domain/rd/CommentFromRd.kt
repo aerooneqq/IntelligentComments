@@ -131,3 +131,26 @@ class InlineReferenceCommentFromRd(
     return commentsCreator.createInlineReferenceComment(rdComment, project, identifier.rangeMarker, correspondingHighlighter)
   }
 }
+
+class ToDoCommentFromRd(
+  private val rdComment: RdToDoComment,
+  private val project: Project,
+  highlighter: RangeHighlighter,
+  rangeMarker: RangeMarker
+) : CommentFromRd(project, rangeMarker, highlighter), ToDoComment {
+  override val text: TextContentSegment
+
+
+  init {
+    val highlightedText = rdComment.toDo.toDo.text.toIdeaHighlightedText(project, parent)
+    text = object : UniqueEntityImpl(), TextContentSegment {
+      override val highlightedText: HighlightedText = highlightedText
+      override val parent: Parentable = this
+    }
+  }
+
+
+  override fun recreate(editor: Editor): CommentBase {
+    return commentsCreator.createToDoComment(rdComment, project, identifier.rangeMarker, correspondingHighlighter)
+  }
+}

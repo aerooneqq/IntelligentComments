@@ -25,8 +25,15 @@ public static class CommentsUtil
       IInvalidComment invalidComment => invalidComment.ToRdComment(),
       IDisablingComment disablingComment => disablingComment.ToRdComment(),
       IInlineReferenceComment comment => comment.ToRdComment(),
+      IToDoComment comment => comment.ToRdComment(),
       _ => throw new ArgumentOutOfRangeException(commentBase.GetType().Name)
     };
+  }
+
+  [NotNull]
+  private static RdToDoComment ToRdComment([NotNull] this IToDoComment toDoComment)
+  {
+    return new RdToDoComment(toDoComment.ToDoContentSegment.ToRdContentSegment(), toDoComment.GetRdRange());
   }
 
   [NotNull]
@@ -116,6 +123,18 @@ public static class CommentsUtil
       IInlineReferenceContentSegment contentSegment => contentSegment.ToRdSegment(),
       _ => throw new ArgumentOutOfRangeException(segment.GetType().Name)
     };
+  }
+
+  [NotNull]
+  private static RdToDoContentSegment ToRdContentSegment([NotNull] this IToDoContentSegment segment)
+  {
+    return new RdToDoContentSegment(segment.ToDo.ToRdToDo());
+  }
+
+  [NotNull]
+  private static RdToDoWithTickets ToRdToDo([NotNull] this IToDo toDo)
+  {
+    return new RdToDoWithTickets(new List<RdTicket>(), toDo.Text.ToRdHighlightedText(), new List<RdReference>());
   }
 
   [NotNull]

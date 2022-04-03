@@ -273,8 +273,7 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
   }
 
   val RdToDo = basestruct {
-    field("Name", PredefinedType.string)
-    field("Description", RdContentSegments)
+    field("Text", RdHighlightedText)
     field("BlockingReferences", immutableList(RdReference))
   }
 

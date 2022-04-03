@@ -28,3 +28,4 @@ interface MultilineComment : CommentWithOneTextSegment
 interface InvalidComment : CommentWithOneTextSegment
 interface DisablingInspectionsComment : CommentWithOneTextSegment
 interface InlineReferenceComment : CommentWithOneTextSegment
+interface ToDoComment : CommentWithOneTextSegment
