@@ -11,7 +11,7 @@ using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.Content;
 
-namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core;
+namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DisablingComments;
 
 public record struct InspectionDisablingCommentDto(IEnumerable<string> InspectionNames);
 

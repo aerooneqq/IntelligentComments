@@ -7,11 +7,13 @@ using JetBrains.ReSharper.Psi.CodeStyle;
 using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
 using JetBrains.ReSharper.Psi.Tree;
+using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments;
+using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.MultilineComments;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.Content;
 
-namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.CSharp;
+namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.Languages.CSharp;
 
 [Language(typeof(CSharpLanguage))]
 public class CSharpGroupOfLineCommentsBuilder : GroupOfLineCommentsBuilderBase

@@ -6,8 +6,9 @@ using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
 using JetBrains.ReSharper.Psi.Tree;
+using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.InlineReferenceComments;
 
-namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.CSharp;
+namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.Languages.CSharp;
 
 [Language(typeof(CSharpLanguage))]
 public class CSharpInlineReferenceCommentCreator : InlineReferenceCommentCreator

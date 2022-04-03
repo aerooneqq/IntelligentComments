@@ -4,8 +4,12 @@ using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Util;
+using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DisablingComments;
+using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments;
+using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.InlineReferenceComments;
+using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.MultilineComments;
 
-namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.CSharp;
+namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.Languages.CSharp;
 
 /// <summary>
 /// Specification:

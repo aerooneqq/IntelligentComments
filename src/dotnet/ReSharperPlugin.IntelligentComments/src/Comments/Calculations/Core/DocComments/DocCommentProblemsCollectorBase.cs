@@ -16,7 +16,7 @@ using ReSharperPlugin.IntelligentComments.Comments.Caches.Invariants;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.References;
 
-namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core;
+namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments;
 
 [StaticSeverityHighlighting(Severity.ERROR, typeof(CommentError), OverlapResolve = OverlapResolveKind.ERROR)]
 public class CommentError : IHighlighting

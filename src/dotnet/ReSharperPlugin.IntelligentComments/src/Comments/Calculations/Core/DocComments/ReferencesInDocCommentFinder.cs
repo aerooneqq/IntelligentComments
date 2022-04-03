@@ -4,7 +4,7 @@ using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Util;
 using ReSharperPlugin.IntelligentComments.Comments.Caches.Invariants;
 
-namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core;
+namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments;
 
 [Language(typeof(KnownLanguage))]
 public class ReferencesInDocCommentFinder : IReferenceInCommentFinder

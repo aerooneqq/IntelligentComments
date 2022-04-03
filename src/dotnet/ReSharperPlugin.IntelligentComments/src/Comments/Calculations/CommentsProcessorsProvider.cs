@@ -3,7 +3,7 @@ using JetBrains.ReSharper.Feature.Services.Daemon;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core;
-using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.CSharp;
+using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.Languages.CSharp;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Calculations;
 

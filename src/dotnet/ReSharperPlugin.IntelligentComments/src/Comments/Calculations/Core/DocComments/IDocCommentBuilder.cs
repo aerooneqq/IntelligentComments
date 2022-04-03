@@ -23,7 +23,7 @@ using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.Content;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.References;
 
-namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core;
+namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments;
 
 public interface IDocCommentBuilder
 {
