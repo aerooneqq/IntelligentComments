@@ -20,4 +20,3 @@ class DocCommentRenderer(val model: DocCommentUiModel) : RendererWithRectangleMo
     SectionModelUtil.renderSection(g, targetRegion, editor, rectangleModel, model.contentSection)
   }
 }
-

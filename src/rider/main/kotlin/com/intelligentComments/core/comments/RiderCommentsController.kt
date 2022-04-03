@@ -10,6 +10,7 @@ import com.intelligentComments.core.domain.core.CommentWithOneTextSegment
 import com.intelligentComments.core.domain.core.DocComment
 import com.intelligentComments.core.settings.CommentsDisplayKind
 import com.intelligentComments.core.settings.RiderIntelligentCommentsSettingsProvider
+import com.intelligentComments.core.utils.OnePooledActionWithEdtContinuationAtTimeScheduler
 import com.intelligentComments.ui.comments.model.CollapsedCommentUiModel
 import com.intelligentComments.ui.comments.model.CommentUiModelBase
 import com.intelligentComments.ui.comments.model.CommentWithOneTextSegmentUiModel

@@ -5,6 +5,7 @@ import com.intelligentComments.core.comments.RiderCommentsCreator
 import com.intelligentComments.core.domain.core.CommentBase
 import com.intelligentComments.core.settings.CommentsDisplayKind
 import com.intelligentComments.core.settings.RiderIntelligentCommentsSettingsProvider
+import com.intelligentComments.core.utils.OnePooledActionWithEdtContinuationAtTimeScheduler
 import com.intelligentComments.ui.comments.renderers.DocCommentSwitchRenderModeGutterMark
 import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.Document
@@ -55,7 +56,7 @@ class DocCommentsFoldingAdapter(private val editor: EditorImpl) : FrontendMarkup
   }
 
 
-  private val updateScheduler = HighlightersUpdatesScheduler()
+  private val updateScheduler = OnePooledActionWithEdtContinuationAtTimeScheduler()
   private val rangeMarkerCache = CommentsRangeMarkersCache()
   private val settings = RiderIntelligentCommentsSettingsProvider.getInstance()
 
