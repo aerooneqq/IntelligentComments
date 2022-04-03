@@ -4,10 +4,16 @@ import com.intelligentComments.core.comments.listeners.CommentsEditorsListenersM
 import com.intelligentComments.core.comments.states.CommentState
 import com.intelligentComments.core.comments.states.RiderCommentsStateManager
 import com.intelligentComments.core.comments.storages.DocumentCommentsWithFoldingsStorage
-import com.intelligentComments.core.domain.core.*
+import com.intelligentComments.core.domain.core.CommentBase
+import com.intelligentComments.core.domain.core.CommentIdentifier
+import com.intelligentComments.core.domain.core.CommentWithOneTextSegment
+import com.intelligentComments.core.domain.core.DocComment
 import com.intelligentComments.core.settings.CommentsDisplayKind
 import com.intelligentComments.core.settings.RiderIntelligentCommentsSettingsProvider
-import com.intelligentComments.ui.comments.model.*
+import com.intelligentComments.ui.comments.model.CollapsedCommentUiModel
+import com.intelligentComments.ui.comments.model.CommentUiModelBase
+import com.intelligentComments.ui.comments.model.CommentWithOneTextSegmentUiModel
+import com.intelligentComments.ui.comments.model.DocCommentUiModel
 import com.intelligentComments.ui.comments.renderers.CollapsedCommentRenderer
 import com.intelligentComments.ui.comments.renderers.RendererWithRectangleModel
 import com.intellij.openapi.components.service
@@ -15,7 +21,6 @@ import com.intellij.openapi.editor.CustomFoldRegion
 import com.intellij.openapi.editor.CustomFoldRegionRenderer
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.Editor
-import com.intellij.openapi.editor.impl.EditorImpl
 import com.intellij.openapi.editor.impl.FoldingModelImpl
 import com.intellij.openapi.project.Project
 import com.intellij.psi.impl.source.tree.injected.changesHandler.range
@@ -54,6 +59,8 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
   }
 
   fun getAllFoldingsFor(editor: Editor) = commentsStorage.getAllFoldingsFor(editor)
+
+  fun getAllCommentsFor(editor: Editor) = commentsStorage.getAllComments(editor)
 
   fun addComment(editor: Editor, comment: CommentBase) {
     application.assertIsDispatchThread()
