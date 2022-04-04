@@ -5,16 +5,21 @@ using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Util;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
+using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.Content;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.Content;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.References;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.InlineReferenceComments;
 
-public abstract class InlineReferenceCommentCreator : IReferenceInCommentFinder
+public interface IInlineReferenceCommentCreator : ICommentFromNodeCreator
+{
+}
+
+public abstract class InlineReferenceCommentCreator : IInlineReferenceCommentCreator, IReferenceInCommentFinder
 {
   [CanBeNull]
-  public virtual CommentProcessingResult TryCreate([NotNull] ITreeNode node)
+  public virtual CommentCreationResult? TryCreate([NotNull] ITreeNode node)
   {
     if (TryExtractInlineReferenceInfo(node) is not var (referenceName, descriptionText, _)) return null;
     
@@ -46,8 +51,8 @@ public abstract class InlineReferenceCommentCreator : IReferenceInCommentFinder
 
     var referenceContentSegment = new InlineReferenceContentSegment(name, description);
     var comment = new InlineReferenceComment(referenceContentSegment, node.GetDocumentRange());
-    
-    return CommentProcessingResult.CreateSuccess(comment);
+
+    return new CommentCreationResult(comment, new[] { node });
   }
 
   public abstract InlineReferenceCommentInfo? TryExtractInlineReferenceInfo([NotNull] ITreeNode node);

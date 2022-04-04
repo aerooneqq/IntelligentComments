@@ -13,15 +13,12 @@ using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.Content;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.MultilineComments.ToDoComments;
 
-public record struct ToDoCommentBuildResult([NotNull] IToDoComment Comment, [NotNull] IEnumerable<ITreeNode> CommentNodes);
 
-public interface IToDoCommentBuilder
+public interface IToDoCommentCreator : ICommentFromNodeCreator
 {
-  [CanBeNull] 
-  ToDoCommentBuildResult? TryBuild([NotNull] ITreeNode node);
 }
 
-public abstract class ToDoCommentBuilder : IToDoCommentBuilder
+public abstract class ToDoCommentCreator : IToDoCommentCreator
 {
   [NotNull]
   [ItemNotNull]
@@ -34,18 +31,19 @@ public abstract class ToDoCommentBuilder : IToDoCommentBuilder
   [NotNull] private readonly ILanguageManager myLanguageManager;
 
   
-  protected ToDoCommentBuilder()
+  protected ToDoCommentCreator()
   {
     myLanguageManager = LanguageManager.Instance;
   }
 
 
-  public ToDoCommentBuildResult? TryBuild(ITreeNode node)
+  public CommentCreationResult? TryCreate(ITreeNode node)
   {
-    if (myLanguageManager.TryGetService<IGroupOfLineCommentsBuilder>(node.Language) is not { } builder) return null;
-    if (builder.Build(node) is not { } groupOfLineCommentsBuildResult) return null;
+    if (myLanguageManager.TryGetService<IGroupOfLineCommentsCreator>(node.Language) is not { } builder) return null;
+    if (builder.TryCreate(node) is not { Comment: IGroupOfLineComments groupOfLineComments } buildResult) 
+      return null;
 
-    var text = groupOfLineCommentsBuildResult.GroupOfLineComments.Text.Text.Text;
+    var text = groupOfLineComments.Text.Text.Text;
     var matches = Regex.Matches(text, ourPattern);
     if (matches.Count != 1 || !matches[0].Success || matches[0].Index != 0) return null;
 
@@ -57,8 +55,8 @@ public abstract class ToDoCommentBuilder : IToDoCommentBuilder
     var contentSegment = new EntityWithContentSegments(segments);
     
     var segment = new ToDoContentSegment(new ToDo(contentSegment, EmptyList<IDomainReference>.Enumerable));
-    var toDoComment = new ToDoComment(segment, groupOfLineCommentsBuildResult.GroupOfLineComments.Range);
+    var toDoComment = new ToDoComment(segment, groupOfLineComments.Range);
 
-    return new ToDoCommentBuildResult(toDoComment, groupOfLineCommentsBuildResult.CommentNodes);
+    return buildResult with { Comment = toDoComment };
   }
 }

@@ -1,6 +1,7 @@
 using System;
 using JetBrains.Annotations;
 using JetBrains.ProjectModel;
+using JetBrains.Rd.Tasks;
 using JetBrains.RdBackend.Common.Features;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp;
@@ -26,7 +27,7 @@ public class ReferenceResolverHost
   {
     solution.GetProtocolSolution().GetRdCommentsModel().ResolveReference.Set((_, resolveRequest) =>
     {
-      var result = new JetBrains.Rd.Tasks.RdTask<RdResolveResult>();
+      var result = new RdTask<RdResolveResult>();
       void LogErrorAndSetInvalidResolveResult([NotNull] string message)
       {
         logger.Error(message);

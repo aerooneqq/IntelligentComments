@@ -61,8 +61,8 @@ public class CSharpCommentsProcessor : CommentsProcessorBase
 
   private bool TryProcessToDoComment([NotNull] ITreeNode node)
   {
-    var builder = LanguageManager.TryGetService<IToDoCommentBuilder>(node.Language);
-    if (builder?.TryBuild(node) is not var (comment, nodes)) return false;
+    var builder = LanguageManager.TryGetService<IToDoCommentCreator>(node.Language);
+    if (builder?.TryCreate(node) is not var (comment, nodes)) return false;
     
     VisitedNodes.AddRange(nodes);
     Comments.Add(CommentProcessingResult.CreateSuccess(comment));
@@ -74,7 +74,7 @@ public class CSharpCommentsProcessor : CommentsProcessorBase
     if (LanguageManager.TryGetService<InlineReferenceCommentCreator>(node.Language) is not { } creator) return false;
     if (creator.TryCreate(node) is not { } commentProcessingResult) return false;
     
-    Comments.Add(commentProcessingResult);
+    Comments.Add(CommentProcessingResult.CreateSuccess(commentProcessingResult.Comment));
     return true;
   }
 
@@ -115,8 +115,8 @@ public class CSharpCommentsProcessor : CommentsProcessorBase
   {
     if (ProcessKind is not DaemonProcessKind.VISIBLE_DOCUMENT) return;
 
-    if (LanguageManager.TryGetService<IGroupOfLineCommentsBuilder>(commentNode.Language) is not { } builder) return;
-    if (builder.Build(commentNode) is not var (groupOfLineComments, includedCommentsNodes)) return;
+    var builder = LanguageManager.TryGetService<IGroupOfLineCommentsCreator>(commentNode.Language);
+    if (builder?.TryCreate(commentNode) is not var (groupOfLineComments, includedCommentsNodes)) return;
     
     Comments.Add(CommentProcessingResult.CreateSuccess(groupOfLineComments));
     VisitedNodes.AddRange(includedCommentsNodes);

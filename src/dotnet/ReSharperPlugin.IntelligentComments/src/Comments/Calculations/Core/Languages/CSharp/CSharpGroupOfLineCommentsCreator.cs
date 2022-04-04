@@ -17,9 +17,9 @@ using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.Content;
 namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.Languages.CSharp;
 
 [Language(typeof(CSharpLanguage))]
-public class CSharpGroupOfLineCommentsBuilder : GroupOfLineCommentsBuilderBase
+public class CSharpGroupOfLineCommentsCreator : GroupOfLineCommentsCreatorBase
 {
-  public override GroupOfLineCommentsBuildResult? Build(ITreeNode node)
+  public override CommentCreationResult? TryCreate(ITreeNode node)
   {
     if (node is not ICSharpCommentNode startCommentNode) return null;
     if (!CanProcessLineComment(startCommentNode)) return null;
@@ -27,7 +27,7 @@ public class CSharpGroupOfLineCommentsBuilder : GroupOfLineCommentsBuilderBase
     var groupOfLineComments = CollectLineComments(startCommentNode);
     var highlightedText = CreateTextFrom(startCommentNode, groupOfLineComments);
     var comment = CreateCommentFrom(highlightedText, groupOfLineComments);
-    return new GroupOfLineCommentsBuildResult(comment, groupOfLineComments);
+    return new CommentCreationResult(comment, groupOfLineComments);
   }
 
   [NotNull]
