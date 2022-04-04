@@ -19,7 +19,7 @@ public class ReferencesInDocCommentFinder : IReferenceInCommentFinder
     var references = new LocalList<ReferenceInFileDescriptor>();
     docComment.ExecuteWithReferences(referenceTag =>
     {
-      var invariantReferenceSourceAttr = CommentsBuilderUtil.TryGetInvariantReferenceSourceAttribute(referenceTag);
+      var invariantReferenceSourceAttr = DocCommentsBuilderUtil.TryGetInvariantReferenceSourceAttribute(referenceTag);
       if (invariantReferenceSourceAttr is null || invariantReferenceSourceAttr.UnquotedValue != invariantName) return;
 
       var offset = invariantReferenceSourceAttr.GetDocumentStartOffset();

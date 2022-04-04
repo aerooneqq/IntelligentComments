@@ -24,9 +24,10 @@ public abstract class XmlDocVisitorWitCustomElements : XmlDocVisitor
     VisitedNodes = new HashSet<XmlNode>();
     myAdditionalHandlers = new Dictionary<string, Action<XmlElement>>()
     {
-      [CommentsBuilderUtil.ImageTagName] = VisitImage,
-      [CommentsBuilderUtil.ReferenceTagName] = VisitReference,
-      [CommentsBuilderUtil.InvariantTagName] = VisitInvariant
+      [DocCommentsBuilderUtil.ImageTagName] = VisitImage,
+      [DocCommentsBuilderUtil.ReferenceTagName] = VisitReference,
+      [DocCommentsBuilderUtil.InvariantTagName] = VisitInvariant,
+      [DocCommentsBuilderUtil.TodoTagName] = VisitTodo
     };
   }
   
@@ -40,7 +41,8 @@ public abstract class XmlDocVisitorWitCustomElements : XmlDocVisitor
     }
   }
 
-  protected abstract void VisitImage(XmlElement element);
-  protected abstract void VisitInvariant(XmlElement element);
-  protected abstract void VisitReference(XmlElement element);
+  protected abstract void VisitImage([NotNull] XmlElement element);
+  protected abstract void VisitInvariant([NotNull] XmlElement element);
+  protected abstract void VisitReference([NotNull] XmlElement element);
+  protected abstract void VisitTodo([NotNull] XmlElement element);
 }

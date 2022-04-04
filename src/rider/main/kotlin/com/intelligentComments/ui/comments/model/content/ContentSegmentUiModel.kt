@@ -27,8 +27,10 @@ import com.intelligentComments.ui.comments.model.content.summary.GroupedSummaryU
 import com.intelligentComments.ui.comments.model.content.summary.SummaryUiModel
 import com.intelligentComments.ui.comments.model.content.table.TableContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.text.TextContentSegmentUiModel
+import com.intelligentComments.ui.comments.model.content.todo.GroupedToDoUiModel
 import com.intelligentComments.ui.comments.model.content.todo.ToDoTextContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.value.ValueUiModel
+import com.intelligentComments.ui.comments.model.todo.ToDoWithTicketsUiModel
 import com.intellij.openapi.project.Project
 
 abstract class ContentSegmentUiModel(
@@ -50,21 +52,23 @@ abstract class ContentSegmentUiModel(
         is RemarksSegment -> RemarksUiModel(project, parent, segment)
         is ExceptionSegment -> ExceptionUiModel(project, parent, segment)
         is SeeAlsoSegment -> SeeAlsoUiModel.getFor(project, parent, segment)
-        is GroupedSeeAlsoSegments -> GroupedSeeAlsoUiModel(project, parent, segment)
-        is GroupedReturnSegments -> GroupedReturnUiModel(project, parent, segment)
-        is GroupedParamSegments -> GroupedParamsUiModel(project, parent, segment)
-        is GroupedTypeParamSegments -> GroupedTypeParamsUiModel(project, parent, segment)
-        is GroupedExceptionsSegments -> GroupedExceptionUiModel(project, parent, segment)
-        is GroupedSummarySegments -> GroupedSummaryUiModel(project, parent, segment)
-        is GroupedRemarksSegments -> GroupedRemarksUiModel(project, parent, segment)
-        is GroupedInvariantsSegments -> GroupedInvariantsUiModel(project, parent, segment)
-        is GroupedReferencesSegments -> GroupedReferencesUiModel(project, parent, segment)
+        is GroupedSeeAlsoSegment -> GroupedSeeAlsoUiModel(project, parent, segment)
+        is GroupedReturnSegment -> GroupedReturnUiModel(project, parent, segment)
+        is GroupedParamSegment -> GroupedParamsUiModel(project, parent, segment)
+        is GroupedTypeParamSegment -> GroupedTypeParamsUiModel(project, parent, segment)
+        is GroupedExceptionsSegment -> GroupedExceptionUiModel(project, parent, segment)
+        is GroupedSummarySegment -> GroupedSummaryUiModel(project, parent, segment)
+        is GroupedRemarksSegment -> GroupedRemarksUiModel(project, parent, segment)
+        is GroupedInvariantsSegment -> GroupedInvariantsUiModel(project, parent, segment)
+        is GroupedReferencesSegment -> GroupedReferencesUiModel(project, parent, segment)
+        is GroupedTodosSegment -> GroupedToDoUiModel(project, parent, segment)
         is ExampleContentSegment -> ExampleSegmentUiModel(project, parent, segment)
         is SummaryContentSegment -> SummaryUiModel(project, parent, segment)
         is CodeSegment -> CodeSegmentUiModel(project, parent, segment)
         is ValueSegment -> ValueUiModel(project, parent, segment)
         is ToDoTextContentSegment -> ToDoTextContentSegmentUiModel(project, parent, segment)
         is TextInvariantSegment -> TextInvariantUiModel(project, parent, segment)
+        is ToDoWithTicketsContentSegment -> ToDoWithTicketsUiModel(project, parent, segment)
         is EntityWithContentSegments -> ContentSegmentsUiModel(project, parent, segment.content)
         else -> throw IllegalArgumentException(segment.javaClass.name)
       }

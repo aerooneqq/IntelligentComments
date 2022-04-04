@@ -13,7 +13,7 @@ public class CSharpInvariantNameCompletionProvider : ItemsProviderOfSpecificCont
 {
   protected override bool AddLookupItems(DocCommentCompletionContext context, IItemsCollector collector)
   {
-    if (!CommentsBuilderUtil.IsInvariantNameAttribute(context.TryGetContextAttribute())) return false;
+    if (!DocCommentsBuilderUtil.IsInvariantNameAttribute(context.TryGetContextAttribute())) return false;
     if (context.TryFindDocumentedEntity() is not IDeclaration declaration) return false;
 
     var name = declaration.DeclaredName + "::";

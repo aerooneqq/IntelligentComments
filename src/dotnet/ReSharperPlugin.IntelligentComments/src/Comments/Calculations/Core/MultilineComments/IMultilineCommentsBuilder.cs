@@ -24,7 +24,7 @@ public abstract class MultilineCommentBuilderBase : IMultilineCommentsBuilder
   public IMultilineComment Build([NotNull] ICSharpCommentNode commentNode)
   {
     var highlightersProvider = LanguageManager.Instance.GetService<IHighlightersProvider>(commentNode.Language);
-    var text = CommentsBuilderUtil.PreprocessText(commentNode.CommentText, null);
+    var text = DocCommentsBuilderUtil.PreprocessText(commentNode.CommentText, null);
     text = text.Split('\n').Select(line =>
     {
       if (line.StartsWith(Star))
@@ -32,10 +32,10 @@ public abstract class MultilineCommentBuilderBase : IMultilineCommentsBuilder
         line = line[1..];
       }
 
-      return CommentsBuilderUtil.PreprocessText(line, null);
+      return DocCommentsBuilderUtil.PreprocessText(line, null);
     }).Join("\n");
 
-    text = CommentsBuilderUtil.PreprocessText(text, null);
+    text = DocCommentsBuilderUtil.PreprocessText(text, null);
     var highlighter = highlightersProvider.TryGetDocCommentHighlighter(text.Length);
     var highlightedText = new HighlightedText(text, highlighter);
     var textSegment = new TextContentSegment(highlightedText);

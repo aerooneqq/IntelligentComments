@@ -3,8 +3,8 @@ package com.intelligentComments.ui.comments.model.content.params
 import com.intelligentComments.core.domain.core.ContentProcessingStrategy
 import com.intelligentComments.core.domain.core.ContentSegments
 import com.intelligentComments.core.domain.core.Parentable
-import com.intelligentComments.core.domain.impl.GroupedParamSegments
-import com.intelligentComments.core.domain.impl.GroupedTypeParamSegments
+import com.intelligentComments.core.domain.impl.GroupedParamSegment
+import com.intelligentComments.core.domain.impl.GroupedTypeParamSegment
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intelligentComments.ui.comments.model.content.GroupedContentUiModel
 import com.intelligentComments.ui.comments.model.content.getFirstLevelHeader
@@ -16,7 +16,7 @@ import com.intellij.openapi.project.Project
 class GroupedParamsUiModel(
   project: Project,
   parent: UiInteractionModelBase?,
-  model: GroupedParamSegments
+  model: GroupedParamSegment
 ) : GroupedContentUiModel(
   project,
   parent,
@@ -43,7 +43,7 @@ private const val groupedTypeParamsSectionName = "Type parameters"
 class GroupedTypeParamsUiModel(
   project: Project,
   parent: UiInteractionModelBase?,
-  model: GroupedTypeParamSegments
+  model: GroupedTypeParamSegment
 ) : GroupedContentUiModel(
   project,
   parent,

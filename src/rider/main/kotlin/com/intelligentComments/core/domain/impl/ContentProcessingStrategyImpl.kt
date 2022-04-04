@@ -24,6 +24,7 @@ class ContentProcessingStrategyImpl : ContentProcessingStrategy {
     groupSummaryIfNeeded(settings, segments)
     groupRemarksIfNeeded(settings, segments)
 
+    groupTodos(segments)
     groupInvariants(segments)
     groupReferences(segments)
 
@@ -38,7 +39,7 @@ class ContentProcessingStrategyImpl : ContentProcessingStrategy {
     segments: MutableList<ContentSegment>
   ) {
     if (!settings.groupSeeAlso.value) return
-    groupSegmentsOfType<SeeAlsoSegment>(segments) { GroupedSeeAlsoSegments(it, segments.first().parent) }
+    groupSegmentsOfType<SeeAlsoSegment>(segments) { GroupedSeeAlsoSegment(it, segments.first().parent) }
   }
 
   private inline fun <reified T : ContentSegment> groupSegmentsOfType(
@@ -60,7 +61,13 @@ class ContentProcessingStrategyImpl : ContentProcessingStrategy {
     segments: MutableList<ContentSegment>
   ) {
     if (!settings.groupReturns.value) return
-    groupSegmentsOfType<ReturnSegment>(segments) { GroupedReturnSegments(it, segments.first().parent) }
+    groupSegmentsOfType<ReturnSegment>(segments) { GroupedReturnSegment(it, segments.first().parent) }
+  }
+
+  private fun groupTodos(
+    segments: MutableList<ContentSegment>
+  ) {
+    groupSegmentsOfType<ToDoWithTicketsContentSegment>(segments) { GroupedTodosSegment(it, segments.first().parent) }
   }
 
   private fun groupParamsIfNeeded(
@@ -68,7 +75,7 @@ class ContentProcessingStrategyImpl : ContentProcessingStrategy {
     segments: MutableList<ContentSegment>
   ) {
     if (!settings.groupParams.value) return
-    groupSegmentsOfType<ParameterSegment>(segments) { GroupedParamSegments(it, segments.first().parent) }
+    groupSegmentsOfType<ParameterSegment>(segments) { GroupedParamSegment(it, segments.first().parent) }
   }
 
   private fun groupTypeParamsIfNeeded(
@@ -76,7 +83,7 @@ class ContentProcessingStrategyImpl : ContentProcessingStrategy {
     segments: MutableList<ContentSegment>
   ) {
     if (!settings.groupParams.value) return
-    groupSegmentsOfType<TypeParamSegment>(segments) { GroupedTypeParamSegments(it, segments.first().parent) }
+    groupSegmentsOfType<TypeParamSegment>(segments) { GroupedTypeParamSegment(it, segments.first().parent) }
   }
 
   private fun groupExceptionsIfNeeded(
@@ -84,7 +91,7 @@ class ContentProcessingStrategyImpl : ContentProcessingStrategy {
     segments: MutableList<ContentSegment>
   ) {
     if (!settings.groupExceptions.value) return
-    groupSegmentsOfType<ExceptionSegment>(segments) { GroupedExceptionsSegments(it, segments.first().parent) }
+    groupSegmentsOfType<ExceptionSegment>(segments) { GroupedExceptionsSegment(it, segments.first().parent) }
   }
 
   private fun groupSummaryIfNeeded(
@@ -92,7 +99,7 @@ class ContentProcessingStrategyImpl : ContentProcessingStrategy {
     segments: MutableList<ContentSegment>
   ) {
     if (!settings.groupSummaries.value) return
-    groupSegmentsOfType<SummaryContentSegment>(segments) { GroupedSummarySegments(it, segments.first().parent) }
+    groupSegmentsOfType<SummaryContentSegment>(segments) { GroupedSummarySegment(it, segments.first().parent) }
   }
 
   private fun groupRemarksIfNeeded(
@@ -100,19 +107,19 @@ class ContentProcessingStrategyImpl : ContentProcessingStrategy {
     segments: MutableList<ContentSegment>
   ) {
     if (!settings.groupRemarks.value) return
-    groupSegmentsOfType<RemarksSegment>(segments) { GroupedRemarksSegments(it, segments.first().parent) }
+    groupSegmentsOfType<RemarksSegment>(segments) { GroupedRemarksSegment(it, segments.first().parent) }
   }
 
   private fun groupInvariants(
     segments: MutableList<ContentSegment>
   ) {
-    groupSegmentsOfType<InvariantSegment>(segments) { GroupedInvariantsSegments(it, segments.first().parent) }
+    groupSegmentsOfType<InvariantSegment>(segments) { GroupedInvariantsSegment(it, segments.first().parent) }
   }
 
   private fun groupReferences(
     segments: MutableList<ContentSegment>
   ) {
-    groupSegmentsOfType<ReferenceContentSegment>(segments) { GroupedReferencesSegments(it, segments.first().parent )}
+    groupSegmentsOfType<ReferenceContentSegment>(segments) { GroupedReferencesSegment(it, segments.first().parent )}
   }
 
   private fun removeEmptyRowsAndColsFromTables(
@@ -145,7 +152,7 @@ class ContentProcessingStrategyImpl : ContentProcessingStrategy {
   }
 
   private fun removeAllSegmentsButSummaries(segments: MutableList<ContentSegment>) {
-    segments.removeAll { !(it is SummaryContentSegment || it is GroupedSummarySegments) }
+    segments.removeAll { !(it is SummaryContentSegment || it is GroupedSummarySegment) }
   }
 
   private fun addEmptyContentSegmentIfNeeded(segments: MutableList<ContentSegment>) {

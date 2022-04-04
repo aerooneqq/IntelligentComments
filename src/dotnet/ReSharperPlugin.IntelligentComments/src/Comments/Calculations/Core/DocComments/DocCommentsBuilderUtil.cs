@@ -20,16 +20,40 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComm
 internal record struct TextProcessingResult(string ProcessedText, int EffectiveLength);
 internal record struct TagInfo([NotNull] IHighlightedText NameText, [NotNull] IHighlightedText DescriptionText);
 
-internal static class CommentsBuilderUtil
+internal static class DocCommentsBuilderUtil
 {
   [NotNull] internal const string ImageTagName = "image";
   [NotNull] internal const string ImageSourceAttrName = "source";
   [NotNull] internal const string ReferenceTagName = "reference";
+  [NotNull] internal const string TodoTagName = "todo";
+  [NotNull] internal const string DescriptionTagName = "description";
+  [NotNull] internal const string TicketsSectionTagName = "tickets";
+  [NotNull] internal const string TicketTagName = "ticket";
+
+  [NotNull] internal const string TicketSourceAttrName = "source";
   [NotNull] internal const string InvariantReferenceSourceAttrName = "invariant";
   [NotNull] internal const string InvariantTagName = "invariant";
   [NotNull] internal const string InvariantNameAttrName = "name";
   [NotNull] internal const string InheritDocTagName = "inheritdoc";
   [NotNull] internal const string CRef = "cref";
+
+  internal static HashSet<string> PossibleTicketAttributes { get; } = new()
+  {
+    TicketSourceAttrName
+  };
+
+  [NotNull]
+  internal static HashSet<string> PossibleInnerFirstLevelTagsOfTodo { get; } = new()
+  {
+    DescriptionTagName,
+    TicketsSectionTagName
+  };
+
+  [NotNull]
+  internal static HashSet<string> PossibleInnerFirstLevelTagsOfTicketsSection { get; } = new()
+  {
+    TicketTagName
+  };
 
   [NotNull] 
   internal static HashSet<string> PossibleReferenceTagAttributes { get; } = new() 

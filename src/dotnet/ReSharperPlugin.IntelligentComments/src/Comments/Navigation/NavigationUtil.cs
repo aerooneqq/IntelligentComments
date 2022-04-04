@@ -35,7 +35,7 @@ internal static class NavigationUtil
     if (token is null || !caretDocumentOffset.HasValue) return null;
 
     var caretOffset = caretDocumentOffset.Value;
-    return TryExtractAttributeValueFromTag(token, caretOffset, CommentsBuilderUtil.IsInvariantReferenceSourceAttribute) ??
+    return TryExtractAttributeValueFromTag(token, caretOffset, DocCommentsBuilderUtil.IsInvariantReferenceSourceAttribute) ??
            TryExtractInvariantNameFromInlinedReference(token, caretOffset);
   }
 
@@ -78,7 +78,7 @@ internal static class NavigationUtil
     if (token is null || !caretDocumentOffset.HasValue) return null;
 
     var caretOffset = caretDocumentOffset.Value;
-    return TryExtractAttributeValueFromTag(token, caretOffset, CommentsBuilderUtil.IsInvariantNameAttribute);
+    return TryExtractAttributeValueFromTag(token, caretOffset, DocCommentsBuilderUtil.IsInvariantNameAttribute);
   }
 
   [CanBeNull]

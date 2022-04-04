@@ -49,6 +49,8 @@ object Colors {
   val TableHeaderCellBackgroundColor = ColorName("table.header.cell.background.color")
 
   val CodeLeftLineBackgroundColor = ColorName("code.left.line.background.color")
+
+  val TodoColor = ColorName("todo.text.color")
 }
 
 interface ColorsProvider {

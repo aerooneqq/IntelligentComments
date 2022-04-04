@@ -3,6 +3,7 @@ package com.intelligentComments.ui.comments.model.content
 import com.intelligentComments.core.domain.core.*
 import com.intelligentComments.core.domain.impl.HighlightedTextImpl
 import com.intelligentComments.core.settings.RiderIntelligentCommentsSettingsProvider
+import com.intelligentComments.ui.colors.ColorName
 import com.intelligentComments.ui.colors.Colors
 import com.intelligentComments.ui.colors.ColorsProvider
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
@@ -80,11 +81,13 @@ fun getSecondLevelHeader(project: Project, text: String, parent: Parentable): Hi
 fun getFirstLevelHeader(
   project: Project,
   text: String,
-  parent: Parentable
+  parent: Parentable,
+  explicitlySetColor: ColorName? = null
 ): HighlightedText {
   val adjustedText = "$text:"
   val colorsProvider = project.service<ColorsProvider>()
-  val textColor = colorsProvider.getColorFor(Colors.TextInSectionsHeadersColor)
+  val colorKey = explicitlySetColor ?: Colors.TextInSectionsHeadersColor
+  val textColor = colorsProvider.getColorFor(colorKey)
   val attributes = TextAttributesImpl(false, 600f, Font.PLAIN)
   val highlighter = CommonsHighlightersFactory.createHighlighter(adjustedText.length - 1, textColor, attributes)
 

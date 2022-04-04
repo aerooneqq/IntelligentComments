@@ -56,7 +56,7 @@ internal static class InvariantResolveUtil
         DomainResolveResult result = EmptyDomainResolveResult.Instance;
         docCommentBlock.ExecuteActionWithInvariants(element =>
         {
-          var currentInvariantName = CommentsBuilderUtil.TryGetInvariantName(element);
+          var currentInvariantName = DocCommentsBuilderUtil.TryGetInvariantName(element);
           var provider = LanguageManager.Instance.GetService<IHighlightersProvider>(primaryPsiFile.Language);
           var invariant = DocCommentBuilderBase.TryBuildInvariantContentSegment(element, context.Solution, provider, false);
         

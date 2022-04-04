@@ -1,7 +1,7 @@
 package com.intelligentComments.ui.comments.model.content.references
 
 import com.intelligentComments.core.domain.core.*
-import com.intelligentComments.core.domain.impl.GroupedReferencesSegments
+import com.intelligentComments.core.domain.impl.GroupedReferencesSegment
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intelligentComments.ui.comments.model.content.GroupedContentUiModel
 import com.intelligentComments.ui.comments.model.content.getFirstLevelHeader
@@ -13,7 +13,7 @@ import com.intellij.openapi.project.Project
 class GroupedReferencesUiModel(
   project: Project,
   parent: UiInteractionModelBase?,
-  model: GroupedReferencesSegments
+  model: GroupedReferencesSegment
 ) : GroupedContentUiModel(
   project,
   parent,
@@ -24,8 +24,10 @@ class GroupedReferencesUiModel(
       override val segments: Collection<ContentSegment> = listOf(object : UniqueEntityImpl(), TextContentSegment {
         override val parent: Parentable = model
         override val highlightedText: HighlightedText = mergeSegmentsTexts(
-          model.segments, this, { extractTextFromReference(it) }
-        )
+          model.segments, this
+        ) {
+          extractTextFromReference(it)
+        }
       })
 
       override fun processSegments(strategy: ContentProcessingStrategy) {

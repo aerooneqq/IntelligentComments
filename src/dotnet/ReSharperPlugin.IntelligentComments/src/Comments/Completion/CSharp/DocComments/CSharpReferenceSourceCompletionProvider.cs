@@ -15,9 +15,9 @@ public class CSharpReferenceSourceCompletionProvider : ItemsProviderOfSpecificCo
   protected override bool AddLookupItems(DocCommentCompletionContext context, IItemsCollector collector)
   {
     var attribute = context.TryGetContextAttribute();
-    if (attribute is null || !CommentsBuilderUtil.IsInvariantReferenceSourceAttribute(attribute)) return false;
+    if (attribute is null || !DocCommentsBuilderUtil.IsInvariantReferenceSourceAttribute(attribute)) return false;
 
-    var prefix = CommentsBuilderUtil.PreprocessText(attribute.UnquotedValue, null);
+    var prefix = DocCommentsBuilderUtil.PreprocessText(attribute.UnquotedValue, null);
     var cache = context.GetSolution().GetComponent<InvariantsNamesCache>();
     foreach (var name in cache.GetAllNamesFor(prefix))
     {

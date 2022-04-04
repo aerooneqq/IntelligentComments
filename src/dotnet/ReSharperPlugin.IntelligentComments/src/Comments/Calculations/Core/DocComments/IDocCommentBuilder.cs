@@ -11,6 +11,7 @@ using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.ReSharper.Psi.Util;
 using JetBrains.Rider.Model;
 using JetBrains.Util;
+using JetBrains.Util.Collections;
 using JetBrains.Util.Logging;
 using ReSharperPlugin.IntelligentComments.Comments.Caches;
 using ReSharperPlugin.IntelligentComments.Comments.Caches.Invariants;
@@ -75,7 +76,7 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
   {
     try
     {
-      if (CommentsBuilderUtil.TryGetAdjustedComment(InitialComment) is not { } commentBlock) return null;
+      if (DocCommentsBuilderUtil.TryGetAdjustedComment(InitialComment) is not { } commentBlock) return null;
       
       AdjustedComment = commentBlock;
       return ProcessAdjustedComment();
@@ -90,7 +91,7 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
   [CanBeNull]
   private DocComment ProcessAdjustedComment()
   {
-    if (CommentsBuilderUtil.TryGetXml(AdjustedComment) is not { } xmlNode) return null;
+    if (DocCommentsBuilderUtil.TryGetXml(AdjustedComment) is not { } xmlNode) return null;
     
     var topmostContentSegments = ContentSegmentsMetadata.CreateEmpty();
     using (new WithPushedToStackContentSegments(myContentSegmentsStack, topmostContentSegments, ourLogger))
@@ -110,13 +111,13 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
   
   protected override void VisitImage(XmlElement element)
   {
-    if (element.GetAttributeNode(CommentsBuilderUtil.ImageSourceAttrName) is not { } sourceAttribute) return;
+    if (element.GetAttributeNode(DocCommentsBuilderUtil.ImageSourceAttrName) is not { } sourceAttribute) return;
     var path = FileSystemPath.TryParse(sourceAttribute.Value);
     if (path == FileSystemPath.Empty) return;
 
     var reference = new FileDomainReference(path);
     IHighlightedText description = HighlightedText.EmptyText;
-    if (CommentsBuilderUtil.ElementHasOneTextChild(element, out var text))
+    if (DocCommentsBuilderUtil.ElementHasOneTextChild(element, out var text))
     {
       description = new HighlightedText(text);
     }
@@ -144,12 +145,12 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
     [NotNull] IHighlightersProvider highlightersProvider,
     bool checkValidity)
   {
-    const string attributeName = CommentsBuilderUtil.InvariantNameAttrName;
+    const string attributeName = DocCommentsBuilderUtil.InvariantNameAttrName;
     
     IDomainReference CreateReference([NotNull] string name) => new InvariantDomainReference(name);
     bool IsReferenceValid(IDomainReference reference) => checkValidity && CheckInvariantReferenceIsValid(reference, solution);
 
-    var tagInfo = CommentsBuilderUtil.TryExtractTagInfo(
+    var tagInfo = DocCommentsBuilderUtil.TryExtractTagInfo(
       element, attributeName, highlightersProvider, CreateReference, IsReferenceValid);
     
     if (tagInfo is not var (nameText, descriptionText)) return null;
@@ -176,12 +177,12 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
   {
     if (!IsTopmostContext()) return;
     
-    const string attributeName = CommentsBuilderUtil.InvariantReferenceSourceAttrName;
+    const string attributeName = DocCommentsBuilderUtil.InvariantReferenceSourceAttrName;
     
     IDomainReference CreateReference([NotNull] string name) => new InvariantDomainReference(name);
     bool IsReferenceValid(IDomainReference reference) => CheckInvariantReferenceIsValid(reference, myDomainResolveContext.Solution);
     
-    var tagInfo = CommentsBuilderUtil.TryExtractTagInfo(
+    var tagInfo = DocCommentsBuilderUtil.TryExtractTagInfo(
       element, attributeName, myHighlightersProvider, CreateReference, IsReferenceValid);
     
     if (tagInfo is not var (nameText, descriptionText)) return;
@@ -217,7 +218,7 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
   public override void VisitC(XmlElement element)
   {
     VisitedNodes.Add(element);
-    if (CommentsBuilderUtil.ElementHasOneTextChild(element, out var value))
+    if (DocCommentsBuilderUtil.ElementHasOneTextChild(element, out var value))
     {
       (value, var length) = PreprocessTextWithContext(value, element);
       var highlighter = myHighlightersProvider.GetCXmlElementHighlighter(0, length);
@@ -231,7 +232,7 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
   
   private static TextProcessingResult PreprocessTextWithContext([NotNull] string text, [NotNull] XmlNode context)
   {
-    return CommentsBuilderUtil.PreprocessTextWithContext(text, context);
+    return DocCommentsBuilderUtil.PreprocessTextWithContext(text, context);
   }
 
   private void AddHighlightedText([NotNull] string text, [NotNull] TextHighlighter highlighter)
@@ -343,7 +344,7 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
   {
     VisitedNodes.Add(element);
     var exceptionName = UndefinedParam;
-    if (element.GetAttributeNode(CommentsBuilderUtil.CRef) is { } attribute)
+    if (element.GetAttributeNode(DocCommentsBuilderUtil.CRef) is { } attribute)
     {
       VisitedNodes.Add(attribute);
       exceptionName = attribute.Value;
@@ -428,7 +429,7 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
     [NotNull] Func<string, string, ISeeAlsoContentSegment> factory)
   {
     var attributeValue = element.GetAttribute(attributeName);
-    var innerText = CommentsBuilderUtil.ElementHasOneTextChild(element, out var text) ? text : null;
+    var innerText = DocCommentsBuilderUtil.ElementHasOneTextChild(element, out var text) ? text : null;
 
     var seeAlso = factory.Invoke(attributeValue, innerText);
     if (IsTopmostContext())
@@ -446,7 +447,7 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
 
   private void VisitSeeAlsoMember([NotNull] XmlElement element)
   {
-    ProcessSeeAlso(element, CommentsBuilderUtil.CRef, (referenceRawText, description) =>
+    ProcessSeeAlso(element, DocCommentsBuilderUtil.CRef, (referenceRawText, description) =>
     {
       var reference = CreateCodeEntityReference(referenceRawText);
       
@@ -469,6 +470,7 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
     });
   }
   
+  [NotNull]
   private IDomainReference CreateCodeEntityReference([NotNull] string rawValue)
   {
     var realReference = new XmlDocCodeEntityDomainReference(rawValue, myPsiServices, myPsiModule);
@@ -504,7 +506,7 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
     }
 
     IDomainReference domainReference = null;
-    if (element.GetAttribute(CommentsBuilderUtil.CRef) is { } cRefAttrValue && !cRefAttrValue.IsEmpty())
+    if (element.GetAttribute(DocCommentsBuilderUtil.CRef) is { } cRefAttrValue && !cRefAttrValue.IsEmpty())
     {
       domainReference = CreateCodeEntityReference(cRefAttrValue);
     }
@@ -525,7 +527,7 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
       content = Present(declaredElement);
     }
     
-    if (CommentsBuilderUtil.ElementHasOneTextChild(element, out var text))
+    if (DocCommentsBuilderUtil.ElementHasOneTextChild(element, out var text))
     {
       content = text;
     }
@@ -638,7 +640,7 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
   public override void VisitCode(XmlElement element)
   {
     VisitedNodes.Add(element);
-    if (CommentsBuilderUtil.ElementHasOneTextChild(element, out var text))
+    if (DocCommentsBuilderUtil.ElementHasOneTextChild(element, out var text))
     {
       if (CanInlineCode(text))
       {
@@ -655,6 +657,23 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
   private static bool CanInlineCode([NotNull] string rawCodeText)
   {
     return !rawCodeText.Contains("\n");
+  }
+  
+  protected override void VisitTodo(XmlElement element)
+  {
+    if (!IsTopmostContext()) return;
+    
+    var children = element.ChildElements().ToList();
+    var ticketSection = children.FirstOrDefault(child => child.Name == DocCommentsBuilderUtil.TicketsSectionTagName);
+    var descriptionSection = children.FirstOrDefault(child => child.Name == DocCommentsBuilderUtil.DescriptionTagName);
+    if (descriptionSection is null) return;
+
+    var descriptionContent = new EntityWithContentSegments(ContentSegments.CreateEmpty());
+    ProcessEntityWithContentSegments(descriptionContent, descriptionSection, addToTopmostSegments: false);
+    
+    var todo = new ToDoWithTickets(descriptionContent, EnumerableCollection<IDomainReference>.Empty, EmptyList<ITicket>.Enumerable);
+    var todoContentSegment = new ToDoContentSegment(todo);
+    ExecuteWithTopmostContentSegments(metadata => metadata.ContentSegments.Segments.Add(todoContentSegment));
   }
 
   private record CodeFragment(IHighlightedText PreliminaryText, int HighlightingRequestId);

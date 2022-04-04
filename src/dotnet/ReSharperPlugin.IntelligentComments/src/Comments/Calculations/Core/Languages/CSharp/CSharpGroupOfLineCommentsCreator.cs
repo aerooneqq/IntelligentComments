@@ -35,8 +35,8 @@ public class CSharpGroupOfLineCommentsCreator : GroupOfLineCommentsCreatorBase
     [NotNull] ICSharpCommentNode startCommentNode,
     [NotNull] IReadOnlyList<ICSharpCommentNode> commentNodes)
   {
-    var texts = commentNodes.Select(comment => CommentsBuilderUtil.PreprocessText(comment.CommentText, null));
-    var text = CommentsBuilderUtil.PreprocessText(string.Join("\n", texts), null);
+    var texts = commentNodes.Select(comment => DocCommentsBuilderUtil.PreprocessText(comment.CommentText, null));
+    var text = DocCommentsBuilderUtil.PreprocessText(string.Join("\n", texts), null);
 
     var highlightersProvider = LanguageManager.Instance.GetService<IHighlightersProvider>(startCommentNode.Language);
     var highlighter = highlightersProvider?.TryGetDocCommentHighlighter(text.Length);

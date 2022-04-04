@@ -7,14 +7,13 @@ import com.intelligentComments.ui.comments.renderers.VerticalSectionWithHeaderRe
 import com.intelligentComments.ui.core.RectangleModelBuildContext
 import com.intelligentComments.ui.core.RectangleModelBuildContributor
 import com.intelligentComments.ui.core.RectanglesModel
-import com.intelligentComments.ui.core.Renderer
 import com.intelligentComments.ui.util.ContentSegmentsUtil
 import com.intelligentComments.ui.util.RenderAdditionalInfo
 import com.intellij.openapi.editor.Editor
 import java.awt.Graphics
 import java.awt.Rectangle
 
-interface SegmentsRenderer : Renderer, RectangleModelBuildContributor
+interface SegmentsRenderer : SegmentRenderer, RectangleModelBuildContributor
 
 class DefaultSegmentsRenderer(
   private val section: SectionUiModel

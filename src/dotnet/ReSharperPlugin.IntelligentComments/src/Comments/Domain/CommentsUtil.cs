@@ -122,6 +122,8 @@ public static class CommentsUtil
       IReferenceContentSegment contentSegment => contentSegment.ToRdReferenceSegment(),
       IInlineReferenceContentSegment contentSegment => contentSegment.ToRdSegment(),
       IToDoTextContentSegment contentSegment => contentSegment.ToRdContentSegment(),
+      IToDoContentSegment contentSegment => contentSegment.ToRdContentSegment(),
+      IEntityWithContentSegments contentSegment => contentSegment.ToRdContentSegment(),
       _ => throw new ArgumentOutOfRangeException(segment.GetType().Name)
     };
   }
@@ -154,7 +156,8 @@ public static class CommentsUtil
     );
   }
   
-  public static RdDefaultSegmentWithContent ToRdContentSegment(this IEntityWithContentSegments entity)
+  [NotNull]
+  public static RdDefaultSegmentWithContent ToRdContentSegment([NotNull] this IEntityWithContentSegments entity)
   {
     return new RdDefaultSegmentWithContent(entity.ContentSegments.ToRdContentSegments());
   }

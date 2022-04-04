@@ -1,6 +1,6 @@
 package com.intelligentComments.ui.comments.model.content.remarks
 
-import com.intelligentComments.core.domain.impl.GroupedRemarksSegments
+import com.intelligentComments.core.domain.impl.GroupedRemarksSegment
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intelligentComments.ui.comments.model.content.GroupedContentUiModel
 import com.intelligentComments.ui.comments.model.content.getFirstLevelHeader
@@ -13,7 +13,7 @@ private const val remarksSectionName = "Remarks"
 class GroupedRemarksUiModel(
   project: Project,
   parent: UiInteractionModelBase?,
-  model: GroupedRemarksSegments
+  model: GroupedRemarksSegment
 ) : GroupedContentUiModel(
   project,
   parent,

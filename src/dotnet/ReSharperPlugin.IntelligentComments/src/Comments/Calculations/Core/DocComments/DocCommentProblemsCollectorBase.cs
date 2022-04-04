@@ -56,17 +56,63 @@ public abstract class CommentProblemsCollectorBase : ICommentProblemsCollector
   {
     myTagsProcessors = new Dictionary<string, Action<IXmlTag, Context>>
     {
-      [CommentsBuilderUtil.ImageTagName] = ProcessImage,
-      [CommentsBuilderUtil.InvariantTagName] = ProcessInvariant,
-      [CommentsBuilderUtil.ReferenceTagName] = ProcessReference
+      [DocCommentsBuilderUtil.ImageTagName] = ProcessImage,
+      [DocCommentsBuilderUtil.InvariantTagName] = ProcessInvariant,
+      [DocCommentsBuilderUtil.ReferenceTagName] = ProcessReference,
+      [DocCommentsBuilderUtil.TodoTagName] = ProcessToDo,
     };
   }
 
+  
+  private void ProcessToDo([NotNull] IXmlTag tag, [NotNull] Context context)
+  {
+    if (!CheckThatAllChildrenAreTags(tag, context, DocCommentsBuilderUtil.PossibleInnerFirstLevelTagsOfTodo)) return;
+
+    var ticketsTag = tag.InnerTags.FirstOrDefault(child => child.Header.Name.XmlName == DocCommentsBuilderUtil.TicketsSectionTagName);
+    if (ticketsTag is { } && !CheckTicketsTag(ticketsTag, context)) return;
+  }
+
+  private bool CheckTicketsTag([NotNull] IXmlTag xmlTag, [NotNull] Context context)
+  {
+    return CheckThatAllChildrenAreTags(xmlTag, context, DocCommentsBuilderUtil.PossibleInnerFirstLevelTagsOfTicketsSection);
+  }
+
+  private bool CheckThatAllChildrenAreTags(
+    [NotNull] IXmlTag parent, 
+    [NotNull] Context context,
+    [CanBeNull] ISet<string> possibleTagsNames = null)
+  {
+    if (parent.IsEmptyTag) return true;
+
+    var anyError = false;
+    foreach (var textToken in parent.InnerTextTokens)
+    {
+      if (!textToken.GetText().IsNullOrWhitespace())
+      {
+        anyError = true;
+        AddError(textToken.GetDocumentRange(), "The text is not allowed here", context);
+      }
+    }
+    
+    if (possibleTagsNames is { })
+    {
+      foreach (var tag in parent.InnerTags)
+      {
+        if (!possibleTagsNames.Contains(tag.Header.Name.XmlName))
+        {
+          anyError = true;
+          AddError(tag.Header.GetDocumentRange(), $"Invalid tag", context);
+        }
+      }
+    }
+
+    return !anyError;
+  }
 
   [NotNull]
   public ICollection<HighlightingInfo> Run([NotNull] IDocCommentBlock comment)
   {
-    if (CommentsBuilderUtil.TryGetAdjustedComment(comment) is not { } adjustedComment)
+    if (DocCommentsBuilderUtil.TryGetAdjustedComment(comment) is not { } adjustedComment)
     {
       return EmptyList<HighlightingInfo>.Instance;
     }
@@ -80,7 +126,7 @@ public abstract class CommentProblemsCollectorBase : ICommentProblemsCollector
     
     xmlDocPsi?.XmlFile.ProcessThisAndDescendants(this, context);
 
-    var isInheritDoc = CommentsBuilderUtil.IsInheritDocComment(comment);
+    var isInheritDoc = DocCommentsBuilderUtil.IsInheritDocComment(comment);
     if (isInheritDoc && highlightings.Count > 0)
     {
       var firstErrorMessage = highlightings.First().Highlighting.ToolTip;
@@ -105,7 +151,7 @@ public abstract class CommentProblemsCollectorBase : ICommentProblemsCollector
 
   private void ProcessImage([NotNull] IXmlTag imageTag, [NotNull] Context context)
   {
-    CheckAttributePresenceAndNonEmptyValue(imageTag, CommentsBuilderUtil.ImageSourceAttrName, context);
+    CheckAttributePresenceAndNonEmptyValue(imageTag, DocCommentsBuilderUtil.ImageSourceAttrName, context);
   }
 
   private void AddError(DocumentRange range, [NotNull] string message, [NotNull] Context context)
@@ -153,11 +199,11 @@ public abstract class CommentProblemsCollectorBase : ICommentProblemsCollector
     if (!CheckThatReferenceHasExactlyOneOfNeededTags(referenceTag, context)) return;
 
     var referenceSourceAttribute = referenceTag.GetAttributes()
-      .FirstOrDefault(attr => CommentsBuilderUtil.PossibleReferenceTagAttributes.Contains(attr.AttributeName));
+      .FirstOrDefault(attr => DocCommentsBuilderUtil.PossibleReferenceTagAttributes.Contains(attr.AttributeName));
     
     Assertion.AssertNotNull(referenceSourceAttribute, "referenceSourceAttribute != null");
 
-    if (referenceSourceAttribute.AttributeName == CommentsBuilderUtil.InvariantReferenceSourceAttrName)
+    if (referenceSourceAttribute.AttributeName == DocCommentsBuilderUtil.InvariantReferenceSourceAttrName)
     {
       CheckIfInvariantReferenceSourceIsResolved(referenceTag, context);
     }
@@ -165,7 +211,7 @@ public abstract class CommentProblemsCollectorBase : ICommentProblemsCollector
 
   private void ProcessInvariant([NotNull] IXmlTag invariantTag, [NotNull] Context context)
   {
-    if (!CheckAttributePresenceAndNonEmptyValue(invariantTag, CommentsBuilderUtil.InvariantNameAttrName, context)) 
+    if (!CheckAttributePresenceAndNonEmptyValue(invariantTag, DocCommentsBuilderUtil.InvariantNameAttrName, context)) 
       return;
     
     CheckThatInvariantNameOccursOnce(invariantTag, context);
@@ -178,7 +224,7 @@ public abstract class CommentProblemsCollectorBase : ICommentProblemsCollector
     
     foreach (var attribute in referenceTag.GetAttributes())
     {
-      if (CommentsBuilderUtil.PossibleReferenceTagAttributes.Contains(attribute.AttributeName))
+      if (DocCommentsBuilderUtil.PossibleReferenceTagAttributes.Contains(attribute.AttributeName))
       {
         if (needAttrsCount > 0)
         {
@@ -196,7 +242,7 @@ public abstract class CommentProblemsCollectorBase : ICommentProblemsCollector
 
     if (needAttrsCount != 1)
     {
-      var possibleAttrs = CommentsBuilderUtil.PossibleReferenceTagAttributesPresentation;
+      var possibleAttrs = DocCommentsBuilderUtil.PossibleReferenceTagAttributesPresentation;
       AddError(tagRange, $"Reference tag must contain exactly one reference-source attribute ({possibleAttrs})", context);
       return false;
     }
@@ -206,10 +252,10 @@ public abstract class CommentProblemsCollectorBase : ICommentProblemsCollector
 
   private bool CheckThatInvariantNameOccursOnce([NotNull] IXmlTag invariantTag, [NotNull] Context context)
   {
-    var invariantNameAttribute = CommentsBuilderUtil.TryGetInvariantAttribute(invariantTag);
+    var invariantNameAttribute = DocCommentsBuilderUtil.TryGetInvariantAttribute(invariantTag);
     Assertion.AssertNotNull(invariantNameAttribute, "attribute != null");
 
-    var name = CommentsBuilderUtil.GetInvariantName(invariantNameAttribute);
+    var name = DocCommentsBuilderUtil.GetInvariantName(invariantNameAttribute);
     var cache = invariantTag.GetSolution().GetComponent<InvariantsNamesCache>();
     var invariantNameCount = cache.GetInvariantNameCount(name);
 
@@ -222,7 +268,7 @@ public abstract class CommentProblemsCollectorBase : ICommentProblemsCollector
 
   private bool CheckIfInvariantReferenceSourceIsResolved([NotNull] IXmlTag referenceTag, [NotNull] Context context)
   {
-    var referenceSourceAttr = referenceTag.GetAttribute(CommentsBuilderUtil.InvariantReferenceSourceAttrName);
+    var referenceSourceAttr = referenceTag.GetAttribute(DocCommentsBuilderUtil.InvariantReferenceSourceAttrName);
     Assertion.AssertNotNull(referenceSourceAttr, "referenceSourceAttr is { }");
 
     var referenceSourceText = referenceSourceAttr.UnquotedValue;
@@ -238,7 +284,7 @@ public abstract class CommentProblemsCollectorBase : ICommentProblemsCollector
 
     if (reference.Resolve(new DomainResolveContextImpl(solution, document)) is InvalidDomainResolveResult)
     {
-      var text = $"Failed to resolve {CommentsBuilderUtil.InvariantReferenceSourceAttrName} \"{referenceSourceText}\"";
+      var text = $"Failed to resolve {DocCommentsBuilderUtil.InvariantReferenceSourceAttrName} \"{referenceSourceText}\"";
       AddError(referenceSourceAttr.Value.GetDocumentRange(), text, context);
       return false;
     }

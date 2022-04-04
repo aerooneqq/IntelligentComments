@@ -7,6 +7,7 @@ import com.intelligentComments.ui.comments.model.content.remarks.GroupedRemarksU
 import com.intelligentComments.ui.comments.model.content.`return`.GroupedReturnUiModel
 import com.intelligentComments.ui.comments.model.content.seeAlso.GroupedSeeAlsoUiModel
 import com.intelligentComments.ui.comments.model.content.summary.GroupedSummaryUiModel
+import com.intelligentComments.ui.comments.model.content.todo.GroupedToDoUiModel
 
 class GroupedSeeAlsoRenderer(
   model: GroupedSeeAlsoUiModel
@@ -34,4 +35,8 @@ class GroupedSummariesRenderer(
 
 class GroupedRemarksRenderer(
   model: GroupedRemarksUiModel
+) : LeftTextHeaderAndRightContentRenderer(model.header, model.content)
+
+class GroupedTodosRenderer(
+  model: GroupedToDoUiModel
 ) : LeftTextHeaderAndRightContentRenderer(model.header, model.content)

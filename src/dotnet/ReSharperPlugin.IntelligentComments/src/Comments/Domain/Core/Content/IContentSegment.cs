@@ -101,6 +101,17 @@ public interface IToDo
   [NotNull] IEnumerable<IDomainReference> BlockingReferences { get; }
 }
 
+public interface IToDoWithTickets : IToDo
+{
+  [NotNull] IEnumerable<ITicket> Tickets { get; }
+}
+
+public interface ITicket
+{
+  [NotNull] IHighlightedText Description { get; }
+  [NotNull] IDomainReference Reference { get; }
+}
+
 public interface IToDoContentSegment : IContentSegment
 {
   [NotNull] IToDo ToDo { get; }

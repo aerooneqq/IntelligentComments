@@ -137,8 +137,7 @@ public record CodeSegment(IHighlightedText Code, int HighlightingRequestId) : IC
 
 public record ImageContentSegment(IDomainReference SourceDomainReference, IHighlightedText Description) : IImageContentSegment;
 
-public record InvariantContentSegment
-(
+public record InvariantContentSegment(
   IHighlightedText Name,
   IEntityWithContentSegments Description
 ) : IInvariantContentSegment;
@@ -154,9 +153,16 @@ public record InlineReferenceContentSegment(
   IHighlightedText DescriptionText
 ) : IInlineReferenceContentSegment;
 
-
 public record ToDoTextContentSegment(IHighlightedText Text) : IToDoTextContentSegment;
 
 public record ToDo(IEntityWithContentSegments Content, IEnumerable<IDomainReference> BlockingReferences) : IToDo;
 
 public record ToDoContentSegment(IToDo ToDo) : IToDoContentSegment;
+
+public record Ticket(IHighlightedText Description, IDomainReference Reference) : ITicket ;
+
+public record ToDoWithTickets(
+  IEntityWithContentSegments Content, 
+  IEnumerable<IDomainReference> BlockingReferences,
+  IEnumerable<ITicket> Tickets
+) : ToDo(Content, BlockingReferences), IToDoWithTickets;

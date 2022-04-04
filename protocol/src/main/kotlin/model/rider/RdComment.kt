@@ -290,8 +290,8 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
   }
 
   val RdTicket = structdef {
-    field("Url", PredefinedType.string)
-    field("ShortName", PredefinedType.string)
+    field("Source", PredefinedType.string)
+    field("Content", RdHighlightedText)
   }
 
   val RdHack = basestruct {

@@ -39,6 +39,7 @@ open class ContentSegmentFromRd(
         is RdToDoContentSegment -> ToDoContentSegmentFromRd(contentSegment, parent, project)
         is RdReferenceContentSegment -> ReferenceContentSegmentFromRd(contentSegment, parent, project)
         is RdToDoTextContentSegment -> ToDoTextContentSegmentFromRd(contentSegment, parent, project)
+        is RdDefaultSegmentWithContent -> EntityWithContentSegmentsFromRd(contentSegment, parent, project)
         else -> throw IllegalArgumentException(contentSegment.toString())
       }
     }

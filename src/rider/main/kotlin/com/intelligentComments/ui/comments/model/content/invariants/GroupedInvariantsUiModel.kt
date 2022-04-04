@@ -1,7 +1,7 @@
 package com.intelligentComments.ui.comments.model.content.invariants
 
 import com.intelligentComments.core.domain.core.*
-import com.intelligentComments.core.domain.impl.GroupedInvariantsSegments
+import com.intelligentComments.core.domain.impl.GroupedInvariantsSegment
 import com.intelligentComments.core.domain.impl.HighlightedTextImpl
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intelligentComments.ui.comments.model.content.GroupedContentUiModel
@@ -15,7 +15,7 @@ private const val InvariantsSectionName = "Invariants"
 class GroupedInvariantsUiModel(
   project: Project,
   parent: UiInteractionModelBase?,
-  model: GroupedInvariantsSegments
+  model: GroupedInvariantsSegment
 ) : GroupedContentUiModel(
   project,
   parent,
@@ -26,8 +26,10 @@ class GroupedInvariantsUiModel(
       override val segments: Collection<ContentSegment> = listOf(object : UniqueEntityImpl(), TextContentSegment {
         override val parent: Parentable = model
         override val highlightedText: HighlightedText = mergeSegmentsTexts(
-          model.segments, this, { extractTextFromInvariant(it) }
-        )
+          model.segments, this
+        ) {
+          extractTextFromInvariant(it)
+        }
       })
 
       override fun processSegments(strategy: ContentProcessingStrategy) {

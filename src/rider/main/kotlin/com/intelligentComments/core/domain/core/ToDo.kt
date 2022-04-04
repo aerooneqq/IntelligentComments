@@ -1,10 +1,8 @@
 package com.intelligentComments.core.domain.core
 
 interface ToDo : UniqueEntity, EntityBlockedByReferences {
-  val name: String
+  val content: EntityWithContentSegments
 }
-
-interface ToDoWithTickets : ToDo, EntityWithAssociatedTickets
 
 interface EntityWithAssociatedTickets {
   val tickets: Collection<Ticket>
@@ -19,6 +17,6 @@ interface Ticket : UniqueEntity {
   val shortName: String
 }
 
-interface ToDoWithTicketsContentSegment : ContentSegment {
-  val toDo: ToDoWithTickets
+interface ToDoWithTicketsContentSegment : ContentSegment, EntityBlockedByReferences, EntityWithAssociatedTickets {
+  val content: EntityWithContentSegments
 }

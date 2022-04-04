@@ -25,7 +25,7 @@ public class CSharpInvariantsProcessor : TreeNodeVisitor<Dictionary<string, int>
     {
       comment.ExecuteActionWithInvariants(element =>
       {
-        var invariantName = CommentsBuilderUtil.TryGetInvariantName(element);
+        var invariantName = DocCommentsBuilderUtil.TryGetInvariantName(element);
         Assertion.AssertNotNull(invariantName, "invariantName != null");
 
         if (invariantName.IsNullOrWhitespace()) return;
@@ -53,7 +53,7 @@ public static class CSharpInvariantsProcessorExtensions
     for (var node = xml.FirstChild; node is { }; node = node.NextSibling)
     {
       if (node is not XmlElement xmlElement ||
-          CommentsBuilderUtil.TryGetInvariantName(xmlElement) is not { })
+          DocCommentsBuilderUtil.TryGetInvariantName(xmlElement) is not { })
       {
         continue;
       }
@@ -70,7 +70,7 @@ public static class CSharpInvariantsProcessorExtensions
 
     foreach (var tag in xmlDocPsi.XmlFile.Descendants<IXmlTag>().Collect())
     {
-      if (CommentsBuilderUtil.IsReferenceTagWithInvariantSource(tag))
+      if (DocCommentsBuilderUtil.IsReferenceTagWithInvariantSource(tag))
       {
         actionWithReference(tag);
       }

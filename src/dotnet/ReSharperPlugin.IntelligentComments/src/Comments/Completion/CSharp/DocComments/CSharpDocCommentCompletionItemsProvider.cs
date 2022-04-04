@@ -5,7 +5,7 @@ using JetBrains.ReSharper.Feature.Services.CodeCompletion.Infrastructure;
 using JetBrains.ReSharper.Feature.Services.CodeCompletion.Infrastructure.LookupItems;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp;
-using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core;
+using JetBrains.Util;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Completion.CSharp.DocComments;
@@ -18,11 +18,16 @@ public class CSharpDocCommentCompletionItemsProvider : ItemsProviderOfSpecificCo
     [NotNull] public TagLookupItem ToLookupItem() => new(Tag, Attributes, ClosedTag);
   }
 
-  [ItemNotNull] [NotNull] private static readonly TagInfo[] ourClosedTags =
+  [ItemNotNull] [NotNull] 
+  private static readonly TagInfo[] ourClosedTags =
   {
-    new("image", new[] { CommentsBuilderUtil.ImageSourceAttrName }, true),
-    new("invariant", new[] { CommentsBuilderUtil.InvariantNameAttrName }, false),
-    new("reference", new[] { CommentsBuilderUtil.InvariantReferenceSourceAttrName }, false)
+    new(DocCommentsBuilderUtil.ImageTagName, new[] { DocCommentsBuilderUtil.ImageSourceAttrName }, true),
+    new(DocCommentsBuilderUtil.InvariantTagName, new[] { DocCommentsBuilderUtil.InvariantNameAttrName }, false),
+    new(DocCommentsBuilderUtil.ReferenceTagName, new[] { DocCommentsBuilderUtil.InvariantReferenceSourceAttrName }, false),
+    new(DocCommentsBuilderUtil.TodoTagName, EmptyArray.GetInstance<string>(), true),
+    new(DocCommentsBuilderUtil.TicketsSectionTagName, EmptyArray.GetInstance<string>(), true),
+    new(DocCommentsBuilderUtil.TicketTagName, DocCommentsBuilderUtil.PossibleTicketAttributes.ToArray(), true),
+    new(DocCommentsBuilderUtil.DescriptionTagName, EmptyArray.GetInstance<string>(), true)
   };
   
   protected override bool AddLookupItems(ContextInDocComment context, IItemsCollector collector)
