@@ -1,6 +1,7 @@
 package com.intelligentComments.ui.comments.model.content.tickets
 
 import com.intelligentComments.core.domain.core.*
+import com.intelligentComments.core.domain.impl.FrontendTicketReferenceImpl
 import com.intelligentComments.core.domain.impl.HighlightedTextImpl
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intelligentComments.ui.comments.model.content.ContentSegmentUiModel
@@ -35,7 +36,11 @@ class TicketUiModel(
 fun createHighlightedTicketName(ticket: TicketContentSegment): HighlightedText {
   val text = ticket.reference.rawValue
   val highlighter = CommonsHighlightersFactory.tryCreateCommentHighlighter(
-    ticket, text.length, references = listOf(ticket.reference), animation = UnderlineTextAnimation())
+    ticket,
+    text.length,
+    references = listOf(ticket.reference, FrontendTicketReferenceImpl("Ticket", ticket)),
+    animation = UnderlineTextAnimation()
+  )
 
   return HighlightedTextImpl(text, ticket, highlighter)
 }

@@ -52,6 +52,7 @@ class ImageSegmentRenderer(private val model: ImageContentSegmentUiModel) : Segm
       imageHolder.height,
       DummyImageObserver.instance
     )
+
     val adjustedRect = Rectangle(rect)
     RectanglesModelUtil.addHeightDelta(adjustedRect, imageHolder.height)
     RectanglesModelUtil.addHeightDelta(adjustedRect, deltaBetweenImageAndDescription)

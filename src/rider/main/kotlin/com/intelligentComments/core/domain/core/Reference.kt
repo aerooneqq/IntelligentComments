@@ -43,3 +43,9 @@ interface ReferenceContentSegment : ContentSegment {
   val name: HighlightedText
   val description: EntityWithContentSegments
 }
+
+interface FrontendReference : Reference
+
+interface FrontendTicketReference : FrontendReference {
+  val ticket: TicketContentSegment
+}
