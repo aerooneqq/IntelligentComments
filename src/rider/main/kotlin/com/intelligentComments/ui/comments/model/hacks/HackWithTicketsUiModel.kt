@@ -9,7 +9,7 @@ import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intelligentComments.ui.comments.model.content.ContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.ContentSegmentsUiModel
 import com.intelligentComments.ui.comments.model.content.references.ReferenceUiModel
-import com.intelligentComments.ui.comments.model.tickets.TicketUiModel
+import com.intelligentComments.ui.comments.model.content.tickets.TicketUiModel
 import com.intelligentComments.ui.comments.renderers.hacks.HackWithTicketsRenderer
 import com.intelligentComments.ui.core.Renderer
 import com.intelligentComments.ui.util.HashUtil

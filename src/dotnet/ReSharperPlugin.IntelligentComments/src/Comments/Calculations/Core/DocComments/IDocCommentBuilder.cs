@@ -670,7 +670,20 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
 
     var descriptionContent = new EntityWithContentSegments(ContentSegments.CreateEmpty());
     ProcessEntityWithContentSegments(descriptionContent, descriptionSection, addToTopmostSegments: false);
-    
+    foreach (var segment in descriptionContent.ContentSegments.Segments)
+    {
+      if (segment is ITextContentSegment textContentSegment)
+      {
+        var length = textContentSegment.Text.Text.Length;
+        var newHighlighters = new List<TextHighlighter>
+        {
+          myHighlightersProvider.GetToDoHighlighter(0, length) with { TextAnimation = null }
+        };
+        
+        textContentSegment.Text.ReplaceHighlighters(newHighlighters);
+      }
+    }
+
     var todo = new ToDoWithTickets(descriptionContent, EnumerableCollection<IDomainReference>.Empty, EmptyList<ITicket>.Enumerable);
     var todoContentSegment = new ToDoContentSegment(todo);
     ExecuteWithTopmostContentSegments(metadata => metadata.ContentSegments.Segments.Add(todoContentSegment));

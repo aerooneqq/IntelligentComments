@@ -1,4 +1,4 @@
-package com.intelligentComments.ui.comments.model.tickets
+package com.intelligentComments.ui.comments.model.content.tickets
 
 import com.intelligentComments.core.domain.core.ForegroundTextAnimation
 import com.intelligentComments.core.domain.core.TextHighlighter

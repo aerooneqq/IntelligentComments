@@ -1,7 +1,7 @@
 package com.intelligentComments.ui.comments.renderers.todos
 
 import com.intelligentComments.ui.comments.model.sections.SectionWithHeaderUiModel
-import com.intelligentComments.ui.comments.model.todo.ToDoWithTicketsUiModel
+import com.intelligentComments.ui.comments.model.content.todo.ToDoWithTicketsUiModel
 import com.intelligentComments.ui.comments.renderers.VerticalSectionWithHeaderRenderer
 import com.intelligentComments.ui.core.RectangleModelBuildContext
 import com.intelligentComments.ui.core.RectangleModelBuildContributor

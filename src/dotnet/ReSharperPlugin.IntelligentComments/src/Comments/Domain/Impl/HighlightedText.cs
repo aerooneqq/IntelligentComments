@@ -53,6 +53,13 @@ public class HighlightedText : IHighlightedText
     Text += other.Text;
   }
 
+  public void ReplaceHighlighters(IEnumerable<TextHighlighter> newHighlighters)
+  {
+    myHighlighters.Clear();
+    myHighlighters.AddRange(newHighlighters);
+    SortHighlighters();
+  }
+
   public void SortHighlighters() => myHighlighters.Sort((first, second) => first.StartOffset - second.StartOffset);
     
   public void Normalize()

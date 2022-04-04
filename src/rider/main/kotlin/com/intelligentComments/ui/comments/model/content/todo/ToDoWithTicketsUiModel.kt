@@ -1,4 +1,4 @@
-package com.intelligentComments.ui.comments.model.todo
+package com.intelligentComments.ui.comments.model.content.todo
 
 import com.intelligentComments.core.domain.core.ToDoWithTicketsContentSegment
 import com.intelligentComments.ui.comments.model.ExpandableUiModel

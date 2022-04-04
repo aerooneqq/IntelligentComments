@@ -12,4 +12,5 @@ public interface IHighlightedText
   void Add([NotNull] IHighlightedText other);
   void SortHighlighters();
   void Normalize();
+  void ReplaceHighlighters(IEnumerable<TextHighlighter> newHighlighters);
 }

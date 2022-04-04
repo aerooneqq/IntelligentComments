@@ -23,8 +23,7 @@ class GroupedToDoUiModel(
   getFirstLevelHeader(
     project,
     todoSectionsName,
-    segment,
-    explicitlySetColor = Colors.TodoColor
+    segment
   )
 ) {
   override fun createRenderer(): Renderer {

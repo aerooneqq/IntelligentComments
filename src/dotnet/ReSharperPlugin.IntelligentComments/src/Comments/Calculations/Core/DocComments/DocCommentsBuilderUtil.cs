@@ -17,7 +17,7 @@ using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments;
 
-internal record struct TextProcessingResult(string ProcessedText, int EffectiveLength);
+internal record struct TextProcessingResult([NotNull] string ProcessedText, int EffectiveLength);
 internal record struct TagInfo([NotNull] IHighlightedText NameText, [NotNull] IHighlightedText DescriptionText);
 
 internal static class DocCommentsBuilderUtil

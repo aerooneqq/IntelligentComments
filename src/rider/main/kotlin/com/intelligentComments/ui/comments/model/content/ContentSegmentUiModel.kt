@@ -30,7 +30,7 @@ import com.intelligentComments.ui.comments.model.content.text.TextContentSegment
 import com.intelligentComments.ui.comments.model.content.todo.GroupedToDoUiModel
 import com.intelligentComments.ui.comments.model.content.todo.ToDoTextContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.value.ValueUiModel
-import com.intelligentComments.ui.comments.model.todo.ToDoWithTicketsUiModel
+import com.intelligentComments.ui.comments.model.content.todo.ToDoWithTicketsUiModel
 import com.intellij.openapi.project.Project
 
 abstract class ContentSegmentUiModel(
