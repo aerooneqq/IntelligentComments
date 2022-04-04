@@ -2,6 +2,7 @@ package com.intelligentComments.core.domain.rd
 
 import com.intelligentComments.core.comments.codeHighlighting.CodeFragmentHighlightingHost
 import com.intelligentComments.core.domain.core.*
+import com.intelligentComments.core.domain.impl.ContentProcessingStrategyImpl
 import com.intelligentComments.core.domain.impl.HighlightedTextImpl
 import com.intelligentComments.core.settings.RiderIntelligentCommentsSettingsProvider
 import com.intellij.openapi.components.service
@@ -35,10 +36,10 @@ open class ContentSegmentFromRd(
         is RdCodeContentSegment -> CodeSegmentFromRd(contentSegment, parent, project)
         is RdValueSegment -> ValueContentSegmentFromRd(contentSegment, parent, project)
         is RdTextInvariant -> TextInvariantFromRdSegment(contentSegment, parent, project)
-        is RdHackContentSegment -> HackWithTicketsContentSegmentFromRd(contentSegment, parent, project)
         is RdToDoContentSegment -> ToDoContentSegmentFromRd(contentSegment, parent, project)
         is RdReferenceContentSegment -> ReferenceContentSegmentFromRd(contentSegment, parent, project)
         is RdToDoTextContentSegment -> ToDoTextContentSegmentFromRd(contentSegment, parent, project)
+        is RdTicketContentSegment -> TicketSegmentFromRd(contentSegment, parent, project)
         is RdDefaultSegmentWithContent -> EntityWithContentSegmentsFromRd(contentSegment, parent, project)
         else -> throw IllegalArgumentException(contentSegment.toString())
       }
@@ -353,4 +354,13 @@ class ToDoTextContentSegmentFromRd(
   project: Project
 ) : ContentSegmentFromRd(rdSegment, parent), ToDoTextContentSegment {
   override val text: HighlightedText = rdSegment.text.toIdeaHighlightedText(project, this)
+}
+
+class TicketSegmentFromRd(
+  rdSegment: RdTicketContentSegment,
+  parent: Parentable?,
+  project: Project
+) : ContentSegmentFromRd(rdSegment, parent), TicketContentSegment {
+  override val reference: Reference = ReferenceFromRd.getFrom(project, rdSegment.source)
+  override val description: EntityWithContentSegments = EntityWithContentSegmentsFromRd(rdSegment.content, this, project)
 }

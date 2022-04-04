@@ -65,8 +65,6 @@ class TextHighlighterImpl(
     startOffset += delta
     endOffset += delta
   }
-
-
 }
 
 interface BackgroundStyle {

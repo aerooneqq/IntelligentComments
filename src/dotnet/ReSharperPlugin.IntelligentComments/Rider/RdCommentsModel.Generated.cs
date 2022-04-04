@@ -101,7 +101,7 @@ namespace JetBrains.Rider.Model
     public static  CtxWriteDelegate<RdHighlightedText> WriteRdHighlightedTextNullable = RdHighlightedText.Write.NullableClass();
     public static  CtxWriteDelegate<int?> WriteIntNullable = JetBrains.Rd.Impl.Serializers.WriteInt.NullableStruct();
     
-    protected override long SerializationHash => -2727619041282310797L;
+    protected override long SerializationHash => 4247832937265370500L;
     
     protected override Action<ISerializers> Register => RegisterDeclaredTypesSerializers;
     public static void RegisterDeclaredTypesSerializers(ISerializers serializers)
@@ -146,8 +146,8 @@ namespace JetBrains.Rider.Model
       serializers.Register(RdForegroundColorAnimation.Read, RdForegroundColorAnimation.Write);
       serializers.Register(RdPredefinedForegroundColorAnimation.Read, RdPredefinedForegroundColorAnimation.Write);
       serializers.Register(RdToDoTextContentSegment.Read, RdToDoTextContentSegment.Write);
-      serializers.Register(RdToDoWithTickets.Read, RdToDoWithTickets.Write);
       serializers.Register(RdToDoContentSegment.Read, RdToDoContentSegment.Write);
+      serializers.Register(RdTicketContentSegment.Read, RdTicketContentSegment.Write);
       serializers.Register(RdHackWithTickets.Read, RdHackWithTickets.Write);
       serializers.Register(RdHackContentSegment.Read, RdHackContentSegment.Write);
       serializers.Register(RdInvalidResolveResult.Read, RdInvalidResolveResult.Write);
@@ -163,7 +163,6 @@ namespace JetBrains.Rider.Model
       serializers.Register(RdExternalReference_Unknown.Read, RdExternalReference_Unknown.Write);
       serializers.Register(RdCodeEntityReference_Unknown.Read, RdCodeEntityReference_Unknown.Write);
       serializers.Register(RdTextAnimation_Unknown.Read, RdTextAnimation_Unknown.Write);
-      serializers.Register(RdToDo_Unknown.Read, RdToDo_Unknown.Write);
       serializers.Register(RdHack_Unknown.Read, RdHack_Unknown.Write);
       serializers.Register(RdResolveResult_Unknown.Read, RdResolveResult_Unknown.Write);
       serializers.Register(JetBrains.Rider.Model.HighlighterRegistration.HighlighterProperties.Read, JetBrains.Rider.Model.HighlighterRegistration.HighlighterProperties.Write);
@@ -519,7 +518,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:311</p>
+  /// <p>Generated from: RdComment.kt:302</p>
   /// </summary>
   public sealed class RdCodeHighlightingRequest : IPrintable, IEquatable<RdCodeHighlightingRequest>
   {
@@ -724,7 +723,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:315</p>
+  /// <p>Generated from: RdComment.kt:306</p>
   /// </summary>
   public sealed class RdCommentClickDocRequest : IPrintable, IEquatable<RdCommentClickDocRequest>
   {
@@ -2244,7 +2243,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:297</p>
+  /// <p>Generated from: RdComment.kt:288</p>
   /// </summary>
   public abstract class RdHack{
     //fields
@@ -2289,7 +2288,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:307</p>
+  /// <p>Generated from: RdComment.kt:298</p>
   /// </summary>
   public sealed class RdHackContentSegment : RdContentSegment
   {
@@ -2370,18 +2369,18 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:303</p>
+  /// <p>Generated from: RdComment.kt:294</p>
   /// </summary>
   public sealed class RdHackWithTickets : RdHack
   {
     //fields
     //public fields
-    [NotNull] public List<RdTicket> Tickets {get; private set;}
+    [NotNull] public List<RdTicketContentSegment> Tickets {get; private set;}
     
     //private fields
     //primary constructor
     public RdHackWithTickets(
-      [NotNull] List<RdTicket> tickets,
+      [NotNull] List<RdTicketContentSegment> tickets,
       [NotNull] string name,
       [NotNull] RdContentSegments description,
       [NotNull] List<RdReference> blockingReferences
@@ -2404,11 +2403,11 @@ namespace JetBrains.Rider.Model
       var name = reader.ReadString();
       var description = RdContentSegments.Read(ctx, reader);
       var blockingReferences = ReadRdReferenceList(ctx, reader);
-      var tickets = ReadRdTicketList(ctx, reader);
+      var tickets = ReadRdTicketContentSegmentList(ctx, reader);
       var _result = new RdHackWithTickets(tickets, name, description, blockingReferences);
       return _result;
     };
-    public static CtxReadDelegate<List<RdTicket>> ReadRdTicketList = RdTicket.Read.List();
+    public static CtxReadDelegate<List<RdTicketContentSegment>> ReadRdTicketContentSegmentList = RdTicketContentSegment.Read.List();
     public static CtxReadDelegate<List<RdReference>> ReadRdReferenceList = RdReference.Read.List();
     
     public static new CtxWriteDelegate<RdHackWithTickets> Write = (ctx, writer, value) => 
@@ -2416,9 +2415,9 @@ namespace JetBrains.Rider.Model
       writer.Write(value.Name);
       RdContentSegments.Write(ctx, writer, value.Description);
       WriteRdReferenceList(ctx, writer, value.BlockingReferences);
-      WriteRdTicketList(ctx, writer, value.Tickets);
+      WriteRdTicketContentSegmentList(ctx, writer, value.Tickets);
     };
-    public static  CtxWriteDelegate<List<RdTicket>> WriteRdTicketList = RdTicket.Write.List();
+    public static  CtxWriteDelegate<List<RdTicketContentSegment>> WriteRdTicketContentSegmentList = RdTicketContentSegment.Write.List();
     public static  CtxWriteDelegate<List<RdReference>> WriteRdReferenceList = RdReference.Write.List();
     
     //constants
@@ -3179,7 +3178,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:330</p>
+  /// <p>Generated from: RdComment.kt:321</p>
   /// </summary>
   public sealed class RdInvalidResolveResult : RdResolveResult
   {
@@ -3377,7 +3376,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:334</p>
+  /// <p>Generated from: RdComment.kt:325</p>
   /// </summary>
   public sealed class RdInvariantResolveResult : RdResolveResult
   {
@@ -3877,7 +3876,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:324</p>
+  /// <p>Generated from: RdComment.kt:315</p>
   /// </summary>
   public sealed class RdNavigationRequest : IPrintable, IEquatable<RdNavigationRequest>
   {
@@ -4512,7 +4511,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:319</p>
+  /// <p>Generated from: RdComment.kt:310</p>
   /// </summary>
   public sealed class RdReferenceResolveRequest : IPrintable, IEquatable<RdReferenceResolveRequest>
   {
@@ -4761,7 +4760,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:328</p>
+  /// <p>Generated from: RdComment.kt:319</p>
   /// </summary>
   public abstract class RdResolveResult{
     //fields
@@ -6520,49 +6519,44 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:292</p>
+  /// <p>Generated from: RdComment.kt:283</p>
   /// </summary>
-  public sealed class RdTicket : IPrintable, IEquatable<RdTicket>
+  public sealed class RdTicketContentSegment : RdContentSegment
   {
     //fields
     //public fields
-    [NotNull] public string Url {get; private set;}
-    [NotNull] public string ShortName {get; private set;}
+    [NotNull] public RdReference Source {get; private set;}
+    [NotNull] public RdDefaultSegmentWithContent Content {get; private set;}
     
     //private fields
     //primary constructor
-    public RdTicket(
-      [NotNull] string url,
-      [NotNull] string shortName
+    public RdTicketContentSegment(
+      [NotNull] RdReference source,
+      [NotNull] RdDefaultSegmentWithContent content
     )
     {
-      if (url == null) throw new ArgumentNullException("url");
-      if (shortName == null) throw new ArgumentNullException("shortName");
+      if (source == null) throw new ArgumentNullException("source");
+      if (content == null) throw new ArgumentNullException("content");
       
-      Url = url;
-      ShortName = shortName;
+      Source = source;
+      Content = content;
     }
     //secondary constructor
     //deconstruct trait
-    public void Deconstruct([NotNull] out string url, [NotNull] out string shortName)
-    {
-      url = Url;
-      shortName = ShortName;
-    }
     //statics
     
-    public static CtxReadDelegate<RdTicket> Read = (ctx, reader) => 
+    public static new CtxReadDelegate<RdTicketContentSegment> Read = (ctx, reader) => 
     {
-      var url = reader.ReadString();
-      var shortName = reader.ReadString();
-      var _result = new RdTicket(url, shortName);
+      var source = RdReference.Read(ctx, reader);
+      var content = RdDefaultSegmentWithContent.Read(ctx, reader);
+      var _result = new RdTicketContentSegment(source, content);
       return _result;
     };
     
-    public static CtxWriteDelegate<RdTicket> Write = (ctx, writer, value) => 
+    public static new CtxWriteDelegate<RdTicketContentSegment> Write = (ctx, writer, value) => 
     {
-      writer.Write(value.Url);
-      writer.Write(value.ShortName);
+      RdReference.Write(ctx, writer, value.Source);
+      RdDefaultSegmentWithContent.Write(ctx, writer, value.Content);
     };
     
     //constants
@@ -6575,31 +6569,31 @@ namespace JetBrains.Rider.Model
       if (ReferenceEquals(null, obj)) return false;
       if (ReferenceEquals(this, obj)) return true;
       if (obj.GetType() != GetType()) return false;
-      return Equals((RdTicket) obj);
+      return Equals((RdTicketContentSegment) obj);
     }
-    public bool Equals(RdTicket other)
+    public bool Equals(RdTicketContentSegment other)
     {
       if (ReferenceEquals(null, other)) return false;
       if (ReferenceEquals(this, other)) return true;
-      return Url == other.Url && ShortName == other.ShortName;
+      return Equals(Source, other.Source) && Equals(Content, other.Content);
     }
     //hash code trait
     public override int GetHashCode()
     {
       unchecked {
         var hash = 0;
-        hash = hash * 31 + Url.GetHashCode();
-        hash = hash * 31 + ShortName.GetHashCode();
+        hash = hash * 31 + Source.GetHashCode();
+        hash = hash * 31 + Content.GetHashCode();
         return hash;
       }
     }
     //pretty print
     public void Print(PrettyPrinter printer)
     {
-      printer.Println("RdTicket (");
+      printer.Println("RdTicketContentSegment (");
       using (printer.IndentCookie()) {
-        printer.Print("url = "); Url.PrintEx(printer); printer.Println();
-        printer.Print("shortName = "); ShortName.PrintEx(printer); printer.Println();
+        printer.Print("source = "); Source.PrintEx(printer); printer.Println();
+        printer.Print("content = "); Content.PrintEx(printer); printer.Println();
       }
       printer.Print(")");
     }
@@ -6610,47 +6604,6 @@ namespace JetBrains.Rider.Model
       Print(printer);
       return printer.ToString();
     }
-  }
-  
-  
-  /// <summary>
-  /// <p>Generated from: RdComment.kt:279</p>
-  /// </summary>
-  public abstract class RdToDo{
-    //fields
-    //public fields
-    [NotNull] public RdDefaultSegmentWithContent Content {get; private set;}
-    [NotNull] public List<RdReference> BlockingReferences {get; private set;}
-    
-    //private fields
-    //primary constructor
-    protected RdToDo(
-      [NotNull] RdDefaultSegmentWithContent content,
-      [NotNull] List<RdReference> blockingReferences
-    )
-    {
-      if (content == null) throw new ArgumentNullException("content");
-      if (blockingReferences == null) throw new ArgumentNullException("blockingReferences");
-      
-      Content = content;
-      BlockingReferences = blockingReferences;
-    }
-    //secondary constructor
-    //deconstruct trait
-    //statics
-    
-    public static CtxReadDelegate<RdToDo> Read = Polymorphic<RdToDo>.ReadAbstract(RdToDo_Unknown.Read);
-    
-    public static CtxWriteDelegate<RdToDo> Write = Polymorphic<RdToDo>.Write;
-    
-    //constants
-    
-    //custom body
-    //methods
-    //equals trait
-    //hash code trait
-    //pretty print
-    //toString
   }
   
   
@@ -6743,23 +6696,23 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:288</p>
+  /// <p>Generated from: RdComment.kt:279</p>
   /// </summary>
   public sealed class RdToDoContentSegment : RdContentSegment
   {
     //fields
     //public fields
-    [NotNull] public RdToDoWithTickets ToDo {get; private set;}
+    [NotNull] public RdDefaultSegmentWithContent Content {get; private set;}
     
     //private fields
     //primary constructor
     public RdToDoContentSegment(
-      [NotNull] RdToDoWithTickets toDo
+      [NotNull] RdDefaultSegmentWithContent content
     )
     {
-      if (toDo == null) throw new ArgumentNullException("toDo");
+      if (content == null) throw new ArgumentNullException("content");
       
-      ToDo = toDo;
+      Content = content;
     }
     //secondary constructor
     //deconstruct trait
@@ -6767,14 +6720,14 @@ namespace JetBrains.Rider.Model
     
     public static new CtxReadDelegate<RdToDoContentSegment> Read = (ctx, reader) => 
     {
-      var toDo = RdToDoWithTickets.Read(ctx, reader);
-      var _result = new RdToDoContentSegment(toDo);
+      var content = RdDefaultSegmentWithContent.Read(ctx, reader);
+      var _result = new RdToDoContentSegment(content);
       return _result;
     };
     
     public static new CtxWriteDelegate<RdToDoContentSegment> Write = (ctx, writer, value) => 
     {
-      RdToDoWithTickets.Write(ctx, writer, value.ToDo);
+      RdDefaultSegmentWithContent.Write(ctx, writer, value.Content);
     };
     
     //constants
@@ -6793,14 +6746,14 @@ namespace JetBrains.Rider.Model
     {
       if (ReferenceEquals(null, other)) return false;
       if (ReferenceEquals(this, other)) return true;
-      return Equals(ToDo, other.ToDo);
+      return Equals(Content, other.Content);
     }
     //hash code trait
     public override int GetHashCode()
     {
       unchecked {
         var hash = 0;
-        hash = hash * 31 + ToDo.GetHashCode();
+        hash = hash * 31 + Content.GetHashCode();
         return hash;
       }
     }
@@ -6809,7 +6762,7 @@ namespace JetBrains.Rider.Model
     {
       printer.Println("RdToDoContentSegment (");
       using (printer.IndentCookie()) {
-        printer.Print("toDo = "); ToDo.PrintEx(printer); printer.Println();
+        printer.Print("content = "); Content.PrintEx(printer); printer.Println();
       }
       printer.Print(")");
     }
@@ -6891,188 +6844,6 @@ namespace JetBrains.Rider.Model
       printer.Println("RdToDoTextContentSegment (");
       using (printer.IndentCookie()) {
         printer.Print("text = "); Text.PrintEx(printer); printer.Println();
-      }
-      printer.Print(")");
-    }
-    //toString
-    public override string ToString()
-    {
-      var printer = new SingleLinePrettyPrinter();
-      Print(printer);
-      return printer.ToString();
-    }
-  }
-  
-  
-  /// <summary>
-  /// <p>Generated from: RdComment.kt:284</p>
-  /// </summary>
-  public sealed class RdToDoWithTickets : RdToDo
-  {
-    //fields
-    //public fields
-    [NotNull] public List<RdTicket> Tickets {get; private set;}
-    
-    //private fields
-    //primary constructor
-    public RdToDoWithTickets(
-      [NotNull] List<RdTicket> tickets,
-      [NotNull] RdDefaultSegmentWithContent content,
-      [NotNull] List<RdReference> blockingReferences
-    ) : base (
-      content,
-      blockingReferences
-     ) 
-    {
-      if (tickets == null) throw new ArgumentNullException("tickets");
-      
-      Tickets = tickets;
-    }
-    //secondary constructor
-    //deconstruct trait
-    //statics
-    
-    public static new CtxReadDelegate<RdToDoWithTickets> Read = (ctx, reader) => 
-    {
-      var content = RdDefaultSegmentWithContent.Read(ctx, reader);
-      var blockingReferences = ReadRdReferenceList(ctx, reader);
-      var tickets = ReadRdTicketList(ctx, reader);
-      var _result = new RdToDoWithTickets(tickets, content, blockingReferences);
-      return _result;
-    };
-    public static CtxReadDelegate<List<RdTicket>> ReadRdTicketList = RdTicket.Read.List();
-    public static CtxReadDelegate<List<RdReference>> ReadRdReferenceList = RdReference.Read.List();
-    
-    public static new CtxWriteDelegate<RdToDoWithTickets> Write = (ctx, writer, value) => 
-    {
-      RdDefaultSegmentWithContent.Write(ctx, writer, value.Content);
-      WriteRdReferenceList(ctx, writer, value.BlockingReferences);
-      WriteRdTicketList(ctx, writer, value.Tickets);
-    };
-    public static  CtxWriteDelegate<List<RdTicket>> WriteRdTicketList = RdTicket.Write.List();
-    public static  CtxWriteDelegate<List<RdReference>> WriteRdReferenceList = RdReference.Write.List();
-    
-    //constants
-    
-    //custom body
-    //methods
-    //equals trait
-    public override bool Equals(object obj)
-    {
-      if (ReferenceEquals(null, obj)) return false;
-      if (ReferenceEquals(this, obj)) return true;
-      if (obj.GetType() != GetType()) return false;
-      return Equals((RdToDoWithTickets) obj);
-    }
-    public bool Equals(RdToDoWithTickets other)
-    {
-      if (ReferenceEquals(null, other)) return false;
-      if (ReferenceEquals(this, other)) return true;
-      return Tickets.SequenceEqual(other.Tickets) && Equals(Content, other.Content) && BlockingReferences.SequenceEqual(other.BlockingReferences);
-    }
-    //hash code trait
-    public override int GetHashCode()
-    {
-      unchecked {
-        var hash = 0;
-        hash = hash * 31 + Tickets.ContentHashCode();
-        hash = hash * 31 + Content.GetHashCode();
-        hash = hash * 31 + BlockingReferences.ContentHashCode();
-        return hash;
-      }
-    }
-    //pretty print
-    public void Print(PrettyPrinter printer)
-    {
-      printer.Println("RdToDoWithTickets (");
-      using (printer.IndentCookie()) {
-        printer.Print("tickets = "); Tickets.PrintEx(printer); printer.Println();
-        printer.Print("content = "); Content.PrintEx(printer); printer.Println();
-        printer.Print("blockingReferences = "); BlockingReferences.PrintEx(printer); printer.Println();
-      }
-      printer.Print(")");
-    }
-    //toString
-    public override string ToString()
-    {
-      var printer = new SingleLinePrettyPrinter();
-      Print(printer);
-      return printer.ToString();
-    }
-  }
-  
-  
-  public sealed class RdToDo_Unknown : RdToDo
-  {
-    //fields
-    //public fields
-    
-    //private fields
-    //primary constructor
-    public RdToDo_Unknown(
-      [NotNull] RdDefaultSegmentWithContent content,
-      [NotNull] List<RdReference> blockingReferences
-    ) : base (
-      content,
-      blockingReferences
-     ) 
-    {
-    }
-    //secondary constructor
-    //deconstruct trait
-    //statics
-    
-    public static new CtxReadDelegate<RdToDo_Unknown> Read = (ctx, reader) => 
-    {
-      var content = RdDefaultSegmentWithContent.Read(ctx, reader);
-      var blockingReferences = ReadRdReferenceList(ctx, reader);
-      var _result = new RdToDo_Unknown(content, blockingReferences);
-      return _result;
-    };
-    public static CtxReadDelegate<List<RdReference>> ReadRdReferenceList = RdReference.Read.List();
-    
-    public static new CtxWriteDelegate<RdToDo_Unknown> Write = (ctx, writer, value) => 
-    {
-      RdDefaultSegmentWithContent.Write(ctx, writer, value.Content);
-      WriteRdReferenceList(ctx, writer, value.BlockingReferences);
-    };
-    public static  CtxWriteDelegate<List<RdReference>> WriteRdReferenceList = RdReference.Write.List();
-    
-    //constants
-    
-    //custom body
-    //methods
-    //equals trait
-    public override bool Equals(object obj)
-    {
-      if (ReferenceEquals(null, obj)) return false;
-      if (ReferenceEquals(this, obj)) return true;
-      if (obj.GetType() != GetType()) return false;
-      return Equals((RdToDo_Unknown) obj);
-    }
-    public bool Equals(RdToDo_Unknown other)
-    {
-      if (ReferenceEquals(null, other)) return false;
-      if (ReferenceEquals(this, other)) return true;
-      return Equals(Content, other.Content) && BlockingReferences.SequenceEqual(other.BlockingReferences);
-    }
-    //hash code trait
-    public override int GetHashCode()
-    {
-      unchecked {
-        var hash = 0;
-        hash = hash * 31 + Content.GetHashCode();
-        hash = hash * 31 + BlockingReferences.ContentHashCode();
-        return hash;
-      }
-    }
-    //pretty print
-    public void Print(PrettyPrinter printer)
-    {
-      printer.Println("RdToDo_Unknown (");
-      using (printer.IndentCookie()) {
-        printer.Print("content = "); Content.PrintEx(printer); printer.Println();
-        printer.Print("blockingReferences = "); BlockingReferences.PrintEx(printer); printer.Println();
       }
       printer.Print(")");
     }

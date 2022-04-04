@@ -33,7 +33,7 @@ class HackWithTicketsUiModel(
   }
 
   val headerUiModel = HeaderUiModel(project, this, hack.name, Colors.HackHeaderBackgroundColor, Colors.HackHeaderHoveredBackgroundColor)
-  val tickets = segment.hack.tickets.map { TicketUiModel(it, this, project) }
+  val tickets = segment.hack.tickets.map { TicketUiModel(project, this, it) }
 
   override var isExpanded: Boolean = true
   override fun calculateStateHash(): Int {

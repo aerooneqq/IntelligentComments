@@ -155,14 +155,9 @@ public record InlineReferenceContentSegment(
 
 public record ToDoTextContentSegment(IHighlightedText Text) : IToDoTextContentSegment;
 
-public record ToDo(IEntityWithContentSegments Content, IEnumerable<IDomainReference> BlockingReferences) : IToDo;
+public record ToDoContentSegment(IEntityWithContentSegments Content) : IToDoContentSegment;
 
-public record ToDoContentSegment(IToDo ToDo) : IToDoContentSegment;
-
-public record Ticket(IHighlightedText Description, IDomainReference Reference) : ITicket ;
-
-public record ToDoWithTickets(
-  IEntityWithContentSegments Content, 
-  IEnumerable<IDomainReference> BlockingReferences,
-  IEnumerable<ITicket> Tickets
-) : ToDo(Content, BlockingReferences), IToDoWithTickets;
+public record TicketContentSegment(
+  IEntityWithContentSegments Description, 
+  IDomainReference Reference
+) : ITicketContentSegment;

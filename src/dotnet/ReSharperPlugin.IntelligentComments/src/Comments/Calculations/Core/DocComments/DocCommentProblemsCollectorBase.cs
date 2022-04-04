@@ -198,7 +198,8 @@ public abstract class CommentProblemsCollectorBase : ICommentProblemsCollector
   {
     if (!CheckThatReferenceHasExactlyOneOfNeededTags(referenceTag, context)) return;
 
-    var referenceSourceAttribute = referenceTag.GetAttributes()
+    var referenceSourceAttribute = referenceTag
+      .GetAttributes()
       .FirstOrDefault(attr => DocCommentsBuilderUtil.PossibleReferenceTagAttributes.Contains(attr.AttributeName));
     
     Assertion.AssertNotNull(referenceSourceAttribute, "referenceSourceAttribute != null");
@@ -273,8 +274,9 @@ public abstract class CommentProblemsCollectorBase : ICommentProblemsCollector
 
     var referenceSourceText = referenceSourceAttr.UnquotedValue;
     var reference = new InvariantDomainReference(referenceSourceText);
-    var solution = context.AdjustedComment.GetSolution();
-    var document = context.AdjustedComment.GetSourceFile()?.Document;
+    var adjustedComment = context.AdjustedComment;
+    var solution = adjustedComment.GetSolution();
+    var document = adjustedComment.GetSourceFile()?.Document;
     
     if (document is null)
     {

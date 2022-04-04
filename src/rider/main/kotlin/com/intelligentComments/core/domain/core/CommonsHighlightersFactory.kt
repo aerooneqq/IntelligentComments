@@ -25,15 +25,19 @@ object CommonsHighlightersFactory {
 
   fun tryCreateCommentHighlighter(
     parent: Parentable?,
-    textLength: Int
+    textLength: Int,
+    references: Collection<Reference> = emptyList(),
+    animation: MouseInOutAnimation? = null
   ): TextHighlighter? {
-    return createHighlighter(parent, BackendHighlightersKeys.commentKey, textLength)
+    return createHighlighter(parent, BackendHighlightersKeys.commentKey, textLength, references, animation)
   }
 
   private fun createHighlighter(
     parent: Parentable?,
     key: String,
-    textLength: Int
+    textLength: Int,
+    references: Collection<Reference> = emptyList(),
+    animation: MouseInOutAnimation? = null
   ): TextHighlighter? {
     val attributes = tryGetTextAttributes(key) ?: return null
 
@@ -42,7 +46,9 @@ object CommonsHighlightersFactory {
       0,
       textLength,
       attributes.foregroundColor.darker(),
-      attributes = getOrAdjustAttributes()
+      attributes = getOrAdjustAttributes(),
+      references = references,
+      mouseInOutAnimation = animation
     )
   }
 

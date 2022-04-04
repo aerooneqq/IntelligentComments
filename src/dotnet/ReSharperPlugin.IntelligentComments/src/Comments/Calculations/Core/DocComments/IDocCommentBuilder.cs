@@ -668,9 +668,9 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
     var descriptionSection = children.FirstOrDefault(child => child.Name == DocCommentsBuilderUtil.DescriptionTagName);
     if (descriptionSection is null) return;
 
-    var descriptionContent = new EntityWithContentSegments(ContentSegments.CreateEmpty());
-    ProcessEntityWithContentSegments(descriptionContent, descriptionSection, addToTopmostSegments: false);
-    foreach (var segment in descriptionContent.ContentSegments.Segments)
+    var content = new EntityWithContentSegments(ContentSegments.CreateEmpty());
+    ProcessEntityWithContentSegments(content, descriptionSection, addToTopmostSegments: false);
+    foreach (var segment in content.ContentSegments.Segments)
     {
       if (segment is ITextContentSegment textContentSegment)
       {
@@ -684,9 +684,49 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
       }
     }
 
-    var todo = new ToDoWithTickets(descriptionContent, EnumerableCollection<IDomainReference>.Empty, EmptyList<ITicket>.Enumerable);
-    var todoContentSegment = new ToDoContentSegment(todo);
+    var tickets = ticketSection switch
+    {
+      { } => TryProcessTicketsContentSection(ticketSection),
+      _ => EmptyList<ITicketContentSegment>.Enumerable
+    };
+
+    content.ContentSegments.Segments.AddRange(tickets);
+    var todoContentSegment = new ToDoContentSegment(content);
     ExecuteWithTopmostContentSegments(metadata => metadata.ContentSegments.Segments.Add(todoContentSegment));
+  }
+
+  [NotNull]
+  private IEnumerable<ITicketContentSegment> TryProcessTicketsContentSection([NotNull] XmlElement ticketsTag)
+  {
+    if (ticketsTag.Name != DocCommentsBuilderUtil.TicketsSectionTagName)
+    {
+      return EmptyList<ITicketContentSegment>.Enumerable;
+    }
+
+    var tickets = new LocalList<ITicketContentSegment>();
+    foreach (var child in ticketsTag.ChildElements())
+    {
+      if (TryCreateTicketContentSegment(child) is { } ticket)
+      {
+        tickets.Add(ticket);
+      }
+    }
+
+    return tickets.ResultingList();
+  }
+
+  [CanBeNull]
+  private ITicketContentSegment TryCreateTicketContentSegment([NotNull] XmlElement element)
+  {
+    if (element.Name != DocCommentsBuilderUtil.TicketTagName) return null;
+    if (element.GetAttributeNode(DocCommentsBuilderUtil.TicketSourceAttrName) is not { } attribute) return null;
+
+    var attributeValue = attribute.Value;
+    var reference = new HttpDomainReference(attributeValue);
+    var description = new EntityWithContentSegments(ContentSegments.CreateEmpty());
+    ProcessEntityWithContentSegments(description, element, false);
+    
+    return new TicketContentSegment(description, reference);
   }
 
   private record CodeFragment(IHighlightedText PreliminaryText, int HighlightingRequestId);

@@ -95,26 +95,15 @@ public interface IToDoTextContentSegment : IContentSegment
   [NotNull] public IHighlightedText Text { get; }
 }
 
-public interface IToDo
+public interface ITicketContentSegment : IContentSegment
 {
-  [NotNull] IEntityWithContentSegments Content { get; }
-  [NotNull] IEnumerable<IDomainReference> BlockingReferences { get; }
-}
-
-public interface IToDoWithTickets : IToDo
-{
-  [NotNull] IEnumerable<ITicket> Tickets { get; }
-}
-
-public interface ITicket
-{
-  [NotNull] IHighlightedText Description { get; }
+  [NotNull] IEntityWithContentSegments Description { get; }
   [NotNull] IDomainReference Reference { get; }
 }
 
 public interface IToDoContentSegment : IContentSegment
 {
-  [NotNull] IToDo ToDo { get; }
+  [NotNull] IEntityWithContentSegments Content { get; }
 }
 
 public interface IInvariantContentSegment : IContentSegment

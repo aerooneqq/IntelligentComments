@@ -9,6 +9,7 @@ import com.intelligentComments.ui.comments.renderers.ContentSegmentsRenderer
 import com.intelligentComments.ui.comments.renderers.segments.SegmentRenderer
 import com.intelligentComments.ui.core.Renderer
 import com.intellij.openapi.project.Project
+import com.jetbrains.rd.ui.bindable.views.listControl.sendFocusGainedToModel
 
 class ToDoWithTicketsUiModel(
   project: Project,

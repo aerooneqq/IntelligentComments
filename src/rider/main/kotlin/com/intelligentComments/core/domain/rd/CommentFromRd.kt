@@ -141,7 +141,7 @@ class ToDoCommentFromRd(
   override val toDoContent: ContentSegments
 
   init {
-    toDoContent = ContentSegmentsFromRd(rdComment.toDo.toDo.content.content, this, project)
+    toDoContent = ContentSegmentsFromRd(rdComment.toDo.content.content, this, project)
   }
 
 

@@ -23,7 +23,6 @@ class ToDoTextContentSegmentUiModel(
 
   val header = HighlightedTextUiWrapper(project, parent, HighlightedTextImpl("Todo:", toDoTextSegment))
 
-
   override fun createRenderer(): Renderer {
     return ToDoTextSegmentRenderer(this)
   }

@@ -1,43 +1,41 @@
 package com.intelligentComments.ui.comments.model.content.tickets
 
-import com.intelligentComments.core.domain.core.ForegroundTextAnimation
-import com.intelligentComments.core.domain.core.TextHighlighter
-import com.intelligentComments.core.domain.core.TextHighlighterImpl
-import com.intelligentComments.core.domain.core.Ticket
+import com.intelligentComments.core.domain.core.*
 import com.intelligentComments.core.domain.impl.HighlightedTextImpl
-import com.intelligentComments.ui.colors.Colors
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
+import com.intelligentComments.ui.comments.model.content.ContentSegmentUiModel
+import com.intelligentComments.ui.comments.model.content.ContentSegmentsUiModel
 import com.intelligentComments.ui.comments.model.highlighters.HighlightedTextUiWrapper
-import com.intelligentComments.ui.comments.renderers.NotSupportedForRenderingError
+import com.intelligentComments.ui.comments.renderers.segments.tickets.TicketSegmentRenderer
 import com.intelligentComments.ui.core.Renderer
 import com.intelligentComments.ui.util.HashUtil
 import com.intellij.openapi.project.Project
 
 class TicketUiModel(
-  private val ticket: Ticket,
+  project: Project,
   parent: UiInteractionModelBase?,
-  project: Project
-) : UiInteractionModelBase(project, parent) {
-  val nameText = HighlightedTextUiWrapper(project, this, HighlightedTextImpl(ticket.shortName, null, listOf(getNameHighlighter())))
-  val url = ticket.url
+  private val ticket: TicketContentSegment
+) : ContentSegmentUiModel(project, parent) {
+  val description = ContentSegmentsUiModel(project, this, ticket.description.content)
+  val displayName: HighlightedTextUiWrapper
 
-  private fun getNameHighlighter(): TextHighlighter {
-    val defaultColor = colorsProvider.getColorFor(Colors.TextUrlColor)
-    val hoveredColor = colorsProvider.getColorFor(Colors.TextUrlColorHovered)
 
-    return TextHighlighterImpl(
-      null,
-      0,
-      ticket.shortName.length,
-      defaultColor,
-      mouseInOutAnimation = ForegroundTextAnimation(hoveredColor, defaultColor)
-    )
+  init {
+    displayName = HighlightedTextUiWrapper(project, this, createHighlightedTicketName(ticket))
   }
 
 
   override fun calculateStateHash(): Int {
-    return HashUtil.hashCode(ticket.shortName.hashCode(), url.hashCode())
+    return HashUtil.hashCode(description.calculateStateHash())
   }
 
-  override fun createRenderer(): Renderer = throw NotSupportedForRenderingError()
+  override fun createRenderer(): Renderer = TicketSegmentRenderer(this)
+}
+
+fun createHighlightedTicketName(ticket: TicketContentSegment): HighlightedText {
+  val text = ticket.reference.rawValue
+  val highlighter = CommonsHighlightersFactory.tryCreateCommentHighlighter(
+    ticket, text.length, references = listOf(ticket.reference), animation = UnderlineTextAnimation())
+
+  return HighlightedTextImpl(text, ticket, highlighter)
 }

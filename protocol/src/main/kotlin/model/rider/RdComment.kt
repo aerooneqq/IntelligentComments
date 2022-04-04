@@ -276,22 +276,13 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
     field("Text", RdHighlightedText)
   }
 
-  val RdToDo = basestruct {
-    field("Content", RdDefaultSegmentWithContent)
-    field("BlockingReferences", immutableList(RdReference))
-  }
-
-  val RdToDoWithTickets = structdef extends RdToDo {
-    field("Tickets", immutableList(RdTicket))
-  }
-
   val RdToDoContentSegment = structdef extends RdContentSegment {
-    field("ToDo", RdToDoWithTickets)
+    field("Content", RdDefaultSegmentWithContent)
   }
 
-  val RdTicket = structdef {
-    field("Source", PredefinedType.string)
-    field("Content", RdHighlightedText)
+  val RdTicketContentSegment = structdef extends RdContentSegment {
+    field("Source", RdReference)
+    field("Content", RdDefaultSegmentWithContent)
   }
 
   val RdHack = basestruct {
@@ -301,7 +292,7 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
   }
 
   val RdHackWithTickets = structdef extends RdHack {
-    field("Tickets", immutableList(RdTicket))
+    field("Tickets", immutableList(RdTicketContentSegment))
   }
 
   val RdHackContentSegment = structdef extends RdContentSegment {

@@ -52,9 +52,7 @@ public abstract class ToDoCommentCreator : IToDoCommentCreator
     var highlighter = provider.GetToDoHighlighter(0, toDoText.Length) with { TextAnimation = null };
     var toDoHighlightedText = new HighlightedText(toDoText, highlighter);
     var segments = new ContentSegments(new List<IContentSegment>() { new ToDoTextContentSegment(toDoHighlightedText) });
-    var contentSegment = new EntityWithContentSegments(segments);
-    
-    var segment = new ToDoContentSegment(new ToDo(contentSegment, EmptyList<IDomainReference>.Enumerable));
+    var segment = new ToDoContentSegment(new EntityWithContentSegments(segments));
     var toDoComment = new ToDoComment(segment, groupOfLineComments.Range);
 
     return buildResult with { Comment = toDoComment };

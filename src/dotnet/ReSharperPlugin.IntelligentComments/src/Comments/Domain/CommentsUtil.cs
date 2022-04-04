@@ -122,6 +122,7 @@ public static class CommentsUtil
       IReferenceContentSegment contentSegment => contentSegment.ToRdReferenceSegment(),
       IInlineReferenceContentSegment contentSegment => contentSegment.ToRdSegment(),
       IToDoTextContentSegment contentSegment => contentSegment.ToRdContentSegment(),
+      ITicketContentSegment contentSegment => contentSegment.ToRdTicket(),
       IToDoContentSegment contentSegment => contentSegment.ToRdContentSegment(),
       IEntityWithContentSegments contentSegment => contentSegment.ToRdContentSegment(),
       _ => throw new ArgumentOutOfRangeException(segment.GetType().Name)
@@ -135,17 +136,17 @@ public static class CommentsUtil
   }
 
   [NotNull]
-  private static RdToDoContentSegment ToRdContentSegment([NotNull] this IToDoContentSegment segment)
+  private static RdTicketContentSegment ToRdTicket([NotNull] this ITicketContentSegment segment)
   {
-    return new RdToDoContentSegment(segment.ToDo.ToRdToDo());
+    return new RdTicketContentSegment(segment.Reference.ToRdReference(), segment.Description.ToRdContentSegment());
   }
 
   [NotNull]
-  private static RdToDoWithTickets ToRdToDo([NotNull] this IToDo toDo)
+  private static RdToDoContentSegment ToRdContentSegment([NotNull] this IToDoContentSegment segment)
   {
-    return new RdToDoWithTickets(new List<RdTicket>(), toDo.Content.ToRdContentSegment(), new List<RdReference>());
+    return new RdToDoContentSegment(segment.Content.ToRdContentSegment());
   }
-
+  
   [NotNull]
   private static RdReferenceContentSegment ToRdReferenceSegment([NotNull] this IReferenceContentSegment contentSegment)
   {
@@ -269,6 +270,7 @@ public static class CommentsUtil
       _ => throw new ArgumentOutOfRangeException(domainReference.GetType().Name),
     };
   }
+
   
   [NotNull]
   private static RdInvariantReference ToRdReference([NotNull] this IInvariantDomainReference domainReference)

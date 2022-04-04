@@ -3,9 +3,9 @@ using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.References;
 
-public class ExternalDomainReference : DomainReferenceBase, IExternalDomainReference
+public abstract class ExternalDomainReference : DomainReferenceBase, IExternalDomainReference
 {
-  public ExternalDomainReference(string rawValue) : base(rawValue)
+  protected ExternalDomainReference(string rawValue) : base(rawValue)
   {
   }
 }
