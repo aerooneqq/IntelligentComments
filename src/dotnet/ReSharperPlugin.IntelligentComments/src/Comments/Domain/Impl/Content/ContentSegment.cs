@@ -143,8 +143,7 @@ public record InvariantContentSegment
   IEntityWithContentSegments Description
 ) : IInvariantContentSegment;
 
-public record ReferenceContentSegment
-(
+public record ReferenceContentSegment(
   IDomainReference DomainReference,
   IHighlightedText Name,
   IEntityWithContentSegments Description
@@ -156,6 +155,8 @@ public record InlineReferenceContentSegment(
 ) : IInlineReferenceContentSegment;
 
 
-public record ToDo(IHighlightedText Text, IEnumerable<IDomainReference> BlockingReferences) : IToDo;
+public record ToDoTextContentSegment(IHighlightedText Text) : IToDoTextContentSegment;
+
+public record ToDo(IEntityWithContentSegments Content, IEnumerable<IDomainReference> BlockingReferences) : IToDo;
 
 public record ToDoContentSegment(IToDo ToDo) : IToDoContentSegment;

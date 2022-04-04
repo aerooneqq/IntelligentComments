@@ -27,6 +27,7 @@ import com.intelligentComments.ui.comments.model.content.summary.GroupedSummaryU
 import com.intelligentComments.ui.comments.model.content.summary.SummaryUiModel
 import com.intelligentComments.ui.comments.model.content.table.TableContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.text.TextContentSegmentUiModel
+import com.intelligentComments.ui.comments.model.content.todo.ToDoTextContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.value.ValueUiModel
 import com.intellij.openapi.project.Project
 
@@ -62,6 +63,7 @@ abstract class ContentSegmentUiModel(
         is SummaryContentSegment -> SummaryUiModel(project, parent, segment)
         is CodeSegment -> CodeSegmentUiModel(project, parent, segment)
         is ValueSegment -> ValueUiModel(project, parent, segment)
+        is ToDoTextContentSegment -> ToDoTextContentSegmentUiModel(project, parent, segment)
         is TextInvariantSegment -> TextInvariantUiModel(project, parent, segment)
         is EntityWithContentSegments -> ContentSegmentsUiModel(project, parent, segment.content)
         else -> throw IllegalArgumentException(segment.javaClass.name)

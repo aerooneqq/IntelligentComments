@@ -54,17 +54,18 @@ public class CSharpCommentsProcessor : CommentsProcessorBase
 
   private bool TryProcessSpecificComments([NotNull] ITreeNode element)
   {
-    return TryProcessDisablingComment(element) || 
-           TryProcessInlineReferenceComment(element) ||
-           TryProcessToDoComment(element);
+    return TryProcessToDoComment(element) ||
+           TryProcessDisablingComment(element) ||
+           TryProcessInlineReferenceComment(element);
   }
 
   private bool TryProcessToDoComment([NotNull] ITreeNode node)
   {
     var builder = LanguageManager.TryGetService<IToDoCommentBuilder>(node.Language);
-    if (builder?.TryBuild(node) is not { } toDoCommentBuildResult) return false;
+    if (builder?.TryBuild(node) is not var (comment, nodes)) return false;
     
-    Comments.Add(toDoCommentBuildResult);
+    VisitedNodes.AddRange(nodes);
+    Comments.Add(CommentProcessingResult.CreateSuccess(comment));
     return true;
   }
 

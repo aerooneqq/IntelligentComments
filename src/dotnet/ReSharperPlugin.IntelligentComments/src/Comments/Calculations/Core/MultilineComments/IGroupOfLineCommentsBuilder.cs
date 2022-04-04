@@ -8,7 +8,7 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.Multili
 
 public record struct GroupOfLineCommentsBuildResult(
   [NotNull] IGroupOfLineComments GroupOfLineComments,
-  [NotNull] [ItemNotNull] IEnumerable<ICSharpCommentNode> CommentNodes);
+  [NotNull] [ItemNotNull] IEnumerable<ITreeNode> CommentNodes);
 
 public interface IGroupOfLineCommentsBuilder
 {

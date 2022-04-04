@@ -139,6 +139,10 @@ interface CodeSegment : ContentSegment {
   val code: Property<HighlightedText>
 }
 
+interface ToDoTextContentSegment : ContentSegment {
+  val text: HighlightedText
+}
+
 fun tryFindComment(parentable: Parentable): CommentBase? {
   var current: Parentable? = parentable
   while (current != null &&  current !is CommentBase) {

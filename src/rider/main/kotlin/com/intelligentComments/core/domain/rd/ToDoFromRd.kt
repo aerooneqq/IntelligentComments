@@ -7,7 +7,7 @@ import com.jetbrains.rd.ide.model.RdToDoContentSegment
 import com.jetbrains.rd.ide.model.RdToDoWithTickets
 
 open class ToDoFromRd(todo: RdToDo, project: Project) : UniqueEntityImpl(), ToDo {
-  final override val name: String = todo.text.text
+  final override val name: String = throw NotImplementedError()
   final override val blockingReferences: Collection<Reference> =
     todo.blockingReferences.map { ReferenceFromRd.getFrom(project, it) }
 }

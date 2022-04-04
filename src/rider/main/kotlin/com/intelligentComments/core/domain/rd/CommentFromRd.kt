@@ -138,15 +138,10 @@ class ToDoCommentFromRd(
   highlighter: RangeHighlighter,
   rangeMarker: RangeMarker
 ) : CommentFromRd(project, rangeMarker, highlighter), ToDoComment {
-  override val text: TextContentSegment
-
+  override val toDoContent: ContentSegments
 
   init {
-    val highlightedText = rdComment.toDo.toDo.text.toIdeaHighlightedText(project, parent)
-    text = object : UniqueEntityImpl(), TextContentSegment {
-      override val highlightedText: HighlightedText = highlightedText
-      override val parent: Parentable = this
-    }
+    toDoContent = ContentSegmentsFromRd(rdComment.toDo.toDo.content.content, this, project)
   }
 
 

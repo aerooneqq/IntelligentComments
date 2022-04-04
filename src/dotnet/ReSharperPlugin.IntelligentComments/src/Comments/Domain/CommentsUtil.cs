@@ -121,8 +121,15 @@ public static class CommentsUtil
       IInvariantContentSegment contentSegment => contentSegment.ToRdInvariant(),
       IReferenceContentSegment contentSegment => contentSegment.ToRdReferenceSegment(),
       IInlineReferenceContentSegment contentSegment => contentSegment.ToRdSegment(),
+      IToDoTextContentSegment contentSegment => contentSegment.ToRdContentSegment(),
       _ => throw new ArgumentOutOfRangeException(segment.GetType().Name)
     };
+  }
+
+  [NotNull]
+  private static RdToDoTextContentSegment ToRdContentSegment([NotNull] this IToDoTextContentSegment segment)
+  {
+    return new RdToDoTextContentSegment(segment.Text.ToRdHighlightedText());
   }
 
   [NotNull]
@@ -134,7 +141,7 @@ public static class CommentsUtil
   [NotNull]
   private static RdToDoWithTickets ToRdToDo([NotNull] this IToDo toDo)
   {
-    return new RdToDoWithTickets(new List<RdTicket>(), toDo.Text.ToRdHighlightedText(), new List<RdReference>());
+    return new RdToDoWithTickets(new List<RdTicket>(), toDo.Content.ToRdContentSegment(), new List<RdReference>());
   }
 
   [NotNull]

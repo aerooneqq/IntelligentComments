@@ -38,6 +38,7 @@ open class ContentSegmentFromRd(
         is RdHackContentSegment -> HackWithTicketsContentSegmentFromRd(contentSegment, parent, project)
         is RdToDoContentSegment -> ToDoContentSegmentFromRd(contentSegment, parent, project)
         is RdReferenceContentSegment -> ReferenceContentSegmentFromRd(contentSegment, parent, project)
+        is RdToDoTextContentSegment -> ToDoTextContentSegmentFromRd(contentSegment, parent, project)
         else -> throw IllegalArgumentException(contentSegment.toString())
       }
     }
@@ -343,4 +344,12 @@ class CodeSegmentFromRd(
       }
     }
   }
+}
+
+class ToDoTextContentSegmentFromRd(
+  rdSegment: RdToDoTextContentSegment,
+  parent: Parentable?,
+  project: Project
+) : ContentSegmentFromRd(rdSegment, parent), ToDoTextContentSegment {
+  override val text: HighlightedText = rdSegment.text.toIdeaHighlightedText(project, this)
 }

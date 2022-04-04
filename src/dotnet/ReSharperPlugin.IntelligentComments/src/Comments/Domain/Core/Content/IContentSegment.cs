@@ -90,9 +90,14 @@ public interface IImageContentSegment : IContentSegment
   [NotNull] IHighlightedText Description { get; }
 }
 
+public interface IToDoTextContentSegment : IContentSegment
+{
+  [NotNull] public IHighlightedText Text { get; }
+}
+
 public interface IToDo
 {
-  [NotNull] IHighlightedText Text { get; }
+  [NotNull] IEntityWithContentSegments Content { get; }
   [NotNull] IEnumerable<IDomainReference> BlockingReferences { get; }
 }
 

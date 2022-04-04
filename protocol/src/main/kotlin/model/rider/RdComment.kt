@@ -272,8 +272,12 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
     + "Italic"
   }
 
-  val RdToDo = basestruct {
+  val RdToDoTextContentSegment = structdef extends RdContentSegment {
     field("Text", RdHighlightedText)
+  }
+
+  val RdToDo = basestruct {
+    field("Content", RdDefaultSegmentWithContent)
     field("BlockingReferences", immutableList(RdReference))
   }
 
