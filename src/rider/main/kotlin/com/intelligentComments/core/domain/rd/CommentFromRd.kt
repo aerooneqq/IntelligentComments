@@ -2,6 +2,7 @@ package com.intelligentComments.core.domain.rd
 
 import com.intelligentComments.core.comments.RiderCommentsCreator
 import com.intelligentComments.core.domain.core.*
+import com.intelligentComments.core.domain.impl.ContentProcessingStrategyImpl
 import com.intelligentComments.core.domain.impl.HighlightedTextImpl
 import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.Editor
@@ -59,7 +60,6 @@ class GroupOfLineCommentsFromRd(
   highlighter: RangeHighlighter,
   rangeMarker: RangeMarker
 ) : CommentWithOneTextSegmentFromRd(rdComment, project, rangeMarker, highlighter), GroupOfLineComments {
-
   override fun recreate(editor: Editor): CommentBase {
     return commentsCreator.createGroupOfLinesComment(rdComment, project, identifier.rangeMarker, correspondingHighlighter)
   }
@@ -132,20 +132,49 @@ class InlineReferenceCommentFromRd(
   }
 }
 
+abstract class CommentWithOneContentSegmentsFromRd(
+  rdComment: RdCommentWithOneContentSegments,
+  project: Project,
+  highlighter: RangeHighlighter,
+  rangeMarker: RangeMarker
+) : CommentFromRd(project, rangeMarker, highlighter), CommentWithOneContentSegments {
+  final override val content: ContentSegments
+
+  init {
+    content = ContentSegmentsFromRd(rdComment.content.content, this, project)
+  }
+}
+
 class ToDoCommentFromRd(
   private val rdComment: RdToDoComment,
   private val project: Project,
   highlighter: RangeHighlighter,
   rangeMarker: RangeMarker
-) : CommentFromRd(project, rangeMarker, highlighter), ToDoComment {
-  override val toDoContent: ContentSegments
-
-  init {
-    toDoContent = ContentSegmentsFromRd(rdComment.toDo.content.content, this, project)
-  }
-
-
+) : CommentWithOneContentSegmentsFromRd(rdComment, project, highlighter, rangeMarker), ToDoComment {
   override fun recreate(editor: Editor): CommentBase {
     return commentsCreator.createToDoComment(rdComment, project, identifier.rangeMarker, correspondingHighlighter)
+  }
+}
+
+class HackCommentFromRd(
+  private val rdComment: RdHackComment,
+  private val project: Project,
+  highlighter: RangeHighlighter,
+  rangeMarker: RangeMarker
+) : CommentWithOneContentSegmentsFromRd(rdComment, project, highlighter, rangeMarker), ToDoComment {
+  override fun recreate(editor: Editor): CommentBase {
+    return commentsCreator.createHackComment(rdComment, project, identifier.rangeMarker, correspondingHighlighter)
+  }
+}
+
+class ToDoContentSegmentFromRd(
+  contentSegment: RdToDoContentSegment,
+  parent: Parentable?,
+  project: Project
+) : ContentSegmentFromRd(contentSegment, parent), ToDoWithTicketsContentSegment {
+  override val content: EntityWithContentSegments = EntityWithContentSegmentsFromRd(contentSegment.content, this, project)
+
+  init {
+    content.content.processSegments(project.service<ContentProcessingStrategyImpl>())
   }
 }

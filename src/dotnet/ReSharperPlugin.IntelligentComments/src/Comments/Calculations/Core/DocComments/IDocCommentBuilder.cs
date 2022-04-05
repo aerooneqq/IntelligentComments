@@ -174,7 +174,7 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
     var cache = solution.GetComponent<InvariantsNamesCache>();
     return cache.GetInvariantNameCount(invariantReference.InvariantName) == 1;
   }
-  
+
   protected override void VisitReference(XmlElement element)
   {
     if (!IsTopmostContext()) return;
@@ -661,40 +661,76 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
     return !rawCodeText.Contains("\n");
   }
   
-  protected override void VisitTodo(XmlElement element)
+  protected override void VisitHack(XmlElement element)
   {
     if (!IsTopmostContext()) return;
     
-    var children = element.ChildElements().ToList();
-    var ticketSection = children.FirstOrDefault(child => child.Name == DocCommentsBuilderUtil.TicketsSectionTagName);
-    var descriptionSection = children.FirstOrDefault(child => child.Name == DocCommentsBuilderUtil.DescriptionTagName);
-    if (descriptionSection is null) return;
+    TextHighlighter CreateHackHighlighter(int length) => myHighlightersProvider.GetHackHighlighter(0, length);
+    if (TryFillDescriptionAndTickets(element, CreateHackHighlighter) is not { } entity) return;
+    
+    var hackContentSegment = new HackContentSegment(entity);
+    ExecuteWithTopmostContentSegments(metadata => metadata.ContentSegments.Segments.Add(hackContentSegment));
+  }
 
+  [CanBeNull]
+  private IEntityWithContentSegments TryFillDescriptionAndTickets(
+    [NotNull] XmlElement element,
+    [NotNull] Func<int, TextHighlighter> highlighterFactory)
+  {
     var content = new EntityWithContentSegments(ContentSegments.CreateEmpty());
-    ProcessEntityWithContentSegments(content, descriptionSection, addToTopmostSegments: false);
-    foreach (var segment in content.ContentSegments.Segments)
+
+    if (!FillDescriptionIfPresentTo(element, content, highlighterFactory)) return null;
+    FillTicketsIfPresentTo(element, content);
+
+    return content;
+  }
+  
+  protected override void VisitTodo(XmlElement element)
+  {
+    if (!IsTopmostContext()) return;
+
+    TextHighlighter CreateTodoHighlighter(int length) => myHighlightersProvider.GetToDoHighlighter(0, length);
+    if (TryFillDescriptionAndTickets(element, CreateTodoHighlighter) is not { } entity) return;
+    
+    var todoContentSegment = new ToDoContentSegment(entity);
+    ExecuteWithTopmostContentSegments(metadata => metadata.ContentSegments.Segments.Add(todoContentSegment));
+  }
+
+  private bool FillDescriptionIfPresentTo(
+    [NotNull] XmlElement parent, 
+    [NotNull] EntityWithContentSegments entity,
+    [NotNull] Func<int, TextHighlighter> highlighterFactory)
+  {
+    var descriptionSection = parent.GetChildElements().FirstOrDefault(child => child.Name == DocCommentsBuilderUtil.DescriptionTagName);
+    if (descriptionSection is null) return false;
+    ProcessEntityWithContentSegments(entity, descriptionSection, addToTopmostSegments: false);
+    foreach (var segment in entity.ContentSegments.Segments)
     {
       if (segment is ITextContentSegment textContentSegment)
       {
         var length = textContentSegment.Text.Text.Length;
         var newHighlighters = new List<TextHighlighter>
         {
-          myHighlightersProvider.GetToDoHighlighter(0, length) with { TextAnimation = null }
+          highlighterFactory(length) with { TextAnimation = null }
         };
         
         textContentSegment.Text.ReplaceHighlighters(newHighlighters);
       }
     }
 
+    return true;
+  }
+
+  private void FillTicketsIfPresentTo([NotNull] XmlElement parent, [NotNull] EntityWithContentSegments entity)
+  {
+    var ticketSection = parent.ChildElements().FirstOrDefault(child => child.Name == DocCommentsBuilderUtil.TicketsSectionTagName);
     var tickets = ticketSection switch
     {
       { } => TryProcessTicketsContentSection(ticketSection),
       _ => EmptyList<ITicketContentSegment>.Enumerable
     };
 
-    content.ContentSegments.Segments.AddRange(tickets);
-    var todoContentSegment = new ToDoContentSegment(content);
-    ExecuteWithTopmostContentSegments(metadata => metadata.ContentSegments.Segments.Add(todoContentSegment));
+    entity.ContentSegments.Segments.AddRange(tickets);
   }
 
   [NotNull]

@@ -1,6 +1,7 @@
 package com.intelligentComments.ui.comments.renderers.segments
 
 import com.intelligentComments.ui.comments.model.content.exceptions.GroupedExceptionUiModel
+import com.intelligentComments.ui.comments.model.content.hacks.GroupedHackUiModel
 import com.intelligentComments.ui.comments.model.content.params.GroupedParamsUiModel
 import com.intelligentComments.ui.comments.model.content.params.GroupedTypeParamsUiModel
 import com.intelligentComments.ui.comments.model.content.remarks.GroupedRemarksUiModel
@@ -39,4 +40,8 @@ class GroupedRemarksRenderer(
 
 class GroupedTodosRenderer(
   model: GroupedToDoUiModel
+) : LeftTextHeaderAndRightContentRenderer(model.header, model.content)
+
+class GroupedHacksRenderer(
+  model: GroupedHackUiModel
 ) : LeftTextHeaderAndRightContentRenderer(model.header, model.content)

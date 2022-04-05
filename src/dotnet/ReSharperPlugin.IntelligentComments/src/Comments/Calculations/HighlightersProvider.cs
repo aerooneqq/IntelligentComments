@@ -34,6 +34,7 @@ public interface IHighlightersProvider
   [NotNull] TextHighlighter GetExceptionHighlighter(int startOffset, int endOffset);
   [NotNull] TextHighlighter GetErrorHighlighter(int startOffset, int endOffset);
   [NotNull] TextHighlighter GetToDoHighlighter(int startOffset, int endOffset);
+  [NotNull] TextHighlighter GetHackHighlighter(int startOffset, int endOffset);
   
   
   [NotNull]
@@ -62,6 +63,7 @@ public abstract class HighlightersProvider : IHighlightersProvider
   [NotNull] private const string SeeLangWord = "see.langword";
   [NotNull] private const string Exception = "doc.comment.exception.name";
   [NotNull] private const string ToDoText = "todo.text.color";
+  [NotNull] private const string HackText = "hack.text.color";
 
   
   [NotNull] private readonly IHighlightingAttributeIdProvider myAttributeIdProvider;
@@ -103,6 +105,9 @@ public abstract class HighlightersProvider : IHighlightersProvider
 
   public TextHighlighter GetToDoHighlighter(int startOffset, int endOffset) =>
     Get(ToDoText, startOffset, endOffset);
+
+  public TextHighlighter GetHackHighlighter(int startOffset, int endOffset) =>
+    Get(HackText, startOffset, endOffset);
 
   public TextHighlighter GetErrorHighlighter(int startOffset, int endOffset) => Get(ErrorElementKey, startOffset, endOffset);
 

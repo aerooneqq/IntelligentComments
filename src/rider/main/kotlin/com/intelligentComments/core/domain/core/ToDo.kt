@@ -14,6 +14,6 @@ interface TicketContentSegment : ContentSegment {
   val description: EntityWithContentSegments
 }
 
-interface ToDoWithTicketsContentSegment : ContentSegment, EntityBlockedByReferences, EntityWithAssociatedTickets {
+interface ToDoWithTicketsContentSegment : ContentSegment {
   val content: EntityWithContentSegments
 }

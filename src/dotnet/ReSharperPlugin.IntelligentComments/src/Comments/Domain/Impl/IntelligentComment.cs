@@ -27,3 +27,5 @@ public record InlineReferenceComment(
   IInlineReferenceContentSegment Segment,
   DocumentRange Range
 ) : CommentBase(Range), IInlineReferenceComment;
+
+public record HackComment(IHackContentSegment HackContentSegment, DocumentRange Range) : CommentBase(Range), IHackComment;

@@ -1,14 +1,16 @@
 package com.intelligentComments.ui.comments.renderers
 
 import com.intelligentComments.ui.colors.ColorsProvider
-import com.intelligentComments.ui.comments.model.ToDoCommentUiModel
+import com.intelligentComments.ui.comments.model.CommentWithOneContentSegmentsUiModel
 import com.intelligentComments.ui.util.SectionModelUtil
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.markup.TextAttributes
 import java.awt.Graphics
 import java.awt.Rectangle
 
-class ToDoCommentRenderer(private val model: ToDoCommentUiModel) : RendererWithRectangleModel(model) {
+class CommentWithOneContentSegmentsRenderer(
+  private val model: CommentWithOneContentSegmentsUiModel
+) : RendererWithRectangleModel(model) {
   override fun paintInternal(
     editor: Editor,
     g: Graphics,

@@ -59,3 +59,8 @@ class GroupedTicketsSegment(
   override val segments: List<TicketContentSegment>,
   parent: Parentable?
 ) : GroupedSegmentsBase(parent), GroupedContentSegment<TicketContentSegment>
+
+class GroupedHacksSegment(
+  override val segments: List<HackWithTicketsContentSegment>,
+  parent: Parentable?
+) : GroupedSegmentsBase(parent), GroupedContentSegment<HackWithTicketsContentSegment>

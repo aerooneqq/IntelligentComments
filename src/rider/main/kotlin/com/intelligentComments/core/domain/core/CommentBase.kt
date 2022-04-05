@@ -28,6 +28,10 @@ interface MultilineComment : CommentWithOneTextSegment
 interface InvalidComment : CommentWithOneTextSegment
 interface DisablingInspectionsComment : CommentWithOneTextSegment
 interface InlineReferenceComment : CommentWithOneTextSegment
-interface ToDoComment : CommentBase {
-  val toDoContent: ContentSegments
+
+interface CommentWithOneContentSegments : CommentBase {
+  val content: ContentSegments
 }
+
+interface ToDoComment : CommentWithOneContentSegments
+interface HackComment : CommentWithOneContentSegments

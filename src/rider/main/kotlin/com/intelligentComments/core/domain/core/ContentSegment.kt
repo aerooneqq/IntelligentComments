@@ -1,5 +1,6 @@
 package com.intelligentComments.core.domain.core
 
+import com.intelligentComments.core.domain.rd.ContentSegmentFromRd
 import com.jetbrains.rd.util.reactive.Property
 
 interface IntelligentCommentContent : EntityWithContentSegments
@@ -140,6 +141,10 @@ interface CodeSegment : ContentSegment {
 }
 
 interface ToDoTextContentSegment : ContentSegment {
+  val text: HighlightedText
+}
+
+interface HackTextContentSegment : ContentSegment {
   val text: HighlightedText
 }
 

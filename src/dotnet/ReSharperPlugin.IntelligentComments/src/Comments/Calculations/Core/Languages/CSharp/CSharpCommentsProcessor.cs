@@ -6,6 +6,7 @@ using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Util;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DisablingComments;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments;
+using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments.Errors;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.InlineReferenceComments;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.MultilineComments;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.MultilineComments.ToDoComments;

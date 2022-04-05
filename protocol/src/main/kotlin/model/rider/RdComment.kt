@@ -32,9 +32,15 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
 
   val RdDisableInspectionComment = structdef extends RdCommentWithOneTextSegment {
   }
-  
-  val RdToDoComment = structdef extends RdComment {
-    field("ToDo", RdToDoContentSegment)
+
+  val RdCommentWithOneContentSegments = basestruct extends RdComment {
+    field("Content", RdDefaultSegmentWithContent)
+  }
+
+  val RdToDoComment = structdef extends RdCommentWithOneContentSegments {
+  }
+
+  val RdHackComment = structdef extends RdCommentWithOneContentSegments {
   }
 
   val RdInvalidComment = structdef extends RdCommentWithOneTextSegment {
@@ -287,18 +293,12 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
     field("Content", RdDefaultSegmentWithContent)
   }
 
-  val RdHack = basestruct {
-    field("Name", PredefinedType.string)
-    field("Description", RdContentSegments)
-    field("BlockingReferences", immutableList(RdReference))
-  }
-
-  val RdHackWithTickets = structdef extends RdHack {
-    field("Tickets", immutableList(RdTicketContentSegment))
+  val RdHackTextContentSegment = structdef extends RdContentSegment {
+    field("Text", RdHighlightedText)
   }
 
   val RdHackContentSegment = structdef extends RdContentSegment {
-    field("Hack", RdHackWithTickets)
+    field("Description", RdDefaultSegmentWithContent)
   }
 
   val RdCodeHighlightingRequest = structdef {

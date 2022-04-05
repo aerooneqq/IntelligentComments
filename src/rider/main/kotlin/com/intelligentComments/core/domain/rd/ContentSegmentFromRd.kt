@@ -40,6 +40,8 @@ open class ContentSegmentFromRd(
         is RdReferenceContentSegment -> ReferenceContentSegmentFromRd(contentSegment, parent, project)
         is RdToDoTextContentSegment -> ToDoTextContentSegmentFromRd(contentSegment, parent, project)
         is RdTicketContentSegment -> TicketSegmentFromRd(contentSegment, parent, project)
+        is RdHackTextContentSegment -> HackInlinedContentSegmentFromRd(contentSegment, parent, project)
+        is RdHackContentSegment -> HackContentSegmentFromRd(contentSegment, parent, project)
         is RdDefaultSegmentWithContent -> EntityWithContentSegmentsFromRd(contentSegment, parent, project)
         else -> throw IllegalArgumentException(contentSegment.toString())
       }
@@ -363,4 +365,24 @@ class TicketSegmentFromRd(
 ) : ContentSegmentFromRd(rdSegment, parent), TicketContentSegment {
   override val reference: Reference = ReferenceFromRd.getFrom(project, rdSegment.source)
   override val description: EntityWithContentSegments = EntityWithContentSegmentsFromRd(rdSegment.content, this, project)
+}
+
+class HackInlinedContentSegmentFromRd(
+  rdSegment: RdHackTextContentSegment,
+  parent: Parentable?,
+  project: Project
+) : ContentSegmentFromRd(rdSegment, parent), HackTextContentSegment {
+  override val text: HighlightedText = rdSegment.text.toIdeaHighlightedText(project, this)
+}
+
+class HackContentSegmentFromRd(
+  rdSegment: RdHackContentSegment,
+  parent: Parentable?,
+  project: Project
+) : ContentSegmentFromRd(rdSegment, parent), HackWithTicketsContentSegment {
+  override val content: EntityWithContentSegments = EntityWithContentSegmentsFromRd(rdSegment.description, this, project)
+
+  init {
+    content.content.processSegments(project.service<ContentProcessingStrategyImpl>())
+  }
 }

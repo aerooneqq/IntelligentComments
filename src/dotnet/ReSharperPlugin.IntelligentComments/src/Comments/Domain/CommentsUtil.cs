@@ -26,6 +26,7 @@ public static class CommentsUtil
       IDisablingComment disablingComment => disablingComment.ToRdComment(),
       IInlineReferenceComment comment => comment.ToRdComment(),
       IToDoComment comment => comment.ToRdComment(),
+      IHackComment comment => comment.ToRdComment(),
       _ => throw new ArgumentOutOfRangeException(commentBase.GetType().Name)
     };
   }
@@ -33,7 +34,13 @@ public static class CommentsUtil
   [NotNull]
   private static RdToDoComment ToRdComment([NotNull] this IToDoComment toDoComment)
   {
-    return new RdToDoComment(toDoComment.ToDoContentSegment.ToRdContentSegment(), toDoComment.GetRdRange());
+    return new RdToDoComment(toDoComment.ToDoContentSegment.Content.ToRdContentSegment(), toDoComment.GetRdRange());
+  }
+
+  [NotNull]
+  private static RdHackComment ToRdHackComment([NotNull] this IHackComment comment)
+  {
+    return new RdHackComment(comment.HackContentSegment.Content.ToRdContentSegment(), comment.GetRdRange());
   }
 
   [NotNull]
@@ -124,9 +131,23 @@ public static class CommentsUtil
       IToDoTextContentSegment contentSegment => contentSegment.ToRdContentSegment(),
       ITicketContentSegment contentSegment => contentSegment.ToRdTicket(),
       IToDoContentSegment contentSegment => contentSegment.ToRdContentSegment(),
+      IHackContentSegment contentSegment => contentSegment.ToRdContentSegment(),
+      IInlineHackContentSegment contentSegment => contentSegment.ToRdContentSegment(),
       IEntityWithContentSegments contentSegment => contentSegment.ToRdContentSegment(),
       _ => throw new ArgumentOutOfRangeException(segment.GetType().Name)
     };
+  }
+
+  [NotNull]
+  private static RdHackTextContentSegment ToRdContentSegment([NotNull] this IInlineHackContentSegment segment)
+  {
+    return new RdHackTextContentSegment(segment.Text.ToRdHighlightedText());
+  }
+
+  [NotNull]
+  private static RdHackContentSegment ToRdContentSegment([NotNull] this IHackContentSegment segment)
+  {
+    return new RdHackContentSegment(segment.Content.ToRdContentSegment());
   }
 
   [NotNull]

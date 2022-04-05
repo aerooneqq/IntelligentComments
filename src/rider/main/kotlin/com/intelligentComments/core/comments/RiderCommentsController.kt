@@ -7,7 +7,6 @@ import com.intelligentComments.core.comments.storages.DocumentCommentsWithFoldin
 import com.intelligentComments.core.domain.core.*
 import com.intelligentComments.core.settings.CommentsDisplayKind
 import com.intelligentComments.core.settings.RiderIntelligentCommentsSettingsProvider
-import com.intelligentComments.core.utils.OnePooledActionWithEdtContinuationAtTimeScheduler
 import com.intelligentComments.ui.comments.model.*
 import com.intelligentComments.ui.comments.renderers.CollapsedCommentRenderer
 import com.intelligentComments.ui.comments.renderers.RendererWithRectangleModel
@@ -307,7 +306,7 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
 fun CommentBase.createCommentUiModel(project: Project, editor: Editor): CommentUiModelBase {
   return when (val comment = this) {
     is DocComment -> DocCommentUiModel(comment, project, editor)
-    is ToDoComment -> ToDoCommentUiModel(comment, project, editor)
+    is CommentWithOneContentSegments -> CommentWithOneContentSegmentsUiModel(comment, project, editor)
     is CommentWithOneTextSegment -> CommentWithOneTextSegmentUiModel(comment, project, editor)
     else -> throw IllegalArgumentException(comment.javaClass.name)
   }

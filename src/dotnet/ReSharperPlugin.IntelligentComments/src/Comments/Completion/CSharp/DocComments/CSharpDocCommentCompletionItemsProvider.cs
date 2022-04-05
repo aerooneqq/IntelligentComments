@@ -27,7 +27,8 @@ public class CSharpDocCommentCompletionItemsProvider : ItemsProviderOfSpecificCo
     new(DocCommentsBuilderUtil.TodoTagName, EmptyArray.GetInstance<string>(), true),
     new(DocCommentsBuilderUtil.TicketsSectionTagName, EmptyArray.GetInstance<string>(), true),
     new(DocCommentsBuilderUtil.TicketTagName, DocCommentsBuilderUtil.PossibleTicketAttributes.ToArray(), true),
-    new(DocCommentsBuilderUtil.DescriptionTagName, EmptyArray.GetInstance<string>(), true)
+    new(DocCommentsBuilderUtil.DescriptionTagName, EmptyArray.GetInstance<string>(), true),
+    new(DocCommentsBuilderUtil.HackTagName, EmptyArray.GetInstance<string>(), true)
   };
   
   protected override bool AddLookupItems(ContextInDocComment context, IItemsCollector collector)

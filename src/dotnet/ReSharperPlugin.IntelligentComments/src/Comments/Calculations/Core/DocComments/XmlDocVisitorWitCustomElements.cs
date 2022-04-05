@@ -27,10 +27,11 @@ public abstract class XmlDocVisitorWitCustomElements : XmlDocVisitor
       [DocCommentsBuilderUtil.ImageTagName] = VisitImage,
       [DocCommentsBuilderUtil.ReferenceTagName] = VisitReference,
       [DocCommentsBuilderUtil.InvariantTagName] = VisitInvariant,
-      [DocCommentsBuilderUtil.TodoTagName] = VisitTodo
+      [DocCommentsBuilderUtil.TodoTagName] = VisitTodo,
+      [DocCommentsBuilderUtil.HackTagName] = VisitHack,
     };
   }
-  
+
 
   public sealed override void VisitUnknownTag(XmlElement element)
   {
@@ -41,6 +42,7 @@ public abstract class XmlDocVisitorWitCustomElements : XmlDocVisitor
     }
   }
 
+  protected abstract void VisitHack([NotNull] XmlElement element);
   protected abstract void VisitImage([NotNull] XmlElement element);
   protected abstract void VisitInvariant([NotNull] XmlElement element);
   protected abstract void VisitReference([NotNull] XmlElement element);

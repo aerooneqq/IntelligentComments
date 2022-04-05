@@ -11,6 +11,7 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComm
 [SolutionComponent]
 public class GithubTicketSourceParser : ITicketSourceParser
 {
+  //e.g. https://github.com/dotnet/core/issues/7341
   private const string Issues = "issues";
   [NotNull] private const string Pattern = @"https:\/\/github\.com\/.*\/issues\/[0-9]+";
 

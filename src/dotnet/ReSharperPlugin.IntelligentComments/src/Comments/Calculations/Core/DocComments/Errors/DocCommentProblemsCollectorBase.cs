@@ -16,29 +16,7 @@ using ReSharperPlugin.IntelligentComments.Comments.Caches.Invariants;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.References;
 
-namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments;
-
-[StaticSeverityHighlighting(Severity.ERROR, typeof(CommentError), OverlapResolve = OverlapResolveKind.ERROR)]
-public class CommentError : IHighlighting
-{
-  private readonly DocumentRange myRange;
-  
-  
-  public string ToolTip { get; }
-  public string ErrorStripeToolTip { get; }
-
-
-  public CommentError(DocumentRange range, string errorMessage)
-  {
-    myRange = range;
-    ToolTip = errorMessage;
-    ErrorStripeToolTip = errorMessage;
-  }
-
-  
-  public bool IsValid() => myRange.IsValid();
-  public DocumentRange CalculateRange() => myRange;
-}
+namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments.Errors;
 
 public record Context([NotNull] IDocCommentBlock AdjustedComment, [NotNull] List<HighlightingInfo> Highlightings);
 
@@ -60,16 +38,31 @@ public abstract class CommentProblemsCollectorBase : ICommentProblemsCollector
       [DocCommentsBuilderUtil.InvariantTagName] = ProcessInvariant,
       [DocCommentsBuilderUtil.ReferenceTagName] = ProcessReference,
       [DocCommentsBuilderUtil.TodoTagName] = ProcessToDo,
+      [DocCommentsBuilderUtil.HackTagName] = ProcessHack
     };
   }
-
   
-  private void ProcessToDo([NotNull] IXmlTag tag, [NotNull] Context context)
-  {
-    if (!CheckThatAllChildrenAreTags(tag, context, DocCommentsBuilderUtil.PossibleInnerFirstLevelTagsOfTodo)) return;
 
-    var ticketsTag = tag.InnerTags.FirstOrDefault(child => child.Header.Name.XmlName == DocCommentsBuilderUtil.TicketsSectionTagName);
-    if (ticketsTag is { } && !CheckTicketsTag(ticketsTag, context)) return;
+  private void ProcessHack(IXmlTag hackTag, Context context)
+  {
+    if (!CheckThatAllChildrenAreTags(hackTag, context, DocCommentsBuilderUtil.PossibleInnerFirstLevelTagsOfHack))
+      return;
+
+    CheckTicketsSectionsIfPresent(hackTag, context);
+  }
+
+  private bool CheckTicketsSectionsIfPresent([NotNull] IXmlTag parentTag, [NotNull] Context context)
+  {
+    var ticketsTag = parentTag.InnerTags.FirstOrDefault(
+      child => child.Header.Name.XmlName == DocCommentsBuilderUtil.TicketsSectionTagName);
+    
+    return ticketsTag is null || CheckTicketsTag(ticketsTag, context);
+  }
+  
+  private void ProcessToDo([NotNull] IXmlTag todoTag, [NotNull] Context context)
+  {
+    if (!CheckThatAllChildrenAreTags(todoTag, context, DocCommentsBuilderUtil.PossibleInnerFirstLevelTagsOfTodo)) return;
+    CheckTicketsSectionsIfPresent(todoTag, context);
   }
 
   private bool CheckTicketsTag([NotNull] IXmlTag xmlTag, [NotNull] Context context)

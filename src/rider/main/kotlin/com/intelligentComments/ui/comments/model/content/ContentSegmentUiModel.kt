@@ -7,6 +7,8 @@ import com.intelligentComments.ui.comments.model.content.code.CodeSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.example.ExampleSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.exceptions.ExceptionUiModel
 import com.intelligentComments.ui.comments.model.content.exceptions.GroupedExceptionUiModel
+import com.intelligentComments.ui.comments.model.content.hacks.GroupedHackUiModel
+import com.intelligentComments.ui.comments.model.content.hacks.HackWithTicketsUiModel
 import com.intelligentComments.ui.comments.model.content.image.ImageContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.invariants.GroupedInvariantsUiModel
 import com.intelligentComments.ui.comments.model.content.invariants.TextInvariantUiModel
@@ -33,6 +35,7 @@ import com.intelligentComments.ui.comments.model.content.todo.GroupedToDoUiModel
 import com.intelligentComments.ui.comments.model.content.todo.ToDoTextContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.value.ValueUiModel
 import com.intelligentComments.ui.comments.model.content.todo.ToDoWithTicketsUiModel
+import com.intelligentComments.ui.comments.renderers.segments.GroupedHacksRenderer
 import com.intellij.openapi.project.Project
 
 abstract class ContentSegmentUiModel(
@@ -65,6 +68,7 @@ abstract class ContentSegmentUiModel(
         is GroupedReferencesSegment -> GroupedReferencesUiModel(project, parent, segment)
         is GroupedTodosSegment -> GroupedToDoUiModel(project, parent, segment)
         is GroupedTicketsSegment -> GroupedTicketsUiModel(project, parent, segment)
+        is GroupedHacksSegment -> GroupedHackUiModel(project, parent, segment)
         is ExampleContentSegment -> ExampleSegmentUiModel(project, parent, segment)
         is SummaryContentSegment -> SummaryUiModel(project, parent, segment)
         is CodeSegment -> CodeSegmentUiModel(project, parent, segment)
@@ -73,6 +77,7 @@ abstract class ContentSegmentUiModel(
         is TextInvariantSegment -> TextInvariantUiModel(project, parent, segment)
         is ToDoWithTicketsContentSegment -> ToDoWithTicketsUiModel(project, parent, segment)
         is TicketContentSegment -> TicketUiModel(project, parent, segment)
+        is HackWithTicketsContentSegment -> HackWithTicketsUiModel(project, parent, segment)
         is EntityWithContentSegments -> ContentSegmentsUiModel(project, parent, segment.content)
         else -> throw IllegalArgumentException(segment.javaClass.name)
       }

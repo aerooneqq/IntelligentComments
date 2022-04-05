@@ -161,3 +161,7 @@ public record TicketContentSegment(
   IEntityWithContentSegments Description, 
   IDomainReference Reference
 ) : ITicketContentSegment;
+
+public record InlineHackContentSegment(IHighlightedText Text) : IInlineHackContentSegment;
+
+public record HackContentSegment(IEntityWithContentSegments Content) : IHackContentSegment;

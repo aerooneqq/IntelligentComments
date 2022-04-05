@@ -43,3 +43,8 @@ public interface IInlineReferenceComment : ICommentBase
 {
   [NotNull] IInlineReferenceContentSegment Segment { get; }
 }
+
+public interface IHackComment : ICommentBase
+{
+  [NotNull] IHackContentSegment HackContentSegment { get; }
+}

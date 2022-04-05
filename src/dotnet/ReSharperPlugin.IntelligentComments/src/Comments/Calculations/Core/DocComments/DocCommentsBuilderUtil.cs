@@ -29,6 +29,8 @@ internal static class DocCommentsBuilderUtil
   [NotNull] internal const string DescriptionTagName = "description";
   [NotNull] internal const string TicketsSectionTagName = "tickets";
   [NotNull] internal const string TicketTagName = "ticket";
+  [NotNull] internal const string HackTagName = "hack";
+  
 
   [NotNull] internal const string TicketSourceAttrName = "source";
   [NotNull] internal const string InvariantReferenceSourceAttrName = "invariant";
@@ -44,6 +46,13 @@ internal static class DocCommentsBuilderUtil
 
   [NotNull]
   internal static HashSet<string> PossibleInnerFirstLevelTagsOfTodo { get; } = new()
+  {
+    DescriptionTagName,
+    TicketsSectionTagName
+  };
+
+  [NotNull]
+  internal static HashSet<string> PossibleInnerFirstLevelTagsOfHack { get; } = new()
   {
     DescriptionTagName,
     TicketsSectionTagName

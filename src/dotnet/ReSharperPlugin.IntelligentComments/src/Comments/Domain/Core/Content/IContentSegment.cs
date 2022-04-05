@@ -92,7 +92,7 @@ public interface IImageContentSegment : IContentSegment
 
 public interface IToDoTextContentSegment : IContentSegment
 {
-  [NotNull] public IHighlightedText Text { get; }
+  [NotNull] IHighlightedText Text { get; }
 }
 
 public interface ITicketContentSegment : IContentSegment
@@ -102,6 +102,16 @@ public interface ITicketContentSegment : IContentSegment
 }
 
 public interface IToDoContentSegment : IContentSegment
+{
+  [NotNull] IEntityWithContentSegments Content { get; }
+}
+
+public interface IInlineHackContentSegment : IContentSegment
+{
+  [NotNull] IHighlightedText Text { get; }
+}
+
+public interface IHackContentSegment : IContentSegment
 {
   [NotNull] IEntityWithContentSegments Content { get; }
 }

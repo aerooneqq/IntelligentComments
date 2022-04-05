@@ -24,6 +24,7 @@ class ContentProcessingStrategyImpl : ContentProcessingStrategy {
     groupSummaryIfNeeded(settings, segments)
     groupRemarksIfNeeded(settings, segments)
 
+    groupHacks(segments)
     groupTickets(segments)
     groupTodos(segments)
     groupInvariants(segments)
@@ -33,6 +34,10 @@ class ContentProcessingStrategyImpl : ContentProcessingStrategy {
       removeAllSegmentsButSummaries(segments)
       addEmptyContentSegmentIfNeeded(segments)
     }
+  }
+
+  private fun groupHacks(segments: MutableList<ContentSegment>) {
+    groupSegmentsOfType<HackWithTicketsContentSegment>(segments) { GroupedHacksSegment(it, segments.first().parent )}
   }
 
   private fun groupTickets(segments: MutableList<ContentSegment>) {
