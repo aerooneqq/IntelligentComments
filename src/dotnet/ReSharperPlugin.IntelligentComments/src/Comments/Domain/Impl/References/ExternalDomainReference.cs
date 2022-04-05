@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using JetBrains.Util;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
 
@@ -12,8 +13,12 @@ public abstract class ExternalDomainReference : DomainReferenceBase, IExternalDo
 
 public class HttpDomainReference : ExternalDomainReference, IHttpDomainReference
 {
-  public HttpDomainReference(string rawLink) : base(rawLink)
+  public string DisplayName { get; }
+  
+  
+  public HttpDomainReference([NotNull] string displayName, [NotNull] string rawLink) : base(rawLink)
   {
+    DisplayName = displayName;
   }
 }
 

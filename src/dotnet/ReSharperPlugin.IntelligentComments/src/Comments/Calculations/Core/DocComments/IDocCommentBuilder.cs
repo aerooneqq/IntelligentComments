@@ -15,6 +15,7 @@ using JetBrains.Util.Logging;
 using ReSharperPlugin.IntelligentComments.Comments.Caches;
 using ReSharperPlugin.IntelligentComments.Comments.Caches.Invariants;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.CodeHighlighting;
+using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments.Tickets;
 using ReSharperPlugin.IntelligentComments.Comments.CodeFragmentsHighlighting;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.Content;
@@ -53,10 +54,12 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
   [NotNull] private readonly string myParamAttributeId;
   [NotNull] private readonly string myTypeParamAttributeId;
   [NotNull] private readonly ReferencesCache myReferencesCache;
+  [NotNull] private readonly ISolution mySolution;
 
 
   protected DocCommentBuilderBase([NotNull] IDocCommentBlock comment) : base(comment)
   {
+    mySolution = comment.GetSolution();
     myDomainResolveContext = new DomainResolveContextImpl(comment.GetSolution(), comment.GetSourceFile()?.Document);
     myLanguageManager = LanguageManager.Instance;
     myHighlightersProvider = myLanguageManager.GetService<IHighlightersProvider>(comment.Language);
@@ -418,7 +421,7 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
       
       var highlighter = myHighlightersProvider.GetSeeAlsoLinkHighlighter(0, length);
       var highlightedText = new HighlightedText(description, new[] { highlighter });
-      return new SeeAlsoLinkContentSegment(highlightedText, new HttpDomainReference(referenceRawText));
+      return new SeeAlsoLinkContentSegment(highlightedText, new HttpDomainReference(referenceRawText, referenceRawText));
     });
   }
 
@@ -511,7 +514,7 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
     }
     else if (element.GetAttribute(Href) is { } hrefAttrValue && !hrefAttrValue.IsEmpty())
     {
-      domainReference = new HttpDomainReference(hrefAttrValue);
+      domainReference = new HttpDomainReference(hrefAttrValue, hrefAttrValue);
     }
     else if (element.GetAttribute(LangWord) is { } langWordAttrValue && !langWordAttrValue.IsEmpty())
     {
@@ -721,7 +724,9 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
     if (element.GetAttributeNode(DocCommentsBuilderUtil.TicketSourceAttrName) is not { } attribute) return null;
 
     var attributeValue = attribute.Value;
-    var reference = new HttpDomainReference(attributeValue);
+    var reference = TicketSourceParserUtil.TryParse(mySolution, attributeValue) ??
+                    new HttpDomainReference(attributeValue, attributeValue);
+    
     var description = new EntityWithContentSegments(ContentSegments.CreateEmpty());
     ProcessEntityWithContentSegments(description, element, false);
     

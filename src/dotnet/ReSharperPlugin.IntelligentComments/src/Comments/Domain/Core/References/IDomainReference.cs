@@ -9,7 +9,7 @@ public interface IDomainReference
   [NotNull] string RawValue { get; }
 
 
-  [NotNull] DomainResolveResult Resolve(IDomainResolveContext context);
+  [NotNull] DomainResolveResult Resolve([NotNull] IDomainResolveContext context);
 }
 
 public interface IProxyDomainReference : IDomainReference

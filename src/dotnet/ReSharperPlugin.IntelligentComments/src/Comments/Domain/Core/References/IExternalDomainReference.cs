@@ -9,6 +9,7 @@ public interface IExternalDomainReference : IDomainReference
 
 public interface IHttpDomainReference : IExternalDomainReference
 {
+  [NotNull] string DisplayName { get; }
 }
 
 public interface IFileDomainReference : IExternalDomainReference
