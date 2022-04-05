@@ -1,7 +1,6 @@
 using System;
 using System.Text.RegularExpressions;
 using JetBrains.ProjectModel;
-using JetBrains.Util;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.References;
 
@@ -14,15 +13,7 @@ public class YoutrackTicketSourceParser : ITicketSourceParser
   private const string Issue = "issue";
   private const string Pattern = @"https:\/\/youtrack..*\/issue\/.+";
 
-  private readonly ILogger myLogger;
 
-
-  public YoutrackTicketSourceParser(ILogger logger)
-  {
-    myLogger = logger;
-  }
-  
-  
   public IExternalDomainReference TryParse(string sourceValue)
   {
     if (TicketSourceParserUtil.TryGetDisplayName(sourceValue, Pattern, Issue) is not { } displayName) return null;

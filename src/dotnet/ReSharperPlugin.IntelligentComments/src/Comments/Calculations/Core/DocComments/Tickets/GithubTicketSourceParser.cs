@@ -14,16 +14,7 @@ public class GithubTicketSourceParser : ITicketSourceParser
   private const string Issues = "issues";
   [NotNull] private const string Pattern = @"https:\/\/github\.com\/.*\/issues\/[0-9]+";
 
-  
-  [NotNull] private readonly ILogger myLogger;
-  
 
-  public GithubTicketSourceParser([NotNull] ILogger logger)
-  {
-    myLogger = logger;
-  }
-  
-  
   public IExternalDomainReference TryParse(string sourceValue)
   {
     if (TicketSourceParserUtil.TryGetDisplayName(sourceValue, Pattern, Issues) is not { } displayName) return null;
