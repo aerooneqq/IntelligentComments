@@ -27,6 +27,7 @@ interface SandboxCodeEntityReference : CodeEntityReference {
 interface ExternalReference : BackendReference
 
 interface HttpLinkReference : ExternalReference {
+  val displayName: String
   val rawLink: String
 }
 

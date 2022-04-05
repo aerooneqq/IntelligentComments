@@ -20,6 +20,23 @@ public class HttpDomainReference : ExternalDomainReference, IHttpDomainReference
   {
     DisplayName = displayName;
   }
+
+
+  public override DomainResolveResult Resolve(IDomainResolveContext context)
+  {
+    return new DomainWebResourceResolveResult(RawValue);
+  }
+}
+
+public class DomainWebResourceResolveResult : DomainResolveResult
+{
+  [NotNull] public string Link { get; }
+  
+  
+  public DomainWebResourceResolveResult([NotNull] string link)
+  {
+    Link = link;
+  }
 }
 
 public class FileDomainReference : ExternalDomainReference, IFileDomainReference

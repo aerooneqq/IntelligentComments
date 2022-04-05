@@ -184,7 +184,9 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
 
   val RdExternalReference = basestruct extends RdReference { }
 
-  val RdHttpLinkReference = structdef extends RdExternalReference { }
+  val RdHttpLinkReference = structdef extends RdExternalReference {
+    field("DisplayName", PredefinedType.string)
+  }
 
   val RdFileReference = structdef extends RdExternalReference {
     field("Path", PredefinedType.string)
@@ -324,6 +326,10 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
 
   val RdInvariantResolveResult = structdef extends RdResolveResult {
     field("Invariant", RdTextInvariant)
+  }
+
+  val RdWebResourceResolveResult = structdef extends RdResolveResult {
+    field("Link", PredefinedType.string)
   }
 
   init {

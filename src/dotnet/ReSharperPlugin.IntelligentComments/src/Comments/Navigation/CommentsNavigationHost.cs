@@ -1,4 +1,6 @@
+using System;
 using JetBrains.Annotations;
+using JetBrains.Application.StdApplicationUI;
 using JetBrains.Application.Threading;
 using JetBrains.Core;
 using JetBrains.Lifetimes;
@@ -22,6 +24,7 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Navigation;
 public class CommentsNavigationHost
 {
   private readonly Lifetime myLifetime;
+  [NotNull] private readonly OpensUri myOpensUri;
   [NotNull] private readonly ILogger myLogger;
   [NotNull] private readonly ISolution mySolution;
   [NotNull] private readonly IDeclaredElementNavigationService myNavigationService;
@@ -32,6 +35,7 @@ public class CommentsNavigationHost
 
   public CommentsNavigationHost(
     Lifetime lifetime,
+    [NotNull] OpensUri opensUri,
     [NotNull] ILogger logger,
     [NotNull] ISolution solution,
     [NotNull] IDeclaredElementNavigationService navigationService,
@@ -40,6 +44,7 @@ public class CommentsNavigationHost
     [NotNull] RiderDocumentHost documentHost)
   {
     myLifetime = lifetime;
+    myOpensUri = opensUri;
     myLogger = logger;
     mySolution = solution;
     myNavigationService = navigationService;
@@ -90,6 +95,22 @@ public class CommentsNavigationHost
         {
           var offset = invariantResolveResult.InvariantDocumentOffset;
           offset.Document.GetPsiSourceFile(mySolution).Navigate(new TextRange(offset.Offset), true);
+          break;
+        }
+        case DomainWebResourceResolveResult result:
+        {
+          var uri = new Uri(result.Link);
+          if (!uri.IsHttpOrHttps()) return;
+
+          try
+          {
+            myOpensUri.OpenUri(uri);
+          }
+          catch (Exception ex)
+          {
+            myLogger.Warn(ex);
+          }
+          
           break;
         }
       }

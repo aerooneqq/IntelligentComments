@@ -44,6 +44,7 @@ public class RdReferenceConverter
       RdXmlDocCodeEntityReference xmlReference => TryGetXmlDocReference(textControlId, xmlReference),
       RdSandboxCodeEntityReference sandBoxReference => TryGetSandboxReference(sandBoxReference),
       RdInvariantReference invariantReference => new InvariantDomainReference(invariantReference.InvariantName),
+      RdHttpLinkReference httpReference => new HttpDomainReference(httpReference.DisplayName, httpReference.RawValue),
       _ => null
     };
   }

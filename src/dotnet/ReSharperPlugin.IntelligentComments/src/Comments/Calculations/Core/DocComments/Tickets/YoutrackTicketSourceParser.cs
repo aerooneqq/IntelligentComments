@@ -1,6 +1,5 @@
 using System;
 using System.Text.RegularExpressions;
-using JetBrains.Annotations;
 using JetBrains.ProjectModel;
 using JetBrains.Util;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
@@ -9,16 +8,16 @@ using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.References;
 namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments.Tickets;
 
 [SolutionComponent]
-public class GithubTicketSourceParser : ITicketSourceParser
+public class YoutrackTicketSourceParser : ITicketSourceParser
 {
-  private const string Issues = "issues";
-  [NotNull] private const string Pattern = @"https:\/\/github\.com\/.*\/issues\/[0-9]+";
+  //e.g: https://youtrack.jetbrains.com/issue/RIDER-68551
+  private const string Issue = "issue";
+  private const string Pattern = @"https:\/\/youtrack..*\/issue\/.+";
 
-  
-  [NotNull] private readonly ILogger myLogger;
-  
+  private readonly ILogger myLogger;
 
-  public GithubTicketSourceParser([NotNull] ILogger logger)
+
+  public YoutrackTicketSourceParser(ILogger logger)
   {
     myLogger = logger;
   }
@@ -28,15 +27,15 @@ public class GithubTicketSourceParser : ITicketSourceParser
   {
     if (Regex.Matches(sourceValue, Pattern).Count != 1) return null;
 
-    var issuesIndex = sourceValue.LastIndexOf(Issues, StringComparison.Ordinal);
+    var issuesIndex = sourceValue.LastIndexOf(Issue, StringComparison.Ordinal);
     if (issuesIndex == -1)
     {
-      myLogger.Error($"Somehow issues was not found after match in {sourceValue}");
+      myLogger.Error($"Somehow {Issue} was not found after match in {sourceValue}");
       return null;
     }
 
-    var issueNumber = sourceValue[(issuesIndex + Issues.Length + 1)..];
-    var displayName = $"[Github]: {issueNumber}";
+    var issueNumber = sourceValue[(issuesIndex + Issue.Length + 1)..];
+    var displayName = $"[YT]: {issueNumber}";
     return new HttpDomainReference(displayName, sourceValue);
   }
 }

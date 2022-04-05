@@ -319,7 +319,7 @@ public static class CommentsUtil
   [NotNull]
   private static RdHttpLinkReference ToRdReference([NotNull] this IHttpDomainReference domainReference)
   {
-    return new RdHttpLinkReference(domainReference.RawValue);
+    return new RdHttpLinkReference(domainReference.DisplayName, domainReference.RawValue);
   }
 
   [NotNull]

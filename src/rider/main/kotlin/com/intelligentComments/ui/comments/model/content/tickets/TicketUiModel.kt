@@ -34,7 +34,13 @@ class TicketUiModel(
 }
 
 fun createHighlightedTicketName(ticket: TicketContentSegment): HighlightedText {
-  val text = ticket.reference.rawValue
+  val reference = ticket.reference
+  val text = if (reference is HttpLinkReference) {
+    reference.displayName
+  } else {
+    reference.rawValue
+  }
+
   val highlighter = CommonsHighlightersFactory.tryCreateCommentHighlighter(
     ticket,
     text.length,

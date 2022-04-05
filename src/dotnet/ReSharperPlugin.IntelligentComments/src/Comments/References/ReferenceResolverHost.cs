@@ -73,6 +73,7 @@ public static class ResolveResultExtensions
     {
       InvariantDomainResolveResult result => new RdInvariantResolveResult(result.Invariant.ToRdInvariant()),
       EmptyDomainResolveResult => new RdInvalidResolveResult(null),
+      DomainWebResourceResolveResult result => new RdWebResourceResolveResult(result.Link),
       _ => throw new ArgumentOutOfRangeException(domainResolveResult.GetType().Name)
     };
   }

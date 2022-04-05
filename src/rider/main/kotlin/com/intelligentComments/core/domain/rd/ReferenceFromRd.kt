@@ -50,6 +50,7 @@ open class ExternalReferenceFromRd(reference: RdExternalReference) : ReferenceFr
 
 open class HttpLinkReferenceFromRd(reference: RdHttpLinkReference) : ExternalReferenceFromRd(reference), HttpLinkReference {
   override val rawLink: String = reference.rawValue
+  override val displayName: String = reference.displayName
 }
 
 class ProxyReferenceFromRd(reference: RdProxyReference): ReferenceFromRd(reference), ProxyReference {
@@ -66,6 +67,7 @@ fun Reference.toRdReference(project: Project): RdReference {
       range.toRdTextRange(),
       rawValue
     )
+    is HttpLinkReference -> RdHttpLinkReference(displayName, rawValue)
     is InvariantReference -> RdInvariantReference(this.name, this.name)
     else -> throw IllegalArgumentException(this.javaClass.name)
   }

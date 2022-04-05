@@ -70,7 +70,7 @@ class HighlightersClickHandler(private val project: Project) {
   }
 
   private fun tryGetReferenceFrom(highlighter: TextHighlighter): Reference? {
-    return highlighter.references.firstOrNull { it is CodeEntityReference || it is ProxyReference || it is InvariantReference }
+    return highlighter.references.firstOrNull { it is BackendReference }
   }
 
   fun handleCtrlClick(highlighter: TextHighlighter, editor: Editor) {
