@@ -46,6 +46,10 @@ interface ReferenceContentSegment : ContentSegment {
 
 interface FrontendReference : Reference
 
-interface FrontendTicketReference : FrontendReference {
-  val ticket: TicketContentSegment
+interface FrontendReferenceWithContentSegment : FrontendReference {
+  val model: ContentSegment
 }
+
+interface FrontendPopupSourceReference : FrontendReferenceWithContentSegment
+
+interface FrontendTicketReference : FrontendPopupSourceReference
