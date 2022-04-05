@@ -26,17 +26,8 @@ public class GithubTicketSourceParser : ITicketSourceParser
   
   public IExternalDomainReference TryParse(string sourceValue)
   {
-    if (Regex.Matches(sourceValue, Pattern).Count != 1) return null;
-
-    var issuesIndex = sourceValue.LastIndexOf(Issues, StringComparison.Ordinal);
-    if (issuesIndex == -1)
-    {
-      myLogger.Error($"Somehow issues was not found after match in {sourceValue}");
-      return null;
-    }
-
-    var issueNumber = sourceValue[(issuesIndex + Issues.Length + 1)..];
-    var displayName = $"[Github]: {issueNumber}";
+    if (TicketSourceParserUtil.TryGetDisplayName(sourceValue, Pattern, Issues) is not { } displayName) return null;
+    displayName = $"[Github]: {displayName}";
     return new HttpDomainReference(displayName, sourceValue);
   }
 }

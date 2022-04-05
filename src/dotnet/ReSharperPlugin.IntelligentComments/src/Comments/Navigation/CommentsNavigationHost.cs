@@ -99,11 +99,11 @@ public class CommentsNavigationHost
         }
         case DomainWebResourceResolveResult result:
         {
-          var uri = new Uri(result.Link);
-          if (!uri.IsHttpOrHttps()) return;
-
           try
           {
+            var uri = new Uri(result.Link);
+            if (!uri.IsHttpOrHttps()) break;
+            
             myOpensUri.OpenUri(uri);
           }
           catch (Exception ex)

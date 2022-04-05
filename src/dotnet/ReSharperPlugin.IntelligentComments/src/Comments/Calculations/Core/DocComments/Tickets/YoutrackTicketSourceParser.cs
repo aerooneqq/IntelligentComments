@@ -25,17 +25,8 @@ public class YoutrackTicketSourceParser : ITicketSourceParser
   
   public IExternalDomainReference TryParse(string sourceValue)
   {
-    if (Regex.Matches(sourceValue, Pattern).Count != 1) return null;
-
-    var issuesIndex = sourceValue.LastIndexOf(Issue, StringComparison.Ordinal);
-    if (issuesIndex == -1)
-    {
-      myLogger.Error($"Somehow {Issue} was not found after match in {sourceValue}");
-      return null;
-    }
-
-    var issueNumber = sourceValue[(issuesIndex + Issue.Length + 1)..];
-    var displayName = $"[YT]: {issueNumber}";
+    if (TicketSourceParserUtil.TryGetDisplayName(sourceValue, Pattern, Issue) is not { } displayName) return null;
+    displayName = $"[YT]: {displayName}";
     return new HttpDomainReference(displayName, sourceValue);
   }
 }
