@@ -156,6 +156,7 @@ abstract class LeftHeaderRightContentRenderer(
     if (shouldDrawHeader()) {
       width = additionalRenderInfo.topmostLeftIndent
       width += calculateHeaderContentDelta()
+      width += calculateHeaderHeightInternal(editor)
     }
 
     width += ContentSegmentsUtil.calculateContentWidth(content, editor, additionalRenderInfo)

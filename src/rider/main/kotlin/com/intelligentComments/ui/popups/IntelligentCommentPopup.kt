@@ -1,6 +1,7 @@
 package com.intelligentComments.ui.popups
 
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
+import com.intelligentComments.ui.comments.renderers.segments.LeftTextHeaderAndRightContentRenderer
 import com.intelligentComments.ui.util.RectanglesModelUtil
 import com.intelligentComments.ui.util.RenderAdditionalInfo
 import com.intelligentComments.ui.util.UpdatedGraphicsCookie
@@ -57,14 +58,14 @@ class IntelligentCommentPopup(
       const val padding = 10
     }
 
-
+    private val additionalInfo = RenderAdditionalInfo(25)
     val cachedSize: Dimension
 
 
     init {
       val renderer = model.createRenderer()
-      val width = renderer.calculateExpectedWidthInPixels(editor, RenderAdditionalInfo.emptyInstance)
-      val height = renderer.calculateExpectedHeightInPixels(editor, RenderAdditionalInfo.emptyInstance)
+      val width = renderer.calculateExpectedWidthInPixels(editor, additionalInfo)
+      val height = renderer.calculateExpectedHeightInPixels(editor, additionalInfo)
 
       cachedSize = Dimension(width, height)
 
@@ -95,7 +96,7 @@ class IntelligentCommentPopup(
       }
 
       val rectanglesModel = RectanglesModelUtil.buildRectanglesModel(editor, model, 0, 0).model
-      model.createRenderer().render(g, targetRect, editor, rectanglesModel, RenderAdditionalInfo.emptyInstance)
+      model.createRenderer().render(g, targetRect, editor, rectanglesModel, additionalInfo)
     }
   }
 }
