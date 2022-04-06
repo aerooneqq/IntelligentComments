@@ -24,6 +24,8 @@ public class CSharpDocCommentCompletionItemsProvider : ItemsProviderOfSpecificCo
     new(DocCommentsBuilderUtil.ImageTagName, new[] { DocCommentsBuilderUtil.ImageSourceAttrName }, true),
     new(DocCommentsBuilderUtil.InvariantTagName, new[] { DocCommentsBuilderUtil.InvariantNameAttrName }, false),
     new(DocCommentsBuilderUtil.ReferenceTagName, new[] { DocCommentsBuilderUtil.InvariantReferenceSourceAttrName }, false),
+    new(DocCommentsBuilderUtil.ReferenceTagName, new[] { DocCommentsBuilderUtil.HackReferenceSourceAttributeName }, false),
+    new(DocCommentsBuilderUtil.ReferenceTagName, new[] { DocCommentsBuilderUtil.TodoReferenceSourceAttributeName }, false),
     new(DocCommentsBuilderUtil.TodoTagName, EmptyArray.GetInstance<string>(), true),
     new(DocCommentsBuilderUtil.TicketsSectionTagName, EmptyArray.GetInstance<string>(), true),
     new(DocCommentsBuilderUtil.TicketTagName, DocCommentsBuilderUtil.PossibleTicketAttributes.ToArray(), true),

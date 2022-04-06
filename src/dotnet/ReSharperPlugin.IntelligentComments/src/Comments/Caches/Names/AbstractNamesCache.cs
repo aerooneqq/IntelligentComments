@@ -13,7 +13,13 @@ using ReSharperPlugin.IntelligentComments.Comments.Caches.Text.Trie;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Caches.Names;
 
-public abstract class AbstractNamesCache : SimpleICache<Dictionary<string, int>> 
+public interface INamesCache
+{
+  int GetNameCount([NotNull] string name);
+  [NotNull] [ItemNotNull] IEnumerable<string> GetAllNamesFor([NotNull] string prefix);
+}
+
+public abstract class AbstractNamesCache : SimpleICache<Dictionary<string, int>>, INamesCache
 {
   [NotNull] private static readonly IUnsafeMarshaller<Dictionary<string, int>> ourMarshaller =
     UnsafeMarshallers.GetCollectionMarshaller(
@@ -114,7 +120,7 @@ public abstract class AbstractNamesCache : SimpleICache<Dictionary<string, int>>
     base.Drop(sourceFile);
   }
 
-  public int GetInvariantNameCount([NotNull] string name)
+  public int GetNameCount([NotNull] string name)
   {
     return Trie.TryGet(name) ?? 0;
   }

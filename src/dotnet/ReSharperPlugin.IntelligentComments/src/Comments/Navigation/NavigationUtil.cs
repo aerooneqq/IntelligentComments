@@ -1,3 +1,4 @@
+using System;
 using JetBrains.Annotations;
 using JetBrains.Application.DataContext;
 using JetBrains.DocumentModel;
@@ -16,8 +17,8 @@ using JetBrains.TextControl.DataContext;
 using JetBrains.Util;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.References;
 using ReSharperPlugin.IntelligentComments.Comments.Navigation.FindReferences;
-using System;
 using System.Linq;
+using ReSharperPlugin.IntelligentComments.Comments.Caches;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.InlineReferenceComments;
 using ReSharperPlugin.IntelligentComments.Comments.Completion.CSharp.DocComments;
@@ -27,39 +28,61 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Navigation;
 internal static class NavigationUtil
 {
   [CanBeNull]
-  public static string TryExtractInvariantNameFromReference([NotNull] IDataContext dataContext)
+  public static NameExtraction? TryExtractNameFromReference([NotNull] IDataContext dataContext)
   {
     var token = TryFindTokenUnderCaret(dataContext, out var caretDocumentOffset);
     if (token is null || !caretDocumentOffset.HasValue) return null;
 
     var caretOffset = caretDocumentOffset.Value;
-    return TryExtractAttributeValueFromTag(token, caretOffset, DocCommentsBuilderUtil.IsInvariantReferenceSourceAttribute) ??
+    return TryExtractNameFromReferenceAttributeValue(token, caretOffset) ??
            TryExtractInvariantNameFromInlinedReference(token, caretOffset);
   }
 
   [CanBeNull]
-  private static string TryExtractAttributeValueFromTag(
+  private static NameExtraction? TryExtractNameFromReferenceAttributeValue(
+    [NotNull] ITreeNode tokenUnderCaret,
+    DocumentOffset caretDocumentOffset)
+  {
+    return TryExtractNameFromAttribute(
+      tokenUnderCaret, caretDocumentOffset, DocCommentsBuilderUtil.TryExtractNameFromPossibleReferenceSourceAttribute);
+  }
+
+  private static NameExtraction? TryExtractNameFromAttribute(
     [NotNull] ITreeNode tokenUnderCaret,
     DocumentOffset caretDocumentOffset,
-    [NotNull] Func<IXmlAttribute, bool> attributeValidityChecker)
+    Func<IXmlAttribute, NameExtraction?> extractor)
   {
-    if (tokenUnderCaret?.TryFindDocCommentBlock() is not { } docCommentBlock) 
-      return null;
-    
-    if (docCommentBlock.TryGetXmlToken(caretDocumentOffset) is not IXmlAttributeValue { Parent: { } parent } value)
+    if (tokenUnderCaret?.TryFindDocCommentBlock() is not { } docCommentBlock)
       return null;
 
-    if (parent is not IXmlAttribute attribute || !attributeValidityChecker(attribute)) 
+    if (docCommentBlock.TryGetXmlToken(caretDocumentOffset) is not IXmlAttributeValue { Parent: { } parent })
       return null;
-    
-    return value.UnquotedValue;
+
+    if (parent is not IXmlAttribute attribute || extractor(attribute) is not { } extraction)
+    {
+      return null;
+    }
+
+    return extraction;
   }
-  
+
+  [CanBeNull]
+  private static NameExtraction? TryExtractNameFromTag(
+    [NotNull] ITreeNode tokenUnderCaret,
+    DocumentOffset caretDocumentOffset)
+  {
+    return TryExtractNameFromAttribute(tokenUnderCaret, caretDocumentOffset, attr =>
+    {
+      if (attr.Parent?.Parent is not IXmlTag xmlTag) return null;
+      return DocCommentsBuilderUtil.TryExtractNameFrom(xmlTag);
+    });
+  }
+
   [CanBeNull]
   private static ITreeNode TryFindTokenUnderCaret(IDataContext dataContext, out DocumentOffset? caretDocumentOffset)
   {
     caretDocumentOffset = null;
-    
+
     if (dataContext.GetData(TextControlDataConstants.TEXT_CONTROL) is not { } editor) return null;
     if (dataContext.GetData(ProjectModelDataConstants.SOLUTION) is not { } solution) return null;
     if (editor.Document.GetPsiSourceFile(solution)?.GetPrimaryPsiFile() is not ICSharpFile psiFile) return null;
@@ -69,22 +92,21 @@ internal static class NavigationUtil
     var range = psiFile.Translate(new DocumentRange(caretDocumentOffset.Value));
     return psiFile.FindTokenAt(range.StartOffset);
   }
-  
-  public static string TryExtractInvariantNameFromInvariant(IDataContext dataContext)
+
+  public static NameExtraction? TryExtractNameFromNamedEntity(IDataContext dataContext)
   {
     var token = TryFindTokenUnderCaret(dataContext, out var caretDocumentOffset);
     if (token is null || !caretDocumentOffset.HasValue) return null;
 
-    var caretOffset = caretDocumentOffset.Value;
-    return TryExtractAttributeValueFromTag(token, caretOffset, DocCommentsBuilderUtil.IsInvariantNameAttribute);
+    return TryExtractNameFromTag(token, caretDocumentOffset.Value);
   }
 
   [CanBeNull]
-  private static string TryExtractInvariantNameFromInlinedReference(
-    [NotNull] ITreeNode token, 
+  private static NameExtraction? TryExtractInvariantNameFromInlinedReference(
+    [NotNull] ITreeNode token,
     DocumentOffset caretOffset)
   {
-    if (InvariantResolveUtil.TryFindAnyCommentNode(token) is not { } commentNode) return null;
+    if (NamesResolveUtil.TryFindAnyCommentNode(token) is not { } commentNode) return null;
     if (LanguageManager.Instance.TryGetService<InlineReferenceCommentCreator>(token.Language) is not { } creator)
       return null;
 
@@ -92,7 +114,7 @@ internal static class NavigationUtil
     if (caretOffset >= info.InvariantNameOffset &&
         caretOffset.Offset <= info.InvariantNameOffset.Offset + info.InvariantName.Length)
     {
-      return info.InvariantName;
+      return new NameExtraction(info.InvariantName, NameKind.Invariant, null);
     }
 
     return null;
@@ -101,10 +123,10 @@ internal static class NavigationUtil
   public static void FindReferencesToInvariant(
     [NotNull] IDataContext dataContext, [CanBeNull] INavigationExecutionHost host = null)
   {
-    if (NavigationUtil.TryExtractInvariantNameFromInvariant(dataContext) is not { } invariantName) return;
+    if (NavigationUtil.TryExtractNameFromNamedEntity(dataContext) is not { } invariantName) return;
     if (dataContext.GetData(ProjectModelDataConstants.SOLUTION) is not { } solution) return;
-    
-    var occurrences = InvariantResolveUtil.FindAllReferencesForInvariantName(invariantName, solution)
+
+    var occurrences = NamesResolveUtil.FindAllReferencesForInvariantName(invariantName.Name, solution)
       .Select(dto => new InvariantReferenceOccurence(dto.SourceFile, dto.Offset))
       .Select(o => (IOccurrence)o)
       .ToList();
@@ -118,20 +140,20 @@ internal static class NavigationUtil
       false,
       "References which reference this invariant");
   }
-  
+
   public static void NavigateToInvariantIfFound(
     [NotNull] IDataContext context, [CanBeNull] INavigationExecutionHost host = null)
   {
-    if (TryExtractInvariantNameFromReference(context) is not { } name) return;
+    if (TryExtractNameFromReference(context) is not { } extraction) return;
     if (context.GetData(ProjectModelDataConstants.SOLUTION) is not { } solution) return;
     if (context.GetData(DocumentModelDataConstants.DOCUMENT) is not { } document) return;
 
     var resolveContext = new DomainResolveContextImpl(solution, document);
-    var resolveResult = InvariantResolveUtil.ResolveInvariantByName(name, resolveContext);
-    if (resolveResult is not InvariantDomainResolveResult invariantResolveResult)
+    var resolveResult = NamesResolveUtil.ResolveName(extraction.Name, resolveContext, extraction.NameKind);
+    if (resolveResult is not NamedEntityDomainResolveResult invariantResolveResult)
     {
       host ??= solution.GetComponent<INavigationExecutionHost>();
-      host.ShowToolip(context, "Failed to resolve invariant for this reference");
+      host.ShowToolip(context, "Failed to resolve name for this reference");
       return;
     }
 

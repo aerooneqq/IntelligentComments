@@ -91,7 +91,7 @@ public class CommentsNavigationHost
           myNavigationService.Navigate(declaredElement, RiderMainWindowCenteredPopupWindowContextStub.Source, true);
           break; 
         }
-        case InvariantDomainResolveResult invariantResolveResult:
+        case NamedEntityDomainResolveResult invariantResolveResult:
         {
           var offset = invariantResolveResult.InvariantDocumentOffset;
           offset.Document.GetPsiSourceFile(mySolution).Navigate(new TextRange(offset.Offset), true);

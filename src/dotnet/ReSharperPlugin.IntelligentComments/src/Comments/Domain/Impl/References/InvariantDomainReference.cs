@@ -1,6 +1,8 @@
 using JetBrains.Annotations;
 using JetBrains.DocumentModel;
 using JetBrains.ReSharper.Psi.Tree;
+using ReSharperPlugin.IntelligentComments.Comments.Caches;
+using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.Content;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
 
@@ -18,22 +20,22 @@ public class InvariantDomainReference : DomainReferenceBase, IInvariantDomainRef
 
 
   public override DomainResolveResult Resolve(IDomainResolveContext context) => 
-    InvariantResolveUtil.ResolveInvariantByName(InvariantName, context);
+    NamesResolveUtil.ResolveName(InvariantName, context, NameKind.Invariant);
 }
 
-public class InvariantDomainResolveResult : DomainResolveResult
+public class NamedEntityDomainResolveResult : DomainResolveResult
 {
-  [NotNull] public IInvariantContentSegment Invariant { get; }
+  [NotNull] public IContentSegment ContentSegment { get; }
   [NotNull] public IDocCommentBlock ParentDocCommentBlock { get; }
   public DocumentOffset InvariantDocumentOffset { get; }
 
 
-  public InvariantDomainResolveResult(
-    [NotNull] IInvariantContentSegment invariant, 
+  public NamedEntityDomainResolveResult(
+    [NotNull] IContentSegment contentSegment, 
     [NotNull] IDocCommentBlock parentBlock, 
     DocumentOffset invariantDocumentOffset)
   {
-    Invariant = invariant;
+    ContentSegment = contentSegment;
     ParentDocCommentBlock = parentBlock;
     InvariantDocumentOffset = invariantDocumentOffset;
   }

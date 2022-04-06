@@ -328,8 +328,8 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
     field("Error", RdHighlightedText.nullable)
   }
 
-  val RdInvariantResolveResult = structdef extends RdResolveResult {
-    field("Invariant", RdTextInvariant)
+  val RdNamedEntityResolveResult = structdef extends RdResolveResult {
+    field("Segment", RdContentSegment)
   }
 
   val RdWebResourceResolveResult = structdef extends RdResolveResult {

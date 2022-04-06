@@ -3,9 +3,11 @@ package com.intelligentComments.core.comments.docs
 import com.intelligentComments.core.comments.popups.IntelligentCommentPopupManager
 import com.intelligentComments.core.comments.resolver.FrontendReferenceResolverHost
 import com.intelligentComments.core.domain.core.*
+import com.intelligentComments.core.domain.rd.ContentSegmentFromRd
 import com.intelligentComments.core.domain.rd.TextInvariantFromRdSegment
 import com.intelligentComments.core.domain.rd.toIdeaHighlightedText
 import com.intelligentComments.core.domain.rd.toRdReference
+import com.intelligentComments.ui.comments.model.content.ContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.ContentSegmentsUiModel
 import com.intelligentComments.ui.comments.model.content.text.TextContentSegmentUiModel
 import com.intellij.codeInsight.documentation.DocumentationManager
@@ -110,12 +112,10 @@ class CommentClickDocHost(private val project: Project) : LifetimedService() {
         return@resolveInvariantReference
       }
 
-      val invariantResolveResult = it as? RdInvariantResolveResult ?: return@resolveInvariantReference
+      val invariantResolveResult = it as? RdNamedEntityResolveResult ?: return@resolveInvariantReference
 
-      val invariant = TextInvariantFromRdSegment(invariantResolveResult.invariant, null, project)
-      if (invariant.description.content.segments.isEmpty()) return@resolveInvariantReference
-
-      val model = ContentSegmentsUiModel(project, null, invariant.description.content)
+      val segment = ContentSegmentFromRd.getFrom(invariantResolveResult.segment, null, project)
+      val model = ContentSegmentUiModel.getFrom(project, null, segment)
 
       popupManager.showPopupFor(model, e.editor, relativePoint)
     }

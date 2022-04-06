@@ -19,7 +19,6 @@
     <projectService serviceImplementation="com.intelligentComments.core.domain.impl.ContentProcessingStrategyImpl" />
     <projectService serviceImplementation="com.intelligentComments.core.comments.RiderCommentsCreator" />
     <projectService serviceImplementation="com.intelligentComments.core.comments.listeners.CommentsEditorsListenersManager" />
-
     <projectService serviceImplementation="com.intelligentComments.core.comments.CommentsGutterMarksManager" />
     <projectService serviceImplementation="com.intelligentComments.core.comments.codeHighlighting.CodeFragmentHighlightingHost" />
     <projectService serviceImplementation="com.intelligentComments.core.comments.HighlightersClickHandler" />

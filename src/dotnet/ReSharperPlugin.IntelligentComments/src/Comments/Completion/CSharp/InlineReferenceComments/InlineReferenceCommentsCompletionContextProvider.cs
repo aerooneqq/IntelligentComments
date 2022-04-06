@@ -3,6 +3,7 @@ using JetBrains.Diagnostics;
 using JetBrains.DocumentModel;
 using JetBrains.ReSharper.Feature.Services.CodeCompletion.Infrastructure;
 using JetBrains.Util;
+using ReSharperPlugin.IntelligentComments.Comments.Caches;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.InlineReferenceComments;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.References;
 
@@ -21,8 +22,8 @@ public class InlineReferenceCommentsCompletionContextProvider : ICodeCompletionC
   {
     if (context.File.FindTokenAt(context.CaretTreeOffset) is not { } token) return null;
 
-    var commentNode = InvariantResolveUtil.TryFindAnyCommentNode(token) ??
-                      InvariantResolveUtil.TryFindAnyCommentNode(token.PrevSibling);
+    var commentNode = NamesResolveUtil.TryFindAnyCommentNode(token) ??
+                      NamesResolveUtil.TryFindAnyCommentNode(token.PrevSibling);
     
     if (commentNode is not { }) return null;
     if (context.LanguageManager.TryGetService<InlineReferenceCommentCreator>(commentNode.Language) is not { } creator)

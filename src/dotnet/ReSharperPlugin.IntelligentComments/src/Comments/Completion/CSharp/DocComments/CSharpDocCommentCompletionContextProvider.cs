@@ -61,7 +61,9 @@ public class CSharpDocCommentCompletionContextProvider : ICodeCompletionContextP
     if (eq is null || !eq.RightSiblings().Contains(contextToken)) return null;
 
     if (contextToken is not IXmlValueToken) return null;
+    
     var range = contextToken.GetDocumentRange().TrimLeft(1).TrimRight(1);
+    if (!range.IsValid()) return null;
     
     return new TextLookupRanges(range, range);
   }

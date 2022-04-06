@@ -14,7 +14,7 @@ public class GoToInvariantAction : ContextNavigationActionBase<GoToInvariantNavi
 
   public override bool Update(IDataContext context, ActionPresentation presentation, DelegateUpdate nextUpdate)
   {
-    return NavigationUtil.TryExtractInvariantNameFromReference(context) is { };
+    return NavigationUtil.TryExtractNameFromReference(context) is { };
   }
 
   public override void Execute(IDataContext dataContext, DelegateExecute nextExecute)

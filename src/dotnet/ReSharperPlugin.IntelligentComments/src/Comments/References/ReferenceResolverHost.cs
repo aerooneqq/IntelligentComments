@@ -71,7 +71,7 @@ public static class ResolveResultExtensions
     
     return domainResolveResult switch
     {
-      InvariantDomainResolveResult result => new RdInvariantResolveResult(result.Invariant.ToRdInvariant()),
+      NamedEntityDomainResolveResult result => new RdNamedEntityResolveResult(result.ContentSegment.ToRdContentSegment()),
       EmptyDomainResolveResult => new RdInvalidResolveResult(null),
       DomainWebResourceResolveResult result => new RdWebResourceResolveResult(result.Link),
       _ => throw new ArgumentOutOfRangeException(domainResolveResult.GetType().Name)

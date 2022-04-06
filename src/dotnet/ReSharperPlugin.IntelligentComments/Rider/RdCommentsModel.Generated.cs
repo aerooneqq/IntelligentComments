@@ -101,7 +101,7 @@ namespace JetBrains.Rider.Model
     public static  CtxWriteDelegate<RdHighlightedText> WriteRdHighlightedTextNullable = RdHighlightedText.Write.NullableClass();
     public static  CtxWriteDelegate<int?> WriteIntNullable = JetBrains.Rd.Impl.Serializers.WriteInt.NullableStruct();
     
-    protected override long SerializationHash => -2890101678710843798L;
+    protected override long SerializationHash => 3366930196076581796L;
     
     protected override Action<ISerializers> Register => RegisterDeclaredTypesSerializers;
     public static void RegisterDeclaredTypesSerializers(ISerializers serializers)
@@ -152,7 +152,7 @@ namespace JetBrains.Rider.Model
       serializers.Register(RdHackTextContentSegment.Read, RdHackTextContentSegment.Write);
       serializers.Register(RdHackContentSegment.Read, RdHackContentSegment.Write);
       serializers.Register(RdInvalidResolveResult.Read, RdInvalidResolveResult.Write);
-      serializers.Register(RdInvariantResolveResult.Read, RdInvariantResolveResult.Write);
+      serializers.Register(RdNamedEntityResolveResult.Read, RdNamedEntityResolveResult.Write);
       serializers.Register(RdWebResourceResolveResult.Read, RdWebResourceResolveResult.Write);
       serializers.Register(RdComment_Unknown.Read, RdComment_Unknown.Write);
       serializers.Register(RdCommentWithOneTextSegment_Unknown.Read, RdCommentWithOneTextSegment_Unknown.Write);
@@ -3560,87 +3560,6 @@ namespace JetBrains.Rider.Model
   }
   
   
-  /// <summary>
-  /// <p>Generated from: RdComment.kt:331</p>
-  /// </summary>
-  public sealed class RdInvariantResolveResult : RdResolveResult
-  {
-    //fields
-    //public fields
-    [NotNull] public RdTextInvariant Invariant {get; private set;}
-    
-    //private fields
-    //primary constructor
-    public RdInvariantResolveResult(
-      [NotNull] RdTextInvariant invariant
-    )
-    {
-      if (invariant == null) throw new ArgumentNullException("invariant");
-      
-      Invariant = invariant;
-    }
-    //secondary constructor
-    //deconstruct trait
-    //statics
-    
-    public static new CtxReadDelegate<RdInvariantResolveResult> Read = (ctx, reader) => 
-    {
-      var invariant = RdTextInvariant.Read(ctx, reader);
-      var _result = new RdInvariantResolveResult(invariant);
-      return _result;
-    };
-    
-    public static new CtxWriteDelegate<RdInvariantResolveResult> Write = (ctx, writer, value) => 
-    {
-      RdTextInvariant.Write(ctx, writer, value.Invariant);
-    };
-    
-    //constants
-    
-    //custom body
-    //methods
-    //equals trait
-    public override bool Equals(object obj)
-    {
-      if (ReferenceEquals(null, obj)) return false;
-      if (ReferenceEquals(this, obj)) return true;
-      if (obj.GetType() != GetType()) return false;
-      return Equals((RdInvariantResolveResult) obj);
-    }
-    public bool Equals(RdInvariantResolveResult other)
-    {
-      if (ReferenceEquals(null, other)) return false;
-      if (ReferenceEquals(this, other)) return true;
-      return Equals(Invariant, other.Invariant);
-    }
-    //hash code trait
-    public override int GetHashCode()
-    {
-      unchecked {
-        var hash = 0;
-        hash = hash * 31 + Invariant.GetHashCode();
-        return hash;
-      }
-    }
-    //pretty print
-    public void Print(PrettyPrinter printer)
-    {
-      printer.Println("RdInvariantResolveResult (");
-      using (printer.IndentCookie()) {
-        printer.Print("invariant = "); Invariant.PrintEx(printer); printer.Println();
-      }
-      printer.Print(")");
-    }
-    //toString
-    public override string ToString()
-    {
-      var printer = new SingleLinePrettyPrinter();
-      Print(printer);
-      return printer.ToString();
-    }
-  }
-  
-  
   public sealed class RdInvariant_Unknown : RdInvariant
   {
     //fields
@@ -4047,6 +3966,87 @@ namespace JetBrains.Rider.Model
       using (printer.IndentCookie()) {
         printer.Print("text = "); Text.PrintEx(printer); printer.Println();
         printer.Print("range = "); Range.PrintEx(printer); printer.Println();
+      }
+      printer.Print(")");
+    }
+    //toString
+    public override string ToString()
+    {
+      var printer = new SingleLinePrettyPrinter();
+      Print(printer);
+      return printer.ToString();
+    }
+  }
+  
+  
+  /// <summary>
+  /// <p>Generated from: RdComment.kt:331</p>
+  /// </summary>
+  public sealed class RdNamedEntityResolveResult : RdResolveResult
+  {
+    //fields
+    //public fields
+    [NotNull] public RdContentSegment Segment {get; private set;}
+    
+    //private fields
+    //primary constructor
+    public RdNamedEntityResolveResult(
+      [NotNull] RdContentSegment segment
+    )
+    {
+      if (segment == null) throw new ArgumentNullException("segment");
+      
+      Segment = segment;
+    }
+    //secondary constructor
+    //deconstruct trait
+    //statics
+    
+    public static new CtxReadDelegate<RdNamedEntityResolveResult> Read = (ctx, reader) => 
+    {
+      var segment = RdContentSegment.Read(ctx, reader);
+      var _result = new RdNamedEntityResolveResult(segment);
+      return _result;
+    };
+    
+    public static new CtxWriteDelegate<RdNamedEntityResolveResult> Write = (ctx, writer, value) => 
+    {
+      RdContentSegment.Write(ctx, writer, value.Segment);
+    };
+    
+    //constants
+    
+    //custom body
+    //methods
+    //equals trait
+    public override bool Equals(object obj)
+    {
+      if (ReferenceEquals(null, obj)) return false;
+      if (ReferenceEquals(this, obj)) return true;
+      if (obj.GetType() != GetType()) return false;
+      return Equals((RdNamedEntityResolveResult) obj);
+    }
+    public bool Equals(RdNamedEntityResolveResult other)
+    {
+      if (ReferenceEquals(null, other)) return false;
+      if (ReferenceEquals(this, other)) return true;
+      return Equals(Segment, other.Segment);
+    }
+    //hash code trait
+    public override int GetHashCode()
+    {
+      unchecked {
+        var hash = 0;
+        hash = hash * 31 + Segment.GetHashCode();
+        return hash;
+      }
+    }
+    //pretty print
+    public void Print(PrettyPrinter printer)
+    {
+      printer.Println("RdNamedEntityResolveResult (");
+      using (printer.IndentCookie()) {
+        printer.Print("segment = "); Segment.PrintEx(printer); printer.Println();
       }
       printer.Print(")");
     }

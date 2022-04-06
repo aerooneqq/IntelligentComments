@@ -42,6 +42,46 @@ public abstract class CommentProblemsCollectorBase : ICommentProblemsCollector
     };
   }
   
+  
+  [NotNull]
+  public ICollection<HighlightingInfo> Run([NotNull] IDocCommentBlock comment)
+  {
+    if (DocCommentsBuilderUtil.TryGetAdjustedComment(comment) is not { } adjustedComment)
+    {
+      return EmptyList<HighlightingInfo>.Instance;
+    }
+    
+    var psiHelper = LanguageManager.Instance.TryGetCachedService<IPsiHelper>(comment.Language);
+    if (psiHelper is null) return EmptyList<HighlightingInfo>.Instance;
+
+    var xmlDocPsi = psiHelper.GetXmlDocPsi(adjustedComment);
+    var highlightings = new List<HighlightingInfo>();
+    var context = new Context(adjustedComment, highlightings);
+    
+    xmlDocPsi?.XmlFile.ProcessThisAndDescendants(this, context);
+
+    var isInheritDoc = DocCommentsBuilderUtil.IsInheritDocComment(comment);
+    if (isInheritDoc && highlightings.Count > 0)
+    {
+      var firstErrorMessage = highlightings.First().Highlighting.ToolTip;
+      highlightings.Clear();
+      var message = $"Parent comment contains errors, the first one: \"{firstErrorMessage}\"";
+      AddError(comment.GetDocumentRange(), message, context);
+    }
+
+    return highlightings;
+  }
+
+  public bool IsProcessingFinished(Context context) => false;
+
+  public void ProcessBeforeInterior(ITreeNode element, Context context)
+  {
+    if (element is not IXmlTag xmlTag) return;
+    if (myTagsProcessors.TryGetValue(xmlTag.GetTagName(), out var processor))
+    {
+      processor.Invoke(xmlTag, context);
+    }
+  }
 
   private void ProcessHack(IXmlTag hackTag, Context context)
   {
@@ -102,46 +142,6 @@ public abstract class CommentProblemsCollectorBase : ICommentProblemsCollector
     return !anyError;
   }
 
-  [NotNull]
-  public ICollection<HighlightingInfo> Run([NotNull] IDocCommentBlock comment)
-  {
-    if (DocCommentsBuilderUtil.TryGetAdjustedComment(comment) is not { } adjustedComment)
-    {
-      return EmptyList<HighlightingInfo>.Instance;
-    }
-    
-    var psiHelper = LanguageManager.Instance.TryGetCachedService<IPsiHelper>(comment.Language);
-    if (psiHelper is null) return EmptyList<HighlightingInfo>.Instance;
-
-    var xmlDocPsi = psiHelper.GetXmlDocPsi(adjustedComment);
-    var highlightings = new List<HighlightingInfo>();
-    var context = new Context(adjustedComment, highlightings);
-    
-    xmlDocPsi?.XmlFile.ProcessThisAndDescendants(this, context);
-
-    var isInheritDoc = DocCommentsBuilderUtil.IsInheritDocComment(comment);
-    if (isInheritDoc && highlightings.Count > 0)
-    {
-      var firstErrorMessage = highlightings.First().Highlighting.ToolTip;
-      highlightings.Clear();
-      var message = $"Parent comment contains errors, the first one: \"{firstErrorMessage}\"";
-      AddError(comment.GetDocumentRange(), message, context);
-    }
-
-    return highlightings;
-  }
-
-  public bool IsProcessingFinished(Context context) => false;
-
-  public void ProcessBeforeInterior(ITreeNode element, Context context)
-  {
-    if (element is not IXmlTag xmlTag) return;
-    if (myTagsProcessors.TryGetValue(xmlTag.GetTagName(), out var processor))
-    {
-      processor.Invoke(xmlTag, context);
-    }
-  }
-
   private void ProcessImage([NotNull] IXmlTag imageTag, [NotNull] Context context)
   {
     CheckAttributePresenceAndNonEmptyValue(imageTag, DocCommentsBuilderUtil.ImageSourceAttrName, context);
@@ -149,6 +149,8 @@ public abstract class CommentProblemsCollectorBase : ICommentProblemsCollector
 
   private void AddError(DocumentRange range, [NotNull] string message, [NotNull] Context context)
   {
+    if (!range.IsValid()) return;
+    
     var adjustedMessage = $"[IC]: {message}";
     var error = new CommentError(range, adjustedMessage);
     var info = new HighlightingInfo(range, error);
@@ -251,7 +253,7 @@ public abstract class CommentProblemsCollectorBase : ICommentProblemsCollector
 
     var name = DocCommentsBuilderUtil.GetInvariantName(invariantNameAttribute);
     var cache = invariantTag.GetSolution().GetComponent<InvariantsNamesNamesCache>();
-    var invariantNameCount = cache.GetInvariantNameCount(name);
+    var invariantNameCount = cache.GetNameCount(name);
 
     if (invariantNameCount == 1) return true;
 

@@ -14,7 +14,7 @@ public class FindReferencesForInvariantAction : ContextNavigationActionBase<Find
 
   public override bool Update(IDataContext context, ActionPresentation presentation, DelegateUpdate nextUpdate)
   {
-    return NavigationUtil.TryExtractInvariantNameFromInvariant(context) is { };
+    return NavigationUtil.TryExtractNameFromNamedEntity(context) is { };
   }
 
   public override void Execute(IDataContext dataContext, DelegateExecute nextExecute)

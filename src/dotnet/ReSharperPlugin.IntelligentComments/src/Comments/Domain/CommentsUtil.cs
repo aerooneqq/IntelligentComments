@@ -107,7 +107,7 @@ public static class CommentsUtil
   }
 
   [NotNull]
-  private static RdContentSegment ToRdContentSegment([NotNull] this IContentSegment segment)
+  internal static RdContentSegment ToRdContentSegment([NotNull] this IContentSegment segment)
   {
     return segment switch
     {

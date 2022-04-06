@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Xml;
 using JetBrains.Annotations;
@@ -27,7 +28,7 @@ public enum NameKind
   Hack
 }
 
-public record struct NameExtraction([NotNull] string Name, NameKind NameKind, [NotNull] XmlElement CorrespondingElement);
+public record struct NameExtraction([NotNull] string Name, NameKind NameKind, [CanBeNull] XmlElement CorrespondingElement);
 
 internal static class DocCommentsBuilderUtil
 {
@@ -39,16 +40,28 @@ internal static class DocCommentsBuilderUtil
   [NotNull] internal const string TicketsSectionTagName = "tickets";
   [NotNull] internal const string TicketTagName = "ticket";
   [NotNull] internal const string HackTagName = "hack";
+  [NotNull] internal const string InvariantTagName = "invariant";
 
   [NotNull] internal const string CommonNameAttrName = "name";
   [NotNull] internal const string TicketNameAttrName = CommonNameAttrName;
   [NotNull] internal const string HackNameAttrName = CommonNameAttrName;
   [NotNull] internal const string TicketSourceAttrName = "source";
+  
   [NotNull] internal const string InvariantReferenceSourceAttrName = "invariant";
-  [NotNull] internal const string InvariantTagName = "invariant";
+  [NotNull] internal const string HackReferenceSourceAttributeName = "hack";
+  [NotNull] internal const string TodoReferenceSourceAttributeName = "todo";
+  
   [NotNull] internal const string InvariantNameAttrName = CommonNameAttrName;
   [NotNull] internal const string InheritDocTagName = "inheritdoc";
   [NotNull] internal const string CRef = "cref";
+
+
+  internal static HashSet<string> PossibleNamedEntityTags { get; } = new()
+  {
+    TodoTagName,
+    HackTagName,
+    InvariantTagName
+  };
 
   internal static HashSet<string> PossibleTicketAttributes { get; } = new()
   {
@@ -78,7 +91,9 @@ internal static class DocCommentsBuilderUtil
   [NotNull] 
   internal static HashSet<string> PossibleReferenceTagAttributes { get; } = new() 
   {
-    InvariantReferenceSourceAttrName
+    InvariantReferenceSourceAttrName,
+    HackReferenceSourceAttributeName,
+    TodoReferenceSourceAttributeName
   };
 
   [NotNull] 
@@ -128,13 +143,11 @@ internal static class DocCommentsBuilderUtil
 
     return text.Replace("\n\n", "\n").Replace("\n ", "\n").Replace(" \n", "\n");
   }
-  
-  internal static TextProcessingResult PreprocessTextWithContext([NotNull] string text, [NotNull] XmlNode context)
-  {
-    var nextSibling = context.NextSibling;
 
+  internal static TextProcessingResult PreprocessTextWithContext([NotNull] string text, [CanBeNull] string nextTextSibling)
+  {
     char? trailingCharToAdd = null;
-    if (nextSibling is not XmlText xmlText)
+    if (nextTextSibling is null)
     {
       if (!(text.Length > 0 && ourCharsWithNoNeedToAddSpaceAfter.Contains(text[^1])))
       {
@@ -143,7 +156,7 @@ internal static class DocCommentsBuilderUtil
     }
     else
     {
-      foreach (var c in xmlText.Value)
+      foreach (var c in nextTextSibling)
       {
         if (c == '\n')
         {
@@ -165,6 +178,11 @@ internal static class DocCommentsBuilderUtil
     text = PreprocessText(text, trailingCharToAdd);
     
     return new TextProcessingResult(text, trailingCharToAdd is { } ? text.Length - 1 : text.Length);
+  }
+  
+  internal static TextProcessingResult PreprocessTextWithContext([NotNull] string text, [NotNull] XmlNode context)
+  {
+    return PreprocessTextWithContext(text, (context.NextSibling as XmlText)?.Value);
   }
 
   [CanBeNull] 
@@ -232,28 +250,24 @@ internal static class DocCommentsBuilderUtil
     return null;
   }
 
-  [CanBeNull]
-  internal static string TryGetInvariantName([NotNull] XmlElement element)
+  private static NameKind? TryGetNameKindFromTag(string tagName)
   {
-    if (element.LocalName != InvariantTagName) return null;
-    
-    return element.GetAttribute(InvariantNameAttrName);
-  }
-
-  internal static NameExtraction? TryExtractNameFrom([NotNull] XmlElement element)
-  {
-    NameKind? nameKind = element.LocalName switch
+    return tagName switch
     {
       InvariantTagName => NameKind.Invariant,
       HackTagName => NameKind.Hack,
       TodoTagName => NameKind.Todo,
       _ => null
     };
-
+  }
+  
+  internal static NameExtraction? TryExtractNameFrom([NotNull] IXmlTag xmlTag)
+  {
+    var nameKind = TryGetNameKindFromTag(xmlTag.Header.Name.XmlName);
     if (!nameKind.HasValue) return null;
-    if (element.GetAttributeNode(CommonNameAttrName) is not { } nameAttr) return null;
-    
-    return new NameExtraction(nameAttr.Value, nameKind.Value, element);
+
+    if (xmlTag.GetAttribute(CommonNameAttrName) is not { } nameAttr) return null;
+    return new NameExtraction(nameAttr.UnquotedValue, nameKind.Value, null);
   }
   
   internal static bool IsInvariantNameAttribute([CanBeNull] IXmlAttribute attribute)
@@ -274,13 +288,57 @@ internal static class DocCommentsBuilderUtil
     return xmlTagHeader.Name.XmlName == tagName;
   }
   
-  
-  internal static bool IsInvariantReferenceSourceAttribute([CanBeNull] IXmlAttribute attribute)
+  internal static NameExtraction? TryExtractNameFromPossibleReferenceSourceAttribute([CanBeNull] IXmlAttribute attribute)
   {
-    return attribute is { AttributeName: InvariantReferenceSourceAttrName } &&
-           CheckIfAttributeBelongsToTag(attribute, ReferenceTagName);
+    if (attribute is null) return null;
+    if (!CheckIfAttributeBelongsToTag(attribute, ReferenceTagName)) return null;
+
+    var attrName = attribute.AttributeName;
+    if (!PossibleReferenceTagAttributes.Contains(attrName)) return null;
+    
+    var nameKind = GetNameKind(attrName);
+    return new NameExtraction(attribute.UnquotedValue, nameKind, null);
   }
 
+  internal static NameKind GetNameKind([NotNull] string attributeName) => attributeName switch
+  {
+    InvariantReferenceSourceAttrName => NameKind.Invariant,
+    TodoReferenceSourceAttributeName => NameKind.Todo,
+    HackReferenceSourceAttributeName => NameKind.Hack,
+    _ => throw new ArgumentOutOfRangeException(attributeName)
+  };
+  
+  internal static NameKind? TryGetNameKind([NotNull] string attributeName) => attributeName switch
+  {
+    InvariantReferenceSourceAttrName => NameKind.Invariant,
+    TodoReferenceSourceAttributeName => NameKind.Todo,
+    HackReferenceSourceAttributeName => NameKind.Hack,
+    _ => null
+  };
+
+  [CanBeNull]
+  internal static string TryGetReferenceAttributeNameFrom(NameKind nameKind) => nameKind switch
+  {
+    NameKind.Invariant => InvariantReferenceSourceAttrName,
+    NameKind.Todo => TodoReferenceSourceAttributeName,
+    NameKind.Hack => HackReferenceSourceAttributeName,
+    _ => null
+  };
+
+  [CanBeNull]
+  internal static NameKind? TryExtractOneReferenceNameKind([NotNull] XmlElement referenceTag)
+  {
+    var sourceAttributes = referenceTag.Attributes
+      .SafeOfType<XmlAttribute>()
+      .Where(attr => PossibleReferenceTagAttributes.Contains(attr.Name))
+      .ToList();
+
+    if (sourceAttributes.Count != 1) return null;
+
+    var attribute = sourceAttributes.First();
+    return TryGetNameKind(attribute.Name);
+  }
+  
   [CanBeNull]
   internal static IXmlAttribute TryGetInvariantAttribute([CanBeNull] IXmlTag invariantTag)
   {
@@ -298,7 +356,7 @@ internal static class DocCommentsBuilderUtil
     Assertion.Assert(attribute.AttributeName == InvariantNameAttrName, "attribute.AttributeName == InvariantNameAttrName");
     return PreprocessText(attribute.UnquotedValue, null);
   }
-  
+
   internal static TagInfo? TryExtractTagInfo(
     [NotNull] XmlElement element,
     [NotNull] string attributeName,
@@ -306,32 +364,64 @@ internal static class DocCommentsBuilderUtil
     [CanBeNull] Func<string, IDomainReference> nameReferenceCreator = null,
     [CanBeNull] Func<IDomainReference, bool> referenceValidityChecker = null)
   {
-    var nameText = TryExtractNameAttribute(
-      element, provider, attributeName, nameReferenceCreator, referenceValidityChecker);
-
-    if (nameText is null) return null;
-    
+    var nameText = TryExtractNameAttribute(element, provider, attributeName, nameReferenceCreator, referenceValidityChecker);
+    return nameText is null ? null : TryExtractTagInfo(element, provider, nameText);
+  }
+  
+  private static TagInfo? TryExtractDescription(
+    [NotNull] string description,
+    [CanBeNull] string nextTextSibling,
+    [NotNull] IHighlightersProvider provider, 
+    [NotNull] IHighlightedText nameText)
+  {
     var descriptionText = HighlightedText.CreateEmptyText();
-    if (ElementHasOneTextChild(element, out var description))
-    {
-      var (processedText, length) = PreprocessTextWithContext(description, element);
-      var descriptionHighlighter = provider.TryGetReSharperHighlighter(DefaultLanguageAttributeIds.DOC_COMMENT, length);
-      descriptionText.Add(new HighlightedText(processedText, descriptionHighlighter));
-    }
-
+    var (processedText, length) = PreprocessTextWithContext(description, nextTextSibling);
+    var descriptionHighlighter = provider.TryGetReSharperHighlighter(DefaultLanguageAttributeIds.DOC_COMMENT, length);
+    descriptionText.Add(new HighlightedText(processedText, descriptionHighlighter));
+    
     return new TagInfo(nameText, descriptionText);
+  }
+
+  private static TagInfo? TryExtractTagInfo(
+    [NotNull] XmlElement element, 
+    [NotNull] IHighlightersProvider provider, 
+    [NotNull] IHighlightedText nameText)
+  {
+    if (!ElementHasOneTextChild(element, out var description)) return new TagInfo(nameText, HighlightedText.EmptyText);
+    return TryExtractDescription(description, (element.NextSibling as XmlText)?.Value, provider, nameText);
+  }
+
+  internal static TagInfo? TryExtractTagInfo(
+    [NotNull] XmlElement element,
+    NameKind nameKind,
+    [NotNull] IHighlightersProvider provider,
+    [CanBeNull] Func<string, IDomainReference> nameReferenceCreator = null,
+    [CanBeNull] Func<IDomainReference, bool> referenceValidityChecker = null)
+  {
+    var nameText = TryExtractNameAttribute(element, provider, nameKind, nameReferenceCreator, referenceValidityChecker);
+    return nameText is null ? null : TryExtractTagInfo(element, provider, nameText);
   }
 
   internal static IHighlightedText TryExtractNameAttribute(
     [NotNull] XmlElement element,
     [NotNull] IHighlightersProvider highlightersProvider,
-    [NotNull] string attributeName,
+    string attributeName,
     [CanBeNull] Func<string, IDomainReference> nameReferenceCreator = null,
     [CanBeNull] Func<IDomainReference, bool> referenceValidityChecker = null)
   {
     var name = element.GetAttribute(attributeName);
     if (name.IsNullOrWhitespace()) return null;
 
+    return CreateNameHighlightedText(name, highlightersProvider, nameReferenceCreator, referenceValidityChecker);
+  }
+
+  [NotNull]
+  private static IHighlightedText CreateNameHighlightedText(
+    [NotNull] string name,
+    [NotNull] IHighlightersProvider highlightersProvider,
+    [CanBeNull] Func<string, IDomainReference> nameReferenceCreator = null,
+    [CanBeNull] Func<IDomainReference, bool> referenceValidityChecker = null)
+  {
     var nameHighlighter = highlightersProvider.TryGetReSharperHighlighter(DefaultLanguageAttributeIds.DOC_COMMENT, name.Length);
     if (nameHighlighter is { } && nameReferenceCreator is { })
     {
@@ -355,6 +445,18 @@ internal static class DocCommentsBuilderUtil
     }
     
     return new HighlightedText(name, nameHighlighter);
+  }
+  
+  [CanBeNull]
+  internal static IHighlightedText TryExtractNameAttribute(
+    [NotNull] XmlElement element,
+    [NotNull] IHighlightersProvider highlightersProvider,
+    NameKind nameKind,
+    [CanBeNull] Func<string, IDomainReference> nameReferenceCreator = null,
+    [CanBeNull] Func<IDomainReference, bool> referenceValidityChecker = null)
+  {
+    if (TryGetReferenceAttributeNameFrom(nameKind) is not { } attributeName) return null;
+    return TryExtractNameAttribute(element, highlightersProvider, attributeName, nameReferenceCreator, referenceValidityChecker);
   }
   
   internal static bool ElementHasOneTextChild([NotNull] XmlElement element, [NotNull] out string value)

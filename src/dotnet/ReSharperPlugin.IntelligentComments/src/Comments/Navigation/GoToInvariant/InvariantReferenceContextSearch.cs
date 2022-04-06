@@ -14,6 +14,6 @@ public class InvariantReferenceContextSearch : IContextSearch
 
   public bool IsContextApplicable(IDataContext dataContext)
   {
-    return NavigationUtil.TryExtractInvariantNameFromReference(dataContext) is { };
+    return NavigationUtil.TryExtractNameFromReference(dataContext) is { };
   }
 }

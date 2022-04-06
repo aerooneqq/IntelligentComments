@@ -95,7 +95,7 @@ class RdCommentsModel private constructor(
             serializers.register(RdReferenceResolveRequest)
             serializers.register(RdNavigationRequest)
             serializers.register(RdInvalidResolveResult)
-            serializers.register(RdInvariantResolveResult)
+            serializers.register(RdNamedEntityResolveResult)
             serializers.register(RdWebResourceResolveResult)
             serializers.register(RdComment_Unknown)
             serializers.register(RdCommentWithOneTextSegment_Unknown)
@@ -118,7 +118,7 @@ class RdCommentsModel private constructor(
         private val __RdHighlightedTextNullableSerializer = RdHighlightedText.nullable()
         private val __IntNullableSerializer = FrameworkMarshallers.Int.nullable()
         
-        const val serializationHash = -2890101678710843798L
+        const val serializationHash = 3366930196076581796L
         
     }
     override val serializersOwner: ISerializersOwner get() = RdCommentsModel
@@ -2781,66 +2781,6 @@ class RdInvariantReference (
 }
 
 
-/**
- * #### Generated from [RdComment.kt:331]
- */
-class RdInvariantResolveResult (
-    val invariant: RdTextInvariant
-) : RdResolveResult (
-) {
-    //companion
-    
-    companion object : IMarshaller<RdInvariantResolveResult> {
-        override val _type: KClass<RdInvariantResolveResult> = RdInvariantResolveResult::class
-        
-        @Suppress("UNCHECKED_CAST")
-        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdInvariantResolveResult  {
-            val invariant = RdTextInvariant.read(ctx, buffer)
-            return RdInvariantResolveResult(invariant)
-        }
-        
-        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: RdInvariantResolveResult)  {
-            RdTextInvariant.write(ctx, buffer, value.invariant)
-        }
-        
-        
-    }
-    //fields
-    //methods
-    //initializer
-    //secondary constructor
-    //equals trait
-    override fun equals(other: Any?): Boolean  {
-        if (this === other) return true
-        if (other == null || other::class != this::class) return false
-        
-        other as RdInvariantResolveResult
-        
-        if (invariant != other.invariant) return false
-        
-        return true
-    }
-    //hash code trait
-    override fun hashCode(): Int  {
-        var __r = 0
-        __r = __r*31 + invariant.hashCode()
-        return __r
-    }
-    //pretty print
-    override fun print(printer: PrettyPrinter)  {
-        printer.println("RdInvariantResolveResult (")
-        printer.indent {
-            print("invariant = "); invariant.print(printer); println()
-        }
-        printer.print(")")
-    }
-    
-    override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
-    //deepClone
-    //contexts
-}
-
-
 class RdInvariant_Unknown (
     override val unknownId: RdId,
     val unknownBytes: ByteArray
@@ -3147,6 +3087,66 @@ class RdMultilineComment (
         printer.indent {
             print("text = "); text.print(printer); println()
             print("range = "); range.print(printer); println()
+        }
+        printer.print(")")
+    }
+    
+    override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
+    //deepClone
+    //contexts
+}
+
+
+/**
+ * #### Generated from [RdComment.kt:331]
+ */
+class RdNamedEntityResolveResult (
+    val segment: RdContentSegment
+) : RdResolveResult (
+) {
+    //companion
+    
+    companion object : IMarshaller<RdNamedEntityResolveResult> {
+        override val _type: KClass<RdNamedEntityResolveResult> = RdNamedEntityResolveResult::class
+        
+        @Suppress("UNCHECKED_CAST")
+        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdNamedEntityResolveResult  {
+            val segment = ctx.serializers.readPolymorphic<RdContentSegment>(ctx, buffer, RdContentSegment)
+            return RdNamedEntityResolveResult(segment)
+        }
+        
+        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: RdNamedEntityResolveResult)  {
+            ctx.serializers.writePolymorphic(ctx, buffer, value.segment)
+        }
+        
+        
+    }
+    //fields
+    //methods
+    //initializer
+    //secondary constructor
+    //equals trait
+    override fun equals(other: Any?): Boolean  {
+        if (this === other) return true
+        if (other == null || other::class != this::class) return false
+        
+        other as RdNamedEntityResolveResult
+        
+        if (segment != other.segment) return false
+        
+        return true
+    }
+    //hash code trait
+    override fun hashCode(): Int  {
+        var __r = 0
+        __r = __r*31 + segment.hashCode()
+        return __r
+    }
+    //pretty print
+    override fun print(printer: PrettyPrinter)  {
+        printer.println("RdNamedEntityResolveResult (")
+        printer.indent {
+            print("segment = "); segment.print(printer); println()
         }
         printer.print(")")
     }

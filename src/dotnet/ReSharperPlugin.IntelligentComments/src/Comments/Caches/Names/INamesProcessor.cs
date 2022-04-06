@@ -32,7 +32,7 @@ public class NamesProcessor : INamesProcessor
   {
     foreach (var comment in file.Descendants<IDocCommentBlock>().Collect())
     {
-      comment.ExecuteActionWithNames(extraction =>
+      comment.ExecuteActionWithNames((extraction, _) =>
       {
         if (extraction.NameKind != myWantedNameKind) return;
 
@@ -57,19 +57,21 @@ public class NamesProcessor : INamesProcessor
 public static class CSharpInvariantsProcessorExtensions
 {
   public static void ExecuteActionWithNames(
-    [NotNull] this IDocCommentBlock commentBlock, [NotNull] Action<NameExtraction> actionWithInvariant)
+    [NotNull] this IDocCommentBlock commentBlock, [NotNull] Action<NameExtraction, IXmlTag> actionWithInvariant)
   {
-    if (commentBlock.GetXML(null) is not { } xml) return;
-    
-    for (var node = xml.FirstChild; node is { }; node = node.NextSibling)
+    if (LanguageManager.Instance.TryGetService<IPsiHelper>(commentBlock.Language) is not { } psiHelper) return;
+    if (psiHelper.GetXmlDocPsi(commentBlock) is not { } xmlDocPsi) return;
+
+    var xmlFile = xmlDocPsi.XmlFile;
+    for (var node = xmlFile.FirstChild; node is { }; node = node.NextSibling)
     {
-      if (node is not XmlElement xmlElement ||
-          DocCommentsBuilderUtil.TryExtractNameFrom(xmlElement) is not { } nameExtraction)
+      if (node is not IXmlTag xmlTag ||
+          DocCommentsBuilderUtil.TryExtractNameFrom(xmlTag) is not { } nameExtraction)
       {
         continue;
       }
 
-      actionWithInvariant(nameExtraction);
+      actionWithInvariant(nameExtraction, xmlTag);
     }
   }
   
