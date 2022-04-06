@@ -101,7 +101,7 @@ public interface ITicketContentSegment : IContentSegment
   [NotNull] IDomainReference Reference { get; }
 }
 
-public interface IToDoContentSegment : IContentSegment
+public interface IToDoContentSegment : IContentSegmentWithOptionalName
 {
   [NotNull] IEntityWithContentSegments Content { get; }
 }
@@ -111,9 +111,14 @@ public interface IInlineHackContentSegment : IContentSegment
   [NotNull] IHighlightedText Text { get; }
 }
 
-public interface IHackContentSegment : IContentSegment
+public interface IHackContentSegment : IContentSegmentWithOptionalName
 {
   [NotNull] IEntityWithContentSegments Content { get; }
+}
+
+public interface IContentSegmentWithOptionalName : IContentSegment
+{
+  [CanBeNull] IHighlightedText Name { get; }
 }
 
 public interface IInvariantContentSegment : IContentSegment

@@ -3,7 +3,6 @@ using JetBrains.DocumentModel;
 using JetBrains.ReSharper.Psi.Tree;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.Content;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
-using JetBrains.DocumentModel.Impl;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.References;
 

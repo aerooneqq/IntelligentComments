@@ -3,7 +3,7 @@ using JetBrains.ReSharper.Feature.Services.CodeCompletion.Infrastructure;
 using JetBrains.ReSharper.Feature.Services.CodeCompletion.Infrastructure.LookupItems;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp;
-using ReSharperPlugin.IntelligentComments.Comments.Caches.Invariants;
+using ReSharperPlugin.IntelligentComments.Comments.Caches.Names.Invariants;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Completion.CSharp.InlineReferenceComments;
 
@@ -13,7 +13,7 @@ public class CSharpInvariantNameInInlineReferenceCompletionProvider : ItemsProvi
   protected override bool AddLookupItems(InlineReferenceCommentCompletionContext context, IItemsCollector collector)
   {
     var prefix = context.Info.InvariantName;
-    var cache = context.BasicContext.Solution.GetComponent<InvariantsNamesCache>();
+    var cache = context.BasicContext.Solution.GetComponent<InvariantsNamesNamesCache>();
 
     foreach (var name in cache.GetAllNamesFor(prefix))
     {

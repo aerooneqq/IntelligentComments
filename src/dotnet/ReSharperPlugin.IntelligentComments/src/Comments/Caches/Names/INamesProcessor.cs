@@ -5,38 +5,49 @@ using JetBrains.Annotations;
 using JetBrains.Diagnostics;
 using JetBrains.ReSharper.Features.ReSpeller.Analyzers;
 using JetBrains.ReSharper.Psi;
-using JetBrains.ReSharper.Psi.CSharp;
-using JetBrains.ReSharper.Psi.CSharp.Tree;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.ReSharper.Psi.Xml.Tree;
 using JetBrains.Util;
-using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments;
 
-namespace ReSharperPlugin.IntelligentComments.Comments.Caches.Invariants;
+namespace ReSharperPlugin.IntelligentComments.Comments.Caches.Names;
 
-[Language(typeof(CSharpLanguage))]
-public class CSharpInvariantsProcessor : TreeNodeVisitor<Dictionary<string, int>>, IInvariantsProcessor
+public interface INamesProcessor
 {
-  public void Process(IFile file, Dictionary<string, int> invariantsCount)
-  {
-    if (file is not ICSharpFile cSharpFile) return;
-    foreach (var comment in cSharpFile.Descendants<IDocCommentBlock>().Collect())
-    {
-      comment.ExecuteActionWithInvariants(element =>
-      {
-        var invariantName = DocCommentsBuilderUtil.TryGetInvariantName(element);
-        Assertion.AssertNotNull(invariantName, "invariantName != null");
+  void Process([NotNull] IFile file, [NotNull] Dictionary<string, int> namesCount);
+}
 
-        if (invariantName.IsNullOrWhitespace()) return;
+public class NamesProcessor : INamesProcessor
+{
+  private readonly NameKind myWantedNameKind;
+
+  
+  public NamesProcessor(NameKind wantedNameKind)
+  {
+    myWantedNameKind = wantedNameKind;
+  }
+  
+  
+  public void Process(IFile file, Dictionary<string, int> namesCount)
+  {
+    foreach (var comment in file.Descendants<IDocCommentBlock>().Collect())
+    {
+      comment.ExecuteActionWithNames(extraction =>
+      {
+        if (extraction.NameKind != myWantedNameKind) return;
+
+        var extractionName = extraction.Name;
+        Assertion.AssertNotNull(extractionName, "invariantName != null");
+
+        if (extractionName.IsNullOrWhitespace()) return;
         
-        if (invariantsCount.ContainsKey(invariantName))
+        if (namesCount.ContainsKey(extractionName))
         {
-          ++invariantsCount[invariantName];
+          ++namesCount[extractionName];
         }
         else
         {
-          invariantsCount[invariantName] = 1;
+          namesCount[extractionName] = 1;
         }
       });
     }
@@ -45,20 +56,20 @@ public class CSharpInvariantsProcessor : TreeNodeVisitor<Dictionary<string, int>
 
 public static class CSharpInvariantsProcessorExtensions
 {
-  public static void ExecuteActionWithInvariants(
-    [NotNull] this IDocCommentBlock commentBlock, [NotNull] Action<XmlElement> actionWithInvariant)
+  public static void ExecuteActionWithNames(
+    [NotNull] this IDocCommentBlock commentBlock, [NotNull] Action<NameExtraction> actionWithInvariant)
   {
     if (commentBlock.GetXML(null) is not { } xml) return;
     
     for (var node = xml.FirstChild; node is { }; node = node.NextSibling)
     {
       if (node is not XmlElement xmlElement ||
-          DocCommentsBuilderUtil.TryGetInvariantName(xmlElement) is not { })
+          DocCommentsBuilderUtil.TryExtractNameFrom(xmlElement) is not { } nameExtraction)
       {
         continue;
       }
 
-      actionWithInvariant(xmlElement);
+      actionWithInvariant(nameExtraction);
     }
   }
   

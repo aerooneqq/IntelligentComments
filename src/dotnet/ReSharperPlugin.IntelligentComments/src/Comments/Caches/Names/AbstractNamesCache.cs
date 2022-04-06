@@ -11,10 +11,9 @@ using JetBrains.ReSharper.Psi.Files;
 using JetBrains.Util.PersistentMap;
 using ReSharperPlugin.IntelligentComments.Comments.Caches.Text.Trie;
 
-namespace ReSharperPlugin.IntelligentComments.Comments.Caches.Invariants;
+namespace ReSharperPlugin.IntelligentComments.Comments.Caches.Names;
 
-[PsiComponent]
-public class InvariantsNamesCache : SimpleICache<Dictionary<string, int>>
+public abstract class AbstractNamesCache : SimpleICache<Dictionary<string, int>> 
 {
   [NotNull] private static readonly IUnsafeMarshaller<Dictionary<string, int>> ourMarshaller =
     UnsafeMarshallers.GetCollectionMarshaller(
@@ -27,35 +26,35 @@ public class InvariantsNamesCache : SimpleICache<Dictionary<string, int>>
       collection => new Dictionary<string, int>(collection)
     );
 
-  [NotNull] private readonly Trie myTrie;
   
-  public override string Version => "3";
-  
+  [NotNull] protected readonly Trie Trie;
 
-  public InvariantsNamesCache(
+  
+  public override string Version => "4";
+
+  
+  protected AbstractNamesCache(
     Lifetime lifetime,
-    [NotNull] IShellLocks locks,
-    [NotNull] IPersistentIndexManager persistentIndexManager)
+    IShellLocks locks,
+    IPersistentIndexManager persistentIndexManager)
     : base(lifetime, locks, persistentIndexManager, ourMarshaller)
   {
-    myTrie = new Trie();
+    Trie = new Trie();
   }
   
-
+  
   public override object Build(IPsiSourceFile sourceFile, bool isStartup)
   {
     var invariants = new Dictionary<string, int>();
     foreach (var file in sourceFile.GetPsiFiles<KnownLanguage>())
     {
-      GetProcessor(file.Language)?.Process(file, invariants);
+      TryGetProcessor(file.Language)?.Process(file, invariants);
     }
     
     return invariants;
   }
-  
-  [CanBeNull]
-  private static IInvariantsProcessor GetProcessor([NotNull] PsiLanguageType languageType) =>
-    LanguageManager.Instance.TryGetService<IInvariantsProcessor>(languageType);
+
+  [CanBeNull] protected abstract INamesProcessor TryGetProcessor([NotNull] PsiLanguageType languageType);
   
   public override void Merge(IPsiSourceFile sourceFile, object builtPart)
   {
@@ -71,6 +70,27 @@ public class InvariantsNamesCache : SimpleICache<Dictionary<string, int>>
     
     base.Merge(sourceFile, builtPart);
   }
+  
+  private void IncreaseOrDecreaseCounts([NotNull] Dictionary<string, int> namesCount, bool increase)
+  {
+    foreach (var (name, count) in namesCount)
+    {
+      bool containsKey = Trie.ContainsKey(name);
+      if (!increase && !containsKey)
+      {
+        return;
+      }
+
+      if (increase && !Trie.ContainsKey(name))
+      {
+        Trie.CreatePathIfNeeded(name);
+      }
+
+      Assertion.Assert(Trie.ContainsKey(name), "myNameHashToCount.ContainsKey(hash)");
+
+      Trie.SetValue(name, count); 
+    }
+  }
 
   public override object Load(IProgressIndicator progress, bool enablePersistence)
   {
@@ -83,28 +103,7 @@ public class InvariantsNamesCache : SimpleICache<Dictionary<string, int>>
 
     return obj;
   }
-
-  private void IncreaseOrDecreaseCounts([NotNull] Dictionary<string, int> namesCount, bool increase)
-  {
-    foreach (var (name, count) in namesCount)
-    {
-      bool containsKey = myTrie.ContainsKey(name);
-      if (!increase && !containsKey)
-      {
-        return;
-      }
-
-      if (increase && !myTrie.ContainsKey(name))
-      {
-        myTrie.CreatePathIfNeeded(name);
-      }
-
-      Assertion.Assert(myTrie.ContainsKey(name), "myNameHashToCount.ContainsKey(hash)");
-
-      myTrie.SetValue(name, count); 
-    }
-  }
-
+  
   public override void Drop(IPsiSourceFile sourceFile)
   {
     if (Map.TryGetValue(sourceFile, out var oldValue))
@@ -117,11 +116,11 @@ public class InvariantsNamesCache : SimpleICache<Dictionary<string, int>>
 
   public int GetInvariantNameCount([NotNull] string name)
   {
-    return myTrie.TryGet(name) ?? 0;
+    return Trie.TryGet(name) ?? 0;
   }
   
   public IEnumerable<string> GetAllNamesFor([NotNull] string prefix)
   {
-    return prefix == string.Empty ? myTrie.GetAllInvariantsNames() : myTrie.GetInvariantNamesStartsWith(prefix);
+    return prefix == string.Empty ? Trie.GetAllInvariantsNames() : Trie.GetInvariantNamesStartsWith(prefix);
   }
 }

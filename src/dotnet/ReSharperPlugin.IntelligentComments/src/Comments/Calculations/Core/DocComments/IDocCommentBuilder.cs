@@ -13,7 +13,7 @@ using JetBrains.Rider.Model;
 using JetBrains.Util;
 using JetBrains.Util.Logging;
 using ReSharperPlugin.IntelligentComments.Comments.Caches;
-using ReSharperPlugin.IntelligentComments.Comments.Caches.Invariants;
+using ReSharperPlugin.IntelligentComments.Comments.Caches.Names.Invariants;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.CodeHighlighting;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments.Tickets;
 using ReSharperPlugin.IntelligentComments.Comments.CodeFragmentsHighlighting;
@@ -171,7 +171,7 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
   {
     if (domainReference is not IInvariantDomainReference invariantReference) return false;
 
-    var cache = solution.GetComponent<InvariantsNamesCache>();
+    var cache = solution.GetComponent<InvariantsNamesNamesCache>();
     return cache.GetInvariantNameCount(invariantReference.InvariantName) == 1;
   }
 
@@ -667,8 +667,9 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
     
     TextHighlighter CreateHackHighlighter(int length) => myHighlightersProvider.GetHackHighlighter(0, length);
     if (TryFillDescriptionAndTickets(element, CreateHackHighlighter) is not { } entity) return;
-    
-    var hackContentSegment = new HackContentSegment(entity);
+
+    var nameText = DocCommentsBuilderUtil.TryExtractNameAttribute(element, myHighlightersProvider, DocCommentsBuilderUtil.HackTagName);
+    var hackContentSegment = new HackContentSegment(nameText, entity);
     ExecuteWithTopmostContentSegments(metadata => metadata.ContentSegments.Segments.Add(hackContentSegment));
   }
 
@@ -692,7 +693,8 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
     TextHighlighter CreateTodoHighlighter(int length) => myHighlightersProvider.GetToDoHighlighter(0, length);
     if (TryFillDescriptionAndTickets(element, CreateTodoHighlighter) is not { } entity) return;
     
-    var todoContentSegment = new ToDoContentSegment(entity);
+    var nameText = DocCommentsBuilderUtil.TryExtractNameAttribute(element, myHighlightersProvider, DocCommentsBuilderUtil.TodoTagName);
+    var todoContentSegment = new ToDoContentSegment(nameText, entity);
     ExecuteWithTopmostContentSegments(metadata => metadata.ContentSegments.Segments.Add(todoContentSegment));
   }
 
@@ -769,7 +771,7 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
     return new TicketContentSegment(description, reference);
   }
 
-  private record CodeFragment(IHighlightedText PreliminaryText, int HighlightingRequestId);
+  private record CodeFragment([NotNull] IHighlightedText PreliminaryText, int HighlightingRequestId);
   
   [NotNull]
   private CodeFragment CreateCodeFragment([NotNull] string text)

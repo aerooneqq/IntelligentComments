@@ -155,7 +155,7 @@ public record InlineReferenceContentSegment(
 
 public record ToDoTextContentSegment(IHighlightedText Text) : IToDoTextContentSegment;
 
-public record ToDoContentSegment(IEntityWithContentSegments Content) : IToDoContentSegment;
+public record ToDoContentSegment(IHighlightedText Name, IEntityWithContentSegments Content) : IToDoContentSegment;
 
 public record TicketContentSegment(
   IEntityWithContentSegments Description, 
@@ -164,4 +164,4 @@ public record TicketContentSegment(
 
 public record InlineHackContentSegment(IHighlightedText Text) : IInlineHackContentSegment;
 
-public record HackContentSegment(IEntityWithContentSegments Content) : IHackContentSegment;
+public record HackContentSegment(IHighlightedText Name, IEntityWithContentSegments Content) : IHackContentSegment;

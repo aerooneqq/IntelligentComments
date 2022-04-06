@@ -10,11 +10,11 @@ using JetBrains.ReSharper.Psi.Files;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.ReSharper.Resources.Shell;
 using JetBrains.Util;
-using ReSharperPlugin.IntelligentComments.Comments.Caches.Invariants;
+using ReSharperPlugin.IntelligentComments.Comments.Caches.Names;
+using ReSharperPlugin.IntelligentComments.Comments.Caches.Names.Invariants;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments;
-using ReSharperPlugin.IntelligentComments.Comments.Completion.CSharp;
 using ReSharperPlugin.IntelligentComments.Comments.Completion.CSharp.DocComments;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
 
@@ -25,7 +25,7 @@ internal static class InvariantResolveUtil
   public static DomainResolveResult ResolveInvariantByName(
     [NotNull] string invariantName, [NotNull] IDomainResolveContext context)
   {
-    var cache = context.Solution.GetComponent<InvariantsNamesCache>();
+    var cache = context.Solution.GetComponent<InvariantsNamesNamesCache>();
     var invariantNameCount = cache.GetInvariantNameCount(invariantName);
     
     InvalidDomainResolveResult CreateInvalidResolveResult()
@@ -54,9 +54,12 @@ internal static class InvariantResolveUtil
         if (docCommentBlock is null) continue;
 
         DomainResolveResult result = EmptyDomainResolveResult.Instance;
-        docCommentBlock.ExecuteActionWithInvariants(element =>
+        docCommentBlock.ExecuteActionWithNames(extraction =>
         {
-          var currentInvariantName = DocCommentsBuilderUtil.TryGetInvariantName(element);
+          if (extraction.NameKind != NameKind.Invariant) return;
+
+          var currentInvariantName = extraction.Name;
+          var element = extraction.CorrespondingElement;
           var provider = LanguageManager.Instance.GetService<IHighlightersProvider>(primaryPsiFile.Language);
           var invariant = DocCommentBuilderBase.TryBuildInvariantContentSegment(element, context.Solution, provider, false);
         
@@ -78,7 +81,7 @@ internal static class InvariantResolveUtil
     [NotNull] string name, 
     [NotNull] ISolution solution)
   {
-    var cache = solution.GetComponent<InvariantsNamesCache>();
+    var cache = solution.GetComponent<InvariantsNamesNamesCache>();
     if (cache.GetInvariantNameCount(name) != 1) return EmptyList<ReferenceInFileDescriptor>.Enumerable;
     
     var trigramIndex = solution.GetComponent<SourcesTrigramIndex>();

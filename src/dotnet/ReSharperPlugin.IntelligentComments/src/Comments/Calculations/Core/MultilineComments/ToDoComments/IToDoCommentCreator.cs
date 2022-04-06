@@ -1,13 +1,7 @@
-using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using JetBrains.Annotations;
-using JetBrains.ReSharper.Psi;
-using JetBrains.ReSharper.Psi.Tree;
-using JetBrains.Util;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.Content;
-using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.Content;
 
@@ -33,7 +27,7 @@ public abstract class ToDoCommentCreator : GroupOfLinesLikeCommentCreator, IToDo
     var highlighter = provider.GetToDoHighlighter(0, text.Length) with { TextAnimation = null };
     var toDoHighlightedText = new HighlightedText(text, highlighter);
     var segments = new ContentSegments(new List<IContentSegment>() { new ToDoTextContentSegment(toDoHighlightedText) });
-    var segment = new ToDoContentSegment(new EntityWithContentSegments(segments));
+    var segment = new ToDoContentSegment(null, new EntityWithContentSegments(segments));
     var toDoComment = new ToDoComment(segment, originalComment.Range);
     return toDoComment;
   }

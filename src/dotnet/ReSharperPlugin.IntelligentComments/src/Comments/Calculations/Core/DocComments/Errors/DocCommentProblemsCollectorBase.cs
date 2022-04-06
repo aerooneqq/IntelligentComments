@@ -12,7 +12,7 @@ using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.ReSharper.Psi.Xml.Tree;
 using JetBrains.Util;
 using JetBrains.Util.Logging;
-using ReSharperPlugin.IntelligentComments.Comments.Caches.Invariants;
+using ReSharperPlugin.IntelligentComments.Comments.Caches.Names.Invariants;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.References;
 
@@ -250,7 +250,7 @@ public abstract class CommentProblemsCollectorBase : ICommentProblemsCollector
     Assertion.AssertNotNull(invariantNameAttribute, "attribute != null");
 
     var name = DocCommentsBuilderUtil.GetInvariantName(invariantNameAttribute);
-    var cache = invariantTag.GetSolution().GetComponent<InvariantsNamesCache>();
+    var cache = invariantTag.GetSolution().GetComponent<InvariantsNamesNamesCache>();
     var invariantNameCount = cache.GetInvariantNameCount(name);
 
     if (invariantNameCount == 1) return true;

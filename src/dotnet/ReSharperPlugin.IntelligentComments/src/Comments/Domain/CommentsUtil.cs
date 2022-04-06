@@ -26,7 +26,7 @@ public static class CommentsUtil
       IDisablingComment disablingComment => disablingComment.ToRdComment(),
       IInlineReferenceComment comment => comment.ToRdComment(),
       IToDoComment comment => comment.ToRdComment(),
-      IHackComment comment => comment.ToRdComment(),
+      IHackComment comment => comment.ToRdHackComment(),
       _ => throw new ArgumentOutOfRangeException(commentBase.GetType().Name)
     };
   }
@@ -147,7 +147,7 @@ public static class CommentsUtil
   [NotNull]
   private static RdHackContentSegment ToRdContentSegment([NotNull] this IHackContentSegment segment)
   {
-    return new RdHackContentSegment(segment.Content.ToRdContentSegment());
+    return new RdHackContentSegment(segment.Content.ToRdContentSegment(), segment.Name?.ToRdHighlightedText());
   }
 
   [NotNull]
@@ -165,7 +165,7 @@ public static class CommentsUtil
   [NotNull]
   private static RdToDoContentSegment ToRdContentSegment([NotNull] this IToDoContentSegment segment)
   {
-    return new RdToDoContentSegment(segment.Content.ToRdContentSegment());
+    return new RdToDoContentSegment(segment.Content.ToRdContentSegment(), segment.Name?.ToRdHighlightedText());
   }
   
   [NotNull]

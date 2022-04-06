@@ -280,11 +280,15 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
     + "Italic"
   }
 
+  val RdContentSegmentWithOptionalName = basestruct extends RdContentSegment {
+    field("Name", RdHighlightedText.nullable).optional
+  }
+
   val RdToDoTextContentSegment = structdef extends RdContentSegment {
     field("Text", RdHighlightedText)
   }
 
-  val RdToDoContentSegment = structdef extends RdContentSegment {
+  val RdToDoContentSegment = structdef extends RdContentSegmentWithOptionalName {
     field("Content", RdDefaultSegmentWithContent)
   }
 
@@ -297,7 +301,7 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
     field("Text", RdHighlightedText)
   }
 
-  val RdHackContentSegment = structdef extends RdContentSegment {
+  val RdHackContentSegment = structdef extends RdContentSegmentWithOptionalName {
     field("Description", RdDefaultSegmentWithContent)
   }
 

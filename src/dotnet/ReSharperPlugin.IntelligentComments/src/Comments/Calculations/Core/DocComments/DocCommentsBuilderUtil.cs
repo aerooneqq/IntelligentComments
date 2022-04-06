@@ -20,6 +20,15 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComm
 internal record struct TextProcessingResult([NotNull] string ProcessedText, int EffectiveLength);
 internal record struct TagInfo([NotNull] IHighlightedText NameText, [NotNull] IHighlightedText DescriptionText);
 
+public enum NameKind
+{
+  Invariant,
+  Todo,
+  Hack
+}
+
+public record struct NameExtraction([NotNull] string Name, NameKind NameKind, [NotNull] XmlElement CorrespondingElement);
+
 internal static class DocCommentsBuilderUtil
 {
   [NotNull] internal const string ImageTagName = "image";
@@ -30,12 +39,14 @@ internal static class DocCommentsBuilderUtil
   [NotNull] internal const string TicketsSectionTagName = "tickets";
   [NotNull] internal const string TicketTagName = "ticket";
   [NotNull] internal const string HackTagName = "hack";
-  
 
+  [NotNull] internal const string CommonNameAttrName = "name";
+  [NotNull] internal const string TicketNameAttrName = CommonNameAttrName;
+  [NotNull] internal const string HackNameAttrName = CommonNameAttrName;
   [NotNull] internal const string TicketSourceAttrName = "source";
   [NotNull] internal const string InvariantReferenceSourceAttrName = "invariant";
   [NotNull] internal const string InvariantTagName = "invariant";
-  [NotNull] internal const string InvariantNameAttrName = "name";
+  [NotNull] internal const string InvariantNameAttrName = CommonNameAttrName;
   [NotNull] internal const string InheritDocTagName = "inheritdoc";
   [NotNull] internal const string CRef = "cref";
 
@@ -228,6 +239,22 @@ internal static class DocCommentsBuilderUtil
     
     return element.GetAttribute(InvariantNameAttrName);
   }
+
+  internal static NameExtraction? TryExtractNameFrom([NotNull] XmlElement element)
+  {
+    NameKind? nameKind = element.LocalName switch
+    {
+      InvariantTagName => NameKind.Invariant,
+      HackTagName => NameKind.Hack,
+      TodoTagName => NameKind.Todo,
+      _ => null
+    };
+
+    if (!nameKind.HasValue) return null;
+    if (element.GetAttributeNode(CommonNameAttrName) is not { } nameAttr) return null;
+    
+    return new NameExtraction(nameAttr.Value, nameKind.Value, element);
+  }
   
   internal static bool IsInvariantNameAttribute([CanBeNull] IXmlAttribute attribute)
   {
@@ -273,9 +300,32 @@ internal static class DocCommentsBuilderUtil
   }
   
   internal static TagInfo? TryExtractTagInfo(
-    [NotNull] XmlElement element, 
+    [NotNull] XmlElement element,
     [NotNull] string attributeName,
+    [NotNull] IHighlightersProvider provider,
+    [CanBeNull] Func<string, IDomainReference> nameReferenceCreator = null,
+    [CanBeNull] Func<IDomainReference, bool> referenceValidityChecker = null)
+  {
+    var nameText = TryExtractNameAttribute(
+      element, provider, attributeName, nameReferenceCreator, referenceValidityChecker);
+
+    if (nameText is null) return null;
+    
+    var descriptionText = HighlightedText.CreateEmptyText();
+    if (ElementHasOneTextChild(element, out var description))
+    {
+      var (processedText, length) = PreprocessTextWithContext(description, element);
+      var descriptionHighlighter = provider.TryGetReSharperHighlighter(DefaultLanguageAttributeIds.DOC_COMMENT, length);
+      descriptionText.Add(new HighlightedText(processedText, descriptionHighlighter));
+    }
+
+    return new TagInfo(nameText, descriptionText);
+  }
+
+  internal static IHighlightedText TryExtractNameAttribute(
+    [NotNull] XmlElement element,
     [NotNull] IHighlightersProvider highlightersProvider,
+    [NotNull] string attributeName,
     [CanBeNull] Func<string, IDomainReference> nameReferenceCreator = null,
     [CanBeNull] Func<IDomainReference, bool> referenceValidityChecker = null)
   {
@@ -304,16 +354,7 @@ internal static class DocCommentsBuilderUtil
       }
     }
     
-    var nameText = new HighlightedText(name, nameHighlighter);
-    var descriptionText = HighlightedText.CreateEmptyText();
-    if (ElementHasOneTextChild(element, out var description))
-    {
-      var (processedText, length) = PreprocessTextWithContext(description, element);
-      var descriptionHighlighter = highlightersProvider.TryGetReSharperHighlighter(DefaultLanguageAttributeIds.DOC_COMMENT, length);
-      descriptionText.Add(new HighlightedText(processedText, descriptionHighlighter));
-    }
-
-    return new TagInfo(nameText, descriptionText);
+    return new HighlightedText(name, nameHighlighter);
   }
   
   internal static bool ElementHasOneTextChild([NotNull] XmlElement element, [NotNull] out string value)

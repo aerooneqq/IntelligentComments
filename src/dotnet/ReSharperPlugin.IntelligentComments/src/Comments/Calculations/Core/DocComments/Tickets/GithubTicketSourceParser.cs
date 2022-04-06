@@ -1,8 +1,5 @@
-using System;
-using System.Text.RegularExpressions;
 using JetBrains.Annotations;
 using JetBrains.ProjectModel;
-using JetBrains.Util;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.References;
 

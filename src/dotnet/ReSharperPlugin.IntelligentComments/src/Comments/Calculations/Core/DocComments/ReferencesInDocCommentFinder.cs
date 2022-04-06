@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Util;
-using ReSharperPlugin.IntelligentComments.Comments.Caches.Invariants;
+using ReSharperPlugin.IntelligentComments.Comments.Caches.Names;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments;
 
