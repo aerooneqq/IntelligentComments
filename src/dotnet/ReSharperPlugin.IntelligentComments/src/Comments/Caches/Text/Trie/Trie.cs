@@ -34,7 +34,8 @@ public class Trie
     return TryGetNode(key) is { };
   }
   
-  public bool SetValue([NotNull] string key, int delta)
+  
+  public bool ApplyDelta([NotNull] string key, int delta)
   {
     if (TryGetNode(key) is not { } node)
     {
@@ -42,7 +43,7 @@ public class Trie
       return false;
     }
 
-    node.Value = delta;
+    node.Value += delta;
     
     if (node.Value < 0)
     {

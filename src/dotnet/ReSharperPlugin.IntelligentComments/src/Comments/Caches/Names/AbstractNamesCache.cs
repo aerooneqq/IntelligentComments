@@ -69,7 +69,7 @@ public abstract class AbstractNamesCache : SimpleICache<Dictionary<string, int>>
       IncreaseOrDecreaseCounts(oldValue, false);
     }
 
-    if ((Dictionary<string, int>)builtPart is { } newValue)
+    if (builtPart is Dictionary<string, int> newValue)
     {
       IncreaseOrDecreaseCounts(newValue, true);
     }
@@ -94,7 +94,13 @@ public abstract class AbstractNamesCache : SimpleICache<Dictionary<string, int>>
 
       Assertion.Assert(Trie.ContainsKey(name), "myNameHashToCount.ContainsKey(hash)");
 
-      Trie.SetValue(name, count); 
+      var adjustedCount = increase switch
+      {
+        true => count,
+        false => -count
+      };
+
+      Trie.ApplyDelta(name, adjustedCount); 
     }
   }
 
