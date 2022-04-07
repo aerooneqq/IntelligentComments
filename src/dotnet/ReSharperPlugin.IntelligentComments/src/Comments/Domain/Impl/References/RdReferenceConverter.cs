@@ -7,7 +7,6 @@ using JetBrains.ReSharper.Psi;
 using JetBrains.Rider.Backend.Features.Documents;
 using JetBrains.Rider.Backend.Features.TextControls;
 using JetBrains.Rider.Model;
-using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments.Utils;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
 

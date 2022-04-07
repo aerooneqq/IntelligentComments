@@ -2,19 +2,21 @@ using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using JetBrains.Diagnostics;
+using JetBrains.DocumentModel;
 using JetBrains.ReSharper.Features.ReSpeller.Analyzers;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.ReSharper.Psi.Xml.Tree;
 using JetBrains.Util;
-using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments.Utils;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Caches.Names;
 
+public record struct NamedEntityInfo(DocumentOffset Offset);
+
 public interface INamesProcessor
 {
-  void Process([NotNull] IFile file, [NotNull] Dictionary<string, int> namesCount);
+  void Process([NotNull] IFile file, [NotNull] Dictionary<string, List<NamedEntityInfo>> namesInfo);
 }
 
 public class NamesProcessor : INamesProcessor
@@ -28,11 +30,11 @@ public class NamesProcessor : INamesProcessor
   }
   
   
-  public void Process(IFile file, Dictionary<string, int> namesCount)
+  public void Process(IFile file, Dictionary<string, List<NamedEntityInfo>> namesInfo)
   {
     foreach (var comment in file.Descendants<IDocCommentBlock>().Collect())
     {
-      comment.ExecuteActionWithNames((extraction, _) =>
+      comment.ExecuteActionWithNames((extraction, xmlTag) =>
       {
         if (extraction.NameKind != myWantedNameKind) return;
 
@@ -40,15 +42,9 @@ public class NamesProcessor : INamesProcessor
         Assertion.AssertNotNull(extractionName, "invariantName != null");
 
         if (extractionName.IsNullOrWhitespace()) return;
-        
-        if (namesCount.ContainsKey(extractionName))
-        {
-          ++namesCount[extractionName];
-        }
-        else
-        {
-          namesCount[extractionName] = 1;
-        }
+
+        var infos = namesInfo.GetOrCreateValue(extractionName, static () => new List<NamedEntityInfo>());
+        infos.Add(new NamedEntityInfo(xmlTag.GetDocumentStartOffset()));
       });
     }
   }

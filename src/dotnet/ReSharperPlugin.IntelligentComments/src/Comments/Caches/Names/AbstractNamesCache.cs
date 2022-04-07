@@ -1,20 +1,28 @@
 using System.Collections.Generic;
+using System.Linq;
 using JetBrains.Annotations;
 using JetBrains.Application.Progress;
 using JetBrains.Application.Threading;
 using JetBrains.Collections;
+using JetBrains.DataFlow;
 using JetBrains.Diagnostics;
+using JetBrains.DocumentModel;
 using JetBrains.Lifetimes;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Caches;
 using JetBrains.ReSharper.Psi.Files;
 using JetBrains.Util.PersistentMap;
 using ReSharperPlugin.IntelligentComments.Comments.Caches.Text.Trie;
+using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments.Utils;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Caches.Names;
 
+public record struct NamedEntity([NotNull] string Name, NameKind NameKind, DocumentOffset DocumentOffset);
+
 public interface INamesCache
 {
+  [NotNull] ISignal<IEnumerable<NamedEntity>> Change { get; }
+
   int GetNameCount([NotNull] string name);
   [NotNull] [ItemNotNull] IEnumerable<string> GetAllNamesFor([NotNull] string prefix);
 }
@@ -32,32 +40,47 @@ public abstract class AbstractNamesCache : SimpleICache<Dictionary<string, int>>
       collection => new Dictionary<string, int>(collection)
     );
 
-  
-  [NotNull] protected readonly Trie Trie;
+
+  protected NameKind NameKind { get; }
+  [NotNull] protected Trie Trie { get; }
 
   
+  public ISignal<IEnumerable<NamedEntity>> Change { get; }
   public override string Version => "4";
 
   
   protected AbstractNamesCache(
     Lifetime lifetime,
-    IShellLocks locks,
-    IPersistentIndexManager persistentIndexManager)
+    NameKind nameKind,
+    [NotNull] IShellLocks locks,
+    [NotNull] IPersistentIndexManager persistentIndexManager)
     : base(lifetime, locks, persistentIndexManager, ourMarshaller)
   {
+    NameKind = nameKind;
     Trie = new Trie();
+    Change = new Signal<IEnumerable<NamedEntity>>(lifetime, $"{GetType().Name}::{nameof(Change)}");
   }
   
   
   public override object Build(IPsiSourceFile sourceFile, bool isStartup)
   {
-    var invariants = new Dictionary<string, int>();
+    var nameInfos = new Dictionary<string, List<NamedEntityInfo>>();
     foreach (var file in sourceFile.GetPsiFiles<KnownLanguage>())
     {
-      TryGetProcessor(file.Language)?.Process(file, invariants);
+      TryGetProcessor(file.Language)?.Process(file, nameInfos);
+    }
+
+    var entities = new List<NamedEntity>();
+    foreach (var (name, infos) in nameInfos)
+    {
+      if (infos.Count != 1) continue;
+
+      var info = infos.First();
+      entities.Add(new NamedEntity(name, NameKind, info.Offset));
     }
     
-    return invariants;
+    Locks.Queue(Lifetime, $"{GetType().Name}::QueueingChange", () => { Change.Fire(entities); });
+    return nameInfos.ToDictionary(pair => pair.Key, pair => pair.Value.Count);
   }
 
   [CanBeNull] protected abstract INamesProcessor TryGetProcessor([NotNull] PsiLanguageType languageType);
@@ -81,11 +104,8 @@ public abstract class AbstractNamesCache : SimpleICache<Dictionary<string, int>>
   {
     foreach (var (name, count) in namesCount)
     {
-      bool containsKey = Trie.ContainsKey(name);
-      if (!increase && !containsKey)
-      {
-        return;
-      }
+      var containsKey = Trie.ContainsKey(name);
+      if (!increase && !containsKey) return;
 
       if (increase && !Trie.ContainsKey(name))
       {
@@ -93,7 +113,6 @@ public abstract class AbstractNamesCache : SimpleICache<Dictionary<string, int>>
       }
 
       Assertion.Assert(Trie.ContainsKey(name), "myNameHashToCount.ContainsKey(hash)");
-
       var adjustedCount = increase switch
       {
         true => count,

@@ -5,7 +5,7 @@ using JetBrains.ReSharper.Feature.Services.CodeCompletion;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.TextControl;
-using ReSharperPlugin.IntelligentComments.Comments.Caches;
+using ReSharperPlugin.IntelligentComments.Comments.Caches.Names;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.InlineReferenceComments;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Completion.CSharp.InlineReferenceComments;

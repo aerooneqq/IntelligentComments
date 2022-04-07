@@ -3,7 +3,6 @@ using JetBrains.ProjectModel;
 using ReSharperPlugin.IntelligentComments.Comments.Caches.Names.Hacks;
 using ReSharperPlugin.IntelligentComments.Comments.Caches.Names.Invariants;
 using ReSharperPlugin.IntelligentComments.Comments.Caches.Names.Todos;
-using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments.Utils;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Caches.Names;
