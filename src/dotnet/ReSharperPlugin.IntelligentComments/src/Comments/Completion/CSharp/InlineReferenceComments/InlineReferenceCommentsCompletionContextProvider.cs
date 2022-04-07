@@ -5,7 +5,6 @@ using JetBrains.ReSharper.Feature.Services.CodeCompletion.Infrastructure;
 using JetBrains.Util;
 using ReSharperPlugin.IntelligentComments.Comments.Caches;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.InlineReferenceComments;
-using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.References;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Completion.CSharp.InlineReferenceComments;
 
@@ -32,7 +31,7 @@ public class InlineReferenceCommentsCompletionContextProvider : ICodeCompletionC
     if (creator.TryExtractCompletionInlineReferenceInfo(commentNode, context.CaretDocumentOffset) is not { } info) return null;
     
     var startOffset = info.InvariantNameOffset.Offset;
-    var endOffset = startOffset + info.InvariantName.Length;
+    var endOffset = startOffset + info.Name.Length;
     var range = new DocumentRange(context.Document, new TextRange(startOffset, endOffset));
     var textualRanges = new TextLookupRanges(range, range);
     

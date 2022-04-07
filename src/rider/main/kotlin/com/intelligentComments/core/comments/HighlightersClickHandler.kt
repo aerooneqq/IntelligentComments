@@ -5,7 +5,6 @@ import com.intelligentComments.core.comments.navigation.CommentsNavigationHost
 import com.intelligentComments.core.comments.popups.IntelligentCommentPopupManager
 import com.intelligentComments.core.domain.core.*
 import com.intelligentComments.ui.comments.model.content.ContentSegmentUiModel
-import com.intelligentComments.ui.comments.model.content.tickets.TicketUiModel
 import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.event.EditorMouseEvent
@@ -38,7 +37,7 @@ class HighlightersClickHandler(private val project: Project) {
     if (tryShowPopupForFrontedReference(e, editor, contextPoint, highlighter)) return
 
     val singleReference = highlighter.references.firstOrNull() ?: return
-    if (singleReference is InvariantReference) {
+    if (singleReference is NamedEntityReference) {
       clickDocHost.queueShowInvariantDoc(singleReference, contextPoint, e)
       return
     }

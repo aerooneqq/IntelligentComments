@@ -5,6 +5,7 @@ using JetBrains.Annotations;
 using JetBrains.RdBackend.Common.Features.Documents;
 using JetBrains.RdBackend.Common.Features.Util.Ranges;
 using JetBrains.Rider.Model;
+using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.Content;
 using FontStyle = ReSharperPlugin.IntelligentComments.Comments.Domain.Core.FontStyle;
@@ -287,17 +288,25 @@ public static class CommentsUtil
       ICodeEntityDomainReference codeEntityReference => codeEntityReference.ToRdReference(),
       IExternalDomainReference externalReference => externalReference.ToRdReference(),
       ILangWordDomainReference langWordReference => langWordReference.ToRdReference(),
-      IInvariantDomainReference invariantReference => invariantReference.ToRdReference(),
+      INamedEntityDomainReference invariantReference => invariantReference.ToRdReference(),
       _ => throw new ArgumentOutOfRangeException(domainReference.GetType().Name),
     };
   }
 
   
   [NotNull]
-  private static RdInvariantReference ToRdReference([NotNull] this IInvariantDomainReference domainReference)
+  public static RdNamedEntityReference ToRdReference([NotNull] this INamedEntityDomainReference reference)
   {
-    return new RdInvariantReference(domainReference.InvariantName, domainReference.InvariantName);
+    return new RdNamedEntityReference(reference.NameKind.ToRdNameKind(), reference.Name, reference.Name);
   }
+
+  public static RdNameKind ToRdNameKind(this NameKind nameKind) => nameKind switch
+  {
+    NameKind.Invariant => RdNameKind.Invariant,
+    NameKind.Hack => RdNameKind.Hack,
+    NameKind.Todo => RdNameKind.Todo,
+    _ => throw new ArgumentOutOfRangeException(nameKind.ToString())
+  };
 
   [NotNull]
   private static RdCodeEntityReference ToRdReference([NotNull] this ICodeEntityDomainReference codeEntityDomainReference)

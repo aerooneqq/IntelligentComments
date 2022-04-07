@@ -20,7 +20,7 @@ open class ReferenceFromRd(reference: RdReference) : UniqueEntityImpl(), Referen
         is RdSandboxCodeEntityReference -> SandboxCodeEntityReferenceFromRd(project, reference)
         is RdHttpLinkReference -> HttpLinkReferenceFromRd(reference)
         is RdFileReference -> FileReferenceFromRd(reference)
-        is RdInvariantReference -> InvariantReferenceFromRd(reference)
+        is RdNamedEntityReference -> InvariantReferenceFromRd(reference)
         else -> throw IllegalArgumentException(reference.toString())
       }
     }
@@ -68,8 +68,26 @@ fun Reference.toRdReference(project: Project): RdReference {
       rawValue
     )
     is HttpLinkReference -> RdHttpLinkReference(displayName, rawValue)
-    is InvariantReference -> RdInvariantReference(this.name, this.name)
+    is NamedEntityReference -> RdNamedEntityReference(nameKind.toRdNameKind(), this.name, this.name)
     else -> throw IllegalArgumentException(this.javaClass.name)
+  }
+}
+
+fun NameKind.toRdNameKind(): RdNameKind {
+  return when(this) {
+    NameKind.Hack -> RdNameKind.Hack
+    NameKind.Invariant -> RdNameKind.Invariant
+    NameKind.Todo -> RdNameKind.Todo
+    else -> throw IllegalArgumentException(this.toString())
+  }
+}
+
+fun RdNameKind.toNameKind(): NameKind {
+  return when(this) {
+    RdNameKind.Todo -> NameKind.Todo
+    RdNameKind.Hack -> NameKind.Hack
+    RdNameKind.Invariant -> NameKind.Invariant
+    else -> throw IllegalArgumentException(this.toString())
   }
 }
 
@@ -87,6 +105,7 @@ class FileReferenceFromRd(reference: RdFileReference) : ExternalReferenceFromRd(
   override val file: File? = try { File(reference.path) } catch (e: Exception) { null }
 }
 
-class InvariantReferenceFromRd(reference: RdInvariantReference) : ReferenceFromRd(reference), InvariantReference {
-  override val name: String = reference.invariantName
+class InvariantReferenceFromRd(reference: RdNamedEntityReference) : ReferenceFromRd(reference), NamedEntityReference {
+  override val name: String = reference.name
+  override val nameKind: NameKind = reference.nameKind.toNameKind()
 }

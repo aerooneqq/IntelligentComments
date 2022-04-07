@@ -21,7 +21,7 @@ public abstract class InlineReferenceCommentCreator : IInlineReferenceCommentCre
   [CanBeNull]
   public virtual CommentCreationResult? TryCreate([NotNull] ITreeNode node)
   {
-    if (TryExtractInlineReferenceInfo(node) is not var (referenceName, descriptionText, _)) return null;
+    if (TryExtractInlineReferenceInfo(node) is not var (name, nameKind, descriptionText, _)) return null;
     
     var description = HighlightedText.CreateEmptyText();
     var provider = LanguageManager.Instance.GetService<IHighlightersProvider>(node.Language);
@@ -34,10 +34,10 @@ public abstract class InlineReferenceCommentCreator : IInlineReferenceCommentCre
       description.Add(new HighlightedText(descriptionText, TryGetDocCommentHighlighter(descriptionText.Length)));
     }
 
-    var nameHighlighter = provider.TryGetDocCommentHighlighter(referenceName.Length);
+    var nameHighlighter = provider.TryGetDocCommentHighlighter(name.Length);
     if (nameHighlighter is { })
     {
-      var domainReference = new InvariantDomainReference(referenceName);
+      var domainReference = new NamedEntityDomainReference(name, nameKind);
       nameHighlighter = nameHighlighter with
       {
         References = new[] { domainReference },
@@ -45,11 +45,13 @@ public abstract class InlineReferenceCommentCreator : IInlineReferenceCommentCre
       };
     }
 
-    const string referenceToInvariantText = "Reference to invariant: ";
-    var name = new HighlightedText(referenceToInvariantText, TryGetDocCommentHighlighter(referenceToInvariantText.Length));
-    name.Add(new HighlightedText(referenceName, nameHighlighter));
+    if (DocCommentsBuilderUtil.TryGetReferenceAttributeNameFrom(nameKind) is not { } attributeName) return null;
+    
+    var referenceToInvariantText = $"Reference to {attributeName}: ";
+    var nameText = new HighlightedText(referenceToInvariantText, TryGetDocCommentHighlighter(referenceToInvariantText.Length));
+    nameText.Add(new HighlightedText(name, nameHighlighter));
 
-    var referenceContentSegment = new InlineReferenceContentSegment(name, description);
+    var referenceContentSegment = new InlineReferenceContentSegment(nameText, description);
     var comment = new InlineReferenceComment(referenceContentSegment, node.GetDocumentRange());
 
     return new CommentCreationResult(comment, new[] { node });
@@ -63,7 +65,7 @@ public abstract class InlineReferenceCommentCreator : IInlineReferenceCommentCre
   {
     if (TryExtractInlineReferenceInfo(node) is not { } info ||
         node.GetSourceFile() is not { } sourceFile ||
-        info.InvariantName != name)
+        info.Name != name)
     {
       return EmptyList<ReferenceInFileDescriptor>.Enumerable;
     }
@@ -73,7 +75,8 @@ public abstract class InlineReferenceCommentCreator : IInlineReferenceCommentCre
 }
 
 public record struct InlineReferenceCommentInfo(
-  [NotNull] string InvariantName, 
+  [NotNull] string Name,
+  NameKind NameKind,
   [CanBeNull] string Description,
   DocumentOffset InvariantNameOffset
 );

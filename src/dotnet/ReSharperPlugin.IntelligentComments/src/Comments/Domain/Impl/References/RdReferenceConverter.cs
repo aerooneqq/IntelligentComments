@@ -1,3 +1,4 @@
+using System;
 using JetBrains.Annotations;
 using JetBrains.ProjectModel;
 using JetBrains.RdBackend.Common.Features.Documents;
@@ -6,6 +7,7 @@ using JetBrains.ReSharper.Psi;
 using JetBrains.Rider.Backend.Features.Documents;
 using JetBrains.Rider.Backend.Features.TextControls;
 using JetBrains.Rider.Model;
+using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.References;
@@ -43,12 +45,20 @@ public class RdReferenceConverter
       RdProxyReference proxyReference => new ProxyDomainReference(proxyReference.RealReferenceId),
       RdXmlDocCodeEntityReference xmlReference => TryGetXmlDocReference(textControlId, xmlReference),
       RdSandboxCodeEntityReference sandBoxReference => TryGetSandboxReference(sandBoxReference),
-      RdInvariantReference invariantReference => new InvariantDomainReference(invariantReference.InvariantName),
+      RdNamedEntityReference nameReference => new NamedEntityDomainReference(nameReference.Name, ToNameKind(nameReference.NameKind)),
       RdHttpLinkReference httpReference => new HttpDomainReference(httpReference.DisplayName, httpReference.RawValue),
       _ => null
     };
   }
-  
+
+  private static NameKind ToNameKind(RdNameKind nameKind) => nameKind switch
+  {
+    RdNameKind.Hack => NameKind.Hack,
+    RdNameKind.Invariant => NameKind.Invariant,
+    RdNameKind.Todo => NameKind.Todo,
+    _ => throw new ArgumentOutOfRangeException(nameKind.ToString())
+  };
+
   [CanBeNull]
   private IXmlDocCodeEntityDomainReference TryGetXmlDocReference(
     [NotNull] TextControlId textControlId,

@@ -6,6 +6,7 @@ using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
 using JetBrains.ReSharper.Psi.Tree;
+using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.InlineReferenceComments;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.Languages.CSharp;
@@ -40,20 +41,23 @@ public class CSharpInlineReferenceCommentCreator : InlineReferenceCommentCreator
 
 internal static class CSharpInlineReferenceCommentsUtil
 {
-  private const string Pattern = @"[ ]*reference[ ]+to[ ]+invariant:[ ]+[a-zA-Z\-0-9:]+";
-  private const string PatternForCompletion = @"[ ]*reference[ ]+to[ ]+invariant:[ ]+";
-  private const string InvariantKey = "invariant: ";
-
+  [NotNull] private static readonly string ourPossibleNamedEntityNames =
+    string.Join("|", DocCommentsBuilderUtil.PossibleReferenceTagSourceAttributes);
   
+  [NotNull] private static readonly string ourPattern = $@"[ ]*reference[ ]+to[ ]+({ourPossibleNamedEntityNames}):[ ]+[a-zA-Z\-0-9:]+";
+  [NotNull] private static readonly string ourPatternForCompletion = $@"[ ]*reference[ ]+to[ ]+({ourPossibleNamedEntityNames}):[ ]+";
+
+
   internal static InlineReferenceCommentInfo? TryExtractCompletionInlineReferenceCommentInfo(
-    [NotNull] ICSharpCommentNode commentNode, 
+    [NotNull] ICSharpCommentNode commentNode,
     DocumentOffset contextCaretDocumentOffset)
   {
     if (TryGetCommentText(commentNode) is not { } text) return null;
-    if (Regex.Matches(text, PatternForCompletion).Count != 1) return null;
+    if (Regex.Matches(text, ourPatternForCompletion).Count != 1) return null;
+    if (TryFindReferenceSourceName(text) is not var (nameKind, foundReferenceSourceName)) return null;
 
-    var startOfNameIndex = text.IndexOf(InvariantKey, StringComparison.Ordinal) + InvariantKey.Length;
-    
+    foundReferenceSourceName += ": ";
+    var startOfNameIndex = text.IndexOf(foundReferenceSourceName, StringComparison.Ordinal) + foundReferenceSourceName.Length;
     //+2, cz comment starts with "//"
     var offset = commentNode.GetDocumentStartOffset().Shift(startOfNameIndex).Shift(2);
     if (contextCaretDocumentOffset < offset) return null;
@@ -68,7 +72,28 @@ internal static class CSharpInlineReferenceCommentsUtil
     if (invariantNameEndIndex != -1 && contextCaretDocumentOffset > offset.Shift(invariantName.Length))
       return null;
     
-    return new InlineReferenceCommentInfo(invariantName, null, offset);
+    return new InlineReferenceCommentInfo(invariantName, nameKind, null, offset);
+  }
+
+  private record struct FoundReferenceSourceName(NameKind NameKind, string ReferenceSourceName);
+
+  private static FoundReferenceSourceName? TryFindReferenceSourceName([NotNull] string text)
+  {
+    NameKind? nameKind = null;
+    string foundReferenceSourceName = null;
+    foreach (var referenceSourceName in DocCommentsBuilderUtil.PossibleReferenceTagSourceAttributes)
+    {
+      if (text.IndexOf(referenceSourceName, StringComparison.Ordinal) != -1)
+      {
+        foundReferenceSourceName = referenceSourceName;
+        nameKind = DocCommentsBuilderUtil.GetNameKind(referenceSourceName);
+        break;
+      }
+    }
+
+    if (foundReferenceSourceName is null || !nameKind.HasValue) return null;
+
+    return new FoundReferenceSourceName(nameKind.Value, foundReferenceSourceName);
   }
 
   private static string TryGetCommentText([NotNull] ICSharpCommentNode commentNode)
@@ -83,26 +108,28 @@ internal static class CSharpInlineReferenceCommentsUtil
   {
     if (TryGetCommentText(commentNode) is not { } text) return null;
     
-    var matches = Regex.Matches(text, Pattern);
-    if (matches.Count != 1) return null;
+    var matches = Regex.Matches(text, ourPattern);
+    if (matches.Count != 1 || matches[0].Index != 0 || !matches[0].Success) return null;
+    if (TryFindReferenceSourceName(text) is not var (nameKind, foundReferenceSourceName)) return null;
 
-    var invariantKeyIndex = text.IndexOf(InvariantKey, StringComparison.Ordinal);
-    var invariantNameStartIndex = invariantKeyIndex + InvariantKey.Length;
-    var invariantNameEndIndex = text.IndexOf(' ', invariantNameStartIndex);
-    var invariantName = invariantNameEndIndex switch
+    foundReferenceSourceName += ": ";
+    var namedEntityIndex = text.IndexOf(foundReferenceSourceName, StringComparison.Ordinal);
+    var namedEntityStartIndex = namedEntityIndex + foundReferenceSourceName.Length;
+    var namedEntityNameEndIndex = text.IndexOf(' ', namedEntityStartIndex);
+    var namedEntityName = namedEntityNameEndIndex switch
     {
-      > 0 => text.Substring(invariantNameStartIndex, invariantNameEndIndex - invariantNameStartIndex),
-      _ => text[invariantNameStartIndex..]
+      > 0 => text.Substring(namedEntityStartIndex, namedEntityNameEndIndex - namedEntityStartIndex),
+      _ => text[namedEntityStartIndex..]
     };
 
-    var description = invariantNameEndIndex switch
+    var description = namedEntityNameEndIndex switch
     {
-      > 0 => text[(invariantNameEndIndex + 1)..],
+      > 0 => text[(namedEntityNameEndIndex + 1)..],
       _ => null
     };
     
     //+2, cz comment starts with "//"
-    var invariantNameOffset = commentNode.GetDocumentStartOffset().Shift(invariantNameStartIndex).Shift(2);
-    return new InlineReferenceCommentInfo(invariantName, description, invariantNameOffset);
+    var invariantNameOffset = commentNode.GetDocumentStartOffset().Shift(namedEntityStartIndex).Shift(2);
+    return new InlineReferenceCommentInfo(namedEntityName, nameKind, description, invariantNameOffset);
   }
 }

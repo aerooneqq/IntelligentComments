@@ -13,7 +13,6 @@ using JetBrains.ReSharper.Psi.Xml.Tree;
 using JetBrains.ReSharper.Resources.Shell;
 using JetBrains.Util;
 using ReSharperPlugin.IntelligentComments.Comments.Caches.Names;
-using ReSharperPlugin.IntelligentComments.Comments.Caches.Names.Invariants;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments;
@@ -73,7 +72,8 @@ internal static class NamesResolveUtil
         
             if (currentName == name && invariant is { } invariantContentSegment)
             {
-              result = new NamedEntityDomainResolveResult(invariantContentSegment, docCommentBlock, tag.GetDocumentStartOffset());
+              result = new NamedEntityDomainResolveResult(
+                invariantContentSegment, docCommentBlock, tag.GetDocumentStartOffset(), nameKind);
             }
           });
 
@@ -103,7 +103,10 @@ internal static class NamesResolveUtil
     for (var i = indices.Count - 1; i >= 0; --i)
     {
       var indexOfChild = indices[i];
-      element = node.ChildNodes.SafeOfType<XmlElement>().ToList()[indexOfChild];
+      var childXmlElements = node.ChildNodes.SafeOfType<XmlElement>().ToList();
+      if (indexOfChild < 0 || indexOfChild >= childXmlElements.Count) return null;
+      
+      element = childXmlElements[indexOfChild];
     }
     
     return element as XmlElement;

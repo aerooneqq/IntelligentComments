@@ -8,19 +8,21 @@ using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.References;
 
-public class InvariantDomainReference : DomainReferenceBase, IInvariantDomainReference
+public class NamedEntityDomainReference : DomainReferenceBase, INamedEntityDomainReference
 {
-  public string InvariantName { get; }
-  
-  
-  public InvariantDomainReference(string name) : base(name)
+  public string Name { get; }
+  public NameKind NameKind { get; }
+
+
+  public NamedEntityDomainReference([NotNull] string name, NameKind nameKind) : base(name)
   {
-    InvariantName = name;
+    Name = name;
+    NameKind = nameKind;
   }
 
 
   public override DomainResolveResult Resolve(IDomainResolveContext context) => 
-    NamesResolveUtil.ResolveName(InvariantName, context, NameKind.Invariant);
+    NamesResolveUtil.ResolveName(Name, context, NameKind);
 }
 
 public class NamedEntityDomainResolveResult : DomainResolveResult
@@ -28,15 +30,18 @@ public class NamedEntityDomainResolveResult : DomainResolveResult
   [NotNull] public IContentSegment ContentSegment { get; }
   [NotNull] public IDocCommentBlock ParentDocCommentBlock { get; }
   public DocumentOffset InvariantDocumentOffset { get; }
+  public NameKind NameKind { get; }
 
 
   public NamedEntityDomainResolveResult(
     [NotNull] IContentSegment contentSegment, 
     [NotNull] IDocCommentBlock parentBlock, 
-    DocumentOffset invariantDocumentOffset)
+    DocumentOffset invariantDocumentOffset, 
+    NameKind nameKind)
   {
     ContentSegment = contentSegment;
     ParentDocCommentBlock = parentBlock;
     InvariantDocumentOffset = invariantDocumentOffset;
+    NameKind = nameKind;
   }
 }

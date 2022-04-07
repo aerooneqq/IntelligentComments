@@ -5,7 +5,6 @@ using System.Text;
 using System.Xml;
 using JetBrains.Annotations;
 using JetBrains.Diagnostics;
-using JetBrains.ReSharper.Daemon;
 using JetBrains.ReSharper.Feature.Services.Daemon.Attributes;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.ExtensionsAPI;
@@ -29,7 +28,7 @@ public enum NameKind
   Hack
 }
 
-public record struct NameExtraction([NotNull] string Name, NameKind NameKind, [CanBeNull] XmlElement CorrespondingElement);
+public record struct NameExtraction([NotNull] string Name, NameKind NameKind);
 
 internal static class DocCommentsBuilderUtil
 {
@@ -90,7 +89,7 @@ internal static class DocCommentsBuilderUtil
   };
 
   [NotNull] 
-  internal static HashSet<string> PossibleReferenceTagAttributes { get; } = new() 
+  internal static HashSet<string> PossibleReferenceTagSourceAttributes { get; } = new() 
   {
     InvariantReferenceSourceAttrName,
     HackReferenceSourceAttributeName,
@@ -98,7 +97,7 @@ internal static class DocCommentsBuilderUtil
   };
 
   [NotNull] 
-  internal static string PossibleReferenceTagAttributesPresentation { get; } = string.Join(", ", PossibleReferenceTagAttributes);
+  internal static string PossibleReferenceTagAttributesPresentation { get; } = string.Join(", ", PossibleReferenceTagSourceAttributes);
 
 
   [NotNull] private static readonly ISet<char> ourCharsWithNoNeedToAddSpaceAfter = new HashSet<char>
@@ -268,7 +267,7 @@ internal static class DocCommentsBuilderUtil
     if (!nameKind.HasValue) return null;
 
     if (xmlTag.GetAttribute(CommonNameAttrName) is not { } nameAttr) return null;
-    return new NameExtraction(nameAttr.UnquotedValue, nameKind.Value, null);
+    return new NameExtraction(nameAttr.UnquotedValue, nameKind.Value);
   }
   
   internal static bool IsInvariantNameAttribute([CanBeNull] IXmlAttribute attribute)
@@ -294,10 +293,10 @@ internal static class DocCommentsBuilderUtil
     if (!CheckIfAttributeBelongsToTag(attribute, ReferenceTagName)) return null;
 
     var attrName = attribute.AttributeName;
-    if (!PossibleReferenceTagAttributes.Contains(attrName)) return null;
+    if (!PossibleReferenceTagSourceAttributes.Contains(attrName)) return null;
     
     var nameKind = GetNameKind(attrName);
-    return new NameExtraction(attribute.UnquotedValue, nameKind, null);
+    return new NameExtraction(attribute.UnquotedValue, nameKind);
   }
 
   internal static NameKind GetNameKind([NotNull] string attributeName) => attributeName switch
@@ -332,7 +331,7 @@ internal static class DocCommentsBuilderUtil
     
     var sourceAttributes = referenceTag.Attributes
       .SafeOfType<XmlAttribute>()
-      .Where(attr => PossibleReferenceTagAttributes.Contains(attr.Name))
+      .Where(attr => PossibleReferenceTagSourceAttributes.Contains(attr.Name))
       .ToList();
 
     if (sourceAttributes.Count != 1) return null;
@@ -344,18 +343,10 @@ internal static class DocCommentsBuilderUtil
   [CanBeNull]
   internal static NameExtraction? TryExtractOneReferenceNameKindFromReferenceTag([NotNull] IXmlTag referenceTag)
   {
-    if (referenceTag.Header.Name.XmlName != ReferenceTagName) return null;
-    
-    var sourceAttributes = referenceTag.GetAttributes()
-      .Where(attr => PossibleReferenceTagAttributes.Contains(attr.AttributeName))
-      .ToList();
-
-    if (sourceAttributes.Count != 1) return null;
-
-    var attribute = sourceAttributes.First();
+    if (TryGetOneReferenceSourceAttribute(referenceTag) is not { } attribute) return null; 
     if (TryGetNameKind(attribute.AttributeName) is not { } nameKind) return null;
 
-    return new NameExtraction(attribute.UnquotedValue, nameKind, null);
+    return new NameExtraction(attribute.UnquotedValue, nameKind);
   }
   
   [CanBeNull]
@@ -365,9 +356,16 @@ internal static class DocCommentsBuilderUtil
   }
   
   [CanBeNull]
-  internal static IXmlAttribute TryGetInvariantReferenceSourceAttribute([CanBeNull] IXmlTag referenceTag)
+  internal static IXmlAttribute TryGetOneReferenceSourceAttribute([CanBeNull] IXmlTag referenceTag)
   {
-    return referenceTag?.GetAttribute(InvariantReferenceSourceAttrName);
+    if (referenceTag is null || referenceTag.Header.Name.XmlName != ReferenceTagName) return null;
+    
+    var sourceAttributes = referenceTag.GetAttributes()
+      .Where(attr => PossibleReferenceTagSourceAttributes.Contains(attr.AttributeName))
+      .ToList();
+
+    if (sourceAttributes.Count != 1) return null;
+    return sourceAttributes.First();
   }
 
   internal static string GetInvariantName(IXmlAttribute attribute)

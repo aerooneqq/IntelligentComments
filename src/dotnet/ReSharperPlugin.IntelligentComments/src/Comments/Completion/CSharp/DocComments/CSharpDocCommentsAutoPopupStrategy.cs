@@ -19,7 +19,7 @@ public class CSharpDocCommentsAutoPopupStrategy : CSharpAutoPopupStrategyBase
       var token = docComment.TryGetXmlToken(offset);
       if (token is not IXmlValueToken { Parent: IXmlAttribute parent }) return false;
 
-      return DocCommentsBuilderUtil.PossibleReferenceTagAttributes.Contains(parent.AttributeName) ||
+      return DocCommentsBuilderUtil.PossibleReferenceTagSourceAttributes.Contains(parent.AttributeName) ||
              parent.AttributeName == DocCommentsBuilderUtil.InvariantNameAttrName;
     });
   }

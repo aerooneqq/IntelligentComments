@@ -9,7 +9,6 @@ using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Modules;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.ReSharper.Psi.Util;
-using JetBrains.ReSharper.Psi.Xml.Tree;
 using JetBrains.Rider.Model;
 using JetBrains.Util;
 using JetBrains.Util.Logging;
@@ -152,13 +151,14 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
       element, 
       DocCommentsBuilderUtil.InvariantNameAttrName, 
       highlightersProvider, 
-      CreateNameReference, 
+      CreateInvariantNameReference, 
       reference => checkValidity && CheckInvariantReferenceIsValid(reference, solution));
 
     return BuildContentSegmentFrom(tagInfo);
   }
   
-  [NotNull] private static IDomainReference CreateNameReference([NotNull] string name) => new InvariantDomainReference(name);
+  [NotNull] private static IDomainReference CreateInvariantNameReference([NotNull] string name) => 
+    new NamedEntityDomainReference(name, NameKind.Invariant);
 
   [CanBeNull]
   private static InvariantContentSegment BuildContentSegmentFrom(TagInfo? tagInfo)
@@ -177,10 +177,10 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
   
   private static bool CheckInvariantReferenceIsValid([NotNull] IDomainReference domainReference, [NotNull] ISolution solution)
   {
-    if (domainReference is not IInvariantDomainReference invariantReference) return false;
+    if (domainReference is not INamedEntityDomainReference invariantReference) return false;
 
     var cache = solution.GetComponent<InvariantsNamesNamesCache>();
-    return cache.GetNameCount(invariantReference.InvariantName) == 1;
+    return cache.GetNameCount(invariantReference.Name) == 1;
   }
 
   protected override void VisitReference(XmlElement element)
@@ -188,7 +188,7 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
     if (!IsTopmostContext()) return;
     if (DocCommentsBuilderUtil.TryExtractOneReferenceNameKindFromReferenceTag(element) is not { } nameKind) return;
     
-    IDomainReference CreateReference([NotNull] string name) => new InvariantDomainReference(name);
+    IDomainReference CreateReference([NotNull] string name) => new NamedEntityDomainReference(name, nameKind);
     bool IsReferenceValid(IDomainReference reference) => CheckInvariantReferenceIsValid(reference, myDomainResolveContext.Solution);
     
     var tagInfo = DocCommentsBuilderUtil.TryExtractTagInfo(
@@ -196,7 +196,7 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
     
     if (tagInfo is not var (nameText, descriptionText)) return;
 
-    var reference = new InvariantDomainReference(nameText.Text);
+    var reference = new NamedEntityDomainReference(nameText.Text, nameKind);
     var segments = new ContentSegments(new List<IContentSegment> { new TextContentSegment(descriptionText) });
     var content = new EntityWithContentSegments(segments);
     var referenceSegment = new ReferenceContentSegment(reference, nameText, content);

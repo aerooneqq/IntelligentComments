@@ -35,7 +35,14 @@ interface FileReference : ExternalReference {
   val file: File?
 }
 
-interface InvariantReference : BackendReference {
+enum class NameKind {
+  Invariant,
+  Hack,
+  Todo
+}
+
+interface NamedEntityReference : BackendReference {
+  val nameKind: NameKind
   val name: String
 }
 

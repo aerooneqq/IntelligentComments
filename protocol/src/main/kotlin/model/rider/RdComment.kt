@@ -180,8 +180,9 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
     field("RawValue", PredefinedType.string)
   }
 
-  val RdInvariantReference = structdef extends RdReference {
-    field("InvariantName", PredefinedType.string)
+  val RdNamedEntityReference = structdef extends RdReference {
+    field("NameKind", RdNameKind)
+    field("Name", PredefinedType.string)
   }
 
   val RdProxyReference = structdef extends RdReference {
@@ -322,6 +323,12 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
     field("ResolveRequest", RdReferenceResolveRequest)
   }
 
+  val RdNameKind = enum {
+    + "Invariant"
+    + "Hack"
+    + "Todo"
+  }
+
   val RdResolveResult = basestruct { }
 
   val RdInvalidResolveResult = structdef extends RdResolveResult {
@@ -329,6 +336,7 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
   }
 
   val RdNamedEntityResolveResult = structdef extends RdResolveResult {
+    field("NameKind", RdNameKind)
     field("Segment", RdContentSegment)
   }
 

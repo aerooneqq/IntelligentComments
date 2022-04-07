@@ -192,17 +192,10 @@ public abstract class CommentProblemsCollectorBase : ICommentProblemsCollector
   private void ProcessReference([NotNull] IXmlTag referenceTag, [NotNull] Context context)
   {
     if (!CheckThatReferenceHasExactlyOneOfNeededTags(referenceTag, context)) return;
+    if (DocCommentsBuilderUtil.TryExtractOneReferenceNameKindFromReferenceTag(referenceTag) is not { } extraction) return;
+    if (DocCommentsBuilderUtil.TryGetOneReferenceSourceAttribute(referenceTag) is not { } attribute) return;
 
-    var referenceSourceAttribute = referenceTag
-      .GetAttributes()
-      .FirstOrDefault(attr => DocCommentsBuilderUtil.PossibleReferenceTagAttributes.Contains(attr.AttributeName));
-    
-    Assertion.AssertNotNull(referenceSourceAttribute, "referenceSourceAttribute != null");
-
-    if (referenceSourceAttribute.AttributeName == DocCommentsBuilderUtil.InvariantReferenceSourceAttrName)
-    {
-      CheckIfInvariantReferenceSourceIsResolved(referenceTag, context);
-    }
+    CheckIfNameReferenceSourceIsResolved(extraction, attribute, context);
   }
 
   private void ProcessInvariant([NotNull] IXmlTag invariantTag, [NotNull] Context context)
@@ -220,7 +213,7 @@ public abstract class CommentProblemsCollectorBase : ICommentProblemsCollector
     
     foreach (var attribute in referenceTag.GetAttributes())
     {
-      if (DocCommentsBuilderUtil.PossibleReferenceTagAttributes.Contains(attribute.AttributeName))
+      if (DocCommentsBuilderUtil.PossibleReferenceTagSourceAttributes.Contains(attribute.AttributeName))
       {
         if (needAttrsCount > 0)
         {
@@ -262,13 +255,13 @@ public abstract class CommentProblemsCollectorBase : ICommentProblemsCollector
     return false;
   }
 
-  private bool CheckIfInvariantReferenceSourceIsResolved([NotNull] IXmlTag referenceTag, [NotNull] Context context)
+  private bool CheckIfNameReferenceSourceIsResolved(
+    NameExtraction extraction,
+    [NotNull] IXmlAttribute attribute,
+    [NotNull] Context context)
   {
-    var referenceSourceAttr = referenceTag.GetAttribute(DocCommentsBuilderUtil.InvariantReferenceSourceAttrName);
-    Assertion.AssertNotNull(referenceSourceAttr, "referenceSourceAttr is { }");
-
-    var referenceSourceText = referenceSourceAttr.UnquotedValue;
-    var reference = new InvariantDomainReference(referenceSourceText);
+    var (name, nameKind) = extraction;
+    var reference = new NamedEntityDomainReference(name, nameKind);
     var adjustedComment = context.AdjustedComment;
     var solution = adjustedComment.GetSolution();
     var document = adjustedComment.GetSourceFile()?.Document;
@@ -281,8 +274,8 @@ public abstract class CommentProblemsCollectorBase : ICommentProblemsCollector
 
     if (reference.Resolve(new DomainResolveContextImpl(solution, document)) is InvalidDomainResolveResult)
     {
-      var text = $"Failed to resolve {DocCommentsBuilderUtil.InvariantReferenceSourceAttrName} \"{referenceSourceText}\"";
-      AddError(referenceSourceAttr.Value.GetDocumentRange(), text, context);
+      var text = $"Failed to resolve {nameKind} \"{name}\"";
+      AddError(attribute.Value.GetDocumentRange(), text, context);
       return false;
     }
 

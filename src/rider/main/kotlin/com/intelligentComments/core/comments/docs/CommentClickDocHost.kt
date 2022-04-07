@@ -4,11 +4,9 @@ import com.intelligentComments.core.comments.popups.IntelligentCommentPopupManag
 import com.intelligentComments.core.comments.resolver.FrontendReferenceResolverHost
 import com.intelligentComments.core.domain.core.*
 import com.intelligentComments.core.domain.rd.ContentSegmentFromRd
-import com.intelligentComments.core.domain.rd.TextInvariantFromRdSegment
 import com.intelligentComments.core.domain.rd.toIdeaHighlightedText
 import com.intelligentComments.core.domain.rd.toRdReference
 import com.intelligentComments.ui.comments.model.content.ContentSegmentUiModel
-import com.intelligentComments.ui.comments.model.content.ContentSegmentsUiModel
 import com.intelligentComments.ui.comments.model.content.text.TextContentSegmentUiModel
 import com.intellij.codeInsight.documentation.DocumentationManager
 import com.intellij.openapi.components.service
@@ -95,7 +93,7 @@ class CommentClickDocHost(private val project: Project) : LifetimedService() {
     }
   }
 
-  fun queueShowInvariantDoc(reference: InvariantReference, contextPoint: Point, e: EditorMouseEvent) {
+  fun queueShowInvariantDoc(reference: NamedEntityReference, contextPoint: Point, e: EditorMouseEvent) {
     referenceResolver.resolveInvariantReference(reference, e.editor) {
       val relativePoint = RelativePoint(e.mouseEvent.component, contextPoint)
 

@@ -112,9 +112,9 @@ internal static class NavigationUtil
 
     if (creator.TryExtractInlineReferenceInfo(commentNode) is not { } info) return null;
     if (caretOffset >= info.InvariantNameOffset &&
-        caretOffset.Offset <= info.InvariantNameOffset.Offset + info.InvariantName.Length)
+        caretOffset.Offset <= info.InvariantNameOffset.Offset + info.Name.Length)
     {
-      return new NameExtraction(info.InvariantName, NameKind.Invariant, null);
+      return new NameExtraction(info.Name, NameKind.Invariant);
     }
 
     return null;
