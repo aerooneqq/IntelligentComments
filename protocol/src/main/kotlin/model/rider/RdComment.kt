@@ -337,7 +337,7 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
 
   val RdNamedEntityResolveResult = structdef extends RdResolveResult {
     field("NameKind", RdNameKind)
-    field("Segment", RdContentSegment)
+    field("Segment", RdContentSegment.nullable)
   }
 
   val RdWebResourceResolveResult = structdef extends RdResolveResult {

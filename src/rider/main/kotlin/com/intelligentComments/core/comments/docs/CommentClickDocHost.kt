@@ -111,9 +111,10 @@ class CommentClickDocHost(private val project: Project) : LifetimedService() {
       }
 
       val invariantResolveResult = it as? RdNamedEntityResolveResult ?: return@resolveReference
+      val segment = invariantResolveResult.segment ?: return@resolveReference
 
-      val segment = ContentSegmentFromRd.getFrom(invariantResolveResult.segment, null, project)
-      val model = ContentSegmentUiModel.getFrom(project, null, segment)
+      val segmentFromRd = ContentSegmentFromRd.getFrom(segment, null, project)
+      val model = ContentSegmentUiModel.getFrom(project, null, segmentFromRd)
 
       popupManager.showPopupFor(model, e.editor, relativePoint)
     }

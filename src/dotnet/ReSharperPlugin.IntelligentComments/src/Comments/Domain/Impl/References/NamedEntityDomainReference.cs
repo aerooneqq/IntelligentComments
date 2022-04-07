@@ -27,14 +27,14 @@ public class NamedEntityDomainReference : DomainReferenceBase, INamedEntityDomai
 
 public class NamedEntityDomainResolveResult : DomainResolveResult
 {
-  [NotNull] public IContentSegment ContentSegment { get; }
+  [CanBeNull] public IContentSegment ContentSegment { get; }
   [NotNull] public IDocCommentBlock ParentDocCommentBlock { get; }
   public DocumentOffset InvariantDocumentOffset { get; }
   public NameKind NameKind { get; }
 
 
   public NamedEntityDomainResolveResult(
-    [NotNull] IContentSegment contentSegment, 
+    [CanBeNull] IContentSegment contentSegment, 
     [NotNull] IDocCommentBlock parentBlock, 
     DocumentOffset invariantDocumentOffset, 
     NameKind nameKind)

@@ -119,7 +119,7 @@ class RdCommentsModel private constructor(
         private val __RdHighlightedTextNullableSerializer = RdHighlightedText.nullable()
         private val __IntNullableSerializer = FrameworkMarshallers.Int.nullable()
         
-        const val serializationHash = -8348568620516581705L
+        const val serializationHash = -2842668153239415254L
         
     }
     override val serializersOwner: ISerializersOwner get() = RdCommentsModel
@@ -3124,7 +3124,7 @@ class RdNamedEntityReference (
  */
 class RdNamedEntityResolveResult (
     val nameKind: RdNameKind,
-    val segment: RdContentSegment
+    val segment: RdContentSegment?
 ) : RdResolveResult (
 ) {
     //companion
@@ -3135,13 +3135,13 @@ class RdNamedEntityResolveResult (
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdNamedEntityResolveResult  {
             val nameKind = buffer.readEnum<RdNameKind>()
-            val segment = ctx.serializers.readPolymorphic<RdContentSegment>(ctx, buffer, RdContentSegment)
+            val segment = buffer.readNullable { ctx.serializers.readPolymorphic<RdContentSegment>(ctx, buffer, RdContentSegment) }
             return RdNamedEntityResolveResult(nameKind, segment)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: RdNamedEntityResolveResult)  {
             buffer.writeEnum(value.nameKind)
-            ctx.serializers.writePolymorphic(ctx, buffer, value.segment)
+            buffer.writeNullable(value.segment) { ctx.serializers.writePolymorphic(ctx, buffer, it) }
         }
         
         
@@ -3166,7 +3166,7 @@ class RdNamedEntityResolveResult (
     override fun hashCode(): Int  {
         var __r = 0
         __r = __r*31 + nameKind.hashCode()
-        __r = __r*31 + segment.hashCode()
+        __r = __r*31 + if (segment != null) segment.hashCode() else 0
         return __r
     }
     //pretty print

@@ -59,19 +59,15 @@ internal static class NamesResolveUtil
           DomainResolveResult result = EmptyDomainResolveResult.Instance;
           docCommentBlock.ExecuteActionWithNames((extraction, tag) =>
           {
-            if (extraction.NameKind != nameKind) return;
-            
             var currentName = extraction.Name;
+            if (extraction.NameKind != nameKind || currentName != name) return;
+            
             var xml = docCommentBlock.GetXML(null);
-
             if (FindXmlElement(tag, xml) is not { } element) return;
             if (DocCommentsBuilderUtil.TryGetBuilderFor(docCommentBlock) is not { } builder) return;
             
             var segment = builder.Build(element);
-            if (currentName == name && segment is { })
-            {
-              result = new NamedEntityDomainResolveResult(segment, docCommentBlock, tag.GetDocumentStartOffset(), nameKind);
-            }
+            result = new NamedEntityDomainResolveResult(segment, docCommentBlock, tag.GetDocumentStartOffset(), nameKind);
           });
 
           if (result is not EmptyDomainResolveResult) return result;

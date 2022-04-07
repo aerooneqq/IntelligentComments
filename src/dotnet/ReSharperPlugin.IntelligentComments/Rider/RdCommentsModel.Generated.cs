@@ -101,7 +101,7 @@ namespace JetBrains.Rider.Model
     public static  CtxWriteDelegate<RdHighlightedText> WriteRdHighlightedTextNullable = RdHighlightedText.Write.NullableClass();
     public static  CtxWriteDelegate<int?> WriteIntNullable = JetBrains.Rd.Impl.Serializers.WriteInt.NullableStruct();
     
-    protected override long SerializationHash => -8348568620516581705L;
+    protected override long SerializationHash => -2842668153239415254L;
     
     protected override Action<ISerializers> Register => RegisterDeclaredTypesSerializers;
     public static void RegisterDeclaredTypesSerializers(ISerializers serializers)
@@ -4004,17 +4004,15 @@ namespace JetBrains.Rider.Model
     //fields
     //public fields
     public RdNameKind NameKind {get; private set;}
-    [NotNull] public RdContentSegment Segment {get; private set;}
+    [CanBeNull] public RdContentSegment Segment {get; private set;}
     
     //private fields
     //primary constructor
     public RdNamedEntityResolveResult(
       RdNameKind nameKind,
-      [NotNull] RdContentSegment segment
+      [CanBeNull] RdContentSegment segment
     )
     {
-      if (segment == null) throw new ArgumentNullException("segment");
-      
       NameKind = nameKind;
       Segment = segment;
     }
@@ -4025,16 +4023,18 @@ namespace JetBrains.Rider.Model
     public static new CtxReadDelegate<RdNamedEntityResolveResult> Read = (ctx, reader) => 
     {
       var nameKind = (RdNameKind)reader.ReadInt();
-      var segment = RdContentSegment.Read(ctx, reader);
+      var segment = ReadRdContentSegmentNullable(ctx, reader);
       var _result = new RdNamedEntityResolveResult(nameKind, segment);
       return _result;
     };
+    public static CtxReadDelegate<RdContentSegment> ReadRdContentSegmentNullable = RdContentSegment.Read.NullableClass();
     
     public static new CtxWriteDelegate<RdNamedEntityResolveResult> Write = (ctx, writer, value) => 
     {
       writer.Write((int)value.NameKind);
-      RdContentSegment.Write(ctx, writer, value.Segment);
+      WriteRdContentSegmentNullable(ctx, writer, value.Segment);
     };
+    public static  CtxWriteDelegate<RdContentSegment> WriteRdContentSegmentNullable = RdContentSegment.Write.NullableClass();
     
     //constants
     
@@ -4060,7 +4060,7 @@ namespace JetBrains.Rider.Model
       unchecked {
         var hash = 0;
         hash = hash * 31 + (int) NameKind;
-        hash = hash * 31 + Segment.GetHashCode();
+        hash = hash * 31 + (Segment != null ? Segment.GetHashCode() : 0);
         return hash;
       }
     }
