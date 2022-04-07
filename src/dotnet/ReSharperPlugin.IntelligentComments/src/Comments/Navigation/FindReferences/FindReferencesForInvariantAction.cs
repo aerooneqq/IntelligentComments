@@ -19,6 +19,6 @@ public class FindReferencesForInvariantAction : ContextNavigationActionBase<Find
 
   public override void Execute(IDataContext dataContext, DelegateExecute nextExecute)
   {
-    NavigationUtil.FindReferencesToInvariant(dataContext);
+    NavigationUtil.FindReferencesForNamedEntity(dataContext);
   }
 }

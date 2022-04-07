@@ -120,13 +120,13 @@ internal static class NavigationUtil
     return null;
   }
 
-  public static void FindReferencesToInvariant(
+  public static void FindReferencesForNamedEntity(
     [NotNull] IDataContext dataContext, [CanBeNull] INavigationExecutionHost host = null)
   {
-    if (NavigationUtil.TryExtractNameFromNamedEntity(dataContext) is not { } invariantName) return;
+    if (NavigationUtil.TryExtractNameFromNamedEntity(dataContext) is not { } extraction) return;
     if (dataContext.GetData(ProjectModelDataConstants.SOLUTION) is not { } solution) return;
 
-    var occurrences = NamesResolveUtil.FindAllReferencesForInvariantName(invariantName.Name, solution)
+    var occurrences = NamesResolveUtil.FindAllReferencesForNamedEntity(extraction, solution)
       .Select(dto => new InvariantReferenceOccurence(dto.SourceFile, dto.Offset))
       .Select(o => (IOccurrence)o)
       .ToList();

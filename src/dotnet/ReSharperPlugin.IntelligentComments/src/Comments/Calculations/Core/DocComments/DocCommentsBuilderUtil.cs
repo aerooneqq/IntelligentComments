@@ -5,6 +5,7 @@ using System.Text;
 using System.Xml;
 using JetBrains.Annotations;
 using JetBrains.Diagnostics;
+using JetBrains.ReSharper.Daemon;
 using JetBrains.ReSharper.Feature.Services.Daemon.Attributes;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.ExtensionsAPI;
@@ -276,10 +277,9 @@ internal static class DocCommentsBuilderUtil
            CheckIfAttributeBelongsToTag(attribute, InvariantTagName);
   }
   
-  internal static bool IsReferenceTagWithInvariantSource(IXmlTag xmlTag)
+  internal static bool IsReferenceTag(IXmlTag xmlTag)
   {
-    return xmlTag.Header.Name.XmlName == ReferenceTagName &&
-           xmlTag.GetAttribute(InvariantReferenceSourceAttrName) is { };
+    return xmlTag.Header.Name.XmlName == ReferenceTagName;
   }
   
   private static bool CheckIfAttributeBelongsToTag([NotNull] IXmlAttribute attribute, [NotNull] string tagName)
@@ -326,8 +326,10 @@ internal static class DocCommentsBuilderUtil
   };
 
   [CanBeNull]
-  internal static NameKind? TryExtractOneReferenceNameKind([NotNull] XmlElement referenceTag)
+  internal static NameKind? TryExtractOneReferenceNameKindFromReferenceTag([NotNull] XmlElement referenceTag)
   {
+    if (referenceTag.Name != ReferenceTagName) return null;
+    
     var sourceAttributes = referenceTag.Attributes
       .SafeOfType<XmlAttribute>()
       .Where(attr => PossibleReferenceTagAttributes.Contains(attr.Name))
@@ -337,6 +339,23 @@ internal static class DocCommentsBuilderUtil
 
     var attribute = sourceAttributes.First();
     return TryGetNameKind(attribute.Name);
+  }
+  
+  [CanBeNull]
+  internal static NameExtraction? TryExtractOneReferenceNameKindFromReferenceTag([NotNull] IXmlTag referenceTag)
+  {
+    if (referenceTag.Header.Name.XmlName != ReferenceTagName) return null;
+    
+    var sourceAttributes = referenceTag.GetAttributes()
+      .Where(attr => PossibleReferenceTagAttributes.Contains(attr.AttributeName))
+      .ToList();
+
+    if (sourceAttributes.Count != 1) return null;
+
+    var attribute = sourceAttributes.First();
+    if (TryGetNameKind(attribute.AttributeName) is not { } nameKind) return null;
+
+    return new NameExtraction(attribute.UnquotedValue, nameKind, null);
   }
   
   [CanBeNull]

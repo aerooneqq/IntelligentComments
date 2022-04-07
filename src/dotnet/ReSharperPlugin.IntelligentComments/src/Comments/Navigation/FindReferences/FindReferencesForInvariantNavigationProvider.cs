@@ -32,7 +32,7 @@ public class FindReferencesForInvariantNavigationProvider : ContextNavigationPro
 
   protected override void Execute(IDataContext dataContext, IEnumerable<InvariantContextSearch> searches, INavigationExecutionHost host)
   {
-    NavigationUtil.FindReferencesToInvariant(dataContext, host);
+    NavigationUtil.FindReferencesForNamedEntity(dataContext, host);
   }
 }
 

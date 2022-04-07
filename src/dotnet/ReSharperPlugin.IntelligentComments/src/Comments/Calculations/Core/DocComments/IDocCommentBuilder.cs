@@ -186,7 +186,7 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
   protected override void VisitReference(XmlElement element)
   {
     if (!IsTopmostContext()) return;
-    if (DocCommentsBuilderUtil.TryExtractOneReferenceNameKind(element) is not { } nameKind) return;
+    if (DocCommentsBuilderUtil.TryExtractOneReferenceNameKindFromReferenceTag(element) is not { } nameKind) return;
     
     IDomainReference CreateReference([NotNull] string name) => new InvariantDomainReference(name);
     bool IsReferenceValid(IDomainReference reference) => CheckInvariantReferenceIsValid(reference, myDomainResolveContext.Solution);

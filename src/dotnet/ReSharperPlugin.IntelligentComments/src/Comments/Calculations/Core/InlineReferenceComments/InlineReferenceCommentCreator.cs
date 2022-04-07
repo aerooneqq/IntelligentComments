@@ -4,6 +4,7 @@ using JetBrains.DocumentModel;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Util;
+using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.Content;
@@ -58,11 +59,11 @@ public abstract class InlineReferenceCommentCreator : IInlineReferenceCommentCre
   public abstract InlineReferenceCommentInfo? TryExtractCompletionInlineReferenceInfo(
     [NotNull] ITreeNode node, DocumentOffset contextCaretDocumentOffset);
 
-  public IEnumerable<ReferenceInFileDescriptor> FindReferencesToInvariant(string invariantName, ITreeNode node)
+  public IEnumerable<ReferenceInFileDescriptor> FindReferencesToNamedEntity(string name, NameKind nameKind, ITreeNode node)
   {
     if (TryExtractInlineReferenceInfo(node) is not { } info ||
         node.GetSourceFile() is not { } sourceFile ||
-        info.InvariantName != invariantName)
+        info.InvariantName != name)
     {
       return EmptyList<ReferenceInFileDescriptor>.Enumerable;
     }

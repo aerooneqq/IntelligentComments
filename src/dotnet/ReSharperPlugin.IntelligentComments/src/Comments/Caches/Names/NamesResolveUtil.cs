@@ -110,17 +110,19 @@ internal static class NamesResolveUtil
   }
   
   [NotNull]
-  public static IEnumerable<ReferenceInFileDescriptor> FindAllReferencesForInvariantName(
-    [NotNull] string name, 
+  public static IEnumerable<ReferenceInFileDescriptor> FindAllReferencesForNamedEntity(
+    NameExtraction nameExtraction, 
     [NotNull] ISolution solution)
   {
-    var cache = solution.GetComponent<InvariantsNamesNamesCache>();
+    var cache = NamesCacheUtil.GetCacheFor(solution, nameExtraction.NameKind);
+    var name = nameExtraction.Name;
+
     if (cache.GetNameCount(name) != 1) return EmptyList<ReferenceInFileDescriptor>.Enumerable;
     
     var trigramIndex = solution.GetComponent<SourcesTrigramIndex>();
     var filesContainingQuery = trigramIndex.GetFilesContainingQuery(name, false);
 
-    var result = new LocalList<ReferenceInFileDescriptor>();
+    var result = new HashSet<ReferenceInFileDescriptor>();
     foreach (var file in filesContainingQuery)
     {
       if (file.GetPrimaryPsiFile() is not { } primaryFile) continue;
@@ -136,12 +138,12 @@ internal static class NamesResolveUtil
 
         foreach (var finder in referencesFinders)
         {
-          result.AddRange(finder.FindReferencesToInvariant(name, commentNode));
+          result.AddRange(finder.FindReferencesToNamedEntity(name, nameExtraction.NameKind, commentNode));
         }
       }
     }
 
-    return result.ResultingList();
+    return result;
   }
 
   internal static void FillOffsets(string text, string substring, ref LocalList<int> indices)

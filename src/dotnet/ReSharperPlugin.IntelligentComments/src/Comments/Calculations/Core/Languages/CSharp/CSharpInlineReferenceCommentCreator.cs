@@ -46,12 +46,14 @@ internal static class CSharpInlineReferenceCommentsUtil
 
   
   internal static InlineReferenceCommentInfo? TryExtractCompletionInlineReferenceCommentInfo(
-    [NotNull] ICSharpCommentNode commentNode, DocumentOffset contextCaretDocumentOffset)
+    [NotNull] ICSharpCommentNode commentNode, 
+    DocumentOffset contextCaretDocumentOffset)
   {
     if (TryGetCommentText(commentNode) is not { } text) return null;
     if (Regex.Matches(text, PatternForCompletion).Count != 1) return null;
 
     var startOfNameIndex = text.IndexOf(InvariantKey, StringComparison.Ordinal) + InvariantKey.Length;
+    
     //+2, cz comment starts with "//"
     var offset = commentNode.GetDocumentStartOffset().Shift(startOfNameIndex).Shift(2);
     if (contextCaretDocumentOffset < offset) return null;

@@ -83,7 +83,7 @@ public static class CSharpInvariantsProcessorExtensions
 
     foreach (var tag in xmlDocPsi.XmlFile.Descendants<IXmlTag>().Collect())
     {
-      if (DocCommentsBuilderUtil.IsReferenceTagWithInvariantSource(tag))
+      if (DocCommentsBuilderUtil.IsReferenceTag(tag))
       {
         actionWithReference(tag);
       }

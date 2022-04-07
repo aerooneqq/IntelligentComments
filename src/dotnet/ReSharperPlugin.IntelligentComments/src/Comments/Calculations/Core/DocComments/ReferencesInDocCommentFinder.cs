@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Util;
@@ -9,7 +10,7 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComm
 [Language(typeof(KnownLanguage))]
 public class ReferencesInDocCommentFinder : IReferenceInCommentFinder
 {
-  public IEnumerable<ReferenceInFileDescriptor> FindReferencesToInvariant(string invariantName, ITreeNode node)
+  public IEnumerable<ReferenceInFileDescriptor> FindReferencesToNamedEntity(string name, NameKind nameKind, ITreeNode node)
   {
     if (node is not IDocCommentBlock docComment || node.GetSourceFile() is not { } sourceFile)
     {
@@ -19,10 +20,10 @@ public class ReferencesInDocCommentFinder : IReferenceInCommentFinder
     var references = new LocalList<ReferenceInFileDescriptor>();
     docComment.ExecuteWithReferences(referenceTag =>
     {
-      var invariantReferenceSourceAttr = DocCommentsBuilderUtil.TryGetInvariantReferenceSourceAttribute(referenceTag);
-      if (invariantReferenceSourceAttr is null || invariantReferenceSourceAttr.UnquotedValue != invariantName) return;
+      var extraction = DocCommentsBuilderUtil.TryExtractOneReferenceNameKindFromReferenceTag(referenceTag);
+      if (extraction is null || extraction.Value.Name != name || extraction.Value.NameKind != nameKind) return;
 
-      var offset = invariantReferenceSourceAttr.GetDocumentStartOffset();
+      var offset = referenceTag.GetDocumentStartOffset();
       references.Add(new ReferenceInFileDescriptor(sourceFile, offset));
     });
 
