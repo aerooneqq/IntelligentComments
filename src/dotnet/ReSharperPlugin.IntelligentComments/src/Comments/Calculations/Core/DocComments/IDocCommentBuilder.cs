@@ -13,7 +13,7 @@ using JetBrains.Rider.Model;
 using JetBrains.Util;
 using JetBrains.Util.Logging;
 using ReSharperPlugin.IntelligentComments.Comments.Caches;
-using ReSharperPlugin.IntelligentComments.Comments.Caches.Names.Invariants;
+using ReSharperPlugin.IntelligentComments.Comments.Caches.Names;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.CodeHighlighting;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments.Tickets;
 using ReSharperPlugin.IntelligentComments.Comments.CodeFragmentsHighlighting;
@@ -28,6 +28,7 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComm
 
 public interface IDocCommentBuilder
 {
+  [CanBeNull] IContentSegment Build([NotNull] XmlElement element);
   [CanBeNull] IDocComment Build();
 }
 
@@ -72,8 +73,22 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
     myParamAttributeId = DefaultLanguageAttributeIds.PARAMETER;
     myTypeParamAttributeId = DefaultLanguageAttributeIds.TYPE_PARAMETER;
   }
-  
 
+
+  public IContentSegment Build(XmlElement element)
+  {
+    if (DocCommentsBuilderUtil.TryGetAdjustedComment(InitialComment) is not { } commentBlock) return null;
+    AdjustedComment = commentBlock;
+    
+    var topmostContentSegments = ContentSegmentsMetadata.CreateEmpty();
+    using (new WithPushedToStackContentSegments(myContentSegmentsStack, topmostContentSegments, ourLogger))
+    {
+      Visit(element);
+    }
+
+    return topmostContentSegments.ContentSegments.Segments.FirstOrDefault();
+  }
+  
   public IDocComment Build()
   {
     try
@@ -100,7 +115,7 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
     {
       Visit(xmlNode);
     }
-      
+    
     var content = new IntelligentCommentContent(topmostContentSegments.ContentSegments);
     return new DocComment(content, InitialComment.GetDocumentRange());
   }
@@ -131,37 +146,21 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
   protected override void VisitInvariant(XmlElement element)
   {
     var solution = myDomainResolveContext.Solution;
-    if (!IsTopmostContext() ||
-        TryBuildInvariantContentSegment(element, solution, myHighlightersProvider, true) is not { } invariant)
-    {
-      return;
-    }
+    if (!IsTopmostContext()) return;
+
+    IDomainReference CreateInvariantNameReference([NotNull] string name) => new NamedEntityDomainReference(name, NameKind.Invariant);
+    bool CheckReferenceValidity(IDomainReference reference) => CheckNamedEntityReferenceIsValid(reference, solution, NameKind.Invariant);
+    const string attrName = DocCommentsBuilderUtil.InvariantNameAttrName;
     
+    var tagInfo = DocCommentsBuilderUtil.TryExtractTagInfo(
+      element, attrName, myHighlightersProvider, CreateInvariantNameReference, CheckReferenceValidity);
+
+    if (BuildInvariantContentSegmentFrom(tagInfo) is not { } invariant) return;
     ExecuteWithTopmostContentSegments(metadata => metadata.ContentSegments.Segments.Add(invariant));
   }
 
   [CanBeNull]
-  public static IInvariantContentSegment TryBuildInvariantContentSegment(
-    [NotNull] XmlElement element, 
-    [NotNull] ISolution solution,
-    [NotNull] IHighlightersProvider highlightersProvider,
-    bool checkValidity)
-  {
-    var tagInfo = DocCommentsBuilderUtil.TryExtractTagInfo(
-      element, 
-      DocCommentsBuilderUtil.InvariantNameAttrName, 
-      highlightersProvider, 
-      CreateInvariantNameReference, 
-      reference => checkValidity && CheckInvariantReferenceIsValid(reference, solution));
-
-    return BuildContentSegmentFrom(tagInfo);
-  }
-  
-  [NotNull] private static IDomainReference CreateInvariantNameReference([NotNull] string name) => 
-    new NamedEntityDomainReference(name, NameKind.Invariant);
-
-  [CanBeNull]
-  private static InvariantContentSegment BuildContentSegmentFrom(TagInfo? tagInfo)
+  private static InvariantContentSegment BuildInvariantContentSegmentFrom(TagInfo? tagInfo)
   {
     if (tagInfo is not var (nameText, descriptionText)) return null;
 
@@ -175,11 +174,14 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
     return new InvariantContentSegment(nameText, content);
   }
   
-  private static bool CheckInvariantReferenceIsValid([NotNull] IDomainReference domainReference, [NotNull] ISolution solution)
+  private static bool CheckNamedEntityReferenceIsValid(
+    [NotNull] IDomainReference domainReference, 
+    [NotNull] ISolution solution,
+    NameKind nameKind)
   {
     if (domainReference is not INamedEntityDomainReference invariantReference) return false;
 
-    var cache = solution.GetComponent<InvariantsNamesNamesCache>();
+    var cache = NamesCacheUtil.GetCacheFor(solution, nameKind);
     return cache.GetNameCount(invariantReference.Name) == 1;
   }
 
@@ -189,7 +191,7 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
     if (DocCommentsBuilderUtil.TryExtractOneReferenceNameKindFromReferenceTag(element) is not { } nameKind) return;
     
     IDomainReference CreateReference([NotNull] string name) => new NamedEntityDomainReference(name, nameKind);
-    bool IsReferenceValid(IDomainReference reference) => CheckInvariantReferenceIsValid(reference, myDomainResolveContext.Solution);
+    bool IsReferenceValid(IDomainReference reference) => CheckNamedEntityReferenceIsValid(reference, myDomainResolveContext.Solution, nameKind);
     
     var tagInfo = DocCommentsBuilderUtil.TryExtractTagInfo(
       element, nameKind, myHighlightersProvider, CreateReference, IsReferenceValid);

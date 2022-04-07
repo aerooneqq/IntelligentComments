@@ -120,12 +120,12 @@ public abstract class AbstractNamesCache : SimpleICache<Dictionary<string, int>>
     base.Drop(sourceFile);
   }
 
-  public int GetNameCount([NotNull] string name)
+  public int GetNameCount(string name)
   {
     return Trie.TryGet(name) ?? 0;
   }
   
-  public IEnumerable<string> GetAllNamesFor([NotNull] string prefix)
+  public IEnumerable<string> GetAllNamesFor(string prefix)
   {
     return prefix == string.Empty ? Trie.GetAllInvariantsNames() : Trie.GetInvariantNamesStartsWith(prefix);
   }

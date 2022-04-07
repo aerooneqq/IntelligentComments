@@ -14,7 +14,7 @@ import com.jetbrains.rider.projectView.solution
 class FrontendReferenceResolverHost(private val project: Project) : LifetimedService() {
   private val model = project.solution.rdCommentsModel
 
-  fun resolveInvariantReference(
+  fun resolveReference(
     reference: Reference,
     editor: Editor,
     actionWithResult: (RdResolveResult) -> Unit

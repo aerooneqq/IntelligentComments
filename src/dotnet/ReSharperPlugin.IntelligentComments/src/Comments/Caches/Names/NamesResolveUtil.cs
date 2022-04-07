@@ -13,9 +13,9 @@ using JetBrains.ReSharper.Psi.Xml.Tree;
 using JetBrains.ReSharper.Resources.Shell;
 using JetBrains.Util;
 using ReSharperPlugin.IntelligentComments.Comments.Caches.Names;
-using ReSharperPlugin.IntelligentComments.Comments.Calculations;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments;
+using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.Languages.CSharp;
 using ReSharperPlugin.IntelligentComments.Comments.Completion.CSharp.DocComments;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.References;
@@ -64,16 +64,15 @@ internal static class NamesResolveUtil
             if (extraction.NameKind != nameKind) return;
             
             var currentName = extraction.Name;
-            var provider = LanguageManager.Instance.GetService<IHighlightersProvider>(primaryPsiFile.Language);
             var xml = docCommentBlock.GetXML(null);
 
             if (FindXmlElement(tag, xml) is not { } element) return;
-            var invariant = DocCommentBuilderBase.TryBuildInvariantContentSegment(element, context.Solution, provider, false);
-        
-            if (currentName == name && invariant is { } invariantContentSegment)
+            if (DocCommentsBuilderUtil.TryGetBuilderFor(docCommentBlock) is not { } builder) return;
+            
+            var segment = builder.Build(element);
+            if (currentName == name && segment is { })
             {
-              result = new NamedEntityDomainResolveResult(
-                invariantContentSegment, docCommentBlock, tag.GetDocumentStartOffset(), nameKind);
+              result = new NamedEntityDomainResolveResult(segment, docCommentBlock, tag.GetDocumentStartOffset(), nameKind);
             }
           });
 

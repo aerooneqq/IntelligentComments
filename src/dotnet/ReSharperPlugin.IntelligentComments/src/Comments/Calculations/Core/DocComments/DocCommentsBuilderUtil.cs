@@ -7,11 +7,13 @@ using JetBrains.Annotations;
 using JetBrains.Diagnostics;
 using JetBrains.ReSharper.Feature.Services.Daemon.Attributes;
 using JetBrains.ReSharper.Psi;
+using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.ReSharper.Psi.ExtensionsAPI;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.ReSharper.Psi.Util;
 using JetBrains.ReSharper.Psi.Xml.Tree;
 using JetBrains.Util;
+using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.Languages.CSharp;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl;
@@ -107,6 +109,16 @@ internal static class DocCommentsBuilderUtil
   
   [NotNull] private static readonly ISet<char> ourWhitespaceChars = new HashSet<char> { ' ', '\n', '\r', '\t' };
 
+
+  [CanBeNull]
+  internal static IDocCommentBuilder TryGetBuilderFor([NotNull] IDocCommentBlock comment)
+  {
+    return comment.Language switch
+    {
+      CSharpLanguage => new CSharpDocCommentBuilder(comment),
+      _ => null
+    };
+  }
 
   [NotNull]
   public static string PreprocessText([NotNull] string text, char? trailingCharToAdd)

@@ -94,11 +94,11 @@ class CommentClickDocHost(private val project: Project) : LifetimedService() {
   }
 
   fun queueShowInvariantDoc(reference: NamedEntityReference, contextPoint: Point, e: EditorMouseEvent) {
-    referenceResolver.resolveInvariantReference(reference, e.editor) {
+    referenceResolver.resolveReference(reference, e.editor) {
       val relativePoint = RelativePoint(e.mouseEvent.component, contextPoint)
 
       if (it is RdInvalidResolveResult) {
-        it.error ?: return@resolveInvariantReference
+        it.error ?: return@resolveReference
 
         val errorText = object : UniqueEntityImpl(), TextContentSegment {
           override val parent: Parentable? = null
@@ -107,10 +107,10 @@ class CommentClickDocHost(private val project: Project) : LifetimedService() {
 
         val model = TextContentSegmentUiModel(project, null, errorText)
         popupManager.showPopupFor(model, e.editor, relativePoint)
-        return@resolveInvariantReference
+        return@resolveReference
       }
 
-      val invariantResolveResult = it as? RdNamedEntityResolveResult ?: return@resolveInvariantReference
+      val invariantResolveResult = it as? RdNamedEntityResolveResult ?: return@resolveReference
 
       val segment = ContentSegmentFromRd.getFrom(invariantResolveResult.segment, null, project)
       val model = ContentSegmentUiModel.getFrom(project, null, segment)
