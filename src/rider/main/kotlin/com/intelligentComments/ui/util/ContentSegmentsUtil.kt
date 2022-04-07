@@ -50,7 +50,7 @@ class ContentSegmentsUtil {
       return adjustedRect
     }
 
-    private fun createRenderInfoFor(
+    fun createRenderInfoFor(
       segments: Collection<ContentSegmentUiModel>,
       editor: Editor
     ): RenderAdditionalInfo {

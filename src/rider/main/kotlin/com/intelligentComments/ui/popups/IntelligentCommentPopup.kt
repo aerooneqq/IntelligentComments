@@ -1,7 +1,9 @@
 package com.intelligentComments.ui.popups
 
+import com.intelligentComments.ui.comments.model.ModelWitchContentSegments
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intelligentComments.ui.comments.renderers.segments.LeftHeaderRightContentRenderer
+import com.intelligentComments.ui.util.ContentSegmentsUtil
 import com.intelligentComments.ui.util.RectanglesModelUtil
 import com.intelligentComments.ui.util.RenderAdditionalInfo
 import com.intelligentComments.ui.util.UpdatedGraphicsCookie
@@ -67,6 +69,8 @@ class IntelligentCommentPopup(
       additionalInfo = if (renderer is LeftHeaderRightContentRenderer) {
         val headerWidth = renderer.calculateHeaderWidth(editor)
         RenderAdditionalInfo(headerWidth)
+      } else if (model is ModelWitchContentSegments) {
+        ContentSegmentsUtil.createRenderInfoFor(model.content.contentSection.content, editor)
       } else {
         RenderAdditionalInfo.emptyInstance
       }
