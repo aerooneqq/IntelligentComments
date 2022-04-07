@@ -15,6 +15,7 @@ using JetBrains.Util;
 using ReSharperPlugin.IntelligentComments.Comments.Caches.Names;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments;
+using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments.Utils;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.Languages.CSharp;
 using ReSharperPlugin.IntelligentComments.Comments.Completion.CSharp.DocComments;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;

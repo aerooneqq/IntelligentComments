@@ -91,7 +91,7 @@ public class CSharpCommentsProcessor : CommentsProcessorBase
   {
     if (ProcessKind is DaemonProcessKind.VISIBLE_DOCUMENT or DaemonProcessKind.SOLUTION_ANALYSIS)
     {
-      var errorsCollector = LanguageManager.GetService<CommentProblemsCollectorBase>(docCommentBlock.Language);
+      var errorsCollector = LanguageManager.GetService<ICommentProblemsCollector>(docCommentBlock.Language);
       if (errorsCollector.Run(docCommentBlock) is { Count: > 0 } errors)
       {
         var range = docCommentBlock.GetDocumentRange();

@@ -1,5 +1,6 @@
 using JetBrains.Annotations;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments;
+using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments.Utils;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
 

@@ -13,6 +13,7 @@ using JetBrains.ReSharper.Psi.Xml.Tree;
 using JetBrains.Util;
 using JetBrains.Util.Logging;
 using ReSharperPlugin.IntelligentComments.Comments.Caches.Names.Invariants;
+using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments.Utils;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.References;
 
@@ -22,8 +23,9 @@ public record Context([NotNull] IDocCommentBlock AdjustedComment, [NotNull] List
 
 public interface ICommentProblemsCollector : IRecursiveElementProcessor<Context>
 {
+  ICollection<HighlightingInfo> Run([NotNull] IDocCommentBlock comment);
 }
-
+ 
 public abstract class CommentProblemsCollectorBase : ICommentProblemsCollector
 {
   [NotNull] private static readonly ILogger ourLogger = Logger.GetLogger<CommentProblemsCollectorBase>();

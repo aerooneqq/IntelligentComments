@@ -4,6 +4,7 @@ using System.Xml;
 using JetBrains.Annotations;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.ReSharper.Psi.Util;
+using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments.Utils;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments;
 
