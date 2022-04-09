@@ -351,7 +351,7 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
 
   val RdNamedEntityItem = basestruct {
     field("Presentation", PredefinedType.string)
-    field("DocumentOffset", PredefinedType.int)
+    field("DocumentOffset", PredefinedType.int.nullable)
   }
 
   val RdHackItem = structdef extends RdNamedEntityItem { }

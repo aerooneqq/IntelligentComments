@@ -108,7 +108,7 @@ namespace JetBrains.Rider.Model
     public static  CtxWriteDelegate<RdHighlightedText> WriteRdHighlightedTextNullable = RdHighlightedText.Write.NullableClass();
     public static  CtxWriteDelegate<int?> WriteIntNullable = JetBrains.Rd.Impl.Serializers.WriteInt.NullableStruct();
     
-    protected override long SerializationHash => 469358653543684643L;
+    protected override long SerializationHash => 5300874634465340081L;
     
     protected override Action<ISerializers> Register => RegisterDeclaredTypesSerializers;
     public static void RegisterDeclaredTypesSerializers(ISerializers serializers)
@@ -2878,7 +2878,7 @@ namespace JetBrains.Rider.Model
     //primary constructor
     public RdHackItem(
       [NotNull] string presentation,
-      int documentOffset
+      [CanBeNull] int? documentOffset
     ) : base (
       presentation,
       documentOffset
@@ -2892,16 +2892,18 @@ namespace JetBrains.Rider.Model
     public static new CtxReadDelegate<RdHackItem> Read = (ctx, reader) => 
     {
       var presentation = reader.ReadString();
-      var documentOffset = reader.ReadInt();
+      var documentOffset = ReadIntNullable(ctx, reader);
       var _result = new RdHackItem(presentation, documentOffset);
       return _result;
     };
+    public static CtxReadDelegate<int?> ReadIntNullable = JetBrains.Rd.Impl.Serializers.ReadInt.NullableStruct();
     
     public static new CtxWriteDelegate<RdHackItem> Write = (ctx, writer, value) => 
     {
       writer.Write(value.Presentation);
-      writer.Write(value.DocumentOffset);
+      WriteIntNullable(ctx, writer, value.DocumentOffset);
     };
+    public static  CtxWriteDelegate<int?> WriteIntNullable = JetBrains.Rd.Impl.Serializers.WriteInt.NullableStruct();
     
     //constants
     
@@ -2919,7 +2921,7 @@ namespace JetBrains.Rider.Model
     {
       if (ReferenceEquals(null, other)) return false;
       if (ReferenceEquals(this, other)) return true;
-      return Presentation == other.Presentation && DocumentOffset == other.DocumentOffset;
+      return Presentation == other.Presentation && Equals(DocumentOffset, other.DocumentOffset);
     }
     //hash code trait
     public override int GetHashCode()
@@ -2927,7 +2929,7 @@ namespace JetBrains.Rider.Model
       unchecked {
         var hash = 0;
         hash = hash * 31 + Presentation.GetHashCode();
-        hash = hash * 31 + DocumentOffset.GetHashCode();
+        hash = hash * 31 + (DocumentOffset != null ? DocumentOffset.GetHashCode() : 0);
         return hash;
       }
     }
@@ -3778,7 +3780,7 @@ namespace JetBrains.Rider.Model
     //primary constructor
     public RdInvariantItem(
       [NotNull] string presentation,
-      int documentOffset
+      [CanBeNull] int? documentOffset
     ) : base (
       presentation,
       documentOffset
@@ -3792,16 +3794,18 @@ namespace JetBrains.Rider.Model
     public static new CtxReadDelegate<RdInvariantItem> Read = (ctx, reader) => 
     {
       var presentation = reader.ReadString();
-      var documentOffset = reader.ReadInt();
+      var documentOffset = ReadIntNullable(ctx, reader);
       var _result = new RdInvariantItem(presentation, documentOffset);
       return _result;
     };
+    public static CtxReadDelegate<int?> ReadIntNullable = JetBrains.Rd.Impl.Serializers.ReadInt.NullableStruct();
     
     public static new CtxWriteDelegate<RdInvariantItem> Write = (ctx, writer, value) => 
     {
       writer.Write(value.Presentation);
-      writer.Write(value.DocumentOffset);
+      WriteIntNullable(ctx, writer, value.DocumentOffset);
     };
+    public static  CtxWriteDelegate<int?> WriteIntNullable = JetBrains.Rd.Impl.Serializers.WriteInt.NullableStruct();
     
     //constants
     
@@ -3819,7 +3823,7 @@ namespace JetBrains.Rider.Model
     {
       if (ReferenceEquals(null, other)) return false;
       if (ReferenceEquals(this, other)) return true;
-      return Presentation == other.Presentation && DocumentOffset == other.DocumentOffset;
+      return Presentation == other.Presentation && Equals(DocumentOffset, other.DocumentOffset);
     }
     //hash code trait
     public override int GetHashCode()
@@ -3827,7 +3831,7 @@ namespace JetBrains.Rider.Model
       unchecked {
         var hash = 0;
         hash = hash * 31 + Presentation.GetHashCode();
-        hash = hash * 31 + DocumentOffset.GetHashCode();
+        hash = hash * 31 + (DocumentOffset != null ? DocumentOffset.GetHashCode() : 0);
         return hash;
       }
     }
@@ -4287,13 +4291,13 @@ namespace JetBrains.Rider.Model
     //fields
     //public fields
     [NotNull] public string Presentation {get; private set;}
-    public int DocumentOffset {get; private set;}
+    [CanBeNull] public int? DocumentOffset {get; private set;}
     
     //private fields
     //primary constructor
     protected RdNamedEntityItem(
       [NotNull] string presentation,
-      int documentOffset
+      [CanBeNull] int? documentOffset
     )
     {
       if (presentation == null) throw new ArgumentNullException("presentation");
@@ -4329,7 +4333,7 @@ namespace JetBrains.Rider.Model
     //primary constructor
     public RdNamedEntityItem_Unknown(
       [NotNull] string presentation,
-      int documentOffset
+      [CanBeNull] int? documentOffset
     ) : base (
       presentation,
       documentOffset
@@ -4343,16 +4347,18 @@ namespace JetBrains.Rider.Model
     public static new CtxReadDelegate<RdNamedEntityItem_Unknown> Read = (ctx, reader) => 
     {
       var presentation = reader.ReadString();
-      var documentOffset = reader.ReadInt();
+      var documentOffset = ReadIntNullable(ctx, reader);
       var _result = new RdNamedEntityItem_Unknown(presentation, documentOffset);
       return _result;
     };
+    public static CtxReadDelegate<int?> ReadIntNullable = JetBrains.Rd.Impl.Serializers.ReadInt.NullableStruct();
     
     public static new CtxWriteDelegate<RdNamedEntityItem_Unknown> Write = (ctx, writer, value) => 
     {
       writer.Write(value.Presentation);
-      writer.Write(value.DocumentOffset);
+      WriteIntNullable(ctx, writer, value.DocumentOffset);
     };
+    public static  CtxWriteDelegate<int?> WriteIntNullable = JetBrains.Rd.Impl.Serializers.WriteInt.NullableStruct();
     
     //constants
     
@@ -4370,7 +4376,7 @@ namespace JetBrains.Rider.Model
     {
       if (ReferenceEquals(null, other)) return false;
       if (ReferenceEquals(this, other)) return true;
-      return Presentation == other.Presentation && DocumentOffset == other.DocumentOffset;
+      return Presentation == other.Presentation && Equals(DocumentOffset, other.DocumentOffset);
     }
     //hash code trait
     public override int GetHashCode()
@@ -4378,7 +4384,7 @@ namespace JetBrains.Rider.Model
       unchecked {
         var hash = 0;
         hash = hash * 31 + Presentation.GetHashCode();
-        hash = hash * 31 + DocumentOffset.GetHashCode();
+        hash = hash * 31 + (DocumentOffset != null ? DocumentOffset.GetHashCode() : 0);
         return hash;
       }
     }
@@ -7585,7 +7591,7 @@ namespace JetBrains.Rider.Model
     //primary constructor
     public RdTodoItem(
       [NotNull] string presentation,
-      int documentOffset
+      [CanBeNull] int? documentOffset
     ) : base (
       presentation,
       documentOffset
@@ -7599,16 +7605,18 @@ namespace JetBrains.Rider.Model
     public static new CtxReadDelegate<RdTodoItem> Read = (ctx, reader) => 
     {
       var presentation = reader.ReadString();
-      var documentOffset = reader.ReadInt();
+      var documentOffset = ReadIntNullable(ctx, reader);
       var _result = new RdTodoItem(presentation, documentOffset);
       return _result;
     };
+    public static CtxReadDelegate<int?> ReadIntNullable = JetBrains.Rd.Impl.Serializers.ReadInt.NullableStruct();
     
     public static new CtxWriteDelegate<RdTodoItem> Write = (ctx, writer, value) => 
     {
       writer.Write(value.Presentation);
-      writer.Write(value.DocumentOffset);
+      WriteIntNullable(ctx, writer, value.DocumentOffset);
     };
+    public static  CtxWriteDelegate<int?> WriteIntNullable = JetBrains.Rd.Impl.Serializers.WriteInt.NullableStruct();
     
     //constants
     
@@ -7626,7 +7634,7 @@ namespace JetBrains.Rider.Model
     {
       if (ReferenceEquals(null, other)) return false;
       if (ReferenceEquals(this, other)) return true;
-      return Presentation == other.Presentation && DocumentOffset == other.DocumentOffset;
+      return Presentation == other.Presentation && Equals(DocumentOffset, other.DocumentOffset);
     }
     //hash code trait
     public override int GetHashCode()
@@ -7634,7 +7642,7 @@ namespace JetBrains.Rider.Model
       unchecked {
         var hash = 0;
         hash = hash * 31 + Presentation.GetHashCode();
-        hash = hash * 31 + DocumentOffset.GetHashCode();
+        hash = hash * 31 + (DocumentOffset != null ? DocumentOffset.GetHashCode() : 0);
         return hash;
       }
     }

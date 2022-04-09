@@ -41,6 +41,8 @@ internal class FileTreeModel(val rdModel: RdFileNames) {
     get() = names.size
 
 
+  fun removeAll() = names.clear()
+
   operator fun get(index: Int): NameTreeModel {
     return names[index]
   }
@@ -60,17 +62,30 @@ internal class NamesTree : AbstractTreeModel() {
   fun addOrUpdate(model: FileTreeModel) {
     val fileModelIndex = files.indexOfFirst { it.rdModel.file.id == model.rdModel.file.id }
     if (fileModelIndex == -1) {
+      if (model.size == 0) return
+
       files.add(model)
       treeNodesInserted(TreePath(root), IntArray(1) { files.size - 1 }, arrayOf(model))
-      treeNodesInserted(TreePath(arrayOf(root, model)), IntArray(model.size) { it }, arrayOf(model.allNames))
+      treeNodesInserted(TreePath(arrayOf(root, model)), IntArray(model.size) { it }, model.allNames.toTypedArray())
       return
     }
 
     val oldModel = files[fileModelIndex]
-    treeNodesRemoved(TreePath(arrayOf(root, oldModel)), IntArray(oldModel.size) { it }, arrayOf(oldModel.allNames))
+    if (model.size == 0) {
+      files.removeAt(fileModelIndex)
+      treeNodesRemoved(TreePath(root), IntArray(1) { fileModelIndex }, arrayOf(oldModel))
+      return
+    }
+
+    val path = TreePath(arrayOf(root, oldModel))
+    val indices = IntArray(oldModel.size) { it }
+    val names = oldModel.allNames.toTypedArray()
+    oldModel.removeAll()
+    treeNodesRemoved(path, indices, names)
 
     files[fileModelIndex] = model
-    treeNodesInserted(TreePath(arrayOf(root, model)), IntArray(model.size) { it }, arrayOf())
+    treeNodesChanged(TreePath(root), IntArray(1) { fileModelIndex }, arrayOf(model))
+    treeNodesInserted(TreePath(arrayOf(root, model)), IntArray(model.size) { it }, model.allNames.toTypedArray())
   }
 
   operator fun get(index: Int): FileTreeModel {
@@ -142,6 +157,16 @@ internal class NameCellRenderer(private val project: Project) : ColoredTreeCellR
 
       is TodoNameTreeModel -> {
         icon = AllIcons.General.TodoDefault
+        append(value.entity.presentation)
+      }
+
+      is HackNameTreeModel -> {
+        icon = AllIcons.General.Warning
+        append(value.entity.presentation)
+      }
+
+      is InvariantNameTreeModel -> {
+        icon = AllIcons.General.CollapseComponent
         append(value.entity.presentation)
       }
     }

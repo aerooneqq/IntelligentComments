@@ -17,9 +17,9 @@ using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Caches.Names;
 
-public record struct NamedEntity([NotNull] string Name, DocumentOffset DocumentOffset);
+public record struct NamedEntity([NotNull] string Name, DocumentOffset? DocumentOffset);
 
-public record struct FileNamesChange(IPsiSourceFile SourceFile, IEnumerable<NamedEntity> Entities);
+public record struct FileNamesChange([NotNull] IPsiSourceFile SourceFile, [NotNull] IEnumerable<NamedEntity> Entities);
 
 public interface INamesCache
 {
@@ -82,11 +82,18 @@ public abstract class AbstractNamesCache : SimpleICache<Dictionary<string, int>>
       entities.Add(new NamedEntity(name, info.Offset));
     }
     
+    QueueChanges(sourceFile, entities);
+    return nameInfos.ToDictionary(pair => pair.Key, pair => pair.Value.Count);
+  }
+
+  private void QueueChanges(IPsiSourceFile sourceFile, IEnumerable<NamedEntity> entities)
+  {
+    if (!sourceFile.IsValid()) return;
+    
     Locks.Queue(Lifetime, $"{GetType().Name}::QueueingChange", () =>
     {
       Change.Fire(new FileNamesChange(sourceFile, entities));
     });
-    return nameInfos.ToDictionary(pair => pair.Key, pair => pair.Value.Count);
   }
 
   [CanBeNull] protected abstract INamesProcessor TryGetProcessor([NotNull] PsiLanguageType languageType);
@@ -133,8 +140,17 @@ public abstract class AbstractNamesCache : SimpleICache<Dictionary<string, int>>
   {
     var obj = base.Load(progress, enablePersistence);
     
-    foreach (var (_, namesCount) in Map)
+    foreach (var (file, namesCount) in Map)
     {
+      var entities = new List<NamedEntity>();
+      foreach (var (name, count) in namesCount)
+      {
+        if (count != 1) continue;
+        
+        entities.Add(new NamedEntity(name, null));
+      }
+      
+      QueueChanges(file, entities);
       IncreaseOrDecreaseCounts(namesCount, true);
     }
 

@@ -126,7 +126,7 @@ class RdCommentsModel private constructor(
         private val __RdHighlightedTextNullableSerializer = RdHighlightedText.nullable()
         private val __IntNullableSerializer = FrameworkMarshallers.Int.nullable()
         
-        const val serializationHash = 469358653543684643L
+        const val serializationHash = 5300874634465340081L
         
     }
     override val serializersOwner: ISerializersOwner get() = RdCommentsModel
@@ -2241,7 +2241,7 @@ class RdHackContentSegment (
  */
 class RdHackItem (
     presentation: String,
-    documentOffset: Int
+    documentOffset: Int?
 ) : RdNamedEntityItem (
     presentation,
     documentOffset
@@ -2254,13 +2254,13 @@ class RdHackItem (
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdHackItem  {
             val presentation = buffer.readString()
-            val documentOffset = buffer.readInt()
+            val documentOffset = buffer.readNullable { buffer.readInt() }
             return RdHackItem(presentation, documentOffset)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: RdHackItem)  {
             buffer.writeString(value.presentation)
-            buffer.writeInt(value.documentOffset)
+            buffer.writeNullable(value.documentOffset) { buffer.writeInt(it) }
         }
         
         
@@ -2285,7 +2285,7 @@ class RdHackItem (
     override fun hashCode(): Int  {
         var __r = 0
         __r = __r*31 + presentation.hashCode()
-        __r = __r*31 + documentOffset.hashCode()
+        __r = __r*31 + if (documentOffset != null) documentOffset.hashCode() else 0
         return __r
     }
     //pretty print
@@ -2932,7 +2932,7 @@ abstract class RdInvariant (
  */
 class RdInvariantItem (
     presentation: String,
-    documentOffset: Int
+    documentOffset: Int?
 ) : RdNamedEntityItem (
     presentation,
     documentOffset
@@ -2945,13 +2945,13 @@ class RdInvariantItem (
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdInvariantItem  {
             val presentation = buffer.readString()
-            val documentOffset = buffer.readInt()
+            val documentOffset = buffer.readNullable { buffer.readInt() }
             return RdInvariantItem(presentation, documentOffset)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: RdInvariantItem)  {
             buffer.writeString(value.presentation)
-            buffer.writeInt(value.documentOffset)
+            buffer.writeNullable(value.documentOffset) { buffer.writeInt(it) }
         }
         
         
@@ -2976,7 +2976,7 @@ class RdInvariantItem (
     override fun hashCode(): Int  {
         var __r = 0
         __r = __r*31 + presentation.hashCode()
-        __r = __r*31 + documentOffset.hashCode()
+        __r = __r*31 + if (documentOffset != null) documentOffset.hashCode() else 0
         return __r
     }
     //pretty print
@@ -3331,7 +3331,7 @@ enum class RdNameKind {
  */
 abstract class RdNamedEntityItem (
     val presentation: String,
-    val documentOffset: Int
+    val documentOffset: Int?
 ) : IPrintable {
     //companion
     
@@ -3339,7 +3339,7 @@ abstract class RdNamedEntityItem (
         override fun readUnknownInstance(ctx: SerializationCtx, buffer: AbstractBuffer, unknownId: RdId, size: Int): RdNamedEntityItem  {
             val objectStartPosition = buffer.position
             val presentation = buffer.readString()
-            val documentOffset = buffer.readInt()
+            val documentOffset = buffer.readNullable { buffer.readInt() }
             val unknownBytes = ByteArray(objectStartPosition + size - buffer.position)
             buffer.readByteArrayRaw(unknownBytes)
             return RdNamedEntityItem_Unknown(presentation, documentOffset, unknownId, unknownBytes)
@@ -3361,7 +3361,7 @@ abstract class RdNamedEntityItem (
 
 class RdNamedEntityItem_Unknown (
     presentation: String,
-    documentOffset: Int,
+    documentOffset: Int?,
     override val unknownId: RdId,
     val unknownBytes: ByteArray
 ) : RdNamedEntityItem (
@@ -3380,7 +3380,7 @@ class RdNamedEntityItem_Unknown (
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: RdNamedEntityItem_Unknown)  {
             buffer.writeString(value.presentation)
-            buffer.writeInt(value.documentOffset)
+            buffer.writeNullable(value.documentOffset) { buffer.writeInt(it) }
             buffer.writeByteArrayRaw(value.unknownBytes)
         }
         
@@ -3406,7 +3406,7 @@ class RdNamedEntityItem_Unknown (
     override fun hashCode(): Int  {
         var __r = 0
         __r = __r*31 + presentation.hashCode()
-        __r = __r*31 + documentOffset.hashCode()
+        __r = __r*31 + if (documentOffset != null) documentOffset.hashCode() else 0
         return __r
     }
     //pretty print
@@ -5815,7 +5815,7 @@ class RdToDoTextContentSegment (
  */
 class RdTodoItem (
     presentation: String,
-    documentOffset: Int
+    documentOffset: Int?
 ) : RdNamedEntityItem (
     presentation,
     documentOffset
@@ -5828,13 +5828,13 @@ class RdTodoItem (
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdTodoItem  {
             val presentation = buffer.readString()
-            val documentOffset = buffer.readInt()
+            val documentOffset = buffer.readNullable { buffer.readInt() }
             return RdTodoItem(presentation, documentOffset)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: RdTodoItem)  {
             buffer.writeString(value.presentation)
-            buffer.writeInt(value.documentOffset)
+            buffer.writeNullable(value.documentOffset) { buffer.writeInt(it) }
         }
         
         
@@ -5859,7 +5859,7 @@ class RdTodoItem (
     override fun hashCode(): Int  {
         var __r = 0
         __r = __r*31 + presentation.hashCode()
-        __r = __r*31 + documentOffset.hashCode()
+        __r = __r*31 + if (documentOffset != null) documentOffset.hashCode() else 0
         return __r
     }
     //pretty print

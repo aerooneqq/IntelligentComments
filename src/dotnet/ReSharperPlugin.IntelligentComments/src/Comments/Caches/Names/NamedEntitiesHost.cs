@@ -38,7 +38,7 @@ public class NamedEntitiesHost
         var changes = change.Entities.SelectNotNull(entity =>
         {
           var entityPresentation = entity.Name;
-          var offset = entity.DocumentOffset.Offset;
+          var offset = entity.DocumentOffset?.Offset;
           
           RdNamedEntityItem rdItem = cache switch
           {
@@ -61,6 +61,9 @@ public class NamedEntitiesHost
         {
           if (change.SourceFile.Document.GetPsiSourceFile(solution) is not { } sourceFile) return;
 
+          var properties = sourceFile.Properties;
+          if (properties.IsGeneratedFile || properties.IsNonUserFile || !properties.ShouldBuildPsi) return;
+          
           var id = index[sourceFile].GetHashCode();
           var fileInfo = new RdFileInfo(id, sourceFile.DisplayName);
           namedEntitiesChangeSignal.Fire(new RdFileNames(cache.NameKind.ToRdNameKind(), fileInfo, changes.ToList()));
