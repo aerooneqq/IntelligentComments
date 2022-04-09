@@ -24,7 +24,11 @@ class CommentsNavigationHost(private val project: Project) : LifetimedService() 
     }
 
     val resolveRequest = RdReferenceResolveRequest(rdReference, textControlId)
-    val request = RdNavigationRequest(resolveRequest)
+    val request = RdReferenceNavigationRequest(resolveRequest)
     model.performNavigation.start(serviceLifetime, request)
+  }
+
+  fun performNavigation(fileId: RdSourceFileId, offset: Int) {
+    model.performNavigation.start(serviceLifetime, RdFileOffsetNavigationRequest(fileId, offset))
   }
 }

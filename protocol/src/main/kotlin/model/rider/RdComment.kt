@@ -319,8 +319,21 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
     field("TextControlId", TextControlId)
   }
 
-  val RdNavigationRequest = structdef {
+  val RdNavigationRequest = basestruct {
+  }
+
+  val RdReferenceNavigationRequest = structdef extends RdNavigationRequest {
     field("ResolveRequest", RdReferenceResolveRequest)
+  }
+
+  val RdSourceFileId = structdef {
+    field("LWord", PredefinedType.uint64)
+    field("HWord", PredefinedType.uint64)
+  }
+
+  val RdFileOffsetNavigationRequest = structdef extends RdNavigationRequest {
+    field("SourceFileId", RdSourceFileId)
+    field("Offset", PredefinedType.int)
   }
 
   val RdNameKind = enum {
@@ -345,11 +358,13 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
   }
 
   val RdFileInfo = structdef {
+    field("SourceFileId", RdSourceFileId)
     field("Id", PredefinedType.long)
     field("Name", PredefinedType.string)
   }
 
   val RdNamedEntityItem = basestruct {
+    field("Name", PredefinedType.string)
     field("Presentation", PredefinedType.string)
     field("DocumentOffset", PredefinedType.int.nullable)
   }

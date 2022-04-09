@@ -12,9 +12,11 @@ using JetBrains.RdBackend.Common.Features.Services;
 using JetBrains.ReSharper.Feature.Services.Navigation;
 using JetBrains.ReSharper.Feature.Services.Navigation.NavigationExtensions;
 using JetBrains.ReSharper.Psi;
+using JetBrains.ReSharper.Psi.Caches;
 using JetBrains.Rider.Backend.Features.Documents;
 using JetBrains.Rider.Model;
 using JetBrains.Util;
+using JetBrains.Util.Maths;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.References;
 
@@ -27,6 +29,7 @@ public class CommentsNavigationHost
   [NotNull] private readonly OpensUri myOpensUri;
   [NotNull] private readonly ILogger myLogger;
   [NotNull] private readonly ISolution mySolution;
+  [NotNull] private readonly IPersistentIndexManager myManager;
   [NotNull] private readonly IDeclaredElementNavigationService myNavigationService;
   [NotNull] private readonly IShellLocks myShellLocks;
   [NotNull] private readonly RdReferenceConverter myRdReferenceConverter;
@@ -38,6 +41,7 @@ public class CommentsNavigationHost
     [NotNull] OpensUri opensUri,
     [NotNull] ILogger logger,
     [NotNull] ISolution solution,
+    [NotNull] IPersistentIndexManager manager,
     [NotNull] IDeclaredElementNavigationService navigationService,
     [NotNull] IShellLocks shellLocks,
     [NotNull] RdReferenceConverter rdReferenceConverter,
@@ -47,6 +51,7 @@ public class CommentsNavigationHost
     myOpensUri = opensUri;
     myLogger = logger;
     mySolution = solution;
+    myManager = manager;
     myNavigationService = navigationService;
     myShellLocks = shellLocks;
     myRdReferenceConverter = rdReferenceConverter;
@@ -68,50 +73,17 @@ public class CommentsNavigationHost
     myShellLocks.QueueReadLock(myLifetime, $"{nameof(CommentsNavigationHost)}::ServingRequest", () =>
     {
       using var _ = CompilationContextCookie.GetExplicitUniversalContextIfNotSet();
-      var (rdReference, textControlId) = request.ResolveRequest;
-      if (myRdReferenceConverter.TryGetReference(rdReference, textControlId) is not { } reference)
+      switch (request)
       {
-        LogWarnAndSetNull($"Failed to get reference for {rdReference}");
-        return;
-      }
-
-      if (myDocumentHostBase.TryGetHostDocument(textControlId.DocumentId) is not { } document)
-      {
-        LogWarnAndSetNull($"Failed to get document for {textControlId}");
-        return;
-      }
-
-      var resolveContext = new DomainResolveContextImpl(mySolution, document);
-      var resolveResult = reference.Resolve(resolveContext);
-
-      switch (resolveResult)
-      {
-        case DeclaredElementDomainResolveResult { DeclaredElement: { } declaredElement }:
+        case RdReferenceNavigationRequest referenceNavigationRequest:
         {
-          myNavigationService.Navigate(declaredElement, RiderMainWindowCenteredPopupWindowContextStub.Source, true);
+          PerformReferenceNavigation(referenceNavigationRequest);
+          break;
+        }
+        case RdFileOffsetNavigationRequest offsetNavigationRequest:
+        {
+          PerformSourceFileNavigation(offsetNavigationRequest);
           break; 
-        }
-        case NamedEntityDomainResolveResult invariantResolveResult:
-        {
-          var offset = invariantResolveResult.InvariantDocumentOffset;
-          offset.Document.GetPsiSourceFile(mySolution).Navigate(new TextRange(offset.Offset), true);
-          break;
-        }
-        case DomainWebResourceResolveResult result:
-        {
-          try
-          {
-            var uri = new Uri(result.Link);
-            if (!uri.IsHttpOrHttps()) break;
-            
-            myOpensUri.OpenUri(uri);
-          }
-          catch (Exception ex)
-          {
-            myLogger.Warn(ex);
-          }
-          
-          break;
         }
       }
 
@@ -119,5 +91,63 @@ public class CommentsNavigationHost
     });
 
     return task;
+  }
+
+  private void PerformSourceFileNavigation(RdFileOffsetNavigationRequest request)
+  {
+    var rdSourceFileId = request.SourceFileId;
+    var id = new OWORD(rdSourceFileId.LWord, rdSourceFileId.HWord);
+    var psiSourceFile = myManager[id];
+    psiSourceFile.Navigate(new TextRange(request.Offset), true);
+  }
+
+  private void PerformReferenceNavigation(RdReferenceNavigationRequest request)
+  {
+    var (rdReference, textControlId) = request.ResolveRequest;
+    if (myRdReferenceConverter.TryGetReference(rdReference, textControlId) is not { } reference)
+    {
+      myLogger.Warn($"Failed to get reference for {rdReference}");
+      return;
+    }
+
+    if (myDocumentHostBase.TryGetHostDocument(textControlId.DocumentId) is not { } document)
+    {
+      myLogger.Warn($"Failed to get document for {textControlId}");
+      return;
+    }
+
+    var resolveContext = new DomainResolveContextImpl(mySolution, document);
+    var resolveResult = reference.Resolve(resolveContext);
+
+    switch (resolveResult)
+    {
+      case DeclaredElementDomainResolveResult { DeclaredElement: { } declaredElement }:
+      {
+        myNavigationService.Navigate(declaredElement, RiderMainWindowCenteredPopupWindowContextStub.Source, true);
+        break; 
+      }
+      case NamedEntityDomainResolveResult invariantResolveResult:
+      {
+        var offset = invariantResolveResult.InvariantDocumentOffset;
+        offset.Document.GetPsiSourceFile(mySolution).Navigate(new TextRange(offset.Offset), true);
+        break;
+      }
+      case DomainWebResourceResolveResult result:
+      {
+        try
+        {
+          var uri = new Uri(result.Link);
+          if (!uri.IsHttpOrHttps()) break;
+            
+          myOpensUri.OpenUri(uri);
+        }
+        catch (Exception ex)
+        {
+          myLogger.Warn(ex);
+        }
+          
+        break;
+      }
+    }
   }
 }

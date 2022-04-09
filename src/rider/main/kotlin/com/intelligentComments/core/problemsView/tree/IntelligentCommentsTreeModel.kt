@@ -37,6 +37,7 @@ internal class IntelligentCommentsTreeModel(
     }
   }
 
+
   private fun handleFileAddition(value: SolutionAnalysisErrors) {
     val fileName = value.fileName
     if (files.contains(fileName)) return

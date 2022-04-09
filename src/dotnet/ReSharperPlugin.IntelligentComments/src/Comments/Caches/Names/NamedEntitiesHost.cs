@@ -39,12 +39,13 @@ public class NamedEntitiesHost
         {
           var entityPresentation = entity.Name;
           var offset = entity.DocumentOffset?.Offset;
+          var name = entity.Name;
           
           RdNamedEntityItem rdItem = cache switch
           {
-            ToDoNamesCache => new RdTodoItem(entityPresentation, offset),
-            HacksNamesCache => new RdHackItem(entityPresentation, offset),
-            InvariantsNamesNamesCache => new RdInvariantItem(entityPresentation, offset),
+            ToDoNamesCache => new RdTodoItem(name, entityPresentation, offset),
+            HacksNamesCache => new RdHackItem(name, entityPresentation, offset),
+            InvariantsNamesNamesCache => new RdInvariantItem(name, entityPresentation, offset),
             _ => null
           };
 
@@ -64,8 +65,9 @@ public class NamedEntitiesHost
           var properties = sourceFile.Properties;
           if (properties.IsGeneratedFile || properties.IsNonUserFile || !properties.ShouldBuildPsi) return;
           
-          var id = index[sourceFile].GetHashCode();
-          var fileInfo = new RdFileInfo(id, sourceFile.DisplayName);
+          var id = index[sourceFile];
+          var rdFileId = new RdSourceFileId(id.loqword, id.hiqword);
+          var fileInfo = new RdFileInfo(rdFileId, id.GetHashCode(), sourceFile.DisplayName);
           namedEntitiesChangeSignal.Fire(new RdFileNames(cache.NameKind.ToRdNameKind(), fileInfo, changes.ToList()));
         });
       });

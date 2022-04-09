@@ -108,7 +108,7 @@ namespace JetBrains.Rider.Model
     public static  CtxWriteDelegate<RdHighlightedText> WriteRdHighlightedTextNullable = RdHighlightedText.Write.NullableClass();
     public static  CtxWriteDelegate<int?> WriteIntNullable = JetBrains.Rd.Impl.Serializers.WriteInt.NullableStruct();
     
-    protected override long SerializationHash => 5300874634465340081L;
+    protected override long SerializationHash => -8769098907990976963L;
     
     protected override Action<ISerializers> Register => RegisterDeclaredTypesSerializers;
     public static void RegisterDeclaredTypesSerializers(ISerializers serializers)
@@ -158,6 +158,8 @@ namespace JetBrains.Rider.Model
       serializers.Register(RdTicketContentSegment.Read, RdTicketContentSegment.Write);
       serializers.Register(RdHackTextContentSegment.Read, RdHackTextContentSegment.Write);
       serializers.Register(RdHackContentSegment.Read, RdHackContentSegment.Write);
+      serializers.Register(RdReferenceNavigationRequest.Read, RdReferenceNavigationRequest.Write);
+      serializers.Register(RdFileOffsetNavigationRequest.Read, RdFileOffsetNavigationRequest.Write);
       serializers.Register(RdInvalidResolveResult.Read, RdInvalidResolveResult.Write);
       serializers.Register(RdNamedEntityResolveResult.Read, RdNamedEntityResolveResult.Write);
       serializers.Register(RdWebResourceResolveResult.Read, RdWebResourceResolveResult.Write);
@@ -177,6 +179,7 @@ namespace JetBrains.Rider.Model
       serializers.Register(RdCodeEntityReference_Unknown.Read, RdCodeEntityReference_Unknown.Write);
       serializers.Register(RdTextAnimation_Unknown.Read, RdTextAnimation_Unknown.Write);
       serializers.Register(RdContentSegmentWithOptionalName_Unknown.Read, RdContentSegmentWithOptionalName_Unknown.Write);
+      serializers.Register(RdNavigationRequest_Unknown.Read, RdNavigationRequest_Unknown.Write);
       serializers.Register(RdResolveResult_Unknown.Read, RdResolveResult_Unknown.Write);
       serializers.Register(RdNamedEntityItem_Unknown.Read, RdNamedEntityItem_Unknown.Write);
       serializers.Register(JetBrains.Rider.Model.HighlighterRegistration.HighlighterProperties.Read, JetBrains.Rider.Model.HighlighterRegistration.HighlighterProperties.Write);
@@ -2231,31 +2234,36 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:347</p>
+  /// <p>Generated from: RdComment.kt:360</p>
   /// </summary>
   public sealed class RdFileInfo : IPrintable, IEquatable<RdFileInfo>
   {
     //fields
     //public fields
+    [NotNull] public RdSourceFileId SourceFileId {get; private set;}
     public long Id {get; private set;}
     [NotNull] public string Name {get; private set;}
     
     //private fields
     //primary constructor
     public RdFileInfo(
+      [NotNull] RdSourceFileId sourceFileId,
       long id,
       [NotNull] string name
     )
     {
+      if (sourceFileId == null) throw new ArgumentNullException("sourceFileId");
       if (name == null) throw new ArgumentNullException("name");
       
+      SourceFileId = sourceFileId;
       Id = id;
       Name = name;
     }
     //secondary constructor
     //deconstruct trait
-    public void Deconstruct(out long id, [NotNull] out string name)
+    public void Deconstruct([NotNull] out RdSourceFileId sourceFileId, out long id, [NotNull] out string name)
     {
+      sourceFileId = SourceFileId;
       id = Id;
       name = Name;
     }
@@ -2263,14 +2271,16 @@ namespace JetBrains.Rider.Model
     
     public static CtxReadDelegate<RdFileInfo> Read = (ctx, reader) => 
     {
+      var sourceFileId = RdSourceFileId.Read(ctx, reader);
       var id = reader.ReadLong();
       var name = reader.ReadString();
-      var _result = new RdFileInfo(id, name);
+      var _result = new RdFileInfo(sourceFileId, id, name);
       return _result;
     };
     
     public static CtxWriteDelegate<RdFileInfo> Write = (ctx, writer, value) => 
     {
+      RdSourceFileId.Write(ctx, writer, value.SourceFileId);
       writer.Write(value.Id);
       writer.Write(value.Name);
     };
@@ -2291,13 +2301,14 @@ namespace JetBrains.Rider.Model
     {
       if (ReferenceEquals(null, other)) return false;
       if (ReferenceEquals(this, other)) return true;
-      return Id == other.Id && Name == other.Name;
+      return Equals(SourceFileId, other.SourceFileId) && Id == other.Id && Name == other.Name;
     }
     //hash code trait
     public override int GetHashCode()
     {
       unchecked {
         var hash = 0;
+        hash = hash * 31 + SourceFileId.GetHashCode();
         hash = hash * 31 + Id.GetHashCode();
         hash = hash * 31 + Name.GetHashCode();
         return hash;
@@ -2308,6 +2319,7 @@ namespace JetBrains.Rider.Model
     {
       printer.Println("RdFileInfo (");
       using (printer.IndentCookie()) {
+        printer.Print("sourceFileId = "); SourceFileId.PrintEx(printer); printer.Println();
         printer.Print("id = "); Id.PrintEx(printer); printer.Println();
         printer.Print("name = "); Name.PrintEx(printer); printer.Println();
       }
@@ -2324,7 +2336,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:360</p>
+  /// <p>Generated from: RdComment.kt:375</p>
   /// </summary>
   public sealed class RdFileNames : IPrintable, IEquatable<RdFileNames>
   {
@@ -2414,6 +2426,94 @@ namespace JetBrains.Rider.Model
         printer.Print("nameKind = "); NameKind.PrintEx(printer); printer.Println();
         printer.Print("file = "); File.PrintEx(printer); printer.Println();
         printer.Print("entities = "); Entities.PrintEx(printer); printer.Println();
+      }
+      printer.Print(")");
+    }
+    //toString
+    public override string ToString()
+    {
+      var printer = new SingleLinePrettyPrinter();
+      Print(printer);
+      return printer.ToString();
+    }
+  }
+  
+  
+  /// <summary>
+  /// <p>Generated from: RdComment.kt:334</p>
+  /// </summary>
+  public sealed class RdFileOffsetNavigationRequest : RdNavigationRequest
+  {
+    //fields
+    //public fields
+    [NotNull] public RdSourceFileId SourceFileId {get; private set;}
+    public int Offset {get; private set;}
+    
+    //private fields
+    //primary constructor
+    public RdFileOffsetNavigationRequest(
+      [NotNull] RdSourceFileId sourceFileId,
+      int offset
+    )
+    {
+      if (sourceFileId == null) throw new ArgumentNullException("sourceFileId");
+      
+      SourceFileId = sourceFileId;
+      Offset = offset;
+    }
+    //secondary constructor
+    //deconstruct trait
+    //statics
+    
+    public static new CtxReadDelegate<RdFileOffsetNavigationRequest> Read = (ctx, reader) => 
+    {
+      var sourceFileId = RdSourceFileId.Read(ctx, reader);
+      var offset = reader.ReadInt();
+      var _result = new RdFileOffsetNavigationRequest(sourceFileId, offset);
+      return _result;
+    };
+    
+    public static new CtxWriteDelegate<RdFileOffsetNavigationRequest> Write = (ctx, writer, value) => 
+    {
+      RdSourceFileId.Write(ctx, writer, value.SourceFileId);
+      writer.Write(value.Offset);
+    };
+    
+    //constants
+    
+    //custom body
+    //methods
+    //equals trait
+    public override bool Equals(object obj)
+    {
+      if (ReferenceEquals(null, obj)) return false;
+      if (ReferenceEquals(this, obj)) return true;
+      if (obj.GetType() != GetType()) return false;
+      return Equals((RdFileOffsetNavigationRequest) obj);
+    }
+    public bool Equals(RdFileOffsetNavigationRequest other)
+    {
+      if (ReferenceEquals(null, other)) return false;
+      if (ReferenceEquals(this, other)) return true;
+      return Equals(SourceFileId, other.SourceFileId) && Offset == other.Offset;
+    }
+    //hash code trait
+    public override int GetHashCode()
+    {
+      unchecked {
+        var hash = 0;
+        hash = hash * 31 + SourceFileId.GetHashCode();
+        hash = hash * 31 + Offset.GetHashCode();
+        return hash;
+      }
+    }
+    //pretty print
+    public void Print(PrettyPrinter printer)
+    {
+      printer.Println("RdFileOffsetNavigationRequest (");
+      using (printer.IndentCookie()) {
+        printer.Print("sourceFileId = "); SourceFileId.PrintEx(printer); printer.Println();
+        printer.Print("offset = "); Offset.PrintEx(printer); printer.Println();
       }
       printer.Print(")");
     }
@@ -2867,7 +2967,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:357</p>
+  /// <p>Generated from: RdComment.kt:372</p>
   /// </summary>
   public sealed class RdHackItem : RdNamedEntityItem
   {
@@ -2877,9 +2977,11 @@ namespace JetBrains.Rider.Model
     //private fields
     //primary constructor
     public RdHackItem(
+      [NotNull] string name,
       [NotNull] string presentation,
       [CanBeNull] int? documentOffset
     ) : base (
+      name,
       presentation,
       documentOffset
      ) 
@@ -2891,15 +2993,17 @@ namespace JetBrains.Rider.Model
     
     public static new CtxReadDelegate<RdHackItem> Read = (ctx, reader) => 
     {
+      var name = reader.ReadString();
       var presentation = reader.ReadString();
       var documentOffset = ReadIntNullable(ctx, reader);
-      var _result = new RdHackItem(presentation, documentOffset);
+      var _result = new RdHackItem(name, presentation, documentOffset);
       return _result;
     };
     public static CtxReadDelegate<int?> ReadIntNullable = JetBrains.Rd.Impl.Serializers.ReadInt.NullableStruct();
     
     public static new CtxWriteDelegate<RdHackItem> Write = (ctx, writer, value) => 
     {
+      writer.Write(value.Name);
       writer.Write(value.Presentation);
       WriteIntNullable(ctx, writer, value.DocumentOffset);
     };
@@ -2921,13 +3025,14 @@ namespace JetBrains.Rider.Model
     {
       if (ReferenceEquals(null, other)) return false;
       if (ReferenceEquals(this, other)) return true;
-      return Presentation == other.Presentation && Equals(DocumentOffset, other.DocumentOffset);
+      return Name == other.Name && Presentation == other.Presentation && Equals(DocumentOffset, other.DocumentOffset);
     }
     //hash code trait
     public override int GetHashCode()
     {
       unchecked {
         var hash = 0;
+        hash = hash * 31 + Name.GetHashCode();
         hash = hash * 31 + Presentation.GetHashCode();
         hash = hash * 31 + (DocumentOffset != null ? DocumentOffset.GetHashCode() : 0);
         return hash;
@@ -2938,6 +3043,7 @@ namespace JetBrains.Rider.Model
     {
       printer.Println("RdHackItem (");
       using (printer.IndentCookie()) {
+        printer.Print("name = "); Name.PrintEx(printer); printer.Println();
         printer.Print("presentation = "); Presentation.PrintEx(printer); printer.Println();
         printer.Print("documentOffset = "); DocumentOffset.PrintEx(printer); printer.Println();
       }
@@ -3659,7 +3765,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:334</p>
+  /// <p>Generated from: RdComment.kt:347</p>
   /// </summary>
   public sealed class RdInvalidResolveResult : RdResolveResult
   {
@@ -3769,7 +3875,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:359</p>
+  /// <p>Generated from: RdComment.kt:374</p>
   /// </summary>
   public sealed class RdInvariantItem : RdNamedEntityItem
   {
@@ -3779,9 +3885,11 @@ namespace JetBrains.Rider.Model
     //private fields
     //primary constructor
     public RdInvariantItem(
+      [NotNull] string name,
       [NotNull] string presentation,
       [CanBeNull] int? documentOffset
     ) : base (
+      name,
       presentation,
       documentOffset
      ) 
@@ -3793,15 +3901,17 @@ namespace JetBrains.Rider.Model
     
     public static new CtxReadDelegate<RdInvariantItem> Read = (ctx, reader) => 
     {
+      var name = reader.ReadString();
       var presentation = reader.ReadString();
       var documentOffset = ReadIntNullable(ctx, reader);
-      var _result = new RdInvariantItem(presentation, documentOffset);
+      var _result = new RdInvariantItem(name, presentation, documentOffset);
       return _result;
     };
     public static CtxReadDelegate<int?> ReadIntNullable = JetBrains.Rd.Impl.Serializers.ReadInt.NullableStruct();
     
     public static new CtxWriteDelegate<RdInvariantItem> Write = (ctx, writer, value) => 
     {
+      writer.Write(value.Name);
       writer.Write(value.Presentation);
       WriteIntNullable(ctx, writer, value.DocumentOffset);
     };
@@ -3823,13 +3933,14 @@ namespace JetBrains.Rider.Model
     {
       if (ReferenceEquals(null, other)) return false;
       if (ReferenceEquals(this, other)) return true;
-      return Presentation == other.Presentation && Equals(DocumentOffset, other.DocumentOffset);
+      return Name == other.Name && Presentation == other.Presentation && Equals(DocumentOffset, other.DocumentOffset);
     }
     //hash code trait
     public override int GetHashCode()
     {
       unchecked {
         var hash = 0;
+        hash = hash * 31 + Name.GetHashCode();
         hash = hash * 31 + Presentation.GetHashCode();
         hash = hash * 31 + (DocumentOffset != null ? DocumentOffset.GetHashCode() : 0);
         return hash;
@@ -3840,6 +3951,7 @@ namespace JetBrains.Rider.Model
     {
       printer.Println("RdInvariantItem (");
       using (printer.IndentCookie()) {
+        printer.Print("name = "); Name.PrintEx(printer); printer.Println();
         printer.Print("presentation = "); Presentation.PrintEx(printer); printer.Println();
         printer.Print("documentOffset = "); DocumentOffset.PrintEx(printer); printer.Println();
       }
@@ -4275,7 +4387,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:326</p>
+  /// <p>Generated from: RdComment.kt:339</p>
   /// </summary>
   public enum RdNameKind {
     Invariant,
@@ -4285,23 +4397,27 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:352</p>
+  /// <p>Generated from: RdComment.kt:366</p>
   /// </summary>
   public abstract class RdNamedEntityItem{
     //fields
     //public fields
+    [NotNull] public string Name {get; private set;}
     [NotNull] public string Presentation {get; private set;}
     [CanBeNull] public int? DocumentOffset {get; private set;}
     
     //private fields
     //primary constructor
     protected RdNamedEntityItem(
+      [NotNull] string name,
       [NotNull] string presentation,
       [CanBeNull] int? documentOffset
     )
     {
+      if (name == null) throw new ArgumentNullException("name");
       if (presentation == null) throw new ArgumentNullException("presentation");
       
+      Name = name;
       Presentation = presentation;
       DocumentOffset = documentOffset;
     }
@@ -4332,9 +4448,11 @@ namespace JetBrains.Rider.Model
     //private fields
     //primary constructor
     public RdNamedEntityItem_Unknown(
+      [NotNull] string name,
       [NotNull] string presentation,
       [CanBeNull] int? documentOffset
     ) : base (
+      name,
       presentation,
       documentOffset
      ) 
@@ -4346,15 +4464,17 @@ namespace JetBrains.Rider.Model
     
     public static new CtxReadDelegate<RdNamedEntityItem_Unknown> Read = (ctx, reader) => 
     {
+      var name = reader.ReadString();
       var presentation = reader.ReadString();
       var documentOffset = ReadIntNullable(ctx, reader);
-      var _result = new RdNamedEntityItem_Unknown(presentation, documentOffset);
+      var _result = new RdNamedEntityItem_Unknown(name, presentation, documentOffset);
       return _result;
     };
     public static CtxReadDelegate<int?> ReadIntNullable = JetBrains.Rd.Impl.Serializers.ReadInt.NullableStruct();
     
     public static new CtxWriteDelegate<RdNamedEntityItem_Unknown> Write = (ctx, writer, value) => 
     {
+      writer.Write(value.Name);
       writer.Write(value.Presentation);
       WriteIntNullable(ctx, writer, value.DocumentOffset);
     };
@@ -4376,13 +4496,14 @@ namespace JetBrains.Rider.Model
     {
       if (ReferenceEquals(null, other)) return false;
       if (ReferenceEquals(this, other)) return true;
-      return Presentation == other.Presentation && Equals(DocumentOffset, other.DocumentOffset);
+      return Name == other.Name && Presentation == other.Presentation && Equals(DocumentOffset, other.DocumentOffset);
     }
     //hash code trait
     public override int GetHashCode()
     {
       unchecked {
         var hash = 0;
+        hash = hash * 31 + Name.GetHashCode();
         hash = hash * 31 + Presentation.GetHashCode();
         hash = hash * 31 + (DocumentOffset != null ? DocumentOffset.GetHashCode() : 0);
         return hash;
@@ -4393,6 +4514,7 @@ namespace JetBrains.Rider.Model
     {
       printer.Println("RdNamedEntityItem_Unknown (");
       using (printer.IndentCookie()) {
+        printer.Print("name = "); Name.PrintEx(printer); printer.Println();
         printer.Print("presentation = "); Presentation.PrintEx(printer); printer.Println();
         printer.Print("documentOffset = "); DocumentOffset.PrintEx(printer); printer.Println();
       }
@@ -4504,7 +4626,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:338</p>
+  /// <p>Generated from: RdComment.kt:351</p>
   /// </summary>
   public sealed class RdNamedEntityResolveResult : RdResolveResult
   {
@@ -4594,40 +4716,50 @@ namespace JetBrains.Rider.Model
   /// <summary>
   /// <p>Generated from: RdComment.kt:322</p>
   /// </summary>
-  public sealed class RdNavigationRequest : IPrintable, IEquatable<RdNavigationRequest>
-  {
+  public abstract class RdNavigationRequest{
     //fields
     //public fields
-    [NotNull] public RdReferenceResolveRequest ResolveRequest {get; private set;}
     
     //private fields
     //primary constructor
-    public RdNavigationRequest(
-      [NotNull] RdReferenceResolveRequest resolveRequest
-    )
-    {
-      if (resolveRequest == null) throw new ArgumentNullException("resolveRequest");
-      
-      ResolveRequest = resolveRequest;
-    }
     //secondary constructor
     //deconstruct trait
-    public void Deconstruct([NotNull] out RdReferenceResolveRequest resolveRequest)
-    {
-      resolveRequest = ResolveRequest;
-    }
     //statics
     
-    public static CtxReadDelegate<RdNavigationRequest> Read = (ctx, reader) => 
+    public static CtxReadDelegate<RdNavigationRequest> Read = Polymorphic<RdNavigationRequest>.ReadAbstract(RdNavigationRequest_Unknown.Read);
+    
+    public static CtxWriteDelegate<RdNavigationRequest> Write = Polymorphic<RdNavigationRequest>.Write;
+    
+    //constants
+    
+    //custom body
+    //methods
+    //equals trait
+    //hash code trait
+    //pretty print
+    //toString
+  }
+  
+  
+  public sealed class RdNavigationRequest_Unknown : RdNavigationRequest
+  {
+    //fields
+    //public fields
+    
+    //private fields
+    //primary constructor
+    //secondary constructor
+    //deconstruct trait
+    //statics
+    
+    public static new CtxReadDelegate<RdNavigationRequest_Unknown> Read = (ctx, reader) => 
     {
-      var resolveRequest = RdReferenceResolveRequest.Read(ctx, reader);
-      var _result = new RdNavigationRequest(resolveRequest);
+      var _result = new RdNavigationRequest_Unknown();
       return _result;
     };
     
-    public static CtxWriteDelegate<RdNavigationRequest> Write = (ctx, writer, value) => 
+    public static new CtxWriteDelegate<RdNavigationRequest_Unknown> Write = (ctx, writer, value) => 
     {
-      RdReferenceResolveRequest.Write(ctx, writer, value.ResolveRequest);
     };
     
     //constants
@@ -4640,30 +4772,26 @@ namespace JetBrains.Rider.Model
       if (ReferenceEquals(null, obj)) return false;
       if (ReferenceEquals(this, obj)) return true;
       if (obj.GetType() != GetType()) return false;
-      return Equals((RdNavigationRequest) obj);
+      return Equals((RdNavigationRequest_Unknown) obj);
     }
-    public bool Equals(RdNavigationRequest other)
+    public bool Equals(RdNavigationRequest_Unknown other)
     {
       if (ReferenceEquals(null, other)) return false;
       if (ReferenceEquals(this, other)) return true;
-      return Equals(ResolveRequest, other.ResolveRequest);
+      return true;
     }
     //hash code trait
     public override int GetHashCode()
     {
       unchecked {
         var hash = 0;
-        hash = hash * 31 + ResolveRequest.GetHashCode();
         return hash;
       }
     }
     //pretty print
     public void Print(PrettyPrinter printer)
     {
-      printer.Println("RdNavigationRequest (");
-      using (printer.IndentCookie()) {
-        printer.Print("resolveRequest = "); ResolveRequest.PrintEx(printer); printer.Println();
-      }
+      printer.Println("RdNavigationRequest_Unknown (");
       printer.Print(")");
     }
     //toString
@@ -5227,6 +5355,87 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
+  /// <p>Generated from: RdComment.kt:325</p>
+  /// </summary>
+  public sealed class RdReferenceNavigationRequest : RdNavigationRequest
+  {
+    //fields
+    //public fields
+    [NotNull] public RdReferenceResolveRequest ResolveRequest {get; private set;}
+    
+    //private fields
+    //primary constructor
+    public RdReferenceNavigationRequest(
+      [NotNull] RdReferenceResolveRequest resolveRequest
+    )
+    {
+      if (resolveRequest == null) throw new ArgumentNullException("resolveRequest");
+      
+      ResolveRequest = resolveRequest;
+    }
+    //secondary constructor
+    //deconstruct trait
+    //statics
+    
+    public static new CtxReadDelegate<RdReferenceNavigationRequest> Read = (ctx, reader) => 
+    {
+      var resolveRequest = RdReferenceResolveRequest.Read(ctx, reader);
+      var _result = new RdReferenceNavigationRequest(resolveRequest);
+      return _result;
+    };
+    
+    public static new CtxWriteDelegate<RdReferenceNavigationRequest> Write = (ctx, writer, value) => 
+    {
+      RdReferenceResolveRequest.Write(ctx, writer, value.ResolveRequest);
+    };
+    
+    //constants
+    
+    //custom body
+    //methods
+    //equals trait
+    public override bool Equals(object obj)
+    {
+      if (ReferenceEquals(null, obj)) return false;
+      if (ReferenceEquals(this, obj)) return true;
+      if (obj.GetType() != GetType()) return false;
+      return Equals((RdReferenceNavigationRequest) obj);
+    }
+    public bool Equals(RdReferenceNavigationRequest other)
+    {
+      if (ReferenceEquals(null, other)) return false;
+      if (ReferenceEquals(this, other)) return true;
+      return Equals(ResolveRequest, other.ResolveRequest);
+    }
+    //hash code trait
+    public override int GetHashCode()
+    {
+      unchecked {
+        var hash = 0;
+        hash = hash * 31 + ResolveRequest.GetHashCode();
+        return hash;
+      }
+    }
+    //pretty print
+    public void Print(PrettyPrinter printer)
+    {
+      printer.Println("RdReferenceNavigationRequest (");
+      using (printer.IndentCookie()) {
+        printer.Print("resolveRequest = "); ResolveRequest.PrintEx(printer); printer.Println();
+      }
+      printer.Print(")");
+    }
+    //toString
+    public override string ToString()
+    {
+      var printer = new SingleLinePrettyPrinter();
+      Print(printer);
+      return printer.ToString();
+    }
+  }
+  
+  
+  /// <summary>
   /// <p>Generated from: RdComment.kt:317</p>
   /// </summary>
   public sealed class RdReferenceResolveRequest : IPrintable, IEquatable<RdReferenceResolveRequest>
@@ -5476,7 +5685,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:332</p>
+  /// <p>Generated from: RdComment.kt:345</p>
   /// </summary>
   public abstract class RdResolveResult{
     //fields
@@ -6141,6 +6350,97 @@ namespace JetBrains.Rider.Model
       printer.Println("RdSegmentWithContent_Unknown (");
       using (printer.IndentCookie()) {
         printer.Print("content = "); Content.PrintEx(printer); printer.Println();
+      }
+      printer.Print(")");
+    }
+    //toString
+    public override string ToString()
+    {
+      var printer = new SingleLinePrettyPrinter();
+      Print(printer);
+      return printer.ToString();
+    }
+  }
+  
+  
+  /// <summary>
+  /// <p>Generated from: RdComment.kt:329</p>
+  /// </summary>
+  public sealed class RdSourceFileId : IPrintable, IEquatable<RdSourceFileId>
+  {
+    //fields
+    //public fields
+    public ulong LWord {get; private set;}
+    public ulong HWord {get; private set;}
+    
+    //private fields
+    //primary constructor
+    public RdSourceFileId(
+      ulong lWord,
+      ulong hWord
+    )
+    {
+      LWord = lWord;
+      HWord = hWord;
+    }
+    //secondary constructor
+    //deconstruct trait
+    public void Deconstruct(out ulong lWord, out ulong hWord)
+    {
+      lWord = LWord;
+      hWord = HWord;
+    }
+    //statics
+    
+    public static CtxReadDelegate<RdSourceFileId> Read = (ctx, reader) => 
+    {
+      var lWord = reader.ReadULong();
+      var hWord = reader.ReadULong();
+      var _result = new RdSourceFileId(lWord, hWord);
+      return _result;
+    };
+    
+    public static CtxWriteDelegate<RdSourceFileId> Write = (ctx, writer, value) => 
+    {
+      writer.Write(value.LWord);
+      writer.Write(value.HWord);
+    };
+    
+    //constants
+    
+    //custom body
+    //methods
+    //equals trait
+    public override bool Equals(object obj)
+    {
+      if (ReferenceEquals(null, obj)) return false;
+      if (ReferenceEquals(this, obj)) return true;
+      if (obj.GetType() != GetType()) return false;
+      return Equals((RdSourceFileId) obj);
+    }
+    public bool Equals(RdSourceFileId other)
+    {
+      if (ReferenceEquals(null, other)) return false;
+      if (ReferenceEquals(this, other)) return true;
+      return LWord == other.LWord && HWord == other.HWord;
+    }
+    //hash code trait
+    public override int GetHashCode()
+    {
+      unchecked {
+        var hash = 0;
+        hash = hash * 31 + LWord.GetHashCode();
+        hash = hash * 31 + HWord.GetHashCode();
+        return hash;
+      }
+    }
+    //pretty print
+    public void Print(PrettyPrinter printer)
+    {
+      printer.Println("RdSourceFileId (");
+      using (printer.IndentCookie()) {
+        printer.Print("lWord = "); LWord.PrintEx(printer); printer.Println();
+        printer.Print("hWord = "); HWord.PrintEx(printer); printer.Println();
       }
       printer.Print(")");
     }
@@ -7580,7 +7880,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:358</p>
+  /// <p>Generated from: RdComment.kt:373</p>
   /// </summary>
   public sealed class RdTodoItem : RdNamedEntityItem
   {
@@ -7590,9 +7890,11 @@ namespace JetBrains.Rider.Model
     //private fields
     //primary constructor
     public RdTodoItem(
+      [NotNull] string name,
       [NotNull] string presentation,
       [CanBeNull] int? documentOffset
     ) : base (
+      name,
       presentation,
       documentOffset
      ) 
@@ -7604,15 +7906,17 @@ namespace JetBrains.Rider.Model
     
     public static new CtxReadDelegate<RdTodoItem> Read = (ctx, reader) => 
     {
+      var name = reader.ReadString();
       var presentation = reader.ReadString();
       var documentOffset = ReadIntNullable(ctx, reader);
-      var _result = new RdTodoItem(presentation, documentOffset);
+      var _result = new RdTodoItem(name, presentation, documentOffset);
       return _result;
     };
     public static CtxReadDelegate<int?> ReadIntNullable = JetBrains.Rd.Impl.Serializers.ReadInt.NullableStruct();
     
     public static new CtxWriteDelegate<RdTodoItem> Write = (ctx, writer, value) => 
     {
+      writer.Write(value.Name);
       writer.Write(value.Presentation);
       WriteIntNullable(ctx, writer, value.DocumentOffset);
     };
@@ -7634,13 +7938,14 @@ namespace JetBrains.Rider.Model
     {
       if (ReferenceEquals(null, other)) return false;
       if (ReferenceEquals(this, other)) return true;
-      return Presentation == other.Presentation && Equals(DocumentOffset, other.DocumentOffset);
+      return Name == other.Name && Presentation == other.Presentation && Equals(DocumentOffset, other.DocumentOffset);
     }
     //hash code trait
     public override int GetHashCode()
     {
       unchecked {
         var hash = 0;
+        hash = hash * 31 + Name.GetHashCode();
         hash = hash * 31 + Presentation.GetHashCode();
         hash = hash * 31 + (DocumentOffset != null ? DocumentOffset.GetHashCode() : 0);
         return hash;
@@ -7651,6 +7956,7 @@ namespace JetBrains.Rider.Model
     {
       printer.Println("RdTodoItem (");
       using (printer.IndentCookie()) {
+        printer.Print("name = "); Name.PrintEx(printer); printer.Println();
         printer.Print("presentation = "); Presentation.PrintEx(printer); printer.Println();
         printer.Print("documentOffset = "); DocumentOffset.PrintEx(printer); printer.Println();
       }
@@ -7907,7 +8213,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:343</p>
+  /// <p>Generated from: RdComment.kt:356</p>
   /// </summary>
   public sealed class RdWebResourceResolveResult : RdResolveResult
   {

@@ -18,6 +18,7 @@ import java.awt.event.MouseEvent
 import javax.swing.JTree
 import javax.swing.event.TreeExpansionEvent
 import javax.swing.event.TreeExpansionListener
+import javax.swing.tree.TreePath
 
 
 class IntelligentCommentsExtensionsRegistrar(project: Project) {
@@ -70,14 +71,7 @@ class IntelligentCommentProblemsViewTab(
 
     tree.addMouseListener(object : MouseAdapter() {
       override fun mousePressed(e: MouseEvent?) {
-        if (e == null) return
-
-        if (e.clickCount == 2) {
-          val row = tree.getClosestRowForLocation(e.x, e.y)
-          if (row == -1) return
-
-          val path = tree.getPathForRow(row)
-          val clickedModel = path.lastPathComponent
+        handleDoubleClick(e, tree) { clickedModel ->
           if (clickedModel is IntelligentCommentErrorTreeModel) {
             val navigationRequest = SolutionAnalysisNavigation(clickedModel.originalError.offset, true)
             clickedModel.parentModel.rdModel.navigateToError.fire(navigationRequest)
@@ -113,5 +107,18 @@ class IntelligentCommentProblemsViewTab(
 
   override fun treeCollapsed(event: TreeExpansionEvent?) {
     handleTreeExpansionOrCollapse(event, false)
+  }
+}
+
+fun handleDoubleClick(e: MouseEvent?, tree: JTree, action: (TreePath) -> Unit) {
+  if (e == null) return
+
+  if (e.clickCount == 2) {
+    val row = tree.getClosestRowForLocation(e.x, e.y)
+    if (row == -1) return
+
+    val path = tree.getPathForRow(row)
+    val clickedModel = path.lastPathComponent
+    action(path)
   }
 }
