@@ -17,11 +17,14 @@ using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Caches.Names;
 
-public record struct NamedEntity([NotNull] string Name, NameKind NameKind, DocumentOffset DocumentOffset);
+public record struct NamedEntity([NotNull] string Name, DocumentOffset DocumentOffset);
+
+public record struct FileNamesChange(IPsiSourceFile SourceFile, IEnumerable<NamedEntity> Entities);
 
 public interface INamesCache
 {
-  [NotNull] ISignal<IEnumerable<NamedEntity>> Change { get; }
+  public NameKind NameKind { get; }
+  [NotNull] ISignal<FileNamesChange> Change { get; }
 
   int GetNameCount([NotNull] string name);
   [NotNull] [ItemNotNull] IEnumerable<string> GetAllNamesFor([NotNull] string prefix);
@@ -41,11 +44,11 @@ public abstract class AbstractNamesCache : SimpleICache<Dictionary<string, int>>
     );
 
 
-  protected NameKind NameKind { get; }
+  public NameKind NameKind { get; }
   [NotNull] protected Trie Trie { get; }
 
   
-  public ISignal<IEnumerable<NamedEntity>> Change { get; }
+  public ISignal<FileNamesChange> Change { get; }
   public override string Version => "4";
 
   
@@ -58,7 +61,7 @@ public abstract class AbstractNamesCache : SimpleICache<Dictionary<string, int>>
   {
     NameKind = nameKind;
     Trie = new Trie();
-    Change = new Signal<IEnumerable<NamedEntity>>(lifetime, $"{GetType().Name}::{nameof(Change)}");
+    Change = new Signal<FileNamesChange>(lifetime, $"{GetType().Name}::{nameof(Change)}");
   }
   
   
@@ -76,10 +79,13 @@ public abstract class AbstractNamesCache : SimpleICache<Dictionary<string, int>>
       if (infos.Count != 1) continue;
 
       var info = infos.First();
-      entities.Add(new NamedEntity(name, NameKind, info.Offset));
+      entities.Add(new NamedEntity(name, info.Offset));
     }
     
-    Locks.Queue(Lifetime, $"{GetType().Name}::QueueingChange", () => { Change.Fire(entities); });
+    Locks.Queue(Lifetime, $"{GetType().Name}::QueueingChange", () =>
+    {
+      Change.Fire(new FileNamesChange(sourceFile, entities));
+    });
     return nameInfos.ToDictionary(pair => pair.Key, pair => pair.Value.Count);
   }
 

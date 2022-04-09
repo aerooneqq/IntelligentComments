@@ -344,10 +344,30 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
     field("Link", PredefinedType.string)
   }
 
+  val RdFileInfo = structdef {
+    field("Id", PredefinedType.long)
+    field("Name", PredefinedType.string)
+  }
+
+  val RdNamedEntityItem = basestruct {
+    field("Presentation", PredefinedType.string)
+    field("DocumentOffset", PredefinedType.int)
+  }
+
+  val RdHackItem = structdef extends RdNamedEntityItem { }
+  val RdTodoItem = structdef extends RdNamedEntityItem { }
+  val RdInvariantItem = structdef extends RdNamedEntityItem { }
+  val RdFileNames = structdef {
+    field("NameKind", RdNameKind)
+    field("File", RdFileInfo)
+    field("Entities", immutableList(RdNamedEntityItem))
+  }
+
   init {
     call("HighlightCode", RdCodeHighlightingRequest, RdHighlightedText.nullable)
     call("RequestClickDoc", RdCommentClickDocRequest, PredefinedType.int.nullable)
     call("PerformNavigation", RdNavigationRequest, PredefinedType.void)
     call("ResolveReference", RdReferenceResolveRequest, RdResolveResult)
+    signal("NamedEntitiesChange", RdFileNames)
   }
 }

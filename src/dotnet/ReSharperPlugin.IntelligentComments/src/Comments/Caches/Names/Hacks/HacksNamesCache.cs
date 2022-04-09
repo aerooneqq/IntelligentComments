@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using JetBrains.Application.Threading;
 using JetBrains.Lifetimes;
 using JetBrains.ReSharper.Psi;
@@ -11,8 +12,8 @@ public class HacksNamesCache : AbstractNamesCache
 {
   public HacksNamesCache(
     Lifetime lifetime, 
-    IShellLocks locks,
-    IPersistentIndexManager persistentIndexManager) 
+    [NotNull] IShellLocks locks,
+    [NotNull] IPersistentIndexManager persistentIndexManager) 
     : base(lifetime, NameKind.Hack, locks, persistentIndexManager)
   {
   }

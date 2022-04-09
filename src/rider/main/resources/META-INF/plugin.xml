@@ -6,6 +6,10 @@
   <depends>com.intellij.modules.rider</depends>
 
   <extensions defaultExtensionNs="com.intellij">
+    <toolWindow factoryClass="com.intelligentComments.core.namesToolWindow.NamedEntityToolWindowFactory"
+                anchor="bottom"
+                id="NamedEntitiesToolWindow"/>
+
     <applicationService serviceImplementation="com.intelligentComments.core.changes.ChangeManagerImpl"
                         serviceInterface="com.intelligentComments.core.changes.ChangeManager" />
     <applicationService serviceImplementation="com.intelligentComments.core.settings.RiderIntelligentCommentsSettingsProviderImpl"

@@ -20,7 +20,7 @@ class CellRenderer(private val project: Project) : ColoredTreeCellRenderer() {
     rowIndex: Int,
     focused: Boolean
   ) {
-    when(value) {
+    when (value) {
       is IntelligentCommentErrorTreeModel -> {
         icon = AllIcons.General.Error
         append(value.presentationText)

@@ -56,10 +56,11 @@ internal class IntelligentCommentsTreeModel(
       val path = TreePath(arrayOf(root))
       if (isVisible) {
         val dto = files.makeVisibleIfNeeded(fileName)
-        if (dto != null) dispatchNodeChanges(path, dto)
+        if (dto != null) {
+          dispatchNodeChanges(path, dto)
+        }
       } else {
-        val dtos = files.makeInvisibleIfNeeded(fileName)
-        for (dto in dtos) {
+        for (dto in files.makeInvisibleIfNeeded(fileName)) {
           dispatchNodeChanges(path, dto)
         }
       }
