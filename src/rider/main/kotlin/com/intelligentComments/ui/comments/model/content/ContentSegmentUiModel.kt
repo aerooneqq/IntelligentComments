@@ -2,12 +2,14 @@ package com.intelligentComments.ui.comments.model.content
 
 import com.intelligentComments.core.domain.core.*
 import com.intelligentComments.core.domain.impl.*
+import com.intelligentComments.core.domain.rd.HackInlinedContentSegmentFromRd
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intelligentComments.ui.comments.model.content.code.CodeSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.example.ExampleSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.exceptions.ExceptionUiModel
 import com.intelligentComments.ui.comments.model.content.exceptions.GroupedExceptionUiModel
 import com.intelligentComments.ui.comments.model.content.hacks.GroupedHackUiModel
+import com.intelligentComments.ui.comments.model.content.hacks.HackTextContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.hacks.HackWithTicketsUiModel
 import com.intelligentComments.ui.comments.model.content.image.ImageContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.invariants.GroupedInvariantsUiModel
@@ -74,6 +76,7 @@ abstract class ContentSegmentUiModel(
         is CodeSegment -> CodeSegmentUiModel(project, parent, segment)
         is ValueSegment -> ValueUiModel(project, parent, segment)
         is ToDoTextContentSegment -> ToDoTextContentSegmentUiModel(project, parent, segment)
+        is HackTextContentSegment -> HackTextContentSegmentUiModel(project, parent, segment)
         is TextInvariantSegment -> TextInvariantUiModel(project, parent, segment)
         is ToDoWithTicketsContentSegment -> ToDoWithTicketsUiModel(project, parent, segment)
         is TicketContentSegment -> TicketUiModel(project, parent, segment)

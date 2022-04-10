@@ -22,7 +22,7 @@ public abstract class GroupOfLinesLikeCommentCreator : ICommentFromNodeCreator
   public CommentCreationResult? TryCreate(ITreeNode node)
   {
     if (LanguageManager.TryGetService<IGroupOfLineCommentsCreator>(node.Language) is not { } builder) return null;
-    if (builder.TryCreate(node) is not { Comment: IGroupOfLineComments groupOfLineComments } buildResult) 
+    if (builder.TryCreateNoMerge(node) is not { Comment: IGroupOfLineComments groupOfLineComments } buildResult) 
       return null;
 
     var text = groupOfLineComments.Text.Text.Text;

@@ -5,6 +5,7 @@ using JetBrains.DocumentModel;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CodeStyle;
 using JetBrains.ReSharper.Psi.CSharp;
+using JetBrains.ReSharper.Psi.CSharp.Parsing;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
 using JetBrains.ReSharper.Psi.Tree;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments.Utils;
@@ -18,16 +19,20 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.Languag
 [Language(typeof(CSharpLanguage))]
 public class CSharpGroupOfLineCommentsCreator : GroupOfLineCommentsCreatorBase
 {
-  public override CommentCreationResult? TryCreate(ITreeNode node)
+  public override CommentCreationResult? TryCreate(ITreeNode node) => TryCreate(node, true);
+
+  private CommentCreationResult? TryCreate(ITreeNode node, bool mergeDividedComments)
   {
     if (node is not ICSharpCommentNode startCommentNode) return null;
     if (!CanProcessLineComment(startCommentNode)) return null;
     
-    var groupOfLineComments = CollectLineComments(startCommentNode);
+    var groupOfLineComments = CollectLineComments(startCommentNode, mergeDividedComments);
     var highlightedText = CreateTextFrom(startCommentNode, groupOfLineComments);
     var comment = CreateCommentFrom(highlightedText, groupOfLineComments);
     return new CommentCreationResult(comment, groupOfLineComments);
   }
+
+  public override CommentCreationResult? TryCreateNoMerge(ITreeNode commentNode) => TryCreate(commentNode, false);
 
   [NotNull]
   private IHighlightedText CreateTextFrom(
@@ -70,7 +75,9 @@ public class CSharpGroupOfLineCommentsCreator : GroupOfLineCommentsCreatorBase
   }
 
   [NotNull]
-  private IReadOnlyList<ICSharpCommentNode> CollectLineComments([NotNull] ICSharpCommentNode startCommentNode)
+  private static IReadOnlyList<ICSharpCommentNode> CollectLineComments(
+    [NotNull] ICSharpCommentNode startCommentNode,
+    bool mergeDividedComments)
   {
     var comments = new List<ICSharpCommentNode> { startCommentNode };
     var currentNode = startCommentNode.NextSibling;
@@ -79,6 +86,13 @@ public class CSharpGroupOfLineCommentsCreator : GroupOfLineCommentsCreatorBase
     {
       if (currentNode.IsWhitespaceToken())
       {
+        if (currentNode.NodeType == CSharpTokenType.NEW_LINE &&
+            currentNode.GetNextToken()?.NodeType == CSharpTokenType.NEW_LINE &&
+            !mergeDividedComments)
+        {
+          return comments;
+        }
+        
         currentNode = currentNode.NextSibling;
         continue;
       }

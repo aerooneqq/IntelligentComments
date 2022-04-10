@@ -8,6 +8,7 @@ using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DisablingCo
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments.Errors;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.InlineReferenceComments;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.MultilineComments;
+using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.MultilineComments.HackComments;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.MultilineComments.ToDoComments;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.Languages.CSharp;
@@ -55,10 +56,21 @@ public class CSharpCommentsProcessor : CommentsProcessorBase
   private bool TryProcessSpecificComments([NotNull] ITreeNode element)
   {
     return TryProcessToDoComment(element) ||
+           TryProcessHackComment(element)  ||
            TryProcessDisablingComment(element) ||
            TryProcessInlineReferenceComment(element);
   }
 
+  private bool TryProcessHackComment([NotNull] ITreeNode node)
+  {
+    var creator = LanguageManager.TryGetService<IHackCommentCreator>(node.Language);
+    if (creator?.TryCreate(node) is not var (comment, nodes)) return false;
+    
+    VisitedNodes.AddRange(nodes);
+    Comments.Add(CommentProcessingResult.CreateSuccess(comment));
+    return true;
+  }
+  
   private bool TryProcessToDoComment([NotNull] ITreeNode node)
   {
     var builder = LanguageManager.TryGetService<IToDoCommentCreator>(node.Language);
