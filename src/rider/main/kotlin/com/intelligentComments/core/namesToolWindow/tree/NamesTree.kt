@@ -51,6 +51,7 @@ internal class FileTreeModel(val rdModel: RdFileNames) {
     return names.indexOf(model)
   }
 }
+
 internal class NamesTree : AbstractTreeModel() {
   private val files = mutableListOf<FileTreeModel>()
 
