@@ -13,7 +13,8 @@ public class CSharpReferenceSourceCompletionProvider : ItemsProviderOfSpecificCo
   protected override bool AddLookupItems(DocCommentCompletionContext context, IItemsCollector collector)
   {
     if (context.TryGetContextAttribute() is not { } attribute ||
-        DocCommentsBuilderUtil.TryExtractNameFromPossibleReferenceSourceAttribute(attribute) is not { } extraction)
+        DocCommentsBuilderUtil.TryExtractNameFromPossibleReferenceSourceAttribute(attribute) is not { } extraction ||
+        CommentsCompletionExtensions.TryGetAttributeValueRanges(context.ContextToken) is not { } ranges)
     {
       return false;
     }
@@ -22,9 +23,8 @@ public class CSharpReferenceSourceCompletionProvider : ItemsProviderOfSpecificCo
     var cache = NamesCacheUtil.GetCacheFor(context.GetSolution(), extraction.NameKind);
     foreach (var name in cache.GetAllNamesFor(prefix))
     {
-      var lookupItem = new CommentLookupItem(name);
-      lookupItem.InitializeRanges(context.TextLookupRanges, context.BasicContext);
-
+      var lookupItem = new CommentLookupItem(name, name);
+      lookupItem.InitializeRanges(ranges, context.BasicContext);
       collector.Add(lookupItem);
     }
     

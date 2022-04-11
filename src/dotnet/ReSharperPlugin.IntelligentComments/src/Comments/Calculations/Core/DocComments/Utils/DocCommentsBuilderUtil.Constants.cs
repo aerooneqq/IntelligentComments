@@ -14,15 +14,30 @@ internal static partial class DocCommentsBuilderUtil
   [NotNull] internal const string TicketTagName = "ticket";
   [NotNull] internal const string HackTagName = "hack";
   [NotNull] internal const string InvariantTagName = "invariant";
+  [NotNull] internal const string ParamTagName = "param";
+  [NotNull] internal const string TypeParamTagName = "typeparam";
+  [NotNull] internal const string ParamRefTagName = "paramref";
+  [NotNull] internal const string TypeParamRefTagName = "typeparamref";
+  [NotNull] internal const string ListTagName = "list";
+
+  [NotNull] internal const string ListTypeAttributeName = "type";
+  [NotNull] internal const string ListTableType = "table";
+  [NotNull] internal const string ListListType = "list";
 
   [NotNull] internal const string CommonNameAttrName = "name";
   [NotNull] internal const string TicketNameAttrName = CommonNameAttrName;
   [NotNull] internal const string HackNameAttrName = CommonNameAttrName;
+  [NotNull] internal const string TodoNameAttrName = CommonNameAttrName;
   [NotNull] internal const string TicketSourceAttrName = "source";
   
   [NotNull] internal const string InvariantReferenceSourceAttrName = "invariant";
   [NotNull] internal const string HackReferenceSourceAttributeName = "hack";
   [NotNull] internal const string TodoReferenceSourceAttributeName = "todo";
+
+  [NotNull] internal const string ParamNameAttrName = CommonNameAttrName;
+  [NotNull] internal const string ParamRefNameAttrName = CommonNameAttrName;
+  [NotNull] internal const string TypeParamNameAttrName = CommonNameAttrName;
+  [NotNull] internal const string TypeParamRefNameAttrName = CommonNameAttrName;
   
   [NotNull] internal const string InvariantNameAttrName = CommonNameAttrName;
   [NotNull] internal const string InheritDocTagName = "inheritdoc";

@@ -11,19 +11,16 @@ public class DocCommentCompletionContext : SpecificCodeCompletionContext
   public override string ContextId => nameof(DocCommentCompletionContext);
   
   [NotNull] public ITokenNode ContextToken { get; }
-  [NotNull] public TextLookupRanges TextLookupRanges { get; }
   [NotNull] public IDocCommentBlock DocCommentBlock { get; }
 
 
   public DocCommentCompletionContext(
     [NotNull] CodeCompletionContext basicContext, 
     [NotNull] ITokenNode contextToken,
-    [NotNull] TextLookupRanges textLookupRanges,
     [NotNull] IDocCommentBlock docCommentBlock) 
     : base(basicContext)
   {
     ContextToken = contextToken;
-    TextLookupRanges = textLookupRanges;
     DocCommentBlock = docCommentBlock;
   }
 }

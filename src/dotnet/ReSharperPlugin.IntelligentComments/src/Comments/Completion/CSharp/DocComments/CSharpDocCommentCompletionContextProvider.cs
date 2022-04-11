@@ -39,33 +39,8 @@ public class CSharpDocCommentCompletionContextProvider : ICodeCompletionContextP
     Assertion.AssertNotNull(docCommentBlock, "docCommentBlock != null");
 
     if (docCommentBlock.TryGetXmlToken(context.CaretDocumentOffset) is not { } contextDocCommentNode) return null;
-    if (TryCreateTextLookupRanges(contextDocCommentNode) is not { } ranges) return null;
-    if (!ranges.InsertRange.IsValid() || !ranges.ReplaceRange.IsValid()) return null;
     
-    return new DocCommentCompletionContext(context, contextDocCommentNode, ranges, docCommentBlock);
-  }
-  
-  
-  [CanBeNull]
-  private static TextLookupRanges TryCreateTextLookupRanges([NotNull] ITokenNode contextToken)
-  {
-    return TryGetAttributeValueRange(contextToken);
-  }
-  
-  [CanBeNull]
-  private static TextLookupRanges TryGetAttributeValueRange([NotNull] ITokenNode contextToken)
-  {
-    if (contextToken.Parent is not IXmlAttribute parentAttribute) return null;
-
-    var eq = parentAttribute.Eq;
-    if (eq is null || !eq.RightSiblings().Contains(contextToken)) return null;
-
-    if (contextToken is not IXmlValueToken) return null;
-    
-    var range = contextToken.GetDocumentRange().TrimLeft(1).TrimRight(1);
-    if (!range.IsValid()) return null;
-    
-    return new TextLookupRanges(range, range);
+    return new DocCommentCompletionContext(context, contextDocCommentNode, docCommentBlock);
   }
 }
 
@@ -91,5 +66,21 @@ internal static class CommentsCompletionExtensions
     }
     
     return node as IDocCommentBlock;
+  }
+  
+  [CanBeNull]
+  internal static TextLookupRanges TryGetAttributeValueRanges([NotNull] ITokenNode contextToken)
+  {
+    if (contextToken.Parent is not IXmlAttribute parentAttribute) return null;
+
+    var eq = parentAttribute.Eq;
+    if (eq is null || !eq.RightSiblings().Contains(contextToken)) return null;
+
+    if (contextToken is not IXmlValueToken) return null;
+    
+    var range = contextToken.GetDocumentRange().TrimLeft(1).TrimRight(1);
+    if (!range.IsValid()) return null;
+    
+    return new TextLookupRanges(range, range);
   }
 }

@@ -16,7 +16,7 @@ public class CSharpInvariantNameInInlineReferenceCompletionProvider : ItemsProvi
 
     foreach (var name in cache.GetAllNamesFor(prefix))
     {
-      var lookupItem = new CommentLookupItem(name);
+      var lookupItem = new CommentLookupItem(name, name);
       lookupItem.InitializeRanges(context.Ranges, context.BasicContext);
 
       collector.Add(lookupItem);
