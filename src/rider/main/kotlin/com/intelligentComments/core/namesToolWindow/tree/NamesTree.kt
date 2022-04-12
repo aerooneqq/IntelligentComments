@@ -113,7 +113,7 @@ internal class NamesTree : AbstractTreeModel() {
     return when(parent) {
       is NamesTree -> parent.size
       is FileTreeModel -> parent.size
-      else -> throw IllegalArgumentException(parent?.javaClass?.name)
+      else -> 0
     }
   }
 

@@ -1,11 +1,13 @@
 package com.intelligentComments.core.problemsView
 
+import com.intelligentComments.core.namesToolWindow.createProblemsViewLikeComponent
+import com.intelligentComments.core.namesToolWindow.setNodeExpandedState
 import com.intelligentComments.core.problemsView.tree.*
 import com.intellij.analysis.problemsView.toolWindow.ProblemsViewPanelProvider
 import com.intellij.analysis.problemsView.toolWindow.ProblemsViewTab
+import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.Project
 import com.intellij.ui.OnePixelSplitter
-import com.intellij.ui.components.JBScrollPane
 import com.jetbrains.rd.platform.util.lifetime
 import com.jetbrains.rd.util.lifetime.Lifetime
 import com.jetbrains.rider.RiderProjectExtensionsConfigurator
@@ -83,7 +85,11 @@ class IntelligentCommentProblemsViewTab(
     tree.cellRenderer = CellRenderer(project)
     tree.addTreeExpansionListener(this)
 
-    firstComponent = JBScrollPane(tree)
+    fun handleExpansionOrCollapse(expand: Boolean, event: AnActionEvent) {
+      setNodeExpandedState(tree.model.root, TreePath(tree.model.root), tree, expand)
+    }
+
+    firstComponent = createProblemsViewLikeComponent(tree) { expand, event -> handleExpansionOrCollapse(expand, event) }
   }
 
   override fun getName(count: Int): String {
@@ -117,8 +123,6 @@ fun handleDoubleClick(e: MouseEvent?, tree: JTree, action: (TreePath) -> Unit) {
     val row = tree.getClosestRowForLocation(e.x, e.y)
     if (row == -1) return
 
-    val path = tree.getPathForRow(row)
-    val clickedModel = path.lastPathComponent
-    action(path)
+    action(tree.getPathForRow(row))
   }
 }

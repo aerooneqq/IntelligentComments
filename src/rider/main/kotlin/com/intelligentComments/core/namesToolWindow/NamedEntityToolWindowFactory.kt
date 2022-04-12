@@ -9,6 +9,11 @@ import com.intelligentComments.core.namesToolWindow.tree.NameCellRenderer
 import com.intelligentComments.core.namesToolWindow.tree.NameTreeModel
 import com.intelligentComments.core.namesToolWindow.tree.NamesTree
 import com.intelligentComments.core.problemsView.handleDoubleClick
+import com.intellij.icons.AllIcons
+import com.intellij.openapi.actionSystem.ActionManager
+import com.intellij.openapi.actionSystem.AnAction
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.wm.ToolWindow
@@ -22,9 +27,12 @@ import com.jetbrains.rd.ide.model.rdCommentsModel
 import com.jetbrains.rd.platform.util.lifetime
 import com.jetbrains.rdclient.editors.FrontendTextControlHost
 import com.jetbrains.rider.projectView.solution
+import java.awt.BorderLayout
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
+import javax.swing.JPanel
 import javax.swing.JTree
+import javax.swing.tree.TreePath
 
 class NamedEntityToolWindowFactory() : ToolWindowFactory {
   override fun createToolWindowContent(project: Project, toolWindow: ToolWindow) {
@@ -54,7 +62,7 @@ class NamedEntityToolWindowFactory() : ToolWindowFactory {
   }
 }
 
-class NamedEntitiesComponent(project: Project, private val nameKind: NameKind) : OnePixelSplitter() {
+class NamedEntitiesComponent(project: Project, nameKind: NameKind) : OnePixelSplitter() {
   private val navigationHost = project.service<CommentsNavigationHost>()
   private val textControlHost = FrontendTextControlHost.getInstance(project)
   private val treeModel: NamesTree = NamesTree()
@@ -111,11 +119,73 @@ class NamedEntitiesComponent(project: Project, private val nameKind: NameKind) :
       }
     })
 
-    firstComponent = JBScrollPane(tree)
+    fun handleExpansionOrCollapse(expand: Boolean, event: AnActionEvent) {
+      val model = tree.model
+      setNodeExpandedState(model.root, TreePath(model.root), tree, expand)
+    }
+
+    firstComponent = createProblemsViewLikeComponent(tree) { expand, event -> handleExpansionOrCollapse(expand, event) }
   }
 
 
   fun updateTree(model: RdFileNames) {
     treeModel.addOrUpdate(FileTreeModel(model))
+  }
+}
+
+fun createProblemsViewLikeComponent(tree: JTree, handleExpansionOrCollapse: (Boolean, AnActionEvent) -> Unit): JPanel {
+  val actionGroup = DefaultActionGroup().apply {
+    add(ExpandOrCollapseAllTreeItemsAction(true) { expand, event -> handleExpansionOrCollapse(expand, event) })
+    add(ExpandOrCollapseAllTreeItemsAction(false) { expand, event -> handleExpansionOrCollapse(expand, event) })
+  }
+
+  val toolbar = ActionManager.getInstance().createActionToolbar("ProblemsViewLikeToolbar", actionGroup, false)
+  val component = JPanel().apply {
+    layout = BorderLayout()
+    add(toolbar.component, BorderLayout.WEST)
+    add(JBScrollPane(tree), BorderLayout.CENTER)
+  }
+
+  return component
+}
+
+class ExpandOrCollapseAllTreeItemsAction(
+  private val expand: Boolean,
+  private val handler: (Boolean, AnActionEvent) -> Unit
+) : AnAction(
+  if (expand) "Expand Items" else "Collapse Items",
+) {
+  override fun update(e: AnActionEvent) {
+    e.presentation.icon = if (expand) AllIcons.General.ExpandComponent else AllIcons.General.CollapseComponent
+  }
+
+  override fun actionPerformed(event: AnActionEvent) {
+    handler(expand, event)
+  }
+}
+
+//todo: bad, but ok for now
+fun setNodeExpandedState(node: Any, path: TreePath, tree: JTree, expand: Boolean) {
+  val model = tree.model
+  val childrenCount = model.getChildCount(node)
+  if (childrenCount == 0) return
+
+  val list = mutableListOf<Any>()
+  for (i in 0 until childrenCount) {
+    list.add(model.getChild(node, i))
+  }
+
+  for (treeNode in list) {
+    setNodeExpandedState(treeNode, path.pathByAddingChild(treeNode), tree, expand)
+  }
+
+  if (!expand && node is NamesTree) {
+    return
+  }
+
+  if (expand) {
+    tree.expandPath(path)
+  } else {
+    tree.collapsePath(path)
   }
 }
