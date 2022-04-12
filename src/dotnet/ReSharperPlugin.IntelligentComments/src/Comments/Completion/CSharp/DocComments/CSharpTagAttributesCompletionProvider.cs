@@ -36,11 +36,6 @@ public class CSharpTagAttributesCompletionProvider : ItemsProviderOfSpecificCont
     };
 
   
-  protected override bool IsAvailable(DocCommentCompletionContext context)
-  {
-    return true;
-  }
-
   protected override bool AddLookupItems(DocCommentCompletionContext context, IItemsCollector collector)
   {
     var contextToken = context.ContextToken;

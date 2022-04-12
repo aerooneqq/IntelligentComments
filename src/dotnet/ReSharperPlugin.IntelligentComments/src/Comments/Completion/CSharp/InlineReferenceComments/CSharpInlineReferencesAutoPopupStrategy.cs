@@ -26,12 +26,10 @@ public class CSharpInlineReferencesAutoPopupStrategy : CSharpAutoPopupStrategyBa
   {
     return this.MatchToken(file, textControl, node =>
     {
-      if (NamesResolveUtil.TryFindAnyCommentNode(node) is not { } commentNode) return false;
+      if (NamesResolveUtil.TryFindAnyCommentNode(node) is not { }) return false;
 
-      var caretOffset = new DocumentOffset(textControl.Document, (int)textControl.Caret.Position.Value.ToDocOffset());
-      if (myCreator.TryExtractCompletionInlineReferenceInfo(node, caretOffset) is not { }) return false;
-      
-      return true;
+      var caretOffset = textControl.Caret.DocumentOffset();
+      return myCreator.TryExtractCompletionInlineReferenceInfo(node, caretOffset) is { };
     });
   }
 }

@@ -19,7 +19,7 @@ public class CSharpDocCommentCompletionItemsProvider : ItemsProviderOfSpecificCo
   }
 
   [ItemNotNull] [NotNull] 
-  private static readonly TagInfo[] ourClosedTags =
+  private static readonly TagInfo[] ourTags =
   {
     new(DocCommentsBuilderUtil.ImageTagName, new[] { DocCommentsBuilderUtil.ImageSourceAttrName }, true),
     new(DocCommentsBuilderUtil.InvariantTagName, new[] { DocCommentsBuilderUtil.InvariantNameAttrName }, false),
@@ -35,7 +35,7 @@ public class CSharpDocCommentCompletionItemsProvider : ItemsProviderOfSpecificCo
   
   protected override bool AddLookupItems(ContextInDocComment context, IItemsCollector collector)
   {
-    var lookupItems = ourClosedTags.Select(info =>
+    var lookupItems = ourTags.Select(info =>
     {
       var lookupItem = info.ToLookupItem();
       lookupItem.InitializeRanges(context.TextLookupRanges, context.BasicContext);
