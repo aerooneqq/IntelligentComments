@@ -18,7 +18,7 @@ class ContentSegmentsUiModel : ContentSegmentUiModel, ModelWithContent {
     parent: UiInteractionModelBase?,
     content: ContentSegments
   ) : super(project, parent) {
-    val models = content.segments.map { getFrom(project, this, it) }
+    val models = content.segments.map { it.createUiModel(project, this) }
     contentSection = SectionUiModel(project, parent, models)
   }
 
@@ -27,7 +27,7 @@ class ContentSegmentsUiModel : ContentSegmentUiModel, ModelWithContent {
     parent: UiInteractionModelBase?,
     content: Collection<ContentSegment>
   ) : super(project, parent) {
-    val models = content.map { getFrom(project, this, it) }
+    val models = content.map { it.createUiModel(project, this) }
     contentSection = SectionUiModel(project, parent, models)
   }
 

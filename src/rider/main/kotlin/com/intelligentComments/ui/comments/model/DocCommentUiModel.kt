@@ -1,7 +1,6 @@
 package com.intelligentComments.ui.comments.model
 
 import com.intelligentComments.core.domain.core.DocComment
-import com.intelligentComments.ui.comments.model.content.ContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.sections.SectionUiModel
 import com.intelligentComments.ui.comments.renderers.DocCommentRenderer
 import com.intellij.openapi.editor.Editor
@@ -17,7 +16,7 @@ class DocCommentUiModel(
 
 
   init {
-    val segments = docComment.content.content.segments.map { ContentSegmentUiModel.getFrom(project, this, it) }
+    val segments = docComment.content.content.segments.map { it.createUiModel(project, this) }
     contentSection = SectionUiModel(project, this, segments)
   }
 

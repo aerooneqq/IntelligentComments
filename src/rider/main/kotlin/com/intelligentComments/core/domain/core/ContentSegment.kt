@@ -1,6 +1,26 @@
 package com.intelligentComments.core.domain.core
 
-import com.intelligentComments.core.domain.rd.ContentSegmentFromRd
+import com.intelligentComments.ui.comments.model.UiInteractionModelBase
+import com.intelligentComments.ui.comments.model.content.ContentSegmentUiModel
+import com.intelligentComments.ui.comments.model.content.ContentSegmentsUiModel
+import com.intelligentComments.ui.comments.model.content.code.CodeSegmentUiModel
+import com.intelligentComments.ui.comments.model.content.example.ExampleSegmentUiModel
+import com.intelligentComments.ui.comments.model.content.exceptions.ExceptionUiModel
+import com.intelligentComments.ui.comments.model.content.hacks.HackTextContentSegmentUiModel
+import com.intelligentComments.ui.comments.model.content.image.ImageContentSegmentUiModel
+import com.intelligentComments.ui.comments.model.content.list.ListContentSegmentUiModel
+import com.intelligentComments.ui.comments.model.content.paragraphs.ParagraphUiModel
+import com.intelligentComments.ui.comments.model.content.params.ParameterUiModel
+import com.intelligentComments.ui.comments.model.content.params.TypeParamUiModel
+import com.intelligentComments.ui.comments.model.content.remarks.RemarksUiModel
+import com.intelligentComments.ui.comments.model.content.`return`.ReturnUiModel
+import com.intelligentComments.ui.comments.model.content.seeAlso.SeeAlsoUiModel
+import com.intelligentComments.ui.comments.model.content.summary.SummaryUiModel
+import com.intelligentComments.ui.comments.model.content.table.TableContentSegmentUiModel
+import com.intelligentComments.ui.comments.model.content.text.TextContentSegmentUiModel
+import com.intelligentComments.ui.comments.model.content.todo.ToDoTextContentSegmentUiModel
+import com.intelligentComments.ui.comments.model.content.value.ValueUiModel
+import com.intellij.openapi.project.Project
 import com.jetbrains.rd.util.reactive.Property
 
 interface IntelligentCommentContent : EntityWithContentSegments
@@ -13,8 +33,13 @@ interface Parentable {
   val parent: Parentable?
 }
 
+class NotSupportedUiModelCreationError(typeName: String) : Exception(typeName)
+
 interface ContentSegment : Parentable, UniqueEntity {
   fun isValid() = true
+  fun createUiModel(project: Project, parent: UiInteractionModelBase?): ContentSegmentUiModel {
+    throw NotSupportedUiModelCreationError(javaClass.name)
+  }
 }
 
 interface ContentSegments : Parentable {
@@ -25,36 +50,51 @@ interface ContentSegments : Parentable {
 
 interface EntityWithContentSegments : ContentSegment {
   val content: ContentSegments
-}
 
-fun createEmptyEntityWithContentSegments(): EntityWithContentSegments {
-  return object : UniqueEntityImpl(), EntityWithContentSegments {
-    override val parent: Parentable? = null
-    override val content: ContentSegments = object : ContentSegments {
-      override val segments: Collection<ContentSegment> = emptyList()
-      override val parent: Parentable? = null
-
-      override fun processSegments(strategy: ContentProcessingStrategy) {
-      }
-    }
+  override fun createUiModel(project: Project, parent: UiInteractionModelBase?): ContentSegmentUiModel {
+    return ContentSegmentsUiModel(project, parent, content)
   }
 }
 
-interface ValueSegment : EntityWithContentSegments
+interface ValueSegment : EntityWithContentSegments {
+  override fun createUiModel(project: Project, parent: UiInteractionModelBase?): ContentSegmentUiModel {
+    return ValueUiModel(project, parent, this)
+  }
+}
 
-interface ParagraphContentSegment : EntityWithContentSegments
+interface ParagraphContentSegment : EntityWithContentSegments {
+  override fun createUiModel(project: Project, parent: UiInteractionModelBase?): ContentSegmentUiModel {
+    return ParagraphUiModel(project, parent, this)
+  }
+}
 
-interface SummaryContentSegment : EntityWithContentSegments
+interface SummaryContentSegment : EntityWithContentSegments {
+  override fun createUiModel(project: Project, parent: UiInteractionModelBase?): ContentSegmentUiModel {
+    return SummaryUiModel(project, parent, this)
+  }
+}
 
-interface ExampleContentSegment : EntityWithContentSegments
+interface ExampleContentSegment : EntityWithContentSegments {
+  override fun createUiModel(project: Project, parent: UiInteractionModelBase?): ContentSegmentUiModel {
+    return ExampleSegmentUiModel(project, parent, this)
+  }
+}
 
 interface TextContentSegment : ContentSegment {
   val highlightedText: HighlightedText
+
+  override fun createUiModel(project: Project, parent: UiInteractionModelBase?): ContentSegmentUiModel {
+    return TextContentSegmentUiModel(project, parent, this)
+  }
 }
 
 interface ImageContentSegment : ContentSegment {
   val sourceReference: Reference
   val description: HighlightedText?
+
+  override fun createUiModel(project: Project, parent: UiInteractionModelBase?): ContentSegmentUiModel {
+    return ImageContentSegmentUiModel(project, parent, this)
+  }
 }
 
 enum class ListSegmentKind {
@@ -66,6 +106,10 @@ interface ListContentSegment : ContentSegment {
   val listKind: ListSegmentKind
   val content: Collection<ListItem>
   val header: HighlightedText?
+
+  override fun createUiModel(project: Project, parent: UiInteractionModelBase?): ContentSegmentUiModel {
+    return ListContentSegmentUiModel(project, parent, this)
+  }
 }
 
 data class ListItem(val header: ContentSegments?, val description: ContentSegments?)
@@ -75,6 +119,10 @@ interface TableContentSegment : ContentSegment {
   val rows: Collection<TableRow>
 
   fun removeEmptyRowsAndCols()
+
+  override fun createUiModel(project: Project, parent: UiInteractionModelBase?): ContentSegmentUiModel {
+    return TableContentSegmentUiModel(project, parent, this)
+  }
 }
 
 interface TableRow : Parentable {
@@ -108,20 +156,44 @@ interface ArbitraryParamSegment : EntityWithContentSegments {
   val name: HighlightedText
 }
 
-interface ParameterSegment : ArbitraryParamSegment
-interface TypeParamSegment : ArbitraryParamSegment
+interface ParameterSegment : ArbitraryParamSegment {
+  override fun createUiModel(project: Project, parent: UiInteractionModelBase?): ContentSegmentUiModel {
+    return ParameterUiModel(project, parent, this)
+  }
+}
+interface TypeParamSegment : ArbitraryParamSegment {
+  override fun createUiModel(project: Project, parent: UiInteractionModelBase?): ContentSegmentUiModel {
+    return TypeParamUiModel(project, parent, this)
+  }
+}
 
 
-interface ReturnSegment : EntityWithContentSegments
+interface ReturnSegment : EntityWithContentSegments {
+  override fun createUiModel(project: Project, parent: UiInteractionModelBase?): ContentSegmentUiModel {
+    return ReturnUiModel(project, parent, this)
+  }
+}
 
-interface RemarksSegment : EntityWithContentSegments
+interface RemarksSegment : EntityWithContentSegments {
+  override fun createUiModel(project: Project, parent: UiInteractionModelBase?): ContentSegmentUiModel {
+    return RemarksUiModel(project, parent, this)
+  }
+}
 
 interface ExceptionSegment : EntityWithContentSegments {
   val name: HighlightedText
+
+  override fun createUiModel(project: Project, parent: UiInteractionModelBase?): ContentSegmentUiModel {
+    return ExceptionUiModel(project, parent, this)
+  }
 }
 
 interface SeeAlsoSegment : ContentSegment {
   val description: HighlightedText
+
+  override fun createUiModel(project: Project, parent: UiInteractionModelBase?): ContentSegmentUiModel {
+    return SeeAlsoUiModel.getFor(project, parent, this)
+  }
 }
 
 interface SeeAlsoLinkSegment : SeeAlsoSegment {
@@ -138,14 +210,26 @@ interface GroupedContentSegment<out T : ContentSegment> : ContentSegment {
 
 interface CodeSegment : ContentSegment {
   val code: Property<HighlightedText>
+
+  override fun createUiModel(project: Project, parent: UiInteractionModelBase?): ContentSegmentUiModel {
+    return CodeSegmentUiModel(project, parent, this)
+  }
 }
 
 interface ToDoTextContentSegment : ContentSegment {
   val text: HighlightedText
+
+  override fun createUiModel(project: Project, parent: UiInteractionModelBase?): ContentSegmentUiModel {
+    return ToDoTextContentSegmentUiModel(project, parent, this)
+  }
 }
 
 interface HackTextContentSegment : ContentSegment {
   val text: HighlightedText
+
+  override fun createUiModel(project: Project, parent: UiInteractionModelBase?): ContentSegmentUiModel {
+    return HackTextContentSegmentUiModel(project, parent, this)
+  }
 }
 
 fun tryFindComment(parentable: Parentable): CommentBase? {

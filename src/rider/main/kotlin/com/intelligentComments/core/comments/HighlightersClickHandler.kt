@@ -4,7 +4,6 @@ import com.intelligentComments.core.comments.docs.CommentClickDocHost
 import com.intelligentComments.core.comments.navigation.CommentsNavigationHost
 import com.intelligentComments.core.comments.popups.IntelligentCommentPopupManager
 import com.intelligentComments.core.domain.core.*
-import com.intelligentComments.ui.comments.model.content.ContentSegmentUiModel
 import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.event.EditorMouseEvent
@@ -59,7 +58,7 @@ class HighlightersClickHandler(private val project: Project) {
     if (frontendReference != null) {
       if (frontendReference is FrontendTicketReference) {
         val point = RelativePoint(e.mouseEvent.component, contextPoint)
-        val model = ContentSegmentUiModel.getFrom(project, null, frontendReference.model)
+        val model = frontendReference.model.createUiModel(project, null)
         popupManager.showPopupFor(model, editor, point)
         return true
       }
