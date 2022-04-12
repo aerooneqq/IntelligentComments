@@ -19,6 +19,7 @@ using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.References;
 using ReSharperPlugin.IntelligentComments.Comments.Navigation.FindReferences;
 using System.Linq;
 using ReSharperPlugin.IntelligentComments.Comments.Caches.Names;
+using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments.Utils;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.InlineReferenceComments;
 using ReSharperPlugin.IntelligentComments.Comments.Completion.CSharp.DocComments;
@@ -98,7 +99,16 @@ internal static class NavigationUtil
     var token = TryFindTokenUnderCaret(dataContext, out var caretDocumentOffset);
     if (token is null || !caretDocumentOffset.HasValue) return null;
 
-    return TryExtractNameFromTag(token, caretDocumentOffset.Value);
+    return TryExtractNameFromTag(token, caretDocumentOffset.Value) ??
+           TryExtractNameFromInlineComment(token);
+  }
+
+  private static NameExtraction? TryExtractNameFromInlineComment([NotNull] ITreeNode token)
+  {
+    if (NamesResolveUtil.TryFindNearestCommentNode(token) is not { } commentNode) return null;
+    if (NamesResolveUtil.TryFindOneNameDeclarationIn(commentNode) is not { } nameWithKind) return null;
+
+    return new NameExtraction(nameWithKind.Name, nameWithKind.NameKind);
   }
 
   [CanBeNull]
@@ -149,7 +159,7 @@ internal static class NavigationUtil
     if (context.GetData(DocumentModelDataConstants.DOCUMENT) is not { } document) return;
 
     var resolveContext = new DomainResolveContextImpl(solution, document);
-    var resolveResult = NamesResolveUtil.ResolveName(extraction.Name, resolveContext, extraction.NameKind);
+    var resolveResult = NamesResolveUtil.ResolveName(new NameWithKind(extraction.Name, extraction.NameKind), resolveContext);
     if (resolveResult is not NamedEntityDomainResolveResult invariantResolveResult)
     {
       host ??= solution.GetComponent<INavigationExecutionHost>();
@@ -157,7 +167,7 @@ internal static class NavigationUtil
       return;
     }
 
-    var sourceFile = invariantResolveResult.ParentDocCommentBlock.GetSourceFile();
+    var sourceFile = invariantResolveResult.ParentCommentBlock.GetSourceFile();
     var offset = invariantResolveResult.InvariantDocumentOffset;
 
     sourceFile.Navigate(new TextRange(offset.Offset), true);

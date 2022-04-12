@@ -14,8 +14,9 @@ public interface IDisablingComment : ICommentBase
   [NotNull] ITextContentSegment DisabledInspections { get; }
 }
 
-public interface IToDoComment : ICommentBase
+public interface IInlineToDoComment : ICommentBase
 {
+  [CanBeNull] IHighlightedText Name { get; }
   [NotNull] IToDoContentSegment ToDoContentSegment { get; }
 }
 
@@ -44,7 +45,8 @@ public interface IInlineReferenceComment : ICommentBase
   [NotNull] IInlineReferenceContentSegment Segment { get; }
 }
 
-public interface IHackComment : ICommentBase
+public interface IInlineHackComment : ICommentBase
 {
+  [CanBeNull] IHighlightedText Name { get; }
   [NotNull] IHackContentSegment HackContentSegment { get; }
 }

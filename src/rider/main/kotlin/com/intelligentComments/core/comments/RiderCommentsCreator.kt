@@ -30,8 +30,8 @@ class RiderCommentsCreator(private val project: Project) {
       is RdInvalidComment -> createInvalidComment(rdComment, project, commentRange, highlighter)
       is RdDisableInspectionComment -> createDisablingInspectionsComment(rdComment, project, commentRange, highlighter)
       is RdInlineReferenceComment -> createInlineReferenceComment(rdComment, project, commentRange, highlighter)
-      is RdToDoComment -> createToDoComment(rdComment, project, commentRange, highlighter)
-      is RdHackComment -> createHackComment(rdComment,  project, commentRange, highlighter)
+      is RdInlineToDoComment -> createToDoComment(rdComment, project, commentRange, highlighter)
+      is RdInlineHackComment -> createHackComment(rdComment,  project, commentRange, highlighter)
       else -> throw IllegalArgumentException(rdComment.javaClass.name)
     }
   }
@@ -100,22 +100,22 @@ class RiderCommentsCreator(private val project: Project) {
   }
 
   fun createToDoComment(
-    rdComment: RdToDoComment,
+    rdComment: RdInlineToDoComment,
     project: Project,
     rangeMarker: RangeMarker,
     highlighter: RangeHighlighter
-  ): ToDoComment {
+  ): ToDoInlineComment {
     application.assertIsDispatchThread()
-    return ToDoCommentFromRd(rdComment, project, highlighter, rangeMarker)
+    return ToDoInlineCommentFromRd(rdComment, project, highlighter, rangeMarker)
   }
 
   fun createHackComment(
-    rdComment: RdHackComment,
+    rdComment: RdInlineHackComment,
     project: Project,
     rangeMarker: RangeMarker,
     highlighter: RangeHighlighter
-  ): ToDoComment {
+  ): HackInlineComment {
     application.assertIsDispatchThread()
-    return HackCommentFromRd(rdComment, project, highlighter, rangeMarker)
+    return HackInlineCommentFromRd(rdComment, project, highlighter, rangeMarker)
   }
 }

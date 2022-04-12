@@ -26,22 +26,28 @@ public static class CommentsUtil
       IInvalidComment invalidComment => invalidComment.ToRdComment(),
       IDisablingComment disablingComment => disablingComment.ToRdComment(),
       IInlineReferenceComment comment => comment.ToRdComment(),
-      IToDoComment comment => comment.ToRdComment(),
-      IHackComment comment => comment.ToRdHackComment(),
+      IInlineToDoComment comment => comment.ToRdComment(),
+      IInlineHackComment comment => comment.ToRdHackComment(),
       _ => throw new ArgumentOutOfRangeException(commentBase.GetType().Name)
     };
   }
 
   [NotNull]
-  private static RdToDoComment ToRdComment([NotNull] this IToDoComment toDoComment)
+  private static RdInlineToDoComment ToRdComment([NotNull] this IInlineToDoComment inlineToDoComment)
   {
-    return new RdToDoComment(toDoComment.ToDoContentSegment.Content.ToRdContentSegment(), toDoComment.GetRdRange());
+    return new RdInlineToDoComment(
+      inlineToDoComment.Name?.ToRdHighlightedText(),
+      inlineToDoComment.ToDoContentSegment.Content.ToRdContentSegment(), 
+      inlineToDoComment.GetRdRange());
   }
 
   [NotNull]
-  private static RdHackComment ToRdHackComment([NotNull] this IHackComment comment)
+  private static RdInlineHackComment ToRdHackComment([NotNull] this IInlineHackComment comment)
   {
-    return new RdHackComment(comment.HackContentSegment.Content.ToRdContentSegment(), comment.GetRdRange());
+    return new RdInlineHackComment(
+      comment.Name?.ToRdHighlightedText(),
+      comment.HackContentSegment.Content.ToRdContentSegment(), 
+      comment.GetRdRange());
   }
 
   [NotNull]

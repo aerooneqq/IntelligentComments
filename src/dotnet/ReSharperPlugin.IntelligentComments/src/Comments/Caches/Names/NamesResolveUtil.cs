@@ -22,9 +22,9 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Caches.Names;
 
 internal static class NamesResolveUtil
 {
-  public static DomainResolveResult ResolveName(
-    [NotNull] string name, [NotNull] IDomainResolveContext context, NameKind nameKind)
+  public static DomainResolveResult ResolveName(NameWithKind nameWithKind, [NotNull] IDomainResolveContext context)
   {
+    var (name, nameKind) = nameWithKind;
     var cache = NamesCacheUtil.GetCacheFor(context.Solution, nameKind);
     var invariantNameCount = cache.GetNameCount(name);
     if (invariantNameCount != 1) return CreateInvalidResolveResult();
@@ -42,40 +42,94 @@ internal static class NamesResolveUtil
       {
         var offsets = new LocalList<int>();
         FillOffsets(psiSourceFile.Document.GetText(), name, ref offsets);
-
+        if (offsets.Count == 0) continue;
+        
+        var primaryPsiFile = psiSourceFile.GetPrimaryPsiFile();
+        if (primaryPsiFile is null) continue;
+        
         foreach (var offset in offsets)
         {
-          var primaryPsiFile = psiSourceFile.GetPrimaryPsiFile();
-          if (primaryPsiFile is null) continue;
-
           var documentOffset = new DocumentOffset(psiSourceFile.Document, offset);
           var range = new DocumentRange(documentOffset);
           var treeTextRange = primaryPsiFile.Translate(range);
-          var token = primaryPsiFile.FindTokenAt(treeTextRange.StartOffset);
+          if (primaryPsiFile.FindTokenAt(treeTextRange.StartOffset) is not { } token) continue;
+          
+          if (TryResolveNameInDocComment(token, nameWithKind) is { } docResult and not EmptyDomainResolveResult)
+            return docResult;
 
-          var docCommentBlock = token?.TryFindDocCommentBlock();
-          if (docCommentBlock is null) continue;
-
-          DomainResolveResult result = EmptyDomainResolveResult.Instance;
-          docCommentBlock.ExecuteActionWithNames((extraction, tag) =>
-          {
-            var currentName = extraction.Name;
-            if (extraction.NameKind != nameKind || currentName != name) return;
-            
-            var xml = docCommentBlock.GetXML(null);
-            if (FindXmlElement(tag, xml) is not { } element) return;
-            if (DocCommentsBuilderUtil.TryGetBuilderFor(docCommentBlock) is not { } builder) return;
-            
-            var segment = builder.Build(element);
-            result = new NamedEntityDomainResolveResult(segment, docCommentBlock, tag.GetDocumentStartOffset(), nameKind);
-          });
-
-          if (result is not EmptyDomainResolveResult) return result;
+          if (TryResolveNameInInlineComment(token, nameWithKind) is { } inlineResult and not EmptyDomainResolveResult)
+            return inlineResult;
         }
       }
     }
 
     return CreateInvalidResolveResult();
+  }
+
+  [CanBeNull]
+  private static DomainResolveResult TryResolveNameInInlineComment([NotNull] ITreeNode token, NameWithKind nameWithKind)
+  {
+    if (TryFindNearestCommentNode(token) is not { } commentNode) return null;
+
+    var nameFinders = LanguageManager.Instance.TryGetCachedServices<INamesInCommentFinder>(commentNode.Language);
+
+    var results = new LocalList<NameInFileDescriptor>();
+    foreach (var finder in nameFinders)
+    {
+      results.AddRange(finder.FindNames(commentNode));
+    }
+
+    if (results.Count != 1) return null;
+          
+    var resolvedName = results.First();
+    if (resolvedName.NameWithKind != nameWithKind) return null;
+    
+    return new NamedEntityDomainResolveResult(null, commentNode, commentNode.GetDocumentStartOffset(), nameWithKind.NameKind);
+  }
+
+  [CanBeNull]
+  internal static ICommentNode TryFindNearestCommentNode([NotNull] ITreeNode node)
+  {
+    while (node is { } and not ICommentNode)
+      node = node.Parent;
+    
+    return node as ICommentNode;
+  }
+
+  internal static NameWithKind? TryFindOneNameDeclarationIn(ICommentNode commentNode)
+  {
+    var finders = LanguageManager.Instance.TryGetCachedServices<INamesInCommentFinder>(commentNode.Language);
+    var names = new LocalList<NameInFileDescriptor>();
+    foreach (var finder in finders)
+    {
+      names.AddRange(finder.FindNames(commentNode));
+    }
+
+    return names.Count != 1 ? null : names.First().NameWithKind;
+  }
+  
+  [CanBeNull]
+  private static DomainResolveResult TryResolveNameInDocComment([NotNull] ITreeNode token, NameWithKind nameWithKind)
+  {
+    var (name, nameKind) = nameWithKind;
+    var docCommentBlock = token?.TryFindDocCommentBlock();
+    if (docCommentBlock is null) return null;
+
+    DomainResolveResult result = null;
+    docCommentBlock.ExecuteActionWithNames((extraction, tag) =>
+    {
+      var currentName = extraction.Name;
+      if (extraction.NameKind != nameKind || currentName != name) return;
+            
+      var xml = docCommentBlock.GetXML(null);
+      if (FindXmlElement(tag, xml) is not { } element) return;
+      if (DocCommentsBuilderUtil.TryGetBuilderFor(docCommentBlock) is not { } builder) return;
+      
+      var segment = builder.Build(element);
+      result = new NamedEntityDomainResolveResult(segment, docCommentBlock, tag.GetDocumentStartOffset(), nameKind);
+    });
+
+    return result;
   }
 
   [CanBeNull]

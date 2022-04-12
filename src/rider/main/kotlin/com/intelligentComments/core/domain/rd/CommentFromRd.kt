@@ -3,7 +3,6 @@ package com.intelligentComments.core.domain.rd
 import com.intelligentComments.core.comments.RiderCommentsCreator
 import com.intelligentComments.core.domain.core.*
 import com.intelligentComments.core.domain.impl.ContentProcessingStrategyImpl
-import com.intelligentComments.core.domain.impl.HighlightedTextImpl
 import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.RangeMarker
@@ -145,23 +144,23 @@ abstract class CommentWithOneContentSegmentsFromRd(
   }
 }
 
-class ToDoCommentFromRd(
-  private val rdComment: RdToDoComment,
+class ToDoInlineCommentFromRd(
+  private val rdComment: RdInlineToDoComment,
   private val project: Project,
   highlighter: RangeHighlighter,
   rangeMarker: RangeMarker
-) : CommentWithOneContentSegmentsFromRd(rdComment, project, highlighter, rangeMarker), ToDoComment {
+) : CommentWithOneContentSegmentsFromRd(rdComment, project, highlighter, rangeMarker), ToDoInlineComment {
   override fun recreate(editor: Editor): CommentBase {
     return commentsCreator.createToDoComment(rdComment, project, identifier.rangeMarker, correspondingHighlighter)
   }
 }
 
-class HackCommentFromRd(
-  private val rdComment: RdHackComment,
+class HackInlineCommentFromRd(
+  private val rdComment: RdInlineHackComment,
   private val project: Project,
   highlighter: RangeHighlighter,
   rangeMarker: RangeMarker
-) : CommentWithOneContentSegmentsFromRd(rdComment, project, highlighter, rangeMarker), ToDoComment {
+) : CommentWithOneContentSegmentsFromRd(rdComment, project, highlighter, rangeMarker), HackInlineComment {
   override fun recreate(editor: Editor): CommentBase {
     return commentsCreator.createHackComment(rdComment, project, identifier.rangeMarker, correspondingHighlighter)
   }
