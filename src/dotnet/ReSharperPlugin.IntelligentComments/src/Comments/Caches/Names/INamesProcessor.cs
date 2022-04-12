@@ -91,7 +91,7 @@ public class NamesProcessor : INamesProcessor, IRecursiveElementProcessor<Dictio
 public static class CSharpNamesProcessorExtensions
 {
   public static void ExecuteActionWithNames(
-    [NotNull] this IDocCommentBlock commentBlock, [NotNull] Action<NameExtraction, IXmlTag> actionWithInvariant)
+    [NotNull] this IDocCommentBlock commentBlock, [NotNull] Action<NameWithKind, IXmlTag> actionWithInvariant)
   {
     if (LanguageManager.Instance.TryGetService<IPsiHelper>(commentBlock.Language) is not { } psiHelper) return;
     if (psiHelper.GetXmlDocPsi(commentBlock) is not { } xmlDocPsi) return;

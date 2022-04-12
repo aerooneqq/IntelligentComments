@@ -29,8 +29,6 @@ public enum NameKind
   Hack
 }
 
-public record struct NameExtraction([NotNull] string Name, NameKind NameKind);
-
 internal static partial class DocCommentsBuilderUtil
 {
   [CanBeNull]
@@ -196,13 +194,13 @@ internal static partial class DocCommentsBuilderUtil
     };
   }
   
-  internal static NameExtraction? TryExtractNameFrom([NotNull] IXmlTag xmlTag)
+  internal static NameWithKind? TryExtractNameFrom([NotNull] IXmlTag xmlTag)
   {
     var nameKind = TryGetNameKindFromTag(xmlTag.Header.Name.XmlName);
     if (!nameKind.HasValue) return null;
 
     if (xmlTag.GetAttribute(CommonNameAttrName) is not { } nameAttr) return null;
-    return new NameExtraction(nameAttr.UnquotedValue, nameKind.Value);
+    return new NameWithKind(nameAttr.UnquotedValue, nameKind.Value);
   }
   
   internal static bool IsInvariantNameAttribute([CanBeNull] IXmlAttribute attribute)
@@ -222,7 +220,7 @@ internal static partial class DocCommentsBuilderUtil
     return xmlTagHeader.Name.XmlName == tagName;
   }
   
-  internal static NameExtraction? TryExtractNameFromPossibleReferenceSourceAttribute([CanBeNull] IXmlAttribute attribute)
+  internal static NameWithKind? TryExtractNameFromPossibleReferenceSourceAttribute([CanBeNull] IXmlAttribute attribute)
   {
     if (attribute is null) return null;
     if (!CheckIfAttributeBelongsToTag(attribute, ReferenceTagName)) return null;
@@ -231,7 +229,7 @@ internal static partial class DocCommentsBuilderUtil
     if (!PossibleReferenceTagSourceAttributes.Contains(attrName)) return null;
     
     var nameKind = GetNameKind(attrName);
-    return new NameExtraction(attribute.UnquotedValue, nameKind);
+    return new NameWithKind(attribute.UnquotedValue, nameKind);
   }
 
   internal static NameKind GetNameKind([NotNull] string attributeName) => attributeName switch
@@ -276,12 +274,12 @@ internal static partial class DocCommentsBuilderUtil
   }
   
   [CanBeNull]
-  internal static NameExtraction? TryExtractOneReferenceNameKindFromReferenceTag([NotNull] IXmlTag referenceTag)
+  internal static NameWithKind? TryExtractOneReferenceNameKindFromReferenceTag([NotNull] IXmlTag referenceTag)
   {
     if (TryGetOneReferenceSourceAttribute(referenceTag) is not { } attribute) return null; 
     if (TryGetNameKind(attribute.AttributeName) is not { } nameKind) return null;
 
-    return new NameExtraction(attribute.UnquotedValue, nameKind);
+    return new NameWithKind(attribute.UnquotedValue, nameKind);
   }
   
   [CanBeNull]

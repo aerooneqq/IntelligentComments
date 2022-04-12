@@ -258,7 +258,7 @@ public abstract class CommentProblemsCollectorBase : ICommentProblemsCollector
   }
 
   private bool CheckIfNameReferenceSourceIsResolved(
-    NameExtraction extraction,
+    NameWithKind extraction,
     [NotNull] IXmlAttribute attribute,
     [NotNull] Context context)
   {

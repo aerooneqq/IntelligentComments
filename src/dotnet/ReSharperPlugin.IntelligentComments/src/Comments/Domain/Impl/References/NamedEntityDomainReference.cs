@@ -6,6 +6,7 @@ using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments.Utils;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.Content;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
+using NameWithKind = ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.NameWithKind;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.References;
 

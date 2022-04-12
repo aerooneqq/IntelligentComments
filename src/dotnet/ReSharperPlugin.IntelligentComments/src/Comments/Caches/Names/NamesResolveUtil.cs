@@ -22,7 +22,7 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Caches.Names;
 
 internal static class NamesResolveUtil
 {
-  public static DomainResolveResult ResolveName(NameWithKind nameWithKind, [NotNull] IDomainResolveContext context)
+  public static DomainResolveResult ResolveName(Calculations.Core.NameWithKind nameWithKind, [NotNull] IDomainResolveContext context)
   {
     var (name, nameKind) = nameWithKind;
     var cache = NamesCacheUtil.GetCacheFor(context.Solution, nameKind);
@@ -67,7 +67,7 @@ internal static class NamesResolveUtil
   }
 
   [CanBeNull]
-  private static DomainResolveResult TryResolveNameInInlineComment([NotNull] ITreeNode token, NameWithKind nameWithKind)
+  private static DomainResolveResult TryResolveNameInInlineComment([NotNull] ITreeNode token, Calculations.Core.NameWithKind nameWithKind)
   {
     if (TryFindNearestCommentNode(token) is not { } commentNode) return null;
 
@@ -96,7 +96,7 @@ internal static class NamesResolveUtil
     return node as ICommentNode;
   }
 
-  internal static NameWithKind? TryFindOneNameDeclarationIn(ICommentNode commentNode)
+  internal static Calculations.Core.NameWithKind? TryFindOneNameDeclarationIn(ICommentNode commentNode)
   {
     var finders = LanguageManager.Instance.TryGetCachedServices<INamesInCommentFinder>(commentNode.Language);
     var names = new LocalList<NameInFileDescriptor>();
@@ -109,7 +109,7 @@ internal static class NamesResolveUtil
   }
   
   [CanBeNull]
-  private static DomainResolveResult TryResolveNameInDocComment([NotNull] ITreeNode token, NameWithKind nameWithKind)
+  private static DomainResolveResult TryResolveNameInDocComment([NotNull] ITreeNode token, Calculations.Core.NameWithKind nameWithKind)
   {
     var (name, nameKind) = nameWithKind;
     var docCommentBlock = token?.TryFindDocCommentBlock();
@@ -161,7 +161,7 @@ internal static class NamesResolveUtil
   
   [NotNull]
   public static IEnumerable<ReferenceInFileDescriptor> FindAllReferencesForNamedEntity(
-    NameExtraction nameExtraction, 
+    NameWithKind nameExtraction, 
     [NotNull] ISolution solution)
   {
     var cache = NamesCacheUtil.GetCacheFor(solution, nameExtraction.NameKind);
