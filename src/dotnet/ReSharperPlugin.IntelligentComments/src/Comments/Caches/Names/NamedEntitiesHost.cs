@@ -12,7 +12,6 @@ using JetBrains.ReSharper.Psi.Caches;
 using JetBrains.Rider.Model;
 using JetBrains.Threading;
 using JetBrains.Util;
-using JetBrains.Util.Maths;
 using ReSharperPlugin.IntelligentComments.Comments.Caches.Names.Hacks;
 using ReSharperPlugin.IntelligentComments.Comments.Caches.Names.Invariants;
 using ReSharperPlugin.IntelligentComments.Comments.Caches.Names.Todos;
