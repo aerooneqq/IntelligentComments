@@ -111,6 +111,11 @@ public interface IInlineHackContentSegment : IContentSegment
   [NotNull] IHighlightedText Text { get; }
 }
 
+public interface IInlineInvariantContentSegment : IContentSegment
+{
+  [NotNull] IHighlightedText Text { get; }
+}
+
 public interface IHackContentSegment : IContentSegmentWithOptionalName
 {
   [NotNull] IEntityWithContentSegments Content { get; }

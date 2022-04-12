@@ -10,6 +10,7 @@ using JetBrains.ReSharper.Psi.CSharp.Tree;
 using JetBrains.ReSharper.Psi.Tree;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments.Utils;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.MultilineComments;
+using ReSharperPlugin.IntelligentComments.Comments.Completion.CSharp.DocComments;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.Content;
@@ -35,7 +36,7 @@ public class CSharpGroupOfLineCommentsCreator : GroupOfLineCommentsCreatorBase
   public override CommentCreationResult? TryCreateNoMerge(ITreeNode commentNode) => TryCreate(commentNode, false);
 
   [NotNull]
-  private IHighlightedText CreateTextFrom(
+  private static IHighlightedText CreateTextFrom(
     [NotNull] ICSharpCommentNode startCommentNode,
     [NotNull] IReadOnlyList<ICSharpCommentNode> commentNodes)
   {
@@ -61,6 +62,8 @@ public class CSharpGroupOfLineCommentsCreator : GroupOfLineCommentsCreatorBase
   
   private bool CanProcessLineComment([NotNull] ICSharpCommentNode startCommentNode)
   {
+    if (startCommentNode.TryFindDocCommentBlock() is { }) return false;
+    
     var formatter = startCommentNode.GetCodeFormatter();
     var current = startCommentNode.PrevSibling;
     while (current is { })
@@ -86,11 +89,17 @@ public class CSharpGroupOfLineCommentsCreator : GroupOfLineCommentsCreatorBase
     {
       if (currentNode.IsWhitespaceToken())
       {
-        if (currentNode.NodeType == CSharpTokenType.NEW_LINE &&
-            currentNode.GetNextToken()?.NodeType == CSharpTokenType.NEW_LINE &&
-            !mergeDividedComments)
+        if (currentNode.NodeType == CSharpTokenType.NEW_LINE)
         {
-          return comments;
+          var node = currentNode.GetNextToken();
+          while (node is { } && node.IsWhitespaceToken() && node.NodeType != CSharpTokenType.NEW_LINE)
+            node = node.GetNextToken();
+
+          if (!mergeDividedComments &&
+              node is { } && node.NodeType == CSharpTokenType.NEW_LINE)
+          {
+            return comments;
+          }
         }
         
         currentNode = currentNode.NextSibling;

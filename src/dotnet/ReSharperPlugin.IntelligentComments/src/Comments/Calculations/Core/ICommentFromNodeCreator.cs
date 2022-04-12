@@ -12,5 +12,13 @@ public record struct CommentCreationResult(
 
 public interface ICommentFromNodeCreator
 {
+  int Priority { get; }
+  
   CommentCreationResult? TryCreate([NotNull] ITreeNode node);
+}
+
+public static class CommentFromNodeCreatorsPriorities
+{
+  public const int Default = 1000;
+  public const int Last = 0;
 }

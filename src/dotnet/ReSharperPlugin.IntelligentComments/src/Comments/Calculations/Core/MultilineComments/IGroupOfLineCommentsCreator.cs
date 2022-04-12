@@ -11,6 +11,9 @@ public interface IGroupOfLineCommentsCreator : ICommentFromNodeCreator
 
 public abstract class GroupOfLineCommentsCreatorBase : IGroupOfLineCommentsCreator
 {
+  public int Priority => CommentFromNodeCreatorsPriorities.Last;
+
+  
   public abstract CommentCreationResult? TryCreate(ITreeNode commentNode);
   public abstract CommentCreationResult? TryCreateNoMerge(ITreeNode commentNode);
 }

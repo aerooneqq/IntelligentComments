@@ -10,11 +10,11 @@ using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.Content;
 namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.MultilineComments.ToDoComments;
 
 
-public interface IToDoCommentCreator : ICommentFromNodeCreator, INamesInCommentFinder
+public interface IInlineToDoCommentCreator : ICommentFromNodeCreator, INamesInCommentFinder
 {
 }
 
-public abstract class ToDoCommentCreator : GroupOfLinesLikeCommentCreator, IToDoCommentCreator
+public abstract class InlineToDoCommentCreator : GroupOfLinesLikeCommentCreator, IInlineToDoCommentCreator
 {
   [NotNull]
   [ItemNotNull]
@@ -33,8 +33,7 @@ public abstract class ToDoCommentCreator : GroupOfLinesLikeCommentCreator, IToDo
     var segments = new ContentSegments(new List<IContentSegment>() { new ToDoTextContentSegment(toDoHighlightedText) });
     var segment = new ToDoContentSegment(null, new EntityWithContentSegments(segments));
     var nameText = name is null ? null : new HighlightedText(name);
-    var toDoComment = new InlineToDoComment(nameText, segment, originalComment.Range);
     
-    return toDoComment;
+    return new InlineToDoComment(nameText, segment, originalComment.Range);
   }
 }

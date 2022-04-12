@@ -9,14 +9,8 @@ import com.intellij.openapi.editor.markup.RangeHighlighter
 import com.intellij.openapi.project.Project
 import com.intellij.util.application
 import com.jetbrains.rd.ide.model.*
-import com.jetbrains.rd.platform.util.getLogger
 
 class RiderCommentsCreator(private val project: Project) {
-  companion object {
-    private val logger = getLogger<RiderCommentsCreator>()
-  }
-
-
   fun createComment(
     rdComment: RdComment,
     commentRange: RangeMarker,
@@ -31,7 +25,8 @@ class RiderCommentsCreator(private val project: Project) {
       is RdDisableInspectionComment -> createDisablingInspectionsComment(rdComment, project, commentRange, highlighter)
       is RdInlineReferenceComment -> createInlineReferenceComment(rdComment, project, commentRange, highlighter)
       is RdInlineToDoComment -> createToDoComment(rdComment, project, commentRange, highlighter)
-      is RdInlineHackComment -> createHackComment(rdComment,  project, commentRange, highlighter)
+      is RdInlineHackComment -> createHackComment(rdComment, project, commentRange, highlighter)
+      is RdInlineInvariantComment -> createInvariantComment(rdComment, project, commentRange, highlighter)
       else -> throw IllegalArgumentException(rdComment.javaClass.name)
     }
   }
@@ -117,5 +112,15 @@ class RiderCommentsCreator(private val project: Project) {
   ): HackInlineComment {
     application.assertIsDispatchThread()
     return HackInlineCommentFromRd(rdComment, project, highlighter, rangeMarker)
+  }
+
+  fun createInvariantComment(
+    rdComment: RdInlineInvariantComment,
+    project: Project,
+    rangeMarker: RangeMarker,
+    highlighter: RangeHighlighter
+  ): InvariantInlineComment {
+    application.assertIsDispatchThread()
+    return InvariantInlineCommentFromRd(rdComment, project, highlighter, rangeMarker)
   }
 }

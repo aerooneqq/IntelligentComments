@@ -37,3 +37,9 @@ public record InlineHackComment(
   IHackContentSegment HackContentSegment, 
   DocumentRange Range
 ) : CommentBase(Range), IInlineHackComment;
+
+public record InlineInvariantComment(
+  IHighlightedText Name,
+  IInvariantContentSegment InvariantContentSegment, 
+  DocumentRange Range
+) : CommentBase(Range), IInlineInvariantComment;

@@ -50,3 +50,9 @@ public interface IInlineHackComment : ICommentBase
   [CanBeNull] IHighlightedText Name { get; }
   [NotNull] IHackContentSegment HackContentSegment { get; }
 }
+
+public interface IInlineInvariantComment : ICommentBase
+{
+  [CanBeNull] IHighlightedText Name { get; }
+  [NotNull] IInvariantContentSegment InvariantContentSegment { get; }
+}

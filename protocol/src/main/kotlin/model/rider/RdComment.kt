@@ -45,6 +45,10 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
     field("Name", RdHighlightedText.nullable)
   }
 
+  val RdInlineInvariantComment = structdef extends RdCommentWithOneContentSegments {
+    field("Name", RdHighlightedText.nullable)
+  }
+
   val RdInvalidComment = structdef extends RdCommentWithOneTextSegment {
   }
 
@@ -298,6 +302,10 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
   val RdTicketContentSegment = structdef extends RdContentSegment {
     field("Source", RdReference)
     field("Content", RdDefaultSegmentWithContent)
+  }
+
+  val RdInlineInvariantContentSegment = structdef extends RdContentSegment {
+    field("Text", RdHighlightedText)
   }
 
   val RdHackTextContentSegment = structdef extends RdContentSegment {

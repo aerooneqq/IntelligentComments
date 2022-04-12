@@ -164,4 +164,6 @@ public record TicketContentSegment(
 
 public record InlineHackContentSegment(IHighlightedText Text) : IInlineHackContentSegment;
 
+public record InlineInvariantContentSegment(IHighlightedText Text) : IInlineInvariantContentSegment;
+
 public record HackContentSegment(IHighlightedText Name, IEntityWithContentSegments Content) : IHackContentSegment;

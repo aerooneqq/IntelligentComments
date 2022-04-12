@@ -2,7 +2,6 @@ package com.intelligentComments.core.domain.rd
 
 import com.intelligentComments.core.comments.RiderCommentsCreator
 import com.intelligentComments.core.domain.core.*
-import com.intelligentComments.core.domain.impl.ContentProcessingStrategyImpl
 import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.RangeMarker
@@ -166,14 +165,13 @@ class HackInlineCommentFromRd(
   }
 }
 
-class ToDoContentSegmentFromRd(
-  contentSegment: RdToDoContentSegment,
-  parent: Parentable?,
-  project: Project
-) : ContentSegmentFromRd(contentSegment, parent), ToDoWithTicketsContentSegment {
-  override val content: EntityWithContentSegments = EntityWithContentSegmentsFromRd(contentSegment.content, this, project)
-
-  init {
-    content.content.processSegments(project.service<ContentProcessingStrategyImpl>())
+class InvariantInlineCommentFromRd(
+  private val rdComment: RdInlineInvariantComment,
+  private val project: Project,
+  highlighter: RangeHighlighter,
+  rangeMarker: RangeMarker
+) : CommentWithOneContentSegmentsFromRd(rdComment, project, highlighter, rangeMarker), InvariantInlineComment {
+  override fun recreate(editor: Editor): CommentBase {
+    return commentsCreator.createInvariantComment(rdComment, project, identifier.rangeMarker, correspondingHighlighter)
   }
 }

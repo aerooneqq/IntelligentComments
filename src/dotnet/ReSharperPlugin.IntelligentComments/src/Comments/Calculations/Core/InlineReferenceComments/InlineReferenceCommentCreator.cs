@@ -18,6 +18,9 @@ public interface IInlineReferenceCommentCreator : ICommentFromNodeCreator
 
 public abstract class InlineReferenceCommentCreator : IInlineReferenceCommentCreator, IReferenceInCommentFinder
 {
+  public int Priority => CommentFromNodeCreatorsPriorities.Default;
+
+  
   [CanBeNull]
   public virtual CommentCreationResult? TryCreate([NotNull] ITreeNode node)
   {

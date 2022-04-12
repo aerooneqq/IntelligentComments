@@ -1,3 +1,4 @@
+using System.Linq;
 using JetBrains.Annotations;
 using JetBrains.ReSharper.Feature.Services.Daemon;
 using JetBrains.ReSharper.Psi.CSharp;
@@ -55,41 +56,20 @@ public class CSharpCommentsProcessor : CommentsProcessorBase
 
   private bool TryProcessSpecificComments([NotNull] ITreeNode element)
   {
-    return TryProcessToDoComment(element) ||
-           TryProcessHackComment(element)  ||
-           TryProcessDisablingComment(element) ||
-           TryProcessInlineReferenceComment(element);
-  }
+    var creators = LanguageManager.TryGetCachedServices<ICommentFromNodeCreator>(element.Language).OrderByDescending(creator => creator.Priority);
+    foreach (var creator in creators)
+    {
+      if (creator.TryCreate(element) is var (comment, nodes))
+      {
+        VisitedNodes.AddRange(nodes);
+        Comments.Add(CommentProcessingResult.CreateSuccess(comment));
+        return true;
+      }
+    }
 
-  private bool TryProcessHackComment([NotNull] ITreeNode node)
-  {
-    var creator = LanguageManager.TryGetService<IHackCommentCreator>(node.Language);
-    if (creator?.TryCreate(node) is not var (comment, nodes)) return false;
-    
-    VisitedNodes.AddRange(nodes);
-    Comments.Add(CommentProcessingResult.CreateSuccess(comment));
-    return true;
+    return TryProcessDisablingComment(element);
   }
   
-  private bool TryProcessToDoComment([NotNull] ITreeNode node)
-  {
-    var builder = LanguageManager.TryGetService<IToDoCommentCreator>(node.Language);
-    if (builder?.TryCreate(node) is not var (comment, nodes)) return false;
-    
-    VisitedNodes.AddRange(nodes);
-    Comments.Add(CommentProcessingResult.CreateSuccess(comment));
-    return true;
-  }
-
-  private bool TryProcessInlineReferenceComment([NotNull] ITreeNode node)
-  {
-    if (LanguageManager.TryGetService<InlineReferenceCommentCreator>(node.Language) is not { } creator) return false;
-    if (creator.TryCreate(node) is not { } commentProcessingResult) return false;
-    
-    Comments.Add(CommentProcessingResult.CreateSuccess(commentProcessingResult.Comment));
-    return true;
-  }
-
   private bool TryProcessDisablingComment([NotNull] ITreeNode node)
   {
     if (LanguageManager.TryGetService<DisablingCommentCreator>(node.Language) is not { } creator) return false;

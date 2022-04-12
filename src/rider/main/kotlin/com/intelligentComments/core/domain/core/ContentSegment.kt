@@ -6,8 +6,9 @@ import com.intelligentComments.ui.comments.model.content.ContentSegmentsUiModel
 import com.intelligentComments.ui.comments.model.content.code.CodeSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.example.ExampleSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.exceptions.ExceptionUiModel
-import com.intelligentComments.ui.comments.model.content.hacks.HackTextContentSegmentUiModel
+import com.intelligentComments.ui.comments.model.content.hacks.InlineHackContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.image.ImageContentSegmentUiModel
+import com.intelligentComments.ui.comments.model.content.invariants.InlineInvariantContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.list.ListContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.paragraphs.ParagraphUiModel
 import com.intelligentComments.ui.comments.model.content.params.ParameterUiModel
@@ -216,7 +217,7 @@ interface CodeSegment : ContentSegment {
   }
 }
 
-interface ToDoTextContentSegment : ContentSegment {
+interface InlineTodoContentSegment : ContentSegment {
   val text: HighlightedText
 
   override fun createUiModel(project: Project, parent: UiInteractionModelBase?): ContentSegmentUiModel {
@@ -224,11 +225,19 @@ interface ToDoTextContentSegment : ContentSegment {
   }
 }
 
-interface HackTextContentSegment : ContentSegment {
+interface InlineHackContentSegment : ContentSegment {
   val text: HighlightedText
 
   override fun createUiModel(project: Project, parent: UiInteractionModelBase?): ContentSegmentUiModel {
-    return HackTextContentSegmentUiModel(project, parent, this)
+    return InlineHackContentSegmentUiModel(project, parent, this)
+  }
+}
+
+interface InlineInvariantContentSegment : ContentSegment {
+  val text: HighlightedText
+
+  override fun createUiModel(project: Project, parent: UiInteractionModelBase?): ContentSegmentUiModel {
+    return InlineInvariantContentSegmentUiModel(project, parent, this)
   }
 }
 

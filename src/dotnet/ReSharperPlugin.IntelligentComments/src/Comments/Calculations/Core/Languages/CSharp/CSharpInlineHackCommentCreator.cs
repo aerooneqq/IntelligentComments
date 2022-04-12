@@ -5,6 +5,6 @@ using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.MultilineCo
 namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.Languages.CSharp;
 
 [Language(typeof(CSharpLanguage))]
-public class CSharpHackCommentCreator : HackCommentCreator
+public class CSharpInlineHackCommentCreator : InlineHackCommentCreator
 {
 }

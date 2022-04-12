@@ -35,3 +35,4 @@ interface CommentWithOneContentSegments : CommentBase {
 
 interface ToDoInlineComment : CommentWithOneContentSegments
 interface HackInlineComment : CommentWithOneContentSegments
+interface InvariantInlineComment : CommentWithOneContentSegments

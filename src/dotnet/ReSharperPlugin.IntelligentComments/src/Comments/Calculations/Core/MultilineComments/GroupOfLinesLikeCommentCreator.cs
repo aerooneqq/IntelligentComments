@@ -20,6 +20,9 @@ public abstract class GroupOfLinesLikeCommentCreator : ICommentFromNodeCreator, 
   protected abstract NameKind NameKind { get; }
 
 
+  public int Priority => CommentFromNodeCreatorsPriorities.Default;
+
+  
   protected GroupOfLinesLikeCommentCreator()
   {
     LanguageManager = JetBrains.ReSharper.Psi.LanguageManager.Instance;
@@ -65,7 +68,7 @@ public abstract class GroupOfLinesLikeCommentCreator : ICommentFromNodeCreator, 
   {
     const string name = "name:";
     var index = text.IndexOf(name, StringComparison.Ordinal);
-    return text[(index + name.Length + 1)..(text.IndexOf(")", StringComparison.Ordinal) - 2)];
+    return text[(index + name.Length + 1)..(text.IndexOf(")", StringComparison.Ordinal))];
   }
 
   [NotNull] 
