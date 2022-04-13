@@ -5,12 +5,8 @@ using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Util;
-using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DisablingComments;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments.Errors;
-using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.InlineReferenceComments;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.MultilineComments;
-using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.MultilineComments.HackComments;
-using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.MultilineComments.ToDoComments;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.Languages.CSharp;
 
@@ -32,53 +28,25 @@ public class CSharpCommentsProcessor : CommentsProcessorBase
   
   public override void ProcessBeforeInteriorInternal(ITreeNode element)
   {
-    if (TryProcessSpecificComments(element)) return;
-
-    switch (element)
+    if (element is ICSharpDocCommentBlock docCommentBlock)
     {
-      case ICSharpDocCommentBlock docCommentBlock:
-      {
-        ProcessDocCommentBlock(docCommentBlock);
-        break;
-      }
-      case ICSharpCommentNode { CommentType: CommentType.END_OF_LINE_COMMENT } commentNode:
-      {
-        ProcessLineComment(commentNode);
-        break;
-      }
-      case ICSharpCommentNode { CommentType: CommentType.MULTILINE_COMMENT } commentNode:
-      {
-        ProcessMultilineComment(commentNode);
-        break;
-      }
+      ProcessDocCommentBlock(docCommentBlock);
+      return;
     }
-  }
-
-  private bool TryProcessSpecificComments([NotNull] ITreeNode element)
-  {
-    if (TryProcessDisablingComment(element)) return true;
     
-    var creators = LanguageManager.TryGetCachedServices<ICommentFromNodeCreator>(element.Language).OrderByDescending(creator => creator.Priority);
+    var creators = LanguageManager
+      .TryGetCachedServices<ICommentFromNodeCreator>(element.Language)
+      .OrderByDescending(creator => creator.Priority);
+    
     foreach (var creator in creators)
     {
       if (creator.TryCreate(element) is var (comment, nodes))
       {
         VisitedNodes.AddRange(nodes);
         Comments.Add(CommentProcessingResult.CreateSuccess(comment));
-        return true;
+        return;
       }
     }
-
-    return false;
-  }
-  
-  private bool TryProcessDisablingComment([NotNull] ITreeNode node)
-  {
-    if (LanguageManager.TryGetService<DisablingCommentCreator>(node.Language) is not { } creator) return false;
-    if (creator.TryCreate(node) is not { } commentProcessingResult) return false;
-
-    Comments.Add(commentProcessingResult);
-    return true;
   }
 
   private void ProcessDocCommentBlock([NotNull] ICSharpDocCommentBlock docCommentBlock)
@@ -91,7 +59,7 @@ public class CSharpCommentsProcessor : CommentsProcessorBase
         var range = docCommentBlock.GetDocumentRange();
         Comments.Add(CommentProcessingResult.CreateWithErrors(errors, CSharpLanguage.Instance!, range));
         return;
-      } 
+      }
     }
 
     if (ProcessKind is DaemonProcessKind.VISIBLE_DOCUMENT)
@@ -102,28 +70,6 @@ public class CSharpCommentsProcessor : CommentsProcessorBase
       {
         Comments.Add(CommentProcessingResult.CreateSuccess(comment));
       } 
-    }
-  }
-
-  private void ProcessLineComment([NotNull] ICSharpCommentNode commentNode)
-  {
-    if (ProcessKind is not DaemonProcessKind.VISIBLE_DOCUMENT) return;
-
-    var builder = LanguageManager.TryGetService<IGroupOfLineCommentsCreator>(commentNode.Language);
-    if (builder?.TryCreate(commentNode) is not var (groupOfLineComments, includedCommentsNodes)) return;
-    
-    Comments.Add(CommentProcessingResult.CreateSuccess(groupOfLineComments));
-    VisitedNodes.AddRange(includedCommentsNodes);
-  }
-  
-  private void ProcessMultilineComment([NotNull] ICSharpCommentNode commentNode)
-  {
-    if (ProcessKind is not DaemonProcessKind.VISIBLE_DOCUMENT) return;
-    
-    var builder = LanguageManager.TryGetService<IMultilineCommentsBuilder>(commentNode.Language);
-    if (builder?.Build(commentNode) is { } multilineComment)
-    {
-      Comments.Add(CommentProcessingResult.CreateSuccess(multilineComment));
     }
   }
 }

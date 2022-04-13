@@ -1,46 +1,26 @@
-using System.Linq;
 using JetBrains.Annotations;
-using JetBrains.ReSharper.Psi;
-using JetBrains.ReSharper.Psi.CSharp.Tree;
 using JetBrains.ReSharper.Psi.Tree;
-using JetBrains.Util;
-using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments.Utils;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
-using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl;
-using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.Content;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.MultilineComments;
 
-public interface IMultilineCommentsBuilder
+public interface IMultilineCommentsBuilder : ICommentFromNodeCreator
 {
-  [NotNull] IMultilineComment Build([NotNull] ICSharpCommentNode commentNode);
 }
 
 public abstract class MultilineCommentBuilderBase : IMultilineCommentsBuilder
 {
-  [NotNull] private const string Star = "*";
+  [NotNull] protected const string Star = "*";
 
-
-  public IMultilineComment Build([NotNull] ICSharpCommentNode commentNode)
+  public int Priority => CommentFromNodeCreatorsPriorities.MultilineComment;
+  
+  
+  public CommentCreationResult? TryCreate(ITreeNode node)
   {
-    var highlightersProvider = LanguageManager.Instance.GetService<IHighlightersProvider>(commentNode.Language);
-    var text = DocCommentsBuilderUtil.PreprocessText(commentNode.CommentText, null);
-    text = text.Split('\n').Select(line =>
-    {
-      if (line.StartsWith(Star))
-      {
-        line = line[1..];
-      }
+    if (TryCreateInternal(node) is not { } multilineComment) return null;
 
-      return DocCommentsBuilderUtil.PreprocessText(line, null);
-    }).Join("\n");
-
-    text = DocCommentsBuilderUtil.PreprocessText(text, null);
-    var highlighter = highlightersProvider.TryGetDocCommentHighlighter(text.Length);
-    var highlightedText = new HighlightedText(text, highlighter);
-    var textSegment = new TextContentSegment(highlightedText);
-    var range = commentNode.GetDocumentRange();
-
-    return new MultilineComment(textSegment, range);
+    return new CommentCreationResult(multilineComment, new[] { node });
   }
+
+  [CanBeNull] protected abstract IMultilineComment TryCreateInternal(ITreeNode node);
 }

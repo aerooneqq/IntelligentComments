@@ -19,6 +19,9 @@ public interface ICommentFromNodeCreator
 
 public static class CommentFromNodeCreatorsPriorities
 {
+  public const int DocComment = 4000;
+  public const int MultilineComment = 3000;
+  public const int DisablingComment = 2000;
   public const int Default = 1000;
   public const int Last = 0;
 }

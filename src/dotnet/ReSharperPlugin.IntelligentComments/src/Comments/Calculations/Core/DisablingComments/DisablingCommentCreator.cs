@@ -13,12 +13,15 @@ using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.Content;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DisablingComments;
 
-public record struct InspectionDisablingCommentDto(IEnumerable<string> InspectionNames);
+public record struct InspectionDisablingCommentDto([NotNull] IEnumerable<string> InspectionNames);
 
-public class DisablingCommentCreator
+public abstract class DisablingCommentCreator : ICommentFromNodeCreator
 {
+  public int Priority => CommentFromNodeCreatorsPriorities.DisablingComment;
+
+  
   [CanBeNull]
-  public virtual CommentProcessingResult TryCreate([NotNull] ITreeNode node)
+  public virtual CommentCreationResult? TryCreate([NotNull] ITreeNode node)
   {
     if (TryGetDisablingCommentDto(node, out var commentNode) is not { } inspectionDisablingComment || 
         commentNode is null)
@@ -71,9 +74,8 @@ public class DisablingCommentCreator
     var segment = new TextContentSegment(text);
     var range = node.GetDocumentRange();
     var comment = new InspectionDisablingComment(segment, range);
-    var result = CommentProcessingResult.CreateSuccess(comment);
     
-    return result;
+    return new CommentCreationResult(comment, new [] { commentNode });
   }
   
   [CanBeNull]
