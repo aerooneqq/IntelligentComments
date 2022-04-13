@@ -354,6 +354,7 @@ class InlineContentSegmentFromRd(
   parent: Parentable?,
   project: Project
 ) : ContentSegmentFromRd(rdSegment, parent), InlineContentSegment {
+  override val name: HighlightedText? = rdSegment.name?.toIdeaHighlightedText(project, this)
   override val text: HighlightedText = rdSegment.text.toIdeaHighlightedText(project, this)
   override val nameKind: NameKind = rdSegment.nameKind.toIdeaNameKind()
 }

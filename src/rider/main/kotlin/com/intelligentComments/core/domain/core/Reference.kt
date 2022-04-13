@@ -41,6 +41,15 @@ enum class NameKind {
   Todo
 }
 
+fun NameKind.toPresentation(): String {
+  return when (this) {
+    NameKind.Todo -> "Todo"
+    NameKind.Invariant -> "Invariant"
+    NameKind.Hack -> "Hack"
+    else -> throw IllegalArgumentException(this.toString())
+  }
+}
+
 interface NamedEntityReference : BackendReference {
   val nameKind: NameKind
   val name: String

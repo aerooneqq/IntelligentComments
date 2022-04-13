@@ -216,6 +216,7 @@ interface CodeSegment : ContentSegment {
 }
 
 interface InlineContentSegment : ContentSegment {
+  val name: HighlightedText?
   val nameKind: NameKind
   val text: HighlightedText
 
