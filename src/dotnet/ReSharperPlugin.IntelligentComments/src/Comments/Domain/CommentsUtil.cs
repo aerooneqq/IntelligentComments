@@ -36,28 +36,19 @@ public static class CommentsUtil
   [NotNull]
   private static RdInlineInvariantComment ToRdComment([NotNull] this IInlineInvariantComment comment)
   {
-    return new RdInlineInvariantComment(
-      comment.Name?.ToRdHighlightedText(),
-      comment.Content.ToRdContentSegment(), 
-      comment.GetRdRange());
+    return new RdInlineInvariantComment(comment.Content.ToRdContentSegment(), comment.GetRdRange());
   }
 
   [NotNull]
   private static RdInlineToDoComment ToRdComment([NotNull] this IInlineToDoComment inlineToDoComment)
   {
-    return new RdInlineToDoComment(
-      inlineToDoComment.Name?.ToRdHighlightedText(),
-      inlineToDoComment.Content.ToRdContentSegment(), 
-      inlineToDoComment.GetRdRange());
+    return new RdInlineToDoComment(inlineToDoComment.Content.ToRdContentSegment(), inlineToDoComment.GetRdRange());
   }
 
   [NotNull]
   private static RdInlineHackComment ToRdHackComment([NotNull] this IInlineHackComment comment)
   {
-    return new RdInlineHackComment(
-      comment.Name?.ToRdHighlightedText(),
-      comment.Content.ToRdContentSegment(), 
-      comment.GetRdRange());
+    return new RdInlineHackComment(comment.Content.ToRdContentSegment(), comment.GetRdRange());
   }
 
   [NotNull]
@@ -157,7 +148,8 @@ public static class CommentsUtil
   [NotNull]
   private static RdInlineContentSegment ToRdContentSegment([NotNull] this IInlineContentSegment segment)
   {
-    return new RdInlineContentSegment(segment.NameKind.ToRdNameKind(), segment.Text.ToRdHighlightedText());
+    return new RdInlineContentSegment(
+      segment.Name?.ToRdHighlightedText(), segment.NameKind.ToRdNameKind(), segment.Text.ToRdHighlightedText());
   }
 
   [NotNull]

@@ -16,7 +16,6 @@ public interface IDisablingComment : ICommentBase
 
 public interface IInlineComment : ICommentBase
 {
-  [CanBeNull] IHighlightedText Name { get; }
   [NotNull] IEntityWithContentSegments Content { get; }
 }
 

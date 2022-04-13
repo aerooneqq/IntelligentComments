@@ -38,7 +38,6 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
   }
 
   val RdInlineComment = basestruct extends RdCommentWithOneContentSegments {
-    field("Name", RdHighlightedText.nullable)
   }
 
   val RdInlineToDoComment = structdef extends RdInlineComment {
@@ -302,6 +301,7 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
   }
 
   val RdInlineContentSegment = structdef extends RdContentSegment {
+    field("Name", RdHighlightedText.nullable)
     field("NameKind", RdNameKind)
     field("Text", RdHighlightedText)
   }

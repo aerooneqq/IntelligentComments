@@ -154,7 +154,7 @@ public record InlineReferenceContentSegment(
   IHighlightedText DescriptionText
 ) : IInlineReferenceContentSegment;
 
-public record InlineContentSegment(IHighlightedText Text, NameKind NameKind) : IInlineContentSegment;
+public record InlineContentSegment(IHighlightedText Name, IHighlightedText Text, NameKind NameKind) : IInlineContentSegment;
 
 public record ToDoContentSegment(IHighlightedText Name, IEntityWithContentSegments Content) : IToDoContentSegment;
 

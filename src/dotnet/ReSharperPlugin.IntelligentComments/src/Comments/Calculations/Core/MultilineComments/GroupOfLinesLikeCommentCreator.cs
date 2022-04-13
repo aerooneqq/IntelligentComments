@@ -83,11 +83,17 @@ public abstract class GroupOfLinesLikeCommentCreator : ICommentFromNodeCreator, 
   {
     var highlighter = TryGetHighlighter(provider, text.Length);
     var toDoHighlightedText = new HighlightedText(text, highlighter);
-    var segments = new ContentSegments(new List<IContentSegment> { new InlineContentSegment(toDoHighlightedText, NameKind) });
-    var content = new EntityWithContentSegments(segments);
     var nameText = name is null ? null : new HighlightedText(name);
-    
-    return new InlineToDoComment(nameText, content, originalComment.Range);
+    var segments = new ContentSegments(new List<IContentSegment> { new InlineContentSegment(nameText, toDoHighlightedText, NameKind) });
+    var content = new EntityWithContentSegments(segments);
+
+    return NameKind switch
+    {
+      NameKind.Hack => new InlineHackComment(content, originalComment.Range),
+      NameKind.Invariant => new InlineInvariantComment(content, originalComment.Range),
+      NameKind.Todo => new InlineToDoComment(content, originalComment.Range),
+      _ => throw new ArgumentOutOfRangeException(NameKind.ToString())
+    };
   }
 
   protected abstract TextHighlighter TryGetHighlighter([NotNull] IHighlightersProvider provider, int length);

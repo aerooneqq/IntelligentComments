@@ -28,25 +28,21 @@ public record InlineReferenceComment(
 
 
 public record InlineCommentImpl(
-  IHighlightedText Name, 
   IEntityWithContentSegments Content, 
   DocumentRange Range
 ) : CommentBase(Range), IInlineComment;
 
 public record InlineHackComment(
-  IHighlightedText Name,
   IEntityWithContentSegments Content, 
   DocumentRange Range
-) : InlineCommentImpl(Name, Content, Range), IInlineHackComment;
+) : InlineCommentImpl(Content, Range), IInlineHackComment;
 
 public record InlineInvariantComment(
-  IHighlightedText Name,
   IEntityWithContentSegments Content, 
   DocumentRange Range
-) : InlineCommentImpl(Name, Content, Range), IInlineInvariantComment;
+) : InlineCommentImpl(Content, Range), IInlineInvariantComment;
 
 public record InlineToDoComment(
-  IHighlightedText Name,
   IEntityWithContentSegments Content, 
   DocumentRange Range
-) : InlineCommentImpl(Name, Content, Range), IInlineToDoComment;
+) : InlineCommentImpl(Content, Range), IInlineToDoComment;

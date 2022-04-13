@@ -104,6 +104,7 @@ public interface IToDoContentSegment : IContentSegmentWithOptionalName
 
 public interface IInlineContentSegment : IContentSegment
 {
+  [CanBeNull] IHighlightedText Name { get; }
   NameKind NameKind { get; }
   [NotNull] IHighlightedText Text { get; }
 }
