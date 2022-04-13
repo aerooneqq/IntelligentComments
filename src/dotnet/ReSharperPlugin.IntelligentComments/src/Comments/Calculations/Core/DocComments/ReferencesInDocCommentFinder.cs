@@ -10,7 +10,7 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComm
 [Language(typeof(KnownLanguage))]
 public class ReferencesInDocCommentFinder : IReferenceInCommentFinder
 {
-  public IEnumerable<ReferenceInFileDescriptor> FindReferencesToNamedEntity(string name, NameKind nameKind, ITreeNode node)
+  public IEnumerable<ReferenceInFileDescriptor> FindReferencesToNamedEntity(NameWithKind nameWithKind, ITreeNode node)
   {
     if (node is not IDocCommentBlock docComment || node.GetSourceFile() is not { } sourceFile)
     {
@@ -21,7 +21,7 @@ public class ReferencesInDocCommentFinder : IReferenceInCommentFinder
     docComment.ExecuteWithReferences(referenceTag =>
     {
       var extraction = DocCommentsBuilderUtil.TryExtractOneReferenceNameKindFromReferenceTag(referenceTag);
-      if (extraction is null || extraction.Value.Name != name || extraction.Value.NameKind != nameKind) return;
+      if (extraction is null || extraction != nameWithKind) return;
 
       var offset = referenceTag.GetDocumentStartOffset();
       references.Add(new ReferenceInFileDescriptor(sourceFile, offset));

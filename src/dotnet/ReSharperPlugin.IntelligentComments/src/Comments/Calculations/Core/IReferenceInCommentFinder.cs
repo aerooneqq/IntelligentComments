@@ -12,5 +12,5 @@ public record struct ReferenceInFileDescriptor([NotNull] IPsiSourceFile SourceFi
 public interface IReferenceInCommentFinder
 {
   [NotNull] IEnumerable<ReferenceInFileDescriptor> FindReferencesToNamedEntity(
-    [NotNull] string name, NameKind nameKind, [NotNull] ITreeNode node);
+    NameWithKind nameWithKind, [NotNull] ITreeNode node);
 }

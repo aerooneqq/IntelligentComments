@@ -64,11 +64,11 @@ public abstract class InlineReferenceCommentCreator : IInlineReferenceCommentCre
   public abstract InlineReferenceCommentInfo? TryExtractCompletionInlineReferenceInfo(
     [NotNull] ITreeNode node, DocumentOffset contextCaretDocumentOffset);
 
-  public IEnumerable<ReferenceInFileDescriptor> FindReferencesToNamedEntity(string name, NameKind nameKind, ITreeNode node)
+  public IEnumerable<ReferenceInFileDescriptor> FindReferencesToNamedEntity(NameWithKind nameWithKind, ITreeNode node)
   {
     if (TryExtractInlineReferenceInfo(node) is not { } info ||
         node.GetSourceFile() is not { } sourceFile ||
-        info.Name != name)
+        info.Name != nameWithKind.Name)
     {
       return EmptyList<ReferenceInFileDescriptor>.Enumerable;
     }

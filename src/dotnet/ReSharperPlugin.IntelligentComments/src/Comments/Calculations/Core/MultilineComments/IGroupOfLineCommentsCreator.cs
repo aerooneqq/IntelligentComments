@@ -3,7 +3,6 @@ using JetBrains.ReSharper.Psi.Tree;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.MultilineComments;
 
-
 public interface IGroupOfLineCommentsCreator : ICommentFromNodeCreator
 {
   CommentCreationResult? TryCreateNoMerge([NotNull] ITreeNode commentNode);

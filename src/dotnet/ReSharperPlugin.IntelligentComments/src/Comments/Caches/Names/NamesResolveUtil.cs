@@ -188,7 +188,7 @@ internal static class NamesResolveUtil
 
         foreach (var finder in referencesFinders)
         {
-          result.AddRange(finder.FindReferencesToNamedEntity(name, nameExtraction.NameKind, commentNode));
+          result.AddRange(finder.FindReferencesToNamedEntity(nameExtraction, commentNode));
         }
       }
     }
