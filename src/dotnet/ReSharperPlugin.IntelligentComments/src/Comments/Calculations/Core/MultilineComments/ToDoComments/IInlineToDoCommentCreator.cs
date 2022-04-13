@@ -25,15 +25,8 @@ public abstract class InlineToDoCommentCreator : GroupOfLinesLikeCommentCreator,
   protected override NameKind NameKind => NameKind.Todo;
 
   
-  protected sealed override ICommentBase CreateComment(
-    IGroupOfLineComments originalComment, IHighlightersProvider provider, string text, string name)
+  protected sealed override TextHighlighter TryGetHighlighter(IHighlightersProvider provider, int length)
   {
-    var highlighter = provider.GetToDoHighlighter(0, text.Length) with { TextAnimation = null };
-    var toDoHighlightedText = new HighlightedText(text, highlighter);
-    var segments = new ContentSegments(new List<IContentSegment>() { new ToDoTextContentSegment(toDoHighlightedText) });
-    var segment = new ToDoContentSegment(null, new EntityWithContentSegments(segments));
-    var nameText = name is null ? null : new HighlightedText(name);
-    
-    return new InlineToDoComment(nameText, segment, originalComment.Range);
+    return provider.GetToDoHighlighter(0, length) with { TextAnimation = null };
   }
 }

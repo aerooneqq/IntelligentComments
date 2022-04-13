@@ -22,16 +22,10 @@ public abstract class InlineInvariantCommentCreator : GroupOfLinesLikeCommentCre
   protected override string PatternWithName => @$"[ ]*({string.Join("|", ourInvariantPrefixes)}) \(name: .+\): .*";
   protected override NameKind NameKind => NameKind.Invariant;
   
-
-  protected override ICommentBase CreateComment(
-    IGroupOfLineComments originalComment, IHighlightersProvider provider, string text, string name)
+  
+  protected sealed override TextHighlighter TryGetHighlighter(IHighlightersProvider provider, int length)
   {
-    var highlighter = provider.TryGetDocCommentHighlighter(text.Length) with { TextAnimation = null };
-    var toDoHighlightedText = new HighlightedText(text, highlighter);
-    var segments = new ContentSegments(new List<IContentSegment>() { new InlineInvariantContentSegment(toDoHighlightedText) });
-    var segment = new InvariantContentSegment(null, new EntityWithContentSegments(segments));
-    var nameText = name is null ? null : new HighlightedText(name);
-    
-    return new InlineInvariantComment(nameText, segment, originalComment.Range);  
+    if (provider.TryGetDocCommentHighlighter(length) is not { } highlighter) return null;
+    return highlighter with { TextAnimation = null };
   }
 }

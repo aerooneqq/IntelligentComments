@@ -1,9 +1,9 @@
 package com.intelligentComments.ui.comments.renderers.segments
 
-import com.intelligentComments.ui.comments.model.content.invariants.InlineInvariantContentSegmentUiModel
+import com.intelligentComments.ui.comments.model.content.InlineContentSegmentUiModel
 
-class InlineInvariantContentSegmentRenderer(
-  private val model: InlineInvariantContentSegmentUiModel
+class InlineContentSegmentRenderer(
+  model: InlineContentSegmentUiModel
 ) : LeftTextHeaderAndRightContentRenderer(
   model.header,
   model.content

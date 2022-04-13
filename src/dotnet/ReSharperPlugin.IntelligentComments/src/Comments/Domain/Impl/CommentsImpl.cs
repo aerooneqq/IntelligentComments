@@ -6,12 +6,6 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Domain.Impl;
 
 public record CommentBase(DocumentRange Range) : ICommentBase;
 
-public record InlineToDoComment(
-  IHighlightedText Name,
-  IToDoContentSegment ToDoContentSegment, 
-  DocumentRange Range
-) : CommentBase(Range), IInlineToDoComment;
-
 public record InspectionDisablingComment(
   ITextContentSegment DisabledInspections, 
   DocumentRange Range
@@ -32,14 +26,27 @@ public record InlineReferenceComment(
   DocumentRange Range
 ) : CommentBase(Range), IInlineReferenceComment;
 
+
+public record InlineCommentImpl(
+  IHighlightedText Name, 
+  IEntityWithContentSegments Content, 
+  DocumentRange Range
+) : CommentBase(Range), IInlineComment;
+
 public record InlineHackComment(
   IHighlightedText Name,
-  IHackContentSegment HackContentSegment, 
+  IEntityWithContentSegments Content, 
   DocumentRange Range
-) : CommentBase(Range), IInlineHackComment;
+) : InlineCommentImpl(Name, Content, Range), IInlineHackComment;
 
 public record InlineInvariantComment(
   IHighlightedText Name,
-  IInvariantContentSegment InvariantContentSegment, 
+  IEntityWithContentSegments Content, 
   DocumentRange Range
-) : CommentBase(Range), IInlineInvariantComment;
+) : InlineCommentImpl(Name, Content, Range), IInlineInvariantComment;
+
+public record InlineToDoComment(
+  IHighlightedText Name,
+  IEntityWithContentSegments Content, 
+  DocumentRange Range
+) : InlineCommentImpl(Name, Content, Range), IInlineToDoComment;

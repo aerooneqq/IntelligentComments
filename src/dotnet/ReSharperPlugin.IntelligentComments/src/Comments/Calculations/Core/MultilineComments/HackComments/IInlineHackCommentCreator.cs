@@ -23,16 +23,9 @@ public abstract class InlineHackCommentCreator : GroupOfLinesLikeCommentCreator,
   protected override string PatternWithName => @$"[ ]*({string.Join("|", ourHackPrefixes)}) \(name: .+\): .*";
   protected override NameKind NameKind => NameKind.Hack;
   
-
-  protected override ICommentBase CreateComment(
-    IGroupOfLineComments originalComment, IHighlightersProvider provider, string text, string name)
+  
+  protected sealed override TextHighlighter TryGetHighlighter(IHighlightersProvider provider, int length)
   {
-    var highlighter = provider.GetHackHighlighter(0, text.Length) with { TextAnimation = null };
-    var toDoHighlightedText = new HighlightedText(text, highlighter);
-    var segments = new ContentSegments(new List<IContentSegment>() { new InlineHackContentSegment(toDoHighlightedText) });
-    var segment = new HackContentSegment(null, new EntityWithContentSegments(segments));
-    var nameText = name is null ? null : new HighlightedText(name);
-    
-    return new InlineHackComment(nameText, segment, originalComment.Range);  
+    return provider.GetHackHighlighter(0, length) with { TextAnimation = null };
   }
 }

@@ -3,12 +3,11 @@ package com.intelligentComments.core.domain.core
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intelligentComments.ui.comments.model.content.ContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.ContentSegmentsUiModel
+import com.intelligentComments.ui.comments.model.content.InlineContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.code.CodeSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.example.ExampleSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.exceptions.ExceptionUiModel
-import com.intelligentComments.ui.comments.model.content.hacks.InlineHackContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.image.ImageContentSegmentUiModel
-import com.intelligentComments.ui.comments.model.content.invariants.InlineInvariantContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.list.ListContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.paragraphs.ParagraphUiModel
 import com.intelligentComments.ui.comments.model.content.params.ParameterUiModel
@@ -19,7 +18,6 @@ import com.intelligentComments.ui.comments.model.content.seeAlso.SeeAlsoUiModel
 import com.intelligentComments.ui.comments.model.content.summary.SummaryUiModel
 import com.intelligentComments.ui.comments.model.content.table.TableContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.text.TextContentSegmentUiModel
-import com.intelligentComments.ui.comments.model.content.todo.ToDoTextContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.value.ValueUiModel
 import com.intellij.openapi.project.Project
 import com.jetbrains.rd.util.reactive.Property
@@ -217,27 +215,12 @@ interface CodeSegment : ContentSegment {
   }
 }
 
-interface InlineTodoContentSegment : ContentSegment {
+interface InlineContentSegment : ContentSegment {
+  val nameKind: NameKind
   val text: HighlightedText
 
   override fun createUiModel(project: Project, parent: UiInteractionModelBase?): ContentSegmentUiModel {
-    return ToDoTextContentSegmentUiModel(project, parent, this)
-  }
-}
-
-interface InlineHackContentSegment : ContentSegment {
-  val text: HighlightedText
-
-  override fun createUiModel(project: Project, parent: UiInteractionModelBase?): ContentSegmentUiModel {
-    return InlineHackContentSegmentUiModel(project, parent, this)
-  }
-}
-
-interface InlineInvariantContentSegment : ContentSegment {
-  val text: HighlightedText
-
-  override fun createUiModel(project: Project, parent: UiInteractionModelBase?): ContentSegmentUiModel {
-    return InlineInvariantContentSegmentUiModel(project, parent, this)
+    return InlineContentSegmentUiModel(project, parent, this)
   }
 }
 
@@ -262,10 +245,10 @@ fun visitAllContentSegments(startSegments: Collection<ContentSegment>, action: (
 
 fun removeContentSegmentsRecursively(
   segments: MutableList<ContentSegment>,
-  criteria: (ContentSegment) -> Boolean
+  criterion: (ContentSegment) -> Boolean
 ) {
   for (index in segments.indices.reversed()) {
-    if (criteria(segments[index])) {
+    if (criterion(segments[index])) {
       segments.removeAt(index)
     }
   }
@@ -273,7 +256,7 @@ fun removeContentSegmentsRecursively(
   for (segment in segments) {
     if (segment is EntityWithContentSegments) {
       val innerSegments = segment.content.segments as? MutableList<ContentSegment> ?: continue
-      removeContentSegmentsRecursively(innerSegments, criteria)
+      removeContentSegmentsRecursively(innerSegments, criterion)
     }
   }
 }

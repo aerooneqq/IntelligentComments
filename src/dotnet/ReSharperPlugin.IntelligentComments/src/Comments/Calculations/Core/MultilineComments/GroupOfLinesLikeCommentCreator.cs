@@ -7,6 +7,9 @@ using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Util;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments.Utils;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
+using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.Content;
+using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl;
+using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.Content;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.MultilineComments;
 
@@ -71,12 +74,23 @@ public abstract class GroupOfLinesLikeCommentCreator : ICommentFromNodeCreator, 
     return text[(index + name.Length + 1)..(text.IndexOf(")", StringComparison.Ordinal))];
   }
 
-  [NotNull] 
-  protected abstract ICommentBase CreateComment(
-    [NotNull] IGroupOfLineComments originalComment, 
+  [NotNull]
+  private ICommentBase CreateComment(
+    [NotNull] IGroupOfLineComments originalComment,
     [NotNull] IHighlightersProvider provider,
     [NotNull] string text,
-    [CanBeNull] string name);
+    [CanBeNull] string name)
+  {
+    var highlighter = TryGetHighlighter(provider, text.Length);
+    var toDoHighlightedText = new HighlightedText(text, highlighter);
+    var segments = new ContentSegments(new List<IContentSegment> { new InlineContentSegment(toDoHighlightedText, NameKind) });
+    var content = new EntityWithContentSegments(segments);
+    var nameText = name is null ? null : new HighlightedText(name);
+    
+    return new InlineToDoComment(nameText, content, originalComment.Range);
+  }
+
+  protected abstract TextHighlighter TryGetHighlighter([NotNull] IHighlightersProvider provider, int length);
 
   public IEnumerable<NameInFileDescriptor> FindNames(ITreeNode node)
   {

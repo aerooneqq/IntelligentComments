@@ -38,7 +38,7 @@ public static class CommentsUtil
   {
     return new RdInlineInvariantComment(
       comment.Name?.ToRdHighlightedText(),
-      comment.InvariantContentSegment.Description.ToRdContentSegment(), 
+      comment.Content.ToRdContentSegment(), 
       comment.GetRdRange());
   }
 
@@ -47,7 +47,7 @@ public static class CommentsUtil
   {
     return new RdInlineToDoComment(
       inlineToDoComment.Name?.ToRdHighlightedText(),
-      inlineToDoComment.ToDoContentSegment.Content.ToRdContentSegment(), 
+      inlineToDoComment.Content.ToRdContentSegment(), 
       inlineToDoComment.GetRdRange());
   }
 
@@ -56,7 +56,7 @@ public static class CommentsUtil
   {
     return new RdInlineHackComment(
       comment.Name?.ToRdHighlightedText(),
-      comment.HackContentSegment.Content.ToRdContentSegment(), 
+      comment.Content.ToRdContentSegment(), 
       comment.GetRdRange());
   }
 
@@ -145,39 +145,25 @@ public static class CommentsUtil
       IInvariantContentSegment contentSegment => contentSegment.ToRdInvariant(),
       IReferenceContentSegment contentSegment => contentSegment.ToRdReferenceSegment(),
       IInlineReferenceContentSegment contentSegment => contentSegment.ToRdSegment(),
-      IToDoTextContentSegment contentSegment => contentSegment.ToRdContentSegment(),
       ITicketContentSegment contentSegment => contentSegment.ToRdTicket(),
       IToDoContentSegment contentSegment => contentSegment.ToRdContentSegment(),
       IHackContentSegment contentSegment => contentSegment.ToRdContentSegment(),
-      IInlineHackContentSegment contentSegment => contentSegment.ToRdContentSegment(),
-      IInlineInvariantContentSegment contentSegment => contentSegment.ToRdContentSegment(),
+      IInlineContentSegment contentSegment => contentSegment.ToRdContentSegment(),
       IEntityWithContentSegments contentSegment => contentSegment.ToRdContentSegment(),
       _ => throw new ArgumentOutOfRangeException(segment.GetType().Name)
     };
   }
   
   [NotNull]
-  private static RdInlineInvariantContentSegment ToRdContentSegment([NotNull] this IInlineInvariantContentSegment segment)
+  private static RdInlineContentSegment ToRdContentSegment([NotNull] this IInlineContentSegment segment)
   {
-    return new RdInlineInvariantContentSegment(segment.Text.ToRdHighlightedText());
-  }
-  
-  [NotNull]
-  private static RdHackTextContentSegment ToRdContentSegment([NotNull] this IInlineHackContentSegment segment)
-  {
-    return new RdHackTextContentSegment(segment.Text.ToRdHighlightedText());
+    return new RdInlineContentSegment(segment.NameKind.ToRdNameKind(), segment.Text.ToRdHighlightedText());
   }
 
   [NotNull]
   private static RdHackContentSegment ToRdContentSegment([NotNull] this IHackContentSegment segment)
   {
     return new RdHackContentSegment(segment.Content.ToRdContentSegment(), segment.Name?.ToRdHighlightedText());
-  }
-
-  [NotNull]
-  private static RdToDoTextContentSegment ToRdContentSegment([NotNull] this IToDoTextContentSegment segment)
-  {
-    return new RdToDoTextContentSegment(segment.Text.ToRdHighlightedText());
   }
 
   [NotNull]

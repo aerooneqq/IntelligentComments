@@ -38,11 +38,9 @@ open class ContentSegmentFromRd(
         is RdTextInvariant -> TextInvariantFromRdSegment(contentSegment, parent, project)
         is RdToDoContentSegment -> ToDoContentSegmentFromRd(contentSegment, parent, project)
         is RdReferenceContentSegment -> ReferenceContentSegmentFromRd(contentSegment, parent, project)
-        is RdToDoTextContentSegment -> ToDoTextContentSegmentFromRd(contentSegment, parent, project)
         is RdTicketContentSegment -> TicketSegmentFromRd(contentSegment, parent, project)
-        is RdHackTextContentSegment -> HackInlinedContentSegmentFromRd(contentSegment, parent, project)
         is RdHackContentSegment -> HackContentSegmentFromRd(contentSegment, parent, project)
-        is RdInlineInvariantContentSegment -> InlineInvariantContentSegmentFromRd(contentSegment, parent, project)
+        is RdInlineContentSegment -> InlineContentSegmentFromRd(contentSegment, parent, project)
         is RdDefaultSegmentWithContent -> EntityWithContentSegmentsFromRd(contentSegment, parent, project)
         else -> throw IllegalArgumentException(contentSegment.toString())
       }
@@ -351,12 +349,13 @@ class CodeSegmentFromRd(
   }
 }
 
-class ToDoTextContentSegmentFromRd(
-  rdSegment: RdToDoTextContentSegment,
+class InlineContentSegmentFromRd(
+  rdSegment: RdInlineContentSegment,
   parent: Parentable?,
   project: Project
-) : ContentSegmentFromRd(rdSegment, parent), InlineTodoContentSegment {
+) : ContentSegmentFromRd(rdSegment, parent), InlineContentSegment {
   override val text: HighlightedText = rdSegment.text.toIdeaHighlightedText(project, this)
+  override val nameKind: NameKind = rdSegment.nameKind.toIdeaNameKind()
 }
 
 class TicketSegmentFromRd(
@@ -366,14 +365,6 @@ class TicketSegmentFromRd(
 ) : ContentSegmentFromRd(rdSegment, parent), TicketContentSegment {
   override val reference: Reference = ReferenceFromRd.getFrom(project, rdSegment.source)
   override val description: EntityWithContentSegments = EntityWithContentSegmentsFromRd(rdSegment.content, this, project)
-}
-
-class HackInlinedContentSegmentFromRd(
-  rdSegment: RdHackTextContentSegment,
-  parent: Parentable?,
-  project: Project
-) : ContentSegmentFromRd(rdSegment, parent), InlineHackContentSegment {
-  override val text: HighlightedText = rdSegment.text.toIdeaHighlightedText(project, this)
 }
 
 class HackContentSegmentFromRd(
@@ -398,12 +389,4 @@ class ToDoContentSegmentFromRd(
   init {
     content.content.processSegments(project.service<ContentProcessingStrategyImpl>())
   }
-}
-
-class InlineInvariantContentSegmentFromRd(
-  contentSegment: RdInlineInvariantContentSegment,
-  parent: Parentable?,
-  project: Project
-) : ContentSegmentFromRd(contentSegment, parent), InlineInvariantContentSegment {
-  override val text: HighlightedText = contentSegment.text.toIdeaHighlightedText(project, this)
 }

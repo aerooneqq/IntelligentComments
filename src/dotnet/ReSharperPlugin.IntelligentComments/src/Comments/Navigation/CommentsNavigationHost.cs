@@ -64,12 +64,7 @@ public class CommentsNavigationHost
   private RdTask<Unit> HandleNavigationRequest(Lifetime lifetime, RdNavigationRequest request)
   {
     var task = new RdTask<Unit>();
-    void LogWarnAndSetNull(string message)
-    {
-      myLogger.Warn(message);
-      task.Set(Unit.Instance);
-    }
-    
+
     myShellLocks.QueueReadLock(myLifetime, $"{nameof(CommentsNavigationHost)}::ServingRequest", () =>
     {
       using var _ = CompilationContextCookie.GetExplicitUniversalContextIfNotSet();

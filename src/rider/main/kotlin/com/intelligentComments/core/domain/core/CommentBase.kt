@@ -33,6 +33,7 @@ interface CommentWithOneContentSegments : CommentBase {
   val content: ContentSegments
 }
 
-interface ToDoInlineComment : CommentWithOneContentSegments
-interface HackInlineComment : CommentWithOneContentSegments
-interface InvariantInlineComment : CommentWithOneContentSegments
+interface InlineComment : CommentWithOneContentSegments
+interface ToDoInlineComment : InlineComment
+interface HackInlineComment : InlineComment
+interface InvariantInlineComment : InlineComment

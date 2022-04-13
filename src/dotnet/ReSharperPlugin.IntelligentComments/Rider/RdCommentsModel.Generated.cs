@@ -108,7 +108,7 @@ namespace JetBrains.Rider.Model
     public static  CtxWriteDelegate<RdHighlightedText> WriteRdHighlightedTextNullable = RdHighlightedText.Write.NullableClass();
     public static  CtxWriteDelegate<int?> WriteIntNullable = JetBrains.Rd.Impl.Serializers.WriteInt.NullableStruct();
     
-    protected override long SerializationHash => -4956793800692482351L;
+    protected override long SerializationHash => 3311112244558097058L;
     
     protected override Action<ISerializers> Register => RegisterDeclaredTypesSerializers;
     public static void RegisterDeclaredTypesSerializers(ISerializers serializers)
@@ -154,11 +154,9 @@ namespace JetBrains.Rider.Model
       serializers.Register(RdUnderlineTextAnimation.Read, RdUnderlineTextAnimation.Write);
       serializers.Register(RdForegroundColorAnimation.Read, RdForegroundColorAnimation.Write);
       serializers.Register(RdPredefinedForegroundColorAnimation.Read, RdPredefinedForegroundColorAnimation.Write);
-      serializers.Register(RdToDoTextContentSegment.Read, RdToDoTextContentSegment.Write);
       serializers.Register(RdToDoContentSegment.Read, RdToDoContentSegment.Write);
       serializers.Register(RdTicketContentSegment.Read, RdTicketContentSegment.Write);
-      serializers.Register(RdInlineInvariantContentSegment.Read, RdInlineInvariantContentSegment.Write);
-      serializers.Register(RdHackTextContentSegment.Read, RdHackTextContentSegment.Write);
+      serializers.Register(RdInlineContentSegment.Read, RdInlineContentSegment.Write);
       serializers.Register(RdHackContentSegment.Read, RdHackContentSegment.Write);
       serializers.Register(RdReferenceNavigationRequest.Read, RdReferenceNavigationRequest.Write);
       serializers.Register(RdFileOffsetNavigationRequest.Read, RdFileOffsetNavigationRequest.Write);
@@ -171,6 +169,7 @@ namespace JetBrains.Rider.Model
       serializers.Register(RdComment_Unknown.Read, RdComment_Unknown.Write);
       serializers.Register(RdCommentWithOneTextSegment_Unknown.Read, RdCommentWithOneTextSegment_Unknown.Write);
       serializers.Register(RdCommentWithOneContentSegments_Unknown.Read, RdCommentWithOneContentSegments_Unknown.Write);
+      serializers.Register(RdInlineComment_Unknown.Read, RdInlineComment_Unknown.Write);
       serializers.Register(RdContentSegment_Unknown.Read, RdContentSegment_Unknown.Write);
       serializers.Register(RdSegmentWithContent_Unknown.Read, RdSegmentWithContent_Unknown.Write);
       serializers.Register(RdParam_Unknown.Read, RdParam_Unknown.Write);
@@ -228,7 +227,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:129</p>
+  /// <p>Generated from: RdComment.kt:130</p>
   /// </summary>
   public enum ListKind {
     Bullet,
@@ -237,7 +236,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:264</p>
+  /// <p>Generated from: RdComment.kt:265</p>
   /// </summary>
   public sealed class RdBackgroundStyle : IPrintable, IEquatable<RdBackgroundStyle>
   {
@@ -338,7 +337,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:98</p>
+  /// <p>Generated from: RdComment.kt:99</p>
   /// </summary>
   public sealed class RdCodeContentSegment : RdContentSegment
   {
@@ -426,7 +425,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:208</p>
+  /// <p>Generated from: RdComment.kt:209</p>
   /// </summary>
   public abstract class RdCodeEntityReference : RdReference
   {
@@ -538,7 +537,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:319</p>
+  /// <p>Generated from: RdComment.kt:313</p>
   /// </summary>
   public sealed class RdCodeHighlightingRequest : IPrintable, IEquatable<RdCodeHighlightingRequest>
   {
@@ -621,7 +620,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:270</p>
+  /// <p>Generated from: RdComment.kt:271</p>
   /// </summary>
   public sealed class RdColor : IPrintable, IEquatable<RdColor>
   {
@@ -743,7 +742,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:323</p>
+  /// <p>Generated from: RdComment.kt:317</p>
   /// </summary>
   public sealed class RdCommentClickDocRequest : IPrintable, IEquatable<RdCommentClickDocRequest>
   {
@@ -1317,7 +1316,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:65</p>
+  /// <p>Generated from: RdComment.kt:66</p>
   /// </summary>
   public abstract class RdContentSegment{
     //fields
@@ -1345,7 +1344,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:290</p>
+  /// <p>Generated from: RdComment.kt:291</p>
   /// </summary>
   public abstract class RdContentSegmentWithOptionalName : RdContentSegment
   {
@@ -1522,7 +1521,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:76</p>
+  /// <p>Generated from: RdComment.kt:77</p>
   /// </summary>
   public sealed class RdContentSegments : IPrintable, IEquatable<RdContentSegments>
   {
@@ -1609,7 +1608,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:71</p>
+  /// <p>Generated from: RdComment.kt:72</p>
   /// </summary>
   public sealed class RdDefaultSegmentWithContent : RdSegmentWithContent
   {
@@ -1773,7 +1772,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:58</p>
+  /// <p>Generated from: RdComment.kt:59</p>
   /// </summary>
   public sealed class RdDocComment : RdComment
   {
@@ -1948,7 +1947,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:94</p>
+  /// <p>Generated from: RdComment.kt:95</p>
   /// </summary>
   public sealed class RdExampleSegment : RdSegmentWithContent
   {
@@ -2027,7 +2026,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:115</p>
+  /// <p>Generated from: RdComment.kt:116</p>
   /// </summary>
   public sealed class RdExceptionsSegment : RdSegmentWithContent
   {
@@ -2124,7 +2123,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:198</p>
+  /// <p>Generated from: RdComment.kt:199</p>
   /// </summary>
   public abstract class RdExternalReference : RdReference
   {
@@ -2236,7 +2235,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:370</p>
+  /// <p>Generated from: RdComment.kt:364</p>
   /// </summary>
   public sealed class RdFileInfo : IPrintable, IEquatable<RdFileInfo>
   {
@@ -2338,7 +2337,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:385</p>
+  /// <p>Generated from: RdComment.kt:379</p>
   /// </summary>
   public sealed class RdFileNames : IPrintable, IEquatable<RdFileNames>
   {
@@ -2442,7 +2441,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:344</p>
+  /// <p>Generated from: RdComment.kt:338</p>
   /// </summary>
   public sealed class RdFileOffsetNavigationRequest : RdNavigationRequest
   {
@@ -2530,7 +2529,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:204</p>
+  /// <p>Generated from: RdComment.kt:205</p>
   /// </summary>
   public sealed class RdFileReference : RdExternalReference
   {
@@ -2618,7 +2617,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:284</p>
+  /// <p>Generated from: RdComment.kt:285</p>
   /// </summary>
   public enum RdFontStyle {
     Regular,
@@ -2628,7 +2627,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:276</p>
+  /// <p>Generated from: RdComment.kt:277</p>
   /// </summary>
   public sealed class RdForegroundColorAnimation : RdTextAnimation
   {
@@ -2709,7 +2708,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:55</p>
+  /// <p>Generated from: RdComment.kt:56</p>
   /// </summary>
   public sealed class RdGroupOfLineComments : RdCommentWithOneTextSegment
   {
@@ -2794,7 +2793,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:315</p>
+  /// <p>Generated from: RdComment.kt:309</p>
   /// </summary>
   public sealed class RdHackContentSegment : RdContentSegmentWithOptionalName
   {
@@ -2884,7 +2883,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:382</p>
+  /// <p>Generated from: RdComment.kt:376</p>
   /// </summary>
   public sealed class RdHackItem : RdNamedEntityItem
   {
@@ -2977,88 +2976,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:311</p>
-  /// </summary>
-  public sealed class RdHackTextContentSegment : RdContentSegment
-  {
-    //fields
-    //public fields
-    [NotNull] public RdHighlightedText Text {get; private set;}
-    
-    //private fields
-    //primary constructor
-    public RdHackTextContentSegment(
-      [NotNull] RdHighlightedText text
-    )
-    {
-      if (text == null) throw new ArgumentNullException("text");
-      
-      Text = text;
-    }
-    //secondary constructor
-    //deconstruct trait
-    //statics
-    
-    public static new CtxReadDelegate<RdHackTextContentSegment> Read = (ctx, reader) => 
-    {
-      var text = RdHighlightedText.Read(ctx, reader);
-      var _result = new RdHackTextContentSegment(text);
-      return _result;
-    };
-    
-    public static new CtxWriteDelegate<RdHackTextContentSegment> Write = (ctx, writer, value) => 
-    {
-      RdHighlightedText.Write(ctx, writer, value.Text);
-    };
-    
-    //constants
-    
-    //custom body
-    //methods
-    //equals trait
-    public override bool Equals(object obj)
-    {
-      if (ReferenceEquals(null, obj)) return false;
-      if (ReferenceEquals(this, obj)) return true;
-      if (obj.GetType() != GetType()) return false;
-      return Equals((RdHackTextContentSegment) obj);
-    }
-    public bool Equals(RdHackTextContentSegment other)
-    {
-      if (ReferenceEquals(null, other)) return false;
-      if (ReferenceEquals(this, other)) return true;
-      return Equals(Text, other.Text);
-    }
-    //hash code trait
-    public override int GetHashCode()
-    {
-      unchecked {
-        var hash = 0;
-        hash = hash * 31 + Text.GetHashCode();
-        return hash;
-      }
-    }
-    //pretty print
-    public void Print(PrettyPrinter printer)
-    {
-      printer.Println("RdHackTextContentSegment (");
-      using (printer.IndentCookie()) {
-        printer.Print("text = "); Text.PrintEx(printer); printer.Println();
-      }
-      printer.Print(")");
-    }
-    //toString
-    public override string ToString()
-    {
-      var printer = new SingleLinePrettyPrinter();
-      Print(printer);
-      return printer.ToString();
-    }
-  }
-  
-  
-  /// <summary>
-  /// <p>Generated from: RdComment.kt:231</p>
+  /// <p>Generated from: RdComment.kt:232</p>
   /// </summary>
   public sealed class RdHighlightedText : IPrintable, IEquatable<RdHighlightedText>
   {
@@ -3153,7 +3071,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:165</p>
+  /// <p>Generated from: RdComment.kt:166</p>
   /// </summary>
   public enum RdHorizontalAlignment {
     Center,
@@ -3163,7 +3081,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:200</p>
+  /// <p>Generated from: RdComment.kt:201</p>
   /// </summary>
   public sealed class RdHttpLinkReference : RdExternalReference
   {
@@ -3251,7 +3169,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:124</p>
+  /// <p>Generated from: RdComment.kt:125</p>
   /// </summary>
   public sealed class RdImageSegment : RdContentSegment
   {
@@ -3340,9 +3258,9 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:44</p>
+  /// <p>Generated from: RdComment.kt:40</p>
   /// </summary>
-  public sealed class RdInlineHackComment : RdCommentWithOneContentSegments
+  public abstract class RdInlineComment : RdCommentWithOneContentSegments
   {
     //fields
     //public fields
@@ -3350,7 +3268,7 @@ namespace JetBrains.Rider.Model
     
     //private fields
     //primary constructor
-    public RdInlineHackComment(
+    protected RdInlineComment(
       [CanBeNull] RdHighlightedText name,
       [NotNull] RdDefaultSegmentWithContent content,
       [NotNull] RdTextRange range
@@ -3365,11 +3283,229 @@ namespace JetBrains.Rider.Model
     //deconstruct trait
     //statics
     
-    public static new CtxReadDelegate<RdInlineHackComment> Read = (ctx, reader) => 
+    public static new CtxReadDelegate<RdInlineComment> Read = Polymorphic<RdInlineComment>.ReadAbstract(RdInlineComment_Unknown.Read);
+    
+    public static new CtxWriteDelegate<RdInlineComment> Write = Polymorphic<RdInlineComment>.Write;
+    
+    //constants
+    
+    //custom body
+    //methods
+    //equals trait
+    //hash code trait
+    //pretty print
+    //toString
+  }
+  
+  
+  public sealed class RdInlineComment_Unknown : RdInlineComment
+  {
+    //fields
+    //public fields
+    
+    //private fields
+    //primary constructor
+    public RdInlineComment_Unknown(
+      [CanBeNull] RdHighlightedText name,
+      [NotNull] RdDefaultSegmentWithContent content,
+      [NotNull] RdTextRange range
+    ) : base (
+      name,
+      content,
+      range
+     ) 
     {
+    }
+    //secondary constructor
+    //deconstruct trait
+    //statics
+    
+    public static new CtxReadDelegate<RdInlineComment_Unknown> Read = (ctx, reader) => 
+    {
+      var name = ReadRdHighlightedTextNullable(ctx, reader);
       var content = RdDefaultSegmentWithContent.Read(ctx, reader);
       var range = RdTextRange.Read(ctx, reader);
+      var _result = new RdInlineComment_Unknown(name, content, range);
+      return _result;
+    };
+    public static CtxReadDelegate<RdHighlightedText> ReadRdHighlightedTextNullable = RdHighlightedText.Read.NullableClass();
+    
+    public static new CtxWriteDelegate<RdInlineComment_Unknown> Write = (ctx, writer, value) => 
+    {
+      WriteRdHighlightedTextNullable(ctx, writer, value.Name);
+      RdDefaultSegmentWithContent.Write(ctx, writer, value.Content);
+      RdTextRange.Write(ctx, writer, value.Range);
+    };
+    public static  CtxWriteDelegate<RdHighlightedText> WriteRdHighlightedTextNullable = RdHighlightedText.Write.NullableClass();
+    
+    //constants
+    
+    //custom body
+    //methods
+    //equals trait
+    public override bool Equals(object obj)
+    {
+      if (ReferenceEquals(null, obj)) return false;
+      if (ReferenceEquals(this, obj)) return true;
+      if (obj.GetType() != GetType()) return false;
+      return Equals((RdInlineComment_Unknown) obj);
+    }
+    public bool Equals(RdInlineComment_Unknown other)
+    {
+      if (ReferenceEquals(null, other)) return false;
+      if (ReferenceEquals(this, other)) return true;
+      return Equals(Name, other.Name) && Equals(Content, other.Content) && Equals(Range, other.Range);
+    }
+    //hash code trait
+    public override int GetHashCode()
+    {
+      unchecked {
+        var hash = 0;
+        hash = hash * 31 + (Name != null ? Name.GetHashCode() : 0);
+        hash = hash * 31 + Content.GetHashCode();
+        hash = hash * 31 + Range.GetHashCode();
+        return hash;
+      }
+    }
+    //pretty print
+    public void Print(PrettyPrinter printer)
+    {
+      printer.Println("RdInlineComment_Unknown (");
+      using (printer.IndentCookie()) {
+        printer.Print("name = "); Name.PrintEx(printer); printer.Println();
+        printer.Print("content = "); Content.PrintEx(printer); printer.Println();
+        printer.Print("range = "); Range.PrintEx(printer); printer.Println();
+      }
+      printer.Print(")");
+    }
+    //toString
+    public override string ToString()
+    {
+      var printer = new SingleLinePrettyPrinter();
+      Print(printer);
+      return printer.ToString();
+    }
+  }
+  
+  
+  /// <summary>
+  /// <p>Generated from: RdComment.kt:304</p>
+  /// </summary>
+  public sealed class RdInlineContentSegment : RdContentSegment
+  {
+    //fields
+    //public fields
+    public RdNameKind NameKind {get; private set;}
+    [NotNull] public RdHighlightedText Text {get; private set;}
+    
+    //private fields
+    //primary constructor
+    public RdInlineContentSegment(
+      RdNameKind nameKind,
+      [NotNull] RdHighlightedText text
+    )
+    {
+      if (text == null) throw new ArgumentNullException("text");
+      
+      NameKind = nameKind;
+      Text = text;
+    }
+    //secondary constructor
+    //deconstruct trait
+    //statics
+    
+    public static new CtxReadDelegate<RdInlineContentSegment> Read = (ctx, reader) => 
+    {
+      var nameKind = (RdNameKind)reader.ReadInt();
+      var text = RdHighlightedText.Read(ctx, reader);
+      var _result = new RdInlineContentSegment(nameKind, text);
+      return _result;
+    };
+    
+    public static new CtxWriteDelegate<RdInlineContentSegment> Write = (ctx, writer, value) => 
+    {
+      writer.Write((int)value.NameKind);
+      RdHighlightedText.Write(ctx, writer, value.Text);
+    };
+    
+    //constants
+    
+    //custom body
+    //methods
+    //equals trait
+    public override bool Equals(object obj)
+    {
+      if (ReferenceEquals(null, obj)) return false;
+      if (ReferenceEquals(this, obj)) return true;
+      if (obj.GetType() != GetType()) return false;
+      return Equals((RdInlineContentSegment) obj);
+    }
+    public bool Equals(RdInlineContentSegment other)
+    {
+      if (ReferenceEquals(null, other)) return false;
+      if (ReferenceEquals(this, other)) return true;
+      return NameKind == other.NameKind && Equals(Text, other.Text);
+    }
+    //hash code trait
+    public override int GetHashCode()
+    {
+      unchecked {
+        var hash = 0;
+        hash = hash * 31 + (int) NameKind;
+        hash = hash * 31 + Text.GetHashCode();
+        return hash;
+      }
+    }
+    //pretty print
+    public void Print(PrettyPrinter printer)
+    {
+      printer.Println("RdInlineContentSegment (");
+      using (printer.IndentCookie()) {
+        printer.Print("nameKind = "); NameKind.PrintEx(printer); printer.Println();
+        printer.Print("text = "); Text.PrintEx(printer); printer.Println();
+      }
+      printer.Print(")");
+    }
+    //toString
+    public override string ToString()
+    {
+      var printer = new SingleLinePrettyPrinter();
+      Print(printer);
+      return printer.ToString();
+    }
+  }
+  
+  
+  /// <summary>
+  /// <p>Generated from: RdComment.kt:47</p>
+  /// </summary>
+  public sealed class RdInlineHackComment : RdInlineComment
+  {
+    //fields
+    //public fields
+    
+    //private fields
+    //primary constructor
+    public RdInlineHackComment(
+      [CanBeNull] RdHighlightedText name,
+      [NotNull] RdDefaultSegmentWithContent content,
+      [NotNull] RdTextRange range
+    ) : base (
+      name,
+      content,
+      range
+     ) 
+    {
+    }
+    //secondary constructor
+    //deconstruct trait
+    //statics
+    
+    public static new CtxReadDelegate<RdInlineHackComment> Read = (ctx, reader) => 
+    {
       var name = ReadRdHighlightedTextNullable(ctx, reader);
+      var content = RdDefaultSegmentWithContent.Read(ctx, reader);
+      var range = RdTextRange.Read(ctx, reader);
       var _result = new RdInlineHackComment(name, content, range);
       return _result;
     };
@@ -3377,9 +3513,9 @@ namespace JetBrains.Rider.Model
     
     public static new CtxWriteDelegate<RdInlineHackComment> Write = (ctx, writer, value) => 
     {
+      WriteRdHighlightedTextNullable(ctx, writer, value.Name);
       RdDefaultSegmentWithContent.Write(ctx, writer, value.Content);
       RdTextRange.Write(ctx, writer, value.Range);
-      WriteRdHighlightedTextNullable(ctx, writer, value.Name);
     };
     public static  CtxWriteDelegate<RdHighlightedText> WriteRdHighlightedTextNullable = RdHighlightedText.Write.NullableClass();
     
@@ -3434,13 +3570,12 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:48</p>
+  /// <p>Generated from: RdComment.kt:50</p>
   /// </summary>
-  public sealed class RdInlineInvariantComment : RdCommentWithOneContentSegments
+  public sealed class RdInlineInvariantComment : RdInlineComment
   {
     //fields
     //public fields
-    [CanBeNull] public RdHighlightedText Name {get; private set;}
     
     //private fields
     //primary constructor
@@ -3449,11 +3584,11 @@ namespace JetBrains.Rider.Model
       [NotNull] RdDefaultSegmentWithContent content,
       [NotNull] RdTextRange range
     ) : base (
+      name,
       content,
       range
      ) 
     {
-      Name = name;
     }
     //secondary constructor
     //deconstruct trait
@@ -3461,9 +3596,9 @@ namespace JetBrains.Rider.Model
     
     public static new CtxReadDelegate<RdInlineInvariantComment> Read = (ctx, reader) => 
     {
+      var name = ReadRdHighlightedTextNullable(ctx, reader);
       var content = RdDefaultSegmentWithContent.Read(ctx, reader);
       var range = RdTextRange.Read(ctx, reader);
-      var name = ReadRdHighlightedTextNullable(ctx, reader);
       var _result = new RdInlineInvariantComment(name, content, range);
       return _result;
     };
@@ -3471,9 +3606,9 @@ namespace JetBrains.Rider.Model
     
     public static new CtxWriteDelegate<RdInlineInvariantComment> Write = (ctx, writer, value) => 
     {
+      WriteRdHighlightedTextNullable(ctx, writer, value.Name);
       RdDefaultSegmentWithContent.Write(ctx, writer, value.Content);
       RdTextRange.Write(ctx, writer, value.Range);
-      WriteRdHighlightedTextNullable(ctx, writer, value.Name);
     };
     public static  CtxWriteDelegate<RdHighlightedText> WriteRdHighlightedTextNullable = RdHighlightedText.Write.NullableClass();
     
@@ -3514,87 +3649,6 @@ namespace JetBrains.Rider.Model
         printer.Print("name = "); Name.PrintEx(printer); printer.Println();
         printer.Print("content = "); Content.PrintEx(printer); printer.Println();
         printer.Print("range = "); Range.PrintEx(printer); printer.Println();
-      }
-      printer.Print(")");
-    }
-    //toString
-    public override string ToString()
-    {
-      var printer = new SingleLinePrettyPrinter();
-      Print(printer);
-      return printer.ToString();
-    }
-  }
-  
-  
-  /// <summary>
-  /// <p>Generated from: RdComment.kt:307</p>
-  /// </summary>
-  public sealed class RdInlineInvariantContentSegment : RdContentSegment
-  {
-    //fields
-    //public fields
-    [NotNull] public RdHighlightedText Text {get; private set;}
-    
-    //private fields
-    //primary constructor
-    public RdInlineInvariantContentSegment(
-      [NotNull] RdHighlightedText text
-    )
-    {
-      if (text == null) throw new ArgumentNullException("text");
-      
-      Text = text;
-    }
-    //secondary constructor
-    //deconstruct trait
-    //statics
-    
-    public static new CtxReadDelegate<RdInlineInvariantContentSegment> Read = (ctx, reader) => 
-    {
-      var text = RdHighlightedText.Read(ctx, reader);
-      var _result = new RdInlineInvariantContentSegment(text);
-      return _result;
-    };
-    
-    public static new CtxWriteDelegate<RdInlineInvariantContentSegment> Write = (ctx, writer, value) => 
-    {
-      RdHighlightedText.Write(ctx, writer, value.Text);
-    };
-    
-    //constants
-    
-    //custom body
-    //methods
-    //equals trait
-    public override bool Equals(object obj)
-    {
-      if (ReferenceEquals(null, obj)) return false;
-      if (ReferenceEquals(this, obj)) return true;
-      if (obj.GetType() != GetType()) return false;
-      return Equals((RdInlineInvariantContentSegment) obj);
-    }
-    public bool Equals(RdInlineInvariantContentSegment other)
-    {
-      if (ReferenceEquals(null, other)) return false;
-      if (ReferenceEquals(this, other)) return true;
-      return Equals(Text, other.Text);
-    }
-    //hash code trait
-    public override int GetHashCode()
-    {
-      unchecked {
-        var hash = 0;
-        hash = hash * 31 + Text.GetHashCode();
-        return hash;
-      }
-    }
-    //pretty print
-    public void Print(PrettyPrinter printer)
-    {
-      printer.Println("RdInlineInvariantContentSegment (");
-      using (printer.IndentCookie()) {
-        printer.Print("text = "); Text.PrintEx(printer); printer.Println();
       }
       printer.Print(")");
     }
@@ -3697,7 +3751,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:226</p>
+  /// <p>Generated from: RdComment.kt:227</p>
   /// </summary>
   public sealed class RdInlineReferenceContentSegment : RdContentSegment
   {
@@ -3787,13 +3841,12 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:40</p>
+  /// <p>Generated from: RdComment.kt:44</p>
   /// </summary>
-  public sealed class RdInlineToDoComment : RdCommentWithOneContentSegments
+  public sealed class RdInlineToDoComment : RdInlineComment
   {
     //fields
     //public fields
-    [CanBeNull] public RdHighlightedText Name {get; private set;}
     
     //private fields
     //primary constructor
@@ -3802,11 +3855,11 @@ namespace JetBrains.Rider.Model
       [NotNull] RdDefaultSegmentWithContent content,
       [NotNull] RdTextRange range
     ) : base (
+      name,
       content,
       range
      ) 
     {
-      Name = name;
     }
     //secondary constructor
     //deconstruct trait
@@ -3814,9 +3867,9 @@ namespace JetBrains.Rider.Model
     
     public static new CtxReadDelegate<RdInlineToDoComment> Read = (ctx, reader) => 
     {
+      var name = ReadRdHighlightedTextNullable(ctx, reader);
       var content = RdDefaultSegmentWithContent.Read(ctx, reader);
       var range = RdTextRange.Read(ctx, reader);
-      var name = ReadRdHighlightedTextNullable(ctx, reader);
       var _result = new RdInlineToDoComment(name, content, range);
       return _result;
     };
@@ -3824,9 +3877,9 @@ namespace JetBrains.Rider.Model
     
     public static new CtxWriteDelegate<RdInlineToDoComment> Write = (ctx, writer, value) => 
     {
+      WriteRdHighlightedTextNullable(ctx, writer, value.Name);
       RdDefaultSegmentWithContent.Write(ctx, writer, value.Content);
       RdTextRange.Write(ctx, writer, value.Range);
-      WriteRdHighlightedTextNullable(ctx, writer, value.Name);
     };
     public static  CtxWriteDelegate<RdHighlightedText> WriteRdHighlightedTextNullable = RdHighlightedText.Write.NullableClass();
     
@@ -3881,7 +3934,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:73</p>
+  /// <p>Generated from: RdComment.kt:74</p>
   /// </summary>
   public sealed class RdIntelligentCommentContent : RdSegmentWithContent
   {
@@ -3960,7 +4013,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:52</p>
+  /// <p>Generated from: RdComment.kt:53</p>
   /// </summary>
   public sealed class RdInvalidComment : RdCommentWithOneTextSegment
   {
@@ -4045,7 +4098,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:357</p>
+  /// <p>Generated from: RdComment.kt:351</p>
   /// </summary>
   public sealed class RdInvalidResolveResult : RdResolveResult
   {
@@ -4126,7 +4179,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:177</p>
+  /// <p>Generated from: RdComment.kt:178</p>
   /// </summary>
   public abstract class RdInvariant : RdContentSegment
   {
@@ -4155,7 +4208,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:384</p>
+  /// <p>Generated from: RdComment.kt:378</p>
   /// </summary>
   public sealed class RdInvariantItem : RdNamedEntityItem
   {
@@ -4311,7 +4364,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:218</p>
+  /// <p>Generated from: RdComment.kt:219</p>
   /// </summary>
   public sealed class RdLangWordReference : RdReference
   {
@@ -4390,7 +4443,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:140</p>
+  /// <p>Generated from: RdComment.kt:141</p>
   /// </summary>
   public sealed class RdListItem : IPrintable, IEquatable<RdListItem>
   {
@@ -4483,7 +4536,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:134</p>
+  /// <p>Generated from: RdComment.kt:135</p>
   /// </summary>
   public sealed class RdListSegment : RdContentSegment
   {
@@ -4582,7 +4635,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:62</p>
+  /// <p>Generated from: RdComment.kt:63</p>
   /// </summary>
   public sealed class RdMultilineComment : RdCommentWithOneTextSegment
   {
@@ -4667,7 +4720,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:349</p>
+  /// <p>Generated from: RdComment.kt:343</p>
   /// </summary>
   public enum RdNameKind {
     Invariant,
@@ -4677,7 +4730,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:376</p>
+  /// <p>Generated from: RdComment.kt:370</p>
   /// </summary>
   public abstract class RdNamedEntityItem{
     //fields
@@ -4811,7 +4864,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:189</p>
+  /// <p>Generated from: RdComment.kt:190</p>
   /// </summary>
   public sealed class RdNamedEntityReference : RdReference
   {
@@ -4906,7 +4959,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:361</p>
+  /// <p>Generated from: RdComment.kt:355</p>
   /// </summary>
   public sealed class RdNamedEntityResolveResult : RdResolveResult
   {
@@ -4994,7 +5047,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:332</p>
+  /// <p>Generated from: RdComment.kt:326</p>
   /// </summary>
   public abstract class RdNavigationRequest{
     //fields
@@ -5085,7 +5138,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:90</p>
+  /// <p>Generated from: RdComment.kt:91</p>
   /// </summary>
   public sealed class RdParagraphSegment : RdSegmentWithContent
   {
@@ -5164,7 +5217,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:80</p>
+  /// <p>Generated from: RdComment.kt:81</p>
   /// </summary>
   public class RdParam : RdSegmentWithContent
   {
@@ -5334,7 +5387,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:280</p>
+  /// <p>Generated from: RdComment.kt:281</p>
   /// </summary>
   public sealed class RdPredefinedForegroundColorAnimation : RdTextAnimation
   {
@@ -5415,7 +5468,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:194</p>
+  /// <p>Generated from: RdComment.kt:195</p>
   /// </summary>
   public sealed class RdProxyReference : RdReference
   {
@@ -5501,7 +5554,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:185</p>
+  /// <p>Generated from: RdComment.kt:186</p>
   /// </summary>
   public abstract class RdReference{
     //fields
@@ -5538,7 +5591,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:220</p>
+  /// <p>Generated from: RdComment.kt:221</p>
   /// </summary>
   public sealed class RdReferenceContentSegment : RdContentSegment
   {
@@ -5635,7 +5688,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:335</p>
+  /// <p>Generated from: RdComment.kt:329</p>
   /// </summary>
   public sealed class RdReferenceNavigationRequest : RdNavigationRequest
   {
@@ -5716,7 +5769,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:327</p>
+  /// <p>Generated from: RdComment.kt:321</p>
   /// </summary>
   public sealed class RdReferenceResolveRequest : IPrintable, IEquatable<RdReferenceResolveRequest>
   {
@@ -5886,7 +5939,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:88</p>
+  /// <p>Generated from: RdComment.kt:89</p>
   /// </summary>
   public sealed class RdRemarksSegment : RdSegmentWithContent
   {
@@ -5965,7 +6018,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:355</p>
+  /// <p>Generated from: RdComment.kt:349</p>
   /// </summary>
   public abstract class RdResolveResult{
     //fields
@@ -6056,7 +6109,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:92</p>
+  /// <p>Generated from: RdComment.kt:93</p>
   /// </summary>
   public sealed class RdReturnSegment : RdSegmentWithContent
   {
@@ -6135,7 +6188,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:212</p>
+  /// <p>Generated from: RdComment.kt:213</p>
   /// </summary>
   public sealed class RdSandboxCodeEntityReference : RdCodeEntityReference
   {
@@ -6240,7 +6293,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:103</p>
+  /// <p>Generated from: RdComment.kt:104</p>
   /// </summary>
   public abstract class RdSeeAlsoContentSegment : RdContentSegment
   {
@@ -6354,7 +6407,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:111</p>
+  /// <p>Generated from: RdComment.kt:112</p>
   /// </summary>
   public sealed class RdSeeAlsoLinkContentSegment : RdSeeAlsoContentSegment
   {
@@ -6442,7 +6495,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:107</p>
+  /// <p>Generated from: RdComment.kt:108</p>
   /// </summary>
   public sealed class RdSeeAlsoMemberContentSegment : RdSeeAlsoContentSegment
   {
@@ -6530,7 +6583,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:67</p>
+  /// <p>Generated from: RdComment.kt:68</p>
   /// </summary>
   public abstract class RdSegmentWithContent : RdContentSegment
   {
@@ -6644,7 +6697,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:339</p>
+  /// <p>Generated from: RdComment.kt:333</p>
   /// </summary>
   public sealed class RdSourceFileId : IPrintable, IEquatable<RdSourceFileId>
   {
@@ -6735,7 +6788,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:248</p>
+  /// <p>Generated from: RdComment.kt:249</p>
   /// </summary>
   public sealed class RdSquiggles : IPrintable, IEquatable<RdSquiggles>
   {
@@ -6828,7 +6881,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:253</p>
+  /// <p>Generated from: RdComment.kt:254</p>
   /// </summary>
   public enum RdSquigglesKind {
     Wave,
@@ -6837,7 +6890,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:86</p>
+  /// <p>Generated from: RdComment.kt:87</p>
   /// </summary>
   public sealed class RdSummarySegment : RdSegmentWithContent
   {
@@ -6916,7 +6969,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:154</p>
+  /// <p>Generated from: RdComment.kt:155</p>
   /// </summary>
   public sealed class RdTableCell : IPrintable, IEquatable<RdTableCell>
   {
@@ -7011,7 +7064,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:159</p>
+  /// <p>Generated from: RdComment.kt:160</p>
   /// </summary>
   public sealed class RdTableCellProperties : IPrintable, IEquatable<RdTableCellProperties>
   {
@@ -7110,7 +7163,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:150</p>
+  /// <p>Generated from: RdComment.kt:151</p>
   /// </summary>
   public sealed class RdTableRow : IPrintable, IEquatable<RdTableRow>
   {
@@ -7197,7 +7250,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:145</p>
+  /// <p>Generated from: RdComment.kt:146</p>
   /// </summary>
   public sealed class RdTableSegment : RdContentSegment
   {
@@ -7289,7 +7342,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:274</p>
+  /// <p>Generated from: RdComment.kt:275</p>
   /// </summary>
   public abstract class RdTextAnimation{
     //fields
@@ -7380,7 +7433,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:258</p>
+  /// <p>Generated from: RdComment.kt:259</p>
   /// </summary>
   public sealed class RdTextAttributes : IPrintable, IEquatable<RdTextAttributes>
   {
@@ -7485,7 +7538,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:236</p>
+  /// <p>Generated from: RdComment.kt:237</p>
   /// </summary>
   public sealed class RdTextHighlighter : IPrintable, IEquatable<RdTextHighlighter>
   {
@@ -7645,7 +7698,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:179</p>
+  /// <p>Generated from: RdComment.kt:180</p>
   /// </summary>
   public sealed class RdTextInvariant : RdInvariant
   {
@@ -7734,7 +7787,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:120</p>
+  /// <p>Generated from: RdComment.kt:121</p>
   /// </summary>
   public sealed class RdTextSegment : RdContentSegment
   {
@@ -7815,7 +7868,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:302</p>
+  /// <p>Generated from: RdComment.kt:299</p>
   /// </summary>
   public sealed class RdTicketContentSegment : RdContentSegment
   {
@@ -7904,7 +7957,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:298</p>
+  /// <p>Generated from: RdComment.kt:295</p>
   /// </summary>
   public sealed class RdToDoContentSegment : RdContentSegmentWithOptionalName
   {
@@ -7994,88 +8047,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:294</p>
-  /// </summary>
-  public sealed class RdToDoTextContentSegment : RdContentSegment
-  {
-    //fields
-    //public fields
-    [NotNull] public RdHighlightedText Text {get; private set;}
-    
-    //private fields
-    //primary constructor
-    public RdToDoTextContentSegment(
-      [NotNull] RdHighlightedText text
-    )
-    {
-      if (text == null) throw new ArgumentNullException("text");
-      
-      Text = text;
-    }
-    //secondary constructor
-    //deconstruct trait
-    //statics
-    
-    public static new CtxReadDelegate<RdToDoTextContentSegment> Read = (ctx, reader) => 
-    {
-      var text = RdHighlightedText.Read(ctx, reader);
-      var _result = new RdToDoTextContentSegment(text);
-      return _result;
-    };
-    
-    public static new CtxWriteDelegate<RdToDoTextContentSegment> Write = (ctx, writer, value) => 
-    {
-      RdHighlightedText.Write(ctx, writer, value.Text);
-    };
-    
-    //constants
-    
-    //custom body
-    //methods
-    //equals trait
-    public override bool Equals(object obj)
-    {
-      if (ReferenceEquals(null, obj)) return false;
-      if (ReferenceEquals(this, obj)) return true;
-      if (obj.GetType() != GetType()) return false;
-      return Equals((RdToDoTextContentSegment) obj);
-    }
-    public bool Equals(RdToDoTextContentSegment other)
-    {
-      if (ReferenceEquals(null, other)) return false;
-      if (ReferenceEquals(this, other)) return true;
-      return Equals(Text, other.Text);
-    }
-    //hash code trait
-    public override int GetHashCode()
-    {
-      unchecked {
-        var hash = 0;
-        hash = hash * 31 + Text.GetHashCode();
-        return hash;
-      }
-    }
-    //pretty print
-    public void Print(PrettyPrinter printer)
-    {
-      printer.Println("RdToDoTextContentSegment (");
-      using (printer.IndentCookie()) {
-        printer.Print("text = "); Text.PrintEx(printer); printer.Println();
-      }
-      printer.Print(")");
-    }
-    //toString
-    public override string ToString()
-    {
-      var printer = new SingleLinePrettyPrinter();
-      Print(printer);
-      return printer.ToString();
-    }
-  }
-  
-  
-  /// <summary>
-  /// <p>Generated from: RdComment.kt:383</p>
+  /// <p>Generated from: RdComment.kt:377</p>
   /// </summary>
   public sealed class RdTodoItem : RdNamedEntityItem
   {
@@ -8168,7 +8140,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:84</p>
+  /// <p>Generated from: RdComment.kt:85</p>
   /// </summary>
   public sealed class RdTypeParam : RdParam
   {
@@ -8253,7 +8225,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:275</p>
+  /// <p>Generated from: RdComment.kt:276</p>
   /// </summary>
   public sealed class RdUnderlineTextAnimation : RdTextAnimation
   {
@@ -8319,7 +8291,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:96</p>
+  /// <p>Generated from: RdComment.kt:97</p>
   /// </summary>
   public sealed class RdValueSegment : RdSegmentWithContent
   {
@@ -8398,7 +8370,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:171</p>
+  /// <p>Generated from: RdComment.kt:172</p>
   /// </summary>
   public enum RdVerticalAlignment {
     Center,
@@ -8408,7 +8380,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:366</p>
+  /// <p>Generated from: RdComment.kt:360</p>
   /// </summary>
   public sealed class RdWebResourceResolveResult : RdResolveResult
   {
@@ -8489,7 +8461,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: RdComment.kt:210</p>
+  /// <p>Generated from: RdComment.kt:211</p>
   /// </summary>
   public sealed class RdXmlDocCodeEntityReference : RdCodeEntityReference
   {

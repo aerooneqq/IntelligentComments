@@ -143,12 +143,19 @@ abstract class CommentWithOneContentSegmentsFromRd(
   }
 }
 
+abstract class InlineCommentFromRd(
+  rdComment: RdInlineComment,
+  project: Project,
+  highlighter: RangeHighlighter,
+  rangeMarker: RangeMarker
+) : CommentWithOneContentSegmentsFromRd(rdComment, project, highlighter, rangeMarker), InlineComment
+
 class ToDoInlineCommentFromRd(
   private val rdComment: RdInlineToDoComment,
   private val project: Project,
   highlighter: RangeHighlighter,
   rangeMarker: RangeMarker
-) : CommentWithOneContentSegmentsFromRd(rdComment, project, highlighter, rangeMarker), ToDoInlineComment {
+) : InlineCommentFromRd(rdComment, project, highlighter, rangeMarker), ToDoInlineComment {
   override fun recreate(editor: Editor): CommentBase {
     return commentsCreator.createToDoComment(rdComment, project, identifier.rangeMarker, correspondingHighlighter)
   }
@@ -159,7 +166,7 @@ class HackInlineCommentFromRd(
   private val project: Project,
   highlighter: RangeHighlighter,
   rangeMarker: RangeMarker
-) : CommentWithOneContentSegmentsFromRd(rdComment, project, highlighter, rangeMarker), HackInlineComment {
+) : InlineCommentFromRd(rdComment, project, highlighter, rangeMarker), HackInlineComment {
   override fun recreate(editor: Editor): CommentBase {
     return commentsCreator.createHackComment(rdComment, project, identifier.rangeMarker, correspondingHighlighter)
   }
@@ -170,7 +177,7 @@ class InvariantInlineCommentFromRd(
   private val project: Project,
   highlighter: RangeHighlighter,
   rangeMarker: RangeMarker
-) : CommentWithOneContentSegmentsFromRd(rdComment, project, highlighter, rangeMarker), InvariantInlineComment {
+) : InlineCommentFromRd(rdComment, project, highlighter, rangeMarker), InvariantInlineComment {
   override fun recreate(editor: Editor): CommentBase {
     return commentsCreator.createInvariantComment(rdComment, project, identifier.rangeMarker, correspondingHighlighter)
   }

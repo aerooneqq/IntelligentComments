@@ -14,10 +14,14 @@ public interface IDisablingComment : ICommentBase
   [NotNull] ITextContentSegment DisabledInspections { get; }
 }
 
-public interface IInlineToDoComment : ICommentBase
+public interface IInlineComment : ICommentBase
 {
   [CanBeNull] IHighlightedText Name { get; }
-  [NotNull] IToDoContentSegment ToDoContentSegment { get; }
+  [NotNull] IEntityWithContentSegments Content { get; }
+}
+
+public interface IInlineToDoComment : IInlineComment
+{
 }
 
 public interface IInvalidComment : ICommentBase
@@ -45,14 +49,10 @@ public interface IInlineReferenceComment : ICommentBase
   [NotNull] IInlineReferenceContentSegment Segment { get; }
 }
 
-public interface IInlineHackComment : ICommentBase
+public interface IInlineHackComment : IInlineComment
 {
-  [CanBeNull] IHighlightedText Name { get; }
-  [NotNull] IHackContentSegment HackContentSegment { get; }
 }
 
-public interface IInlineInvariantComment : ICommentBase
+public interface IInlineInvariantComment : IInlineComment
 {
-  [CanBeNull] IHighlightedText Name { get; }
-  [NotNull] IInvariantContentSegment InvariantContentSegment { get; }
 }

@@ -23,7 +23,7 @@ public abstract class XmlDocVisitorWitCustomElements : XmlDocVisitor
   {
     InitialComment = comment;
     VisitedNodes = new HashSet<XmlNode>();
-    myAdditionalHandlers = new Dictionary<string, Action<XmlElement>>()
+    myAdditionalHandlers = new Dictionary<string, Action<XmlElement>>
     {
       [DocCommentsBuilderUtil.ImageTagName] = VisitImage,
       [DocCommentsBuilderUtil.ReferenceTagName] = VisitReference,

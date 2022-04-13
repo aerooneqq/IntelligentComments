@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using JetBrains.Rider.Model;
+using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments.Utils;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Domain.Core.Content;
@@ -90,11 +91,6 @@ public interface IImageContentSegment : IContentSegment
   [NotNull] IHighlightedText Description { get; }
 }
 
-public interface IToDoTextContentSegment : IContentSegment
-{
-  [NotNull] IHighlightedText Text { get; }
-}
-
 public interface ITicketContentSegment : IContentSegment
 {
   [NotNull] IEntityWithContentSegments Description { get; }
@@ -106,13 +102,9 @@ public interface IToDoContentSegment : IContentSegmentWithOptionalName
   [NotNull] IEntityWithContentSegments Content { get; }
 }
 
-public interface IInlineHackContentSegment : IContentSegment
+public interface IInlineContentSegment : IContentSegment
 {
-  [NotNull] IHighlightedText Text { get; }
-}
-
-public interface IInlineInvariantContentSegment : IContentSegment
-{
+  NameKind NameKind { get; }
   [NotNull] IHighlightedText Text { get; }
 }
 

@@ -82,7 +82,7 @@ fun NameKind.toRdNameKind(): RdNameKind {
   }
 }
 
-fun RdNameKind.toNameKind(): NameKind {
+fun RdNameKind.toIdeaNameKind(): NameKind {
   return when(this) {
     RdNameKind.Todo -> NameKind.Todo
     RdNameKind.Hack -> NameKind.Hack
@@ -107,5 +107,5 @@ class FileReferenceFromRd(reference: RdFileReference) : ExternalReferenceFromRd(
 
 class InvariantReferenceFromRd(reference: RdNamedEntityReference) : ReferenceFromRd(reference), NamedEntityReference {
   override val name: String = reference.name
-  override val nameKind: NameKind = reference.nameKind.toNameKind()
+  override val nameKind: NameKind = reference.nameKind.toIdeaNameKind()
 }

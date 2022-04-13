@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using JetBrains.Rider.Model;
+using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments.Utils;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.Content;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
@@ -153,7 +154,7 @@ public record InlineReferenceContentSegment(
   IHighlightedText DescriptionText
 ) : IInlineReferenceContentSegment;
 
-public record ToDoTextContentSegment(IHighlightedText Text) : IToDoTextContentSegment;
+public record InlineContentSegment(IHighlightedText Text, NameKind NameKind) : IInlineContentSegment;
 
 public record ToDoContentSegment(IHighlightedText Name, IEntityWithContentSegments Content) : IToDoContentSegment;
 
@@ -162,8 +163,5 @@ public record TicketContentSegment(
   IDomainReference Reference
 ) : ITicketContentSegment;
 
-public record InlineHackContentSegment(IHighlightedText Text) : IInlineHackContentSegment;
-
-public record InlineInvariantContentSegment(IHighlightedText Text) : IInlineInvariantContentSegment;
 
 public record HackContentSegment(IHighlightedText Name, IEntityWithContentSegments Content) : IHackContentSegment;
