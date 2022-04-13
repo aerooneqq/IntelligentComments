@@ -56,6 +56,8 @@ public class CSharpCommentsProcessor : CommentsProcessorBase
 
   private bool TryProcessSpecificComments([NotNull] ITreeNode element)
   {
+    if (TryProcessDisablingComment(element)) return true;
+    
     var creators = LanguageManager.TryGetCachedServices<ICommentFromNodeCreator>(element.Language).OrderByDescending(creator => creator.Priority);
     foreach (var creator in creators)
     {
@@ -67,7 +69,7 @@ public class CSharpCommentsProcessor : CommentsProcessorBase
       }
     }
 
-    return TryProcessDisablingComment(element);
+    return false;
   }
   
   private bool TryProcessDisablingComment([NotNull] ITreeNode node)
