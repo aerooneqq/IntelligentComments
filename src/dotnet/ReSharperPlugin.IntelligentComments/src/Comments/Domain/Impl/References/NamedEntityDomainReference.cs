@@ -31,19 +31,19 @@ public class NamedEntityDomainResolveResult : DomainResolveResult
 {
   [CanBeNull] public IContentSegment ContentSegment { get; }
   [NotNull] public ITreeNode ParentCommentBlock { get; }
-  public DocumentOffset InvariantDocumentOffset { get; }
+  public DocumentOffset NameDeclarationDocumentOffset { get; }
   public NameKind NameKind { get; }
 
 
   public NamedEntityDomainResolveResult(
     [CanBeNull] IContentSegment contentSegment, 
     [NotNull] ITreeNode parentCommentBlock, 
-    DocumentOffset invariantDocumentOffset, 
+    DocumentOffset nameDeclarationDocumentOffset, 
     NameKind nameKind)
   {
     ContentSegment = contentSegment;
     ParentCommentBlock = parentCommentBlock;
-    InvariantDocumentOffset = invariantDocumentOffset;
+    NameDeclarationDocumentOffset = nameDeclarationDocumentOffset;
     NameKind = nameKind;
   }
 }

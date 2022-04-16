@@ -7,10 +7,15 @@ using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core;
 
-public record struct ReferenceInFileDescriptor([NotNull] IPsiSourceFile SourceFile, DocumentOffset Offset);
+public record struct ReferenceInFileDescriptor(
+  NameWithKind NameWithKind,
+  [NotNull] IPsiSourceFile SourceFile, 
+  DocumentRange Range);
 
 public interface IReferenceInCommentFinder
 {
   [NotNull] IEnumerable<ReferenceInFileDescriptor> FindReferencesToNamedEntity(
     NameWithKind nameWithKind, [NotNull] ITreeNode node);
+
+  [NotNull] IEnumerable<ReferenceInFileDescriptor> FindAllReferences(ITreeNode node);
 }

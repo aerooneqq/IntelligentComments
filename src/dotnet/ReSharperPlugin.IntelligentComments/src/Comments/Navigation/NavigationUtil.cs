@@ -26,21 +26,23 @@ using ReSharperPlugin.IntelligentComments.Comments.Completion.CSharp.DocComments
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Navigation;
 
+public record struct NamedEntityExtraction(DocumentRange DocumentRange, NameWithKind NameWithKind);
+
 internal static class NavigationUtil
 {
   [CanBeNull]
-  public static NameWithKind? TryExtractNameFromReference([NotNull] IDataContext dataContext)
+  public static NamedEntityExtraction? TryExtractNameFromReference([NotNull] IDataContext dataContext)
   {
     var token = TryFindTokenUnderCaret(dataContext, out var caretDocumentOffset);
     if (token is null || !caretDocumentOffset.HasValue) return null;
 
     var caretOffset = caretDocumentOffset.Value;
     return TryExtractNameFromReferenceAttributeValue(token, caretOffset) ??
-           TryExtractInvariantNameFromInlinedReference(token, caretOffset);
+           TryExtractNameFromInlinedReference(token, caretOffset);
   }
 
   [CanBeNull]
-  private static NameWithKind? TryExtractNameFromReferenceAttributeValue(
+  private static NamedEntityExtraction? TryExtractNameFromReferenceAttributeValue(
     [NotNull] ITreeNode tokenUnderCaret,
     DocumentOffset caretDocumentOffset)
   {
@@ -48,7 +50,7 @@ internal static class NavigationUtil
       tokenUnderCaret, caretDocumentOffset, DocCommentsBuilderUtil.TryExtractNameFromPossibleReferenceSourceAttribute);
   }
 
-  private static NameWithKind? TryExtractNameFromAttribute(
+  private static NamedEntityExtraction? TryExtractNameFromAttribute(
     [NotNull] ITreeNode tokenUnderCaret,
     DocumentOffset caretDocumentOffset,
     Func<IXmlAttribute, NameWithKind?> extractor)
@@ -64,11 +66,11 @@ internal static class NavigationUtil
       return null;
     }
 
-    return extraction;
+    return new NamedEntityExtraction(attribute.Value.GetDocumentRange(), extraction);
   }
 
   [CanBeNull]
-  private static NameWithKind? TryExtractNameFromTag(
+  private static NamedEntityExtraction? TryExtractNameFromTag(
     [NotNull] ITreeNode tokenUnderCaret,
     DocumentOffset caretDocumentOffset)
   {
@@ -94,7 +96,7 @@ internal static class NavigationUtil
     return psiFile.FindTokenAt(range.StartOffset);
   }
 
-  public static NameWithKind? TryExtractNameFromNamedEntity(IDataContext dataContext)
+  public static NamedEntityExtraction? TryExtractNameFromNamedEntity(IDataContext dataContext)
   {
     var token = TryFindTokenUnderCaret(dataContext, out var caretDocumentOffset);
     if (token is null || !caretDocumentOffset.HasValue) return null;
@@ -103,16 +105,16 @@ internal static class NavigationUtil
            TryExtractNameFromInlineComment(token);
   }
 
-  private static NameWithKind? TryExtractNameFromInlineComment([NotNull] ITreeNode token)
+  private static NamedEntityExtraction? TryExtractNameFromInlineComment([NotNull] ITreeNode token)
   {
     if (NamesResolveUtil.TryFindNearestCommentNode(token) is not { } commentNode) return null;
     if (NamesResolveUtil.TryFindOneNameDeclarationIn(commentNode) is not { } nameWithKind) return null;
 
-    return new NameWithKind(nameWithKind.Name, nameWithKind.NameKind);
+    return new NamedEntityExtraction(commentNode.GetDocumentRange(), nameWithKind);
   }
 
   [CanBeNull]
-  private static NameWithKind? TryExtractInvariantNameFromInlinedReference(
+  private static NamedEntityExtraction? TryExtractNameFromInlinedReference(
     [NotNull] ITreeNode token,
     DocumentOffset caretOffset)
   {
@@ -121,10 +123,9 @@ internal static class NavigationUtil
       return null;
 
     if (creator.TryExtractInlineReferenceInfo(commentNode) is not { } info) return null;
-    if (caretOffset >= info.InvariantNameOffset &&
-        caretOffset.Offset <= info.InvariantNameOffset.Offset + info.Name.Length)
+    if (info.NameRange.Contains(caretOffset))
     {
-      return new NameWithKind(info.Name, NameKind.Invariant);
+      return new NamedEntityExtraction(info.NameRange, info.NameWithKind);
     }
 
     return null;
@@ -133,11 +134,11 @@ internal static class NavigationUtil
   public static void FindReferencesForNamedEntity(
     [NotNull] IDataContext dataContext, [CanBeNull] INavigationExecutionHost host = null)
   {
-    if (NavigationUtil.TryExtractNameFromNamedEntity(dataContext) is not { } extraction) return;
+    if (TryExtractNameFromNamedEntity(dataContext) is not { } extraction) return;
     if (dataContext.GetData(ProjectModelDataConstants.SOLUTION) is not { } solution) return;
 
-    var occurrences = NamesResolveUtil.FindAllReferencesForNamedEntity(extraction, solution)
-      .Select(dto => new InvariantReferenceOccurence(dto.SourceFile, dto.Offset))
+    var occurrences = NamesResolveUtil.FindAllReferencesForNamedEntity(extraction.NameWithKind, solution)
+      .Select(dto => new NamedEntityOccurence(dto.SourceFile, dto.Range.StartOffset))
       .Select(o => (IOccurrence)o)
       .ToList();
 
@@ -159,7 +160,7 @@ internal static class NavigationUtil
     if (context.GetData(DocumentModelDataConstants.DOCUMENT) is not { } document) return;
 
     var resolveContext = new DomainResolveContextImpl(solution, document);
-    var resolveResult = NamesResolveUtil.ResolveName(new Calculations.Core.NameWithKind(extraction.Name, extraction.NameKind), resolveContext);
+    var resolveResult = NamesResolveUtil.ResolveName(extraction.NameWithKind, resolveContext);
     if (resolveResult is not NamedEntityDomainResolveResult invariantResolveResult)
     {
       host ??= solution.GetComponent<INavigationExecutionHost>();
@@ -168,7 +169,7 @@ internal static class NavigationUtil
     }
 
     var sourceFile = invariantResolveResult.ParentCommentBlock.GetSourceFile();
-    var offset = invariantResolveResult.InvariantDocumentOffset;
+    var offset = invariantResolveResult.NameDeclarationDocumentOffset;
 
     sourceFile.Navigate(new TextRange(offset.Offset), true);
   }

@@ -30,9 +30,7 @@ public class InlineReferenceCommentsCompletionContextProvider : ICodeCompletionC
 
     if (creator.TryExtractCompletionInlineReferenceInfo(commentNode, context.CaretDocumentOffset) is not { } info) return null;
     
-    var startOffset = info.InvariantNameOffset.Offset;
-    var endOffset = startOffset + info.Name.Length;
-    var range = new DocumentRange(context.Document, new TextRange(startOffset, endOffset));
+    var range = info.NameRange;
     var textualRanges = new TextLookupRanges(range, range);
     
     return new InlineReferenceCommentCompletionContext(context, textualRanges, info);

@@ -24,7 +24,7 @@ public abstract class InlineReferenceCommentCreator : IInlineReferenceCommentCre
   [CanBeNull]
   public virtual CommentCreationResult? TryCreate([NotNull] ITreeNode node)
   {
-    if (TryExtractInlineReferenceInfo(node) is not var (name, nameKind, descriptionText, _)) return null;
+    if (TryExtractInlineReferenceInfo(node) is not var ((name, nameKind), descriptionText, _)) return null;
     
     var description = HighlightedText.CreateEmptyText();
     var provider = LanguageManager.Instance.GetService<IHighlightersProvider>(node.Language);
@@ -66,20 +66,29 @@ public abstract class InlineReferenceCommentCreator : IInlineReferenceCommentCre
 
   public IEnumerable<ReferenceInFileDescriptor> FindReferencesToNamedEntity(NameWithKind nameWithKind, ITreeNode node)
   {
+    return FindReferencesOrAll(node, nameWithKind);
+  }
+
+  public IEnumerable<ReferenceInFileDescriptor> FindAllReferences(ITreeNode node)
+  {
+    return FindReferencesOrAll(node, null);
+  }
+
+  private IEnumerable<ReferenceInFileDescriptor> FindReferencesOrAll([NotNull] ITreeNode node, NameWithKind? nameWithKind)
+  {
     if (TryExtractInlineReferenceInfo(node) is not { } info ||
         node.GetSourceFile() is not { } sourceFile ||
-        info.Name != nameWithKind.Name)
+        (nameWithKind.HasValue && info.NameWithKind != nameWithKind.Value))
     {
       return EmptyList<ReferenceInFileDescriptor>.Enumerable;
     }
 
-    return new[] { new ReferenceInFileDescriptor(sourceFile, info.InvariantNameOffset) };
+    return new[] { new ReferenceInFileDescriptor(info.NameWithKind, sourceFile, info.NameRange) };
   }
 }
 
 public record struct InlineReferenceCommentInfo(
-  [NotNull] string Name,
-  NameKind NameKind,
+  NameWithKind NameWithKind,
   [CanBeNull] string Description,
-  DocumentOffset InvariantNameOffset
+  DocumentRange NameRange
 );

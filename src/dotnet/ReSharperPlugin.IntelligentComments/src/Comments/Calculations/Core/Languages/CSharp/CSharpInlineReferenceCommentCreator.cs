@@ -72,7 +72,7 @@ internal static class CSharpInlineReferenceCommentsUtil
     if (invariantNameEndIndex != -1 && contextCaretDocumentOffset > offset.Shift(invariantName.Length))
       return null;
     
-    return new InlineReferenceCommentInfo(invariantName, nameKind, null, offset);
+    return new InlineReferenceCommentInfo(new NameWithKind(invariantName, nameKind), null, offset.ExtendRight(invariantName.Length));
   }
 
   private record struct FoundReferenceSourceName(NameKind NameKind, string ReferenceSourceName);
@@ -130,6 +130,7 @@ internal static class CSharpInlineReferenceCommentsUtil
     
     //+2, cz comment starts with "//"
     var invariantNameOffset = commentNode.GetDocumentStartOffset().Shift(namedEntityStartIndex).Shift(2);
-    return new InlineReferenceCommentInfo(namedEntityName, nameKind, description, invariantNameOffset);
+    return new InlineReferenceCommentInfo(
+      new NameWithKind(namedEntityName, nameKind), description, invariantNameOffset.ExtendRight(namedEntityName.Length));
   }
 }

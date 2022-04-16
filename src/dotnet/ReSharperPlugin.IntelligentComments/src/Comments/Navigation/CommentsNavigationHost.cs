@@ -123,7 +123,7 @@ public class CommentsNavigationHost
       }
       case NamedEntityDomainResolveResult invariantResolveResult:
       {
-        var offset = invariantResolveResult.InvariantDocumentOffset;
+        var offset = invariantResolveResult.NameDeclarationDocumentOffset;
         offset.Document.GetPsiSourceFile(mySolution).Navigate(new TextRange(offset.Offset), true);
         break;
       }

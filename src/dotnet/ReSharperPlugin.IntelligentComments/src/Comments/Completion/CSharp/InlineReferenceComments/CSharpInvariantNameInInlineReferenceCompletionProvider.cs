@@ -11,8 +11,8 @@ public class CSharpInvariantNameInInlineReferenceCompletionProvider : ItemsProvi
 {
   protected override bool AddLookupItems(InlineReferenceCommentCompletionContext context, IItemsCollector collector)
   {
-    var prefix = context.Info.Name;
-    var cache = NamesCacheUtil.GetCacheFor(context.BasicContext.Solution, context.Info.NameKind);
+    var prefix = context.Info.NameWithKind.Name;
+    var cache = NamesCacheUtil.GetCacheFor(context.BasicContext.Solution, context.Info.NameWithKind.NameKind);
 
     foreach (var name in cache.GetAllNamesFor(prefix))
     {

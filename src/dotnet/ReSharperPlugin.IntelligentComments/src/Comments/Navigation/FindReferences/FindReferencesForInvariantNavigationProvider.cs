@@ -64,9 +64,9 @@ internal class MySearchOccurrenceBrowserDescriptor : SearchDescriptor
   }
 }
 
-public class InvariantReferenceOccurence : TextOccurrence
+public class NamedEntityOccurence : TextOccurrence
 {
-  public InvariantReferenceOccurence(IPsiSourceFile sourceFile, DocumentOffset offset) 
+  public NamedEntityOccurence(IPsiSourceFile sourceFile, DocumentOffset offset) 
     : base(sourceFile, new DocumentRange(offset), OccurrencePresentationOptions.DefaultOptions)
   {
   }
