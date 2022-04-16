@@ -28,7 +28,7 @@ public class DeclaredElementsDataRule
       return EnumerableCollection<IDeclaredElement>.Empty;
     } 
 
-    var declaredElement = new NamedEntityDeclaredElement(solution, extraction.NameWithKind, extraction.DocumentRange.StartOffset);
+    var declaredElement = new NamedEntityDeclaredElement(solution, extraction.NameWithKind, extraction.DocumentRange);
     return new List<IDeclaredElement>() { declaredElement };
   }
 }

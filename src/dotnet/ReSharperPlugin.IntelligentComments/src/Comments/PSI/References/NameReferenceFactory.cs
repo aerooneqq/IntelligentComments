@@ -12,7 +12,6 @@ public class NameReferenceFactory : IReferenceFactory
 {
   public ReferenceCollection GetReferences(ITreeNode element, ReferenceCollection oldReferences)
   {
-    if (element is not ICommentNode docCommentBlock) return ReferenceCollection.Empty;
     if (element.GetContainingFile() is not { } file) return ReferenceCollection.Empty;
 
     var finders = LanguageManager.Instance.TryGetCachedServices<IReferenceInCommentFinder>(element.Language);
@@ -20,10 +19,10 @@ public class NameReferenceFactory : IReferenceFactory
 
     foreach (var finder in finders)
     {
-      foreach (var referenceDescriptor in finder.FindAllReferences(docCommentBlock))
+      foreach (var referenceDescriptor in finder.FindAllReferences(element))
       {
         var treeRange = file.Translate(referenceDescriptor.Range);
-        var reference = new NamedEntityReference(docCommentBlock, referenceDescriptor.NameWithKind, treeRange);
+        var reference = new NamedEntityReference(element, referenceDescriptor.NameWithKind, treeRange);
         references.Add(reference);
       } 
     }

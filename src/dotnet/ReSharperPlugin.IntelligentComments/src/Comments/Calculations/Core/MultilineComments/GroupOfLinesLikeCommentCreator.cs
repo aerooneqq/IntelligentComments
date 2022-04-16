@@ -41,8 +41,9 @@ public abstract class GroupOfLinesLikeCommentCreator : ICommentFromNodeCreator, 
 
     if (CheckMatches(Regex.Matches(text, PatternWithName)))
     {
-      var name = ExtractName(text);
+      var (_, name) = ExtractName(text);
       text = text[(text.IndexOf("):", StringComparison.Ordinal) + 3)..];
+
       return buildResult with { Comment = CreateComment(groupOfLineComments, provider, text, name) };
     }
     
@@ -66,12 +67,16 @@ public abstract class GroupOfLinesLikeCommentCreator : ICommentFromNodeCreator, 
 
   private static bool CheckMatches([NotNull] MatchCollection matches) => matches.Count == 1 && matches[0].Success && matches[0].Index == 0;
 
+
+  protected record struct NameExtraction(int Index, [NotNull] string Name);
+  
   [NotNull]
-  protected virtual string ExtractName([NotNull] string text)
+  protected virtual NameExtraction ExtractName([NotNull] string text)
   {
     const string name = "name:";
     var index = text.IndexOf(name, StringComparison.Ordinal);
-    return text[(index + name.Length + 1)..(text.IndexOf(")", StringComparison.Ordinal))];
+    text = text[(index + name.Length + 1)..(text.IndexOf(")", StringComparison.Ordinal))];
+    return new NameExtraction(index, text);
   }
 
   [NotNull]
@@ -104,11 +109,14 @@ public abstract class GroupOfLinesLikeCommentCreator : ICommentFromNodeCreator, 
       return EmptyList<NameInFileDescriptor>.Enumerable;
 
     var text = GetGroupOfLinesCommentsText(groupOfLineComments);
-    if (CheckMatches(Regex.Matches(text, PatternWithName)) && node.GetSourceFile() is { } sourceFile)
+    var matches = Regex.Matches(text, PatternWithName);
+    
+    if (CheckMatches(matches) && node.GetSourceFile() is { } sourceFile)
     {
-      var name = ExtractName(text);
-      var offset = groupOfLineComments.Range.StartOffset;
-      return new NameInFileDescriptor[] { new(sourceFile, offset, new NameWithKind(name, NameKind)) };
+      var (index, name) = ExtractName(text);
+      var nameRange = groupOfLineComments.Range.StartOffset.Shift(index).ExtendRight(name.Length);
+      
+      return new NameInFileDescriptor[] { new(sourceFile, nameRange, new NameWithKind(name, NameKind)) };
     }
     
     return EmptyList<NameInFileDescriptor>.Enumerable;

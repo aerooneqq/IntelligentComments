@@ -12,13 +12,13 @@ using ReSharperPlugin.IntelligentComments.Comments.PSI.DeclaredElements;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.PSI.References;
 
-public class NamedEntityReference : CheckedReferenceBase<ICommentNode>
+public class NamedEntityReference : CheckedReferenceBase<ITreeNode>
 {
   private readonly NameWithKind myNameWithKind;
   private readonly TreeTextRange myRange;
 
   
-  public NamedEntityReference([NotNull] ICommentNode owner, NameWithKind nameWithKind, TreeTextRange range) 
+  public NamedEntityReference([NotNull] ITreeNode owner, NameWithKind nameWithKind, TreeTextRange range) 
     : base(owner)
   {
     myNameWithKind = nameWithKind;
@@ -38,7 +38,7 @@ public class NamedEntityReference : CheckedReferenceBase<ICommentNode>
       return new ResolveResultWithInfo(EmptyResolveResult.Instance, ResolveErrorType.NOT_RESOLVED);
     }
     
-    var declaredElement = new NamedEntityDeclaredElement(solution, myNameWithKind, result.NameDeclarationDocumentOffset);
+    var declaredElement = new NamedEntityDeclaredElement(solution, myNameWithKind, result.NameDeclarationDocumentRange);
     return new ResolveResultWithInfo(new SimpleResolveResult(declaredElement), ResolveErrorType.OK);
   }
 

@@ -10,7 +10,7 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core;
 public record struct NameWithKind(string Name, NameKind NameKind);
 
 public record struct NameInFileDescriptor(
-  [NotNull] IPsiSourceFile SourceFile, DocumentOffset Offset, NameWithKind NameWithKind);
+  [NotNull] IPsiSourceFile SourceFile, DocumentRange NameRange, NameWithKind NameWithKind);
 
 public interface INamesInCommentFinder
 {

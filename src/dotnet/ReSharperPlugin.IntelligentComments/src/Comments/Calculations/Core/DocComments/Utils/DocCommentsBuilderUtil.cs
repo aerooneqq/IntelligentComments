@@ -202,6 +202,10 @@ internal static partial class DocCommentsBuilderUtil
     if (xmlTag.GetAttribute(CommonNameAttrName) is not { } nameAttr) return null;
     return new NameWithKind(nameAttr.UnquotedValue, nameKind.Value);
   }
+
+  [CanBeNull] 
+  internal static IXmlAttribute TryGetCommonNameAttribute([NotNull] IXmlTag xmlTag) =>
+    xmlTag.GetAttribute(CommonNameAttrName); 
   
   internal static bool IsInvariantNameAttribute([CanBeNull] IXmlAttribute attribute)
   {

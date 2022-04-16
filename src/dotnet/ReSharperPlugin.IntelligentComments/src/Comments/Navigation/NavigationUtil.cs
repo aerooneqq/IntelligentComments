@@ -169,8 +169,8 @@ internal static class NavigationUtil
     }
 
     var sourceFile = invariantResolveResult.ParentCommentBlock.GetSourceFile();
-    var offset = invariantResolveResult.NameDeclarationDocumentOffset;
+    var range = invariantResolveResult.NameDeclarationDocumentRange;
 
-    sourceFile.Navigate(new TextRange(offset.Offset), true);
+    sourceFile.Navigate(new TextRange(range.StartOffset.Offset), true);
   }
 }

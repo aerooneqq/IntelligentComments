@@ -83,8 +83,8 @@ internal static class NamesResolveUtil
           
     var resolvedName = results.First();
     if (resolvedName.NameWithKind != nameWithKind) return null;
-    
-    return new NamedEntityDomainResolveResult(null, commentNode, commentNode.GetDocumentStartOffset(), nameWithKind.NameKind);
+
+    return new NamedEntityDomainResolveResult(null, commentNode, resolvedName.NameRange, nameWithKind.NameKind);
   }
 
   [CanBeNull]
@@ -124,9 +124,10 @@ internal static class NamesResolveUtil
       var xml = docCommentBlock.GetXML(null);
       if (FindXmlElement(tag, xml) is not { } element) return;
       if (DocCommentsBuilderUtil.TryGetBuilderFor(docCommentBlock) is not { } builder) return;
-      
+      if (DocCommentsBuilderUtil.TryGetCommonNameAttribute(tag) is not { } attribute) return;
+
       var segment = builder.Build(element);
-      result = new NamedEntityDomainResolveResult(segment, docCommentBlock, tag.GetDocumentStartOffset(), nameKind);
+      result = new NamedEntityDomainResolveResult(segment, docCommentBlock, attribute.Value.GetDocumentRange(), nameKind);
     });
 
     return result;

@@ -19,14 +19,14 @@ public class NamedEntitiesSearchRequest : SearchDeclarationsRequest
   public override ICollection<IOccurrence> Search(IProgressIndicator progressIndicator)
   {
     if (Target.GetValidDeclaredElement() is not NamedEntityDeclaredElement declaredElement ||
-        declaredElement.DeclarationOffset.Document.GetPsiSourceFile(Solution) is not { } sourceFile)
+        declaredElement.DeclarationRange.Document.GetPsiSourceFile(Solution) is not { } sourceFile)
     {
       return EnumerableCollection<IOccurrence>.Empty;
     }
-
+    
     return new[]
     {
-      new NamedEntityDeclaredElementOccurence(declaredElement.NameWithKind, Solution, sourceFile, declaredElement.DeclarationOffset)
+      new NamedEntityDeclaredElementOccurence(declaredElement.NameWithKind, Solution, sourceFile, declaredElement.DeclarationRange.StartOffset)
     };
   }
 }
