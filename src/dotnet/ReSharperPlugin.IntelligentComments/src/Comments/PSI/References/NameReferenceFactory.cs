@@ -22,9 +22,9 @@ public class NameReferenceFactory : IReferenceFactory
       foreach (var referenceDescriptor in finder.FindAllReferences(element))
       {
         var treeRange = file.Translate(referenceDescriptor.Range);
-        var reference = new NamedEntityReference(element, referenceDescriptor.NameWithKind, treeRange);
+        var reference = new NamedEntityReference(element, referenceDescriptor.NameWithKind, treeRange, referenceDescriptor.Range);
         references.Add(reference);
-      } 
+      }
     }
 
     return new ReferenceCollection(references.ResultingList().ToIReadOnlyList());

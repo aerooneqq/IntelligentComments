@@ -74,8 +74,8 @@ public abstract class GroupOfLinesLikeCommentCreator : ICommentFromNodeCreator, 
   protected virtual NameExtraction ExtractName([NotNull] string text)
   {
     const string name = "name:";
-    var index = text.IndexOf(name, StringComparison.Ordinal);
-    text = text[(index + name.Length + 1)..(text.IndexOf(")", StringComparison.Ordinal))];
+    var index = text.IndexOf(name, StringComparison.Ordinal) + name.Length + 1;
+    text = text[index..text.IndexOf(")", StringComparison.Ordinal)];
     return new NameExtraction(index, text);
   }
 
@@ -114,7 +114,9 @@ public abstract class GroupOfLinesLikeCommentCreator : ICommentFromNodeCreator, 
     if (CheckMatches(matches) && node.GetSourceFile() is { } sourceFile)
     {
       var (index, name) = ExtractName(text);
-      var nameRange = groupOfLineComments.Range.StartOffset.Shift(index).ExtendRight(name.Length);
+      
+      //+2 cz comments starts with //
+      var nameRange = groupOfLineComments.Range.StartOffset.Shift(2).Shift(index).ExtendRight(name.Length);
       
       return new NameInFileDescriptor[] { new(sourceFile, nameRange, new NameWithKind(name, NameKind)) };
     }

@@ -108,9 +108,9 @@ internal static class NavigationUtil
   private static NamedEntityExtraction? TryExtractNameFromInlineComment([NotNull] ITreeNode token)
   {
     if (NamesResolveUtil.TryFindNearestCommentNode(token) is not { } commentNode) return null;
-    if (NamesResolveUtil.TryFindOneNameDeclarationIn(commentNode) is not { } nameWithKind) return null;
+    if (NamesResolveUtil.TryFindOneNameDeclarationIn(commentNode) is not { } descriptor) return null;
 
-    return new NamedEntityExtraction(commentNode.GetDocumentRange(), nameWithKind);
+    return new NamedEntityExtraction(commentNode.GetDocumentRange(), descriptor.NameWithKind);
   }
 
   [CanBeNull]

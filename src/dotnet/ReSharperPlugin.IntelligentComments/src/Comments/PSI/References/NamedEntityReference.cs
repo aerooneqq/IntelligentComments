@@ -1,28 +1,48 @@
+using System.Linq;
 using JetBrains.Annotations;
+using JetBrains.DocumentModel;
+using JetBrains.ReSharper.Features.ReSpeller.Analyzers;
 using JetBrains.ReSharper.Psi;
+using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.ReSharper.Psi.ExtensionsAPI.Resolve;
+using JetBrains.ReSharper.Psi.ExtensionsAPI.Tree;
 using JetBrains.ReSharper.Psi.JavaScript.Resolve;
 using JetBrains.ReSharper.Psi.Resolve;
 using JetBrains.ReSharper.Psi.Tree;
+using JetBrains.ReSharper.Psi.Xml.Tree;
+using JetBrains.ReSharper.Refactorings.ChangeStaticness.ToStatic.Model;
+using JetBrains.ReSharper.Resources.Shell;
 using JetBrains.Util;
 using ReSharperPlugin.IntelligentComments.Comments.Caches.Names;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core;
+using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.InlineReferenceComments;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.References;
 using ReSharperPlugin.IntelligentComments.Comments.PSI.DeclaredElements;
+using ReSharperPlugin.IntelligentComments.Comments.PSI.Features.Rename;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.PSI.References;
 
-public class NamedEntityReference : CheckedReferenceBase<ITreeNode>
+public interface INamedEntityReference : IReference
 {
-  private readonly NameWithKind myNameWithKind;
+  NameWithKind NameWithKind { get; }
+}
+
+public class NamedEntityReference : CheckedReferenceBase<ITreeNode>, INamedEntityReference
+{
   private readonly TreeTextRange myRange;
+  private readonly DocumentRange myDocumentRange;
+
+
+  public NameWithKind NameWithKind { get; }
 
   
-  public NamedEntityReference([NotNull] ITreeNode owner, NameWithKind nameWithKind, TreeTextRange range) 
+  public NamedEntityReference(
+    [NotNull] ITreeNode owner, NameWithKind nameWithKind, TreeTextRange range, DocumentRange documentRange) 
     : base(owner)
   {
-    myNameWithKind = nameWithKind;
+    NameWithKind = nameWithKind;
     myRange = range;
+    myDocumentRange = documentRange;
   }
   
 
@@ -33,12 +53,12 @@ public class NamedEntityReference : CheckedReferenceBase<ITreeNode>
 
     var solution = sourceFile.GetSolution();
     var domainResolveContext = new DomainResolveContextImpl(solution, sourceFile.Document);
-    if (NamesResolveUtil.ResolveName(myNameWithKind, domainResolveContext) is not NamedEntityDomainResolveResult result)
+    if (NamesResolveUtil.ResolveName(NameWithKind, domainResolveContext) is not NamedEntityDomainResolveResult result)
     {
       return new ResolveResultWithInfo(EmptyResolveResult.Instance, ResolveErrorType.NOT_RESOLVED);
     }
     
-    var declaredElement = new NamedEntityDeclaredElement(solution, myNameWithKind, result.NameDeclarationDocumentRange);
+    var declaredElement = new NamedEntityDeclaredElement(solution, NameWithKind, result.NameDeclarationDocumentRange);
     return new ResolveResultWithInfo(new SimpleResolveResult(declaredElement), ResolveErrorType.OK);
   }
 
@@ -48,9 +68,42 @@ public class NamedEntityReference : CheckedReferenceBase<ITreeNode>
   }
   
   
-  public override string GetName() => myNameWithKind.Name;
+  public override string GetName() => NameWithKind.Name;
   public override TreeTextRange GetTreeTextRange() => myRange;
-  public override IReference BindTo(IDeclaredElement element) => this;
+  public override IReference BindTo(IDeclaredElement element)
+  {
+    if (element is not NamedEntityDeclaredElement newDeclaredElement) return this;
+
+    var manager = LanguageManager.Instance;
+    switch (myOwner)
+    {
+      case IDocCommentBlock docComment:
+      {
+        if (manager.TryGetService<IPsiHelper>(docComment.Language) is not { } psiHelper) return this;
+        if (psiHelper.GetXmlDocPsi(docComment) is not { } xmlDocPsi) return this;
+
+        var xmlFile = xmlDocPsi.XmlFile;
+        var referenceRange = xmlDocPsi.XmlFile.Translate(myDocumentRange);
+        
+        if (xmlFile.FindTokenAt(referenceRange.StartOffset) is not IXmlValueToken { Parent: IXmlAttribute } valueToken)
+        {
+          return this;
+        }
+
+        RenameUtil.ReplaceAttributeValue(valueToken, newDeclaredElement.NameWithKind.Name);
+        break;
+      }
+
+      case ICommentNode commentNode:
+      {
+        RenameUtil.ReplaceReferenceCommentNode(commentNode, NameWithKind, newDeclaredElement.NameWithKind.Name);
+        break;
+      }
+    }
+
+    return this;
+  }
+
   public override IReference BindTo(IDeclaredElement element, ISubstitution substitution) => this;
   public override IAccessContext GetAccessContext() => new DefaultAccessContext(myOwner);
   public override ISymbolFilter[] GetSymbolFilters() => EmptyArray<ISymbolFilter>.Instance;
