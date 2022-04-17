@@ -1,12 +1,9 @@
 using JetBrains.Annotations;
 using JetBrains.DocumentModel;
-using JetBrains.ReSharper.Features.ReSpeller.Analyzers;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.ExtensionsAPI.Resolve;
-using JetBrains.ReSharper.Psi.JavaScript.Resolve;
 using JetBrains.ReSharper.Psi.Resolve;
 using JetBrains.ReSharper.Psi.Tree;
-using JetBrains.ReSharper.Psi.Xml.Tree;
 using JetBrains.Util;
 using ReSharperPlugin.IntelligentComments.Comments.Caches.Names;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core;

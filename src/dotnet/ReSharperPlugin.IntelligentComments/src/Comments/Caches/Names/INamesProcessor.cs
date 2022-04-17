@@ -1,16 +1,11 @@
-using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
-using JetBrains.Diagnostics;
 using JetBrains.DocumentModel;
-using JetBrains.ReSharper.Features.ReSpeller.Analyzers;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Tree;
-using JetBrains.ReSharper.Psi.Xml.Tree;
 using JetBrains.Util;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments.Utils;
-using ReSharperPlugin.IntelligentComments.Comments.Completion.CSharp.DocComments;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Caches.Names;
 
