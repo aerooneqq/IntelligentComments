@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using JetBrains.Annotations;
 using JetBrains.Application;
 using JetBrains.Application.Progress;
@@ -84,18 +85,9 @@ public class NamedEntityAtomicRename : AtomicRenameBase
     if (!token.GetDocumentRange().Contains(declarationRange)) return;
 
     DocumentRange newDeclarationRange;
-    if (token.TryFindDocCommentBlock() is { } docCommentBlock)
+    if (token.TryFindDocCommentBlock() is { } docCommentBlock && 
+        RenameUtil.FindAttributeValueToken(docCommentBlock, declarationRange) is { } valueToken)
     {
-      if (LanguageManager.Instance.TryGetService<IPsiHelper>(token.Language) is not { } helper) return;
-      if (helper.GetXmlDocPsi(docCommentBlock) is not { XmlFile: { } xmlFile }) return;
-
-      var docRange = xmlFile.Translate(declarationRange.StartOffset);
-      if (xmlFile.FindTokenAt(docRange) is not IXmlValueToken { Parent: IXmlAttribute } valueToken)
-      {
-        ourLogger.LogAssertion($"The found token was not IXmlValueToken for {docRange}");
-        return;
-      }
-      
       var newValue = RenameUtil.ReplaceAttributeValue(valueToken, NewName);
       newDeclarationRange = newValue.GetDocumentRange();
     }
@@ -113,8 +105,8 @@ public class NamedEntityAtomicRename : AtomicRenameBase
     var newDeclaredElement = new NamedEntityDeclaredElement(mySolution, newNameWithKind, newDeclarationRange);
     var searchDomain = mySolution.GetComponent<SearchDomainFactory>().CreateSearchDomain(mySolution, false);
     var references = mySolution.GetPsiServices().Finder.FindReferences(oldElement, searchDomain, pi);
-      
-    foreach (var reference in references)
+    
+    foreach (var reference in references.OrderByDescending(reference => reference.GetTreeTextRange().StartOffset))
     {
       reference.BindTo(newDeclaredElement);
     }

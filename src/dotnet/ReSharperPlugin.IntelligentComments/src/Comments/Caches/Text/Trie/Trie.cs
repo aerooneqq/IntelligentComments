@@ -34,7 +34,6 @@ public class Trie
     return TryGetNode(key) is { };
   }
   
-  
   public bool ApplyDelta([NotNull] string key, int delta)
   {
     if (TryGetNode(key) is not { } node)

@@ -38,8 +38,8 @@ public class NamedEntityReference : CheckedReferenceBase<ITreeNode>, INamedEntit
     myRange = range;
     myDocumentRange = documentRange;
   }
-  
 
+  
   public override ResolveResultWithInfo ResolveWithoutCache()
   {
     if (myOwner.GetSourceFile() is not { } sourceFile)
@@ -58,32 +58,20 @@ public class NamedEntityReference : CheckedReferenceBase<ITreeNode>, INamedEntit
 
   public override ISymbolTable GetReferenceSymbolTable(bool useReferenceName)
   {
-    return new JsEmptySymbolTable();
+    return EmptySymbolTable.INSTANCE;
   }
-  
   
   public override string GetName() => NameWithKind.Name;
   public override TreeTextRange GetTreeTextRange() => myRange;
   public override IReference BindTo(IDeclaredElement element)
   {
     if (element is not NamedEntityDeclaredElement newDeclaredElement) return this;
-
-    var manager = LanguageManager.Instance;
+    
     switch (myOwner)
     {
       case IDocCommentBlock docComment:
       {
-        if (manager.TryGetService<IPsiHelper>(docComment.Language) is not { } psiHelper) return this;
-        if (psiHelper.GetXmlDocPsi(docComment) is not { } xmlDocPsi) return this;
-
-        var xmlFile = xmlDocPsi.XmlFile;
-        var referenceRange = xmlDocPsi.XmlFile.Translate(myDocumentRange);
-        
-        if (xmlFile.FindTokenAt(referenceRange.StartOffset) is not IXmlValueToken { Parent: IXmlAttribute } valueToken)
-        {
-          return this;
-        }
-
+        if (RenameUtil.FindAttributeValueToken(docComment, myDocumentRange) is not { } valueToken) return this;
         RenameUtil.ReplaceAttributeValue(valueToken, newDeclaredElement.NameWithKind.Name);
         break;
       }

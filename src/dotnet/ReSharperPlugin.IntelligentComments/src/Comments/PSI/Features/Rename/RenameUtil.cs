@@ -1,6 +1,9 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using JetBrains.DocumentModel;
+using JetBrains.ReSharper.Features.ReSpeller.Analyzers;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.ReSharper.Psi.ExtensionsAPI.Tree;
@@ -16,6 +19,21 @@ namespace ReSharperPlugin.IntelligentComments.Comments.PSI.Features.Rename;
 
 public static class RenameUtil
 {
+  public static IXmlValueToken FindAttributeValueToken(
+    [NotNull] IDocCommentBlock docCommentBlock, DocumentRange declarationRange)
+  {
+    if (LanguageManager.Instance.TryGetService<IPsiHelper>(docCommentBlock.Language) is not { } helper) return null;
+    if (helper.GetXmlDocPsi(docCommentBlock) is not { XmlFile: { } xmlFile }) return null;
+
+    var docRange = xmlFile.Translate(declarationRange.StartOffset);
+    if (xmlFile.FindTokenAt(docRange) is not IXmlValueToken { Parent: IXmlAttribute } valueToken)
+    {
+      return null;
+    }
+
+    return valueToken;
+  }
+
   [NotNull]
   public static IXmlAttributeValue ReplaceAttributeValue([NotNull] IXmlValueToken valueToken, [NotNull] string newName)
   {
@@ -37,17 +55,17 @@ public static class RenameUtil
     NameWithKind oldName, 
     [NotNull] string newName)
   {
-    if (TryGetReferenceRange(commentNode, oldName) is not { } referenceRange) return;
+    if (TryGetNeededRange(commentNode, finder => finder.FindReferences(commentNode, oldName)) is not { } referenceRange) 
+      return;
+    
     ReplaceCommentNodeInternal(commentNode, referenceRange, newName);
   }
 
-  [NotNull]
-  private static ICommentNode ReplaceCommentNodeInternal(
-    [NotNull] ICommentNode commentNode, 
-    DocumentRange entityInCommentRange, 
+  private static void ReplaceCommentNodeInternal(
+    [NotNull] ICommentNode commentNode,
+    DocumentRange entityInCommentRange,
     [NotNull] string newName)
   {
-    
     var startOffset = commentNode.GetDocumentRange().StartOffset;
     var nameOffset = entityInCommentRange.StartOffset - startOffset;
     var nameEndOffset = entityInCommentRange.EndOffset - startOffset;
@@ -64,36 +82,20 @@ public static class RenameUtil
     {
       ModificationUtil.ReplaceChild(commentNode, newCommentNode);
     }
-
-    return newCommentNode;
   }
 
-  public static DocumentRange? TryGetReferenceRange([NotNull] ICommentNode commentNode, NameWithKind nameWithKind)
+  public static DocumentRange? TryGetNeededRange(
+    ICommentNode commentNode,
+    [NotNull] Func<INamedEntitiesCommonFinder, IEnumerable<CommonNamedEntityDescriptor>> descriptorsExtractor)
   {
     var finders = LanguageManager.Instance.TryGetCachedServices<INamedEntitiesCommonFinder>(commentNode.Language);
     foreach (var finder in finders)
     {
-      if (finder.FindReferences(commentNode, nameWithKind) is { } references &&
+      if (descriptorsExtractor(finder) is { } references &&
           references.FirstOrDefault() is { } firstReference &&
           commentNode.GetDocumentRange().Contains(firstReference.EntityRange))
       {
         return firstReference.EntityRange;
-      }
-    }
-
-    return null;
-  }
-
-  public static DocumentRange? TryGetNameRange([NotNull] ICommentNode commentNode)
-  {
-    var finders = LanguageManager.Instance.TryGetCachedServices<INamedEntitiesCommonFinder>(commentNode.Language);
-    foreach (var finder in finders)
-    {
-      if (finder.FindNames(commentNode) is { } names &&
-          names.FirstOrDefault() is { } firstName &&
-          commentNode.GetDocumentRange().Contains(firstName.EntityRange))
-      {
-        return firstName.EntityRange;
       }
     }
 
@@ -105,8 +107,8 @@ public static class RenameUtil
     [NotNull] ICommentNode commentNode, 
     [NotNull] string newName)
   {
-    if (TryGetNameRange(commentNode) is not { } nameRange) return null;
-    var newNode = ReplaceCommentNodeInternal(commentNode, nameRange, newName);
+    if (TryGetNeededRange(commentNode, finder => finder.FindNames(commentNode)) is not { } nameRange) return null;
+    ReplaceCommentNodeInternal(commentNode, nameRange, newName);
 
     return nameRange.StartOffset.ExtendRight(newName.Length);
   }

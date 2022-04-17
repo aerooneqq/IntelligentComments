@@ -34,7 +34,7 @@ public class NameReferenceFactory : IReferenceFactory
   public bool HasReference(ITreeNode element, IReferenceNameContainer names)
   {
     return element is IDocCommentBlock &&
-           LanguageManager.Instance.TryGetCachedServices<ReferencesInDocCommentFinder>(element.Language) is { } finders &&
+           LanguageManager.Instance.TryGetCachedServices<ReferencesAndNamesInDocCommentFinder>(element.Language) is { } finders &&
            finders.Any(finder => finder.FindAllReferences(element).Any());
   }
 }

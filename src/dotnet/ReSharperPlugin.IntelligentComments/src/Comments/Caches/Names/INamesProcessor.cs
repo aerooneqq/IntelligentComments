@@ -26,7 +26,6 @@ public class NamesProcessor : INamesProcessor, IRecursiveElementProcessor<Dictio
   private readonly NameKind myWantedNameKind;
 
   
-  
   public NamesProcessor(NameKind wantedNameKind)
   {
     myWantedNameKind = wantedNameKind;
@@ -40,87 +39,23 @@ public class NamesProcessor : INamesProcessor, IRecursiveElementProcessor<Dictio
 
   public void ProcessBeforeInterior(ITreeNode element, Dictionary<string, List<NamedEntityInfo>> context)
   {
-    if (element is IDocCommentBlock comment)
+    var finders = LanguageManager.Instance.TryGetCachedServices<INamedEntitiesCommonFinder>(element.Language);
+    foreach (var finder in finders)
     {
-      ProcessDocComment(comment, context);
-      return;
-    }
-
-    if (element is ICommentNode commentNode)
-    {
-      if (element.TryFindDocCommentBlock() is { }) return;
-      
-      var finders = LanguageManager.Instance.TryGetCachedServices<INamedEntitiesCommonFinder>(element.Language);
-      foreach (var finder in finders)
+      foreach (var descriptor in finder.FindNames(element))
       {
-        foreach (var descriptor in finder.FindNames(commentNode))
-        {
-          if (descriptor.NameWithKind.NameKind != myWantedNameKind) continue;
-          
-          var infos = context.GetOrCreateValue(descriptor.NameWithKind.Name, static () => new List<NamedEntityInfo>());
-          infos.Add(new NamedEntityInfo(commentNode.GetDocumentStartOffset()));
-        }
+        if (descriptor.NameWithKind.NameKind != myWantedNameKind) continue;
+        
+        var infos = context.GetOrCreateValue(descriptor.NameWithKind.Name, static () => new List<NamedEntityInfo>());
+        infos.Add(new NamedEntityInfo(element.GetDocumentStartOffset()));
       }
     }
   }
-
-  private void ProcessDocComment(IDocCommentBlock comment, Dictionary<string, List<NamedEntityInfo>> context)
-  {
-    comment.ExecuteActionWithNames((extraction, xmlTag) =>
-    {
-      if (extraction.NameKind != myWantedNameKind) return;
-
-      var extractionName = extraction.Name;
-      Assertion.AssertNotNull(extractionName, "invariantName != null");
-
-      if (extractionName.IsNullOrWhitespace()) return;
-
-      var infos = context.GetOrCreateValue(extractionName, static () => new List<NamedEntityInfo>());
-      infos.Add(new NamedEntityInfo(xmlTag.GetDocumentStartOffset()));
-    });
-  }
-
+  
   public void ProcessAfterInterior(ITreeNode element, Dictionary<string, List<NamedEntityInfo>> context)
   {
   }
   
   public bool InteriorShouldBeProcessed(ITreeNode element, Dictionary<string, List<NamedEntityInfo>> context) => true;
   public bool IsProcessingFinished(Dictionary<string, List<NamedEntityInfo>> context) => false;
-}
-
-public static class CSharpNamesProcessorExtensions
-{
-  public static void ExecuteActionWithNames(
-    [NotNull] this IDocCommentBlock commentBlock, [NotNull] Action<NameWithKind, IXmlTag> actionWithInvariant)
-  {
-    if (LanguageManager.Instance.TryGetService<IPsiHelper>(commentBlock.Language) is not { } psiHelper) return;
-    if (psiHelper.GetXmlDocPsi(commentBlock) is not { } xmlDocPsi) return;
-
-    var xmlFile = xmlDocPsi.XmlFile;
-    for (var node = xmlFile.FirstChild; node is { }; node = node.NextSibling)
-    {
-      if (node is not IXmlTag xmlTag ||
-          DocCommentsBuilderUtil.TryExtractNameFrom(xmlTag) is not { } nameExtraction)
-      {
-        continue;
-      }
-
-      actionWithInvariant(nameExtraction, xmlTag);
-    }
-  }
-  
-  public static void ExecuteWithReferences(
-    [NotNull] this IDocCommentBlock commentBlock, [NotNull] Action<IXmlTag> actionWithReference)
-  {
-    var psiHelper = LanguageManager.Instance.TryGetService<IPsiHelper>(commentBlock.Language);
-    if (psiHelper?.GetXmlDocPsi(commentBlock) is not { } xmlDocPsi) return;
-
-    foreach (var tag in xmlDocPsi.XmlFile.Descendants<IXmlTag>().Collect())
-    {
-      if (DocCommentsBuilderUtil.IsReferenceTag(tag))
-      {
-        actionWithReference(tag);
-      }
-    }
-  }
 }

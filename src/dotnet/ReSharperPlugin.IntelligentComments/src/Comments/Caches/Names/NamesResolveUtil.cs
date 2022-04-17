@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 using JetBrains.Annotations;
+using JetBrains.Diagnostics;
 using JetBrains.DocumentModel;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Feature.Services.Text;
@@ -13,6 +14,7 @@ using JetBrains.ReSharper.Psi.Xml.Tree;
 using JetBrains.ReSharper.Resources.Shell;
 using JetBrains.Util;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core;
+using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments.Utils;
 using ReSharperPlugin.IntelligentComments.Comments.Completion.CSharp.DocComments;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
@@ -116,7 +118,7 @@ internal static class NamesResolveUtil
     if (docCommentBlock is null) return null;
 
     DomainResolveResult result = null;
-    docCommentBlock.ExecuteActionWithNames((extraction, tag) =>
+    ReferencesAndNamesInDocCommentFinder.ExecuteActionWithNames(docCommentBlock, (extraction, tag) =>
     {
       var currentName = extraction.Name;
       if (extraction.NameKind != nameKind || currentName != name) return;
