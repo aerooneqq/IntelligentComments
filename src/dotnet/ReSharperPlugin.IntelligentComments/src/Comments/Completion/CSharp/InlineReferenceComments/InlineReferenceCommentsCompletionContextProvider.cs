@@ -1,8 +1,6 @@
 using JetBrains.Annotations;
 using JetBrains.Diagnostics;
-using JetBrains.DocumentModel;
 using JetBrains.ReSharper.Feature.Services.CodeCompletion.Infrastructure;
-using JetBrains.Util;
 using ReSharperPlugin.IntelligentComments.Comments.Caches.Names;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.InlineReferenceComments;
 

@@ -6,7 +6,6 @@ using JetBrains.ReSharper.Psi.CSharp.Tree;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Util;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments.Errors;
-using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.MultilineComments;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.Languages.CSharp;
 

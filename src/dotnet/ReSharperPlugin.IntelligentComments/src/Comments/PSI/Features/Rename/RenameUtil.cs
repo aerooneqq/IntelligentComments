@@ -10,9 +10,7 @@ using JetBrains.ReSharper.Psi.Xml.Parsing;
 using JetBrains.ReSharper.Psi.Xml.Tree;
 using JetBrains.ReSharper.Resources.Shell;
 using JetBrains.Text;
-using ReSharperPlugin.IntelligentComments.Comments.Caches.Names;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core;
-using ReSharperPlugin.IntelligentComments.Comments.PSI.DeclaredElements;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.PSI.Features.Rename;
 

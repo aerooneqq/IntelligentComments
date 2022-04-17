@@ -1,12 +1,6 @@
-using System;
-using System.Collections.Generic;
 using JetBrains.Annotations;
-using JetBrains.ReSharper.Psi.Tree;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments.Utils;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
-using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.Content;
-using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl;
-using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.Content;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.MultilineComments.HackComments;
 
