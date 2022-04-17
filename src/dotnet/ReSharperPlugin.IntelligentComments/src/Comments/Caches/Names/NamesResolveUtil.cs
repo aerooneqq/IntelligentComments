@@ -71,9 +71,9 @@ internal static class NamesResolveUtil
   {
     if (TryFindNearestCommentNode(token) is not { } commentNode) return null;
 
-    var nameFinders = LanguageManager.Instance.TryGetCachedServices<INamesInCommentFinder>(commentNode.Language);
+    var nameFinders = LanguageManager.Instance.TryGetCachedServices<INamedEntitiesCommonFinder>(commentNode.Language);
 
-    var results = new LocalList<NameInFileDescriptor>();
+    var results = new LocalList<CommonNamedEntityDescriptor>();
     foreach (var finder in nameFinders)
     {
       results.AddRange(finder.FindNames(commentNode));
@@ -84,7 +84,7 @@ internal static class NamesResolveUtil
     var resolvedName = results.First();
     if (resolvedName.NameWithKind != nameWithKind) return null;
 
-    return new NamedEntityDomainResolveResult(null, commentNode, resolvedName.NameRange, nameWithKind.NameKind);
+    return new NamedEntityDomainResolveResult(null, commentNode, resolvedName.EntityRange, nameWithKind.NameKind);
   }
 
   [CanBeNull]
@@ -96,10 +96,10 @@ internal static class NamesResolveUtil
     return node as ICommentNode;
   }
 
-  internal static NameInFileDescriptor? TryFindOneNameDeclarationIn(ICommentNode commentNode)
+  internal static CommonNamedEntityDescriptor? TryFindOneNameDeclarationIn(ICommentNode commentNode)
   {
-    var finders = LanguageManager.Instance.TryGetCachedServices<INamesInCommentFinder>(commentNode.Language);
-    var names = new LocalList<NameInFileDescriptor>();
+    var finders = LanguageManager.Instance.TryGetCachedServices<INamedEntitiesCommonFinder>(commentNode.Language);
+    var names = new LocalList<CommonNamedEntityDescriptor>();
     foreach (var finder in finders)
     {
       names.AddRange(finder.FindNames(commentNode));
@@ -161,24 +161,24 @@ internal static class NamesResolveUtil
   }
   
   [NotNull]
-  public static IEnumerable<ReferenceInFileDescriptor> FindAllReferencesForNamedEntity(
+  public static IEnumerable<CommonNamedEntityDescriptor> FindAllReferencesForNamedEntity(
     NameWithKind nameExtraction, 
     [NotNull] ISolution solution)
   {
     var cache = NamesCacheUtil.GetCacheFor(solution, nameExtraction.NameKind);
     var name = nameExtraction.Name;
 
-    if (cache.GetNameCount(name) != 1) return EmptyList<ReferenceInFileDescriptor>.Enumerable;
+    if (cache.GetNameCount(name) != 1) return EmptyList<CommonNamedEntityDescriptor>.Enumerable;
     
     var trigramIndex = solution.GetComponent<SourcesTrigramIndex>();
     var filesContainingQuery = trigramIndex.GetFilesContainingQuery(name, false);
 
-    var result = new HashSet<ReferenceInFileDescriptor>();
+    var result = new HashSet<CommonNamedEntityDescriptor>();
     foreach (var file in filesContainingQuery)
     {
       if (file.GetPrimaryPsiFile() is not { } primaryFile) continue;
       var manager = LanguageManager.Instance;
-      var referencesFinders = manager.TryGetCachedServices<IReferenceInCommentFinder>(primaryFile.Language).ToList();
+      var referencesFinders = manager.TryGetCachedServices<INamedEntitiesCommonFinder>(primaryFile.Language).ToList();
       var indices = new LocalList<int>();
       
       FillOffsets(file.Document.GetText(), name, ref indices);
@@ -189,7 +189,7 @@ internal static class NamesResolveUtil
 
         foreach (var finder in referencesFinders)
         {
-          result.AddRange(finder.FindReferencesToNamedEntity(nameExtraction, commentNode));
+          result.AddRange(finder.FindReferences(commentNode, nameExtraction));
         }
       }
     }

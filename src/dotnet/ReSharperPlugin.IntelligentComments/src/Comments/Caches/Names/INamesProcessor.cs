@@ -50,7 +50,7 @@ public class NamesProcessor : INamesProcessor, IRecursiveElementProcessor<Dictio
     {
       if (element.TryFindDocCommentBlock() is { }) return;
       
-      var finders = LanguageManager.Instance.TryGetCachedServices<INamesInCommentFinder>(element.Language);
+      var finders = LanguageManager.Instance.TryGetCachedServices<INamedEntitiesCommonFinder>(element.Language);
       foreach (var finder in finders)
       {
         foreach (var descriptor in finder.FindNames(commentNode))

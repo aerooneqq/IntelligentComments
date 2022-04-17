@@ -9,37 +9,42 @@ using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments
 namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments;
 
 [Language(typeof(KnownLanguage))]
-public class ReferencesInDocCommentFinder : IReferenceInCommentFinder
+public class ReferencesInDocCommentFinder : INamedEntitiesCommonFinder
 {
-  public IEnumerable<ReferenceInFileDescriptor> FindReferencesToNamedEntity(NameWithKind nameWithKind, ITreeNode node)
+  public IEnumerable<CommonNamedEntityDescriptor> FindReferences(ITreeNode node, NameWithKind nameWithKind)
   {
     return FindReferencesToNamedEntityOrAll(node, nameWithKind);
   }
 
-  private static IEnumerable<ReferenceInFileDescriptor> FindReferencesToNamedEntityOrAll(
+  private static IEnumerable<CommonNamedEntityDescriptor> FindReferencesToNamedEntityOrAll(
     [NotNull] ITreeNode node,
     NameWithKind? nameWithKind)
   {
     if (node is not IDocCommentBlock docComment || node.GetSourceFile() is not { } sourceFile)
     {
-      return EmptyList<ReferenceInFileDescriptor>.Enumerable;
+      return EmptyList<CommonNamedEntityDescriptor>.Enumerable;
     }
 
-    var references = new LocalList<ReferenceInFileDescriptor>();
+    var references = new LocalList<CommonNamedEntityDescriptor>();
     docComment.ExecuteWithReferences(referenceTag =>
     {
       var extraction = DocCommentsBuilderUtil.TryExtractOneReferenceNameKindFromReferenceTag(referenceTag);
       if (extraction is null || (nameWithKind.HasValue && extraction != nameWithKind.Value)) return;
       if (DocCommentsBuilderUtil.TryGetOneReferenceSourceAttribute(referenceTag) is not { } sourceAttribute) return;
       
-      references.Add(new ReferenceInFileDescriptor(extraction.Value, sourceFile, sourceAttribute.Value.GetDocumentRange()));
+      references.Add(new CommonNamedEntityDescriptor(sourceFile, sourceAttribute.Value.GetDocumentRange(), extraction.Value));
     });
 
     return references.ResultingList();
   }
 
-  public IEnumerable<ReferenceInFileDescriptor> FindAllReferences([NotNull] ITreeNode node)
+  public IEnumerable<CommonNamedEntityDescriptor> FindAllReferences([NotNull] ITreeNode node)
   {
     return FindReferencesToNamedEntityOrAll(node, null);
+  }
+
+  public IEnumerable<CommonNamedEntityDescriptor> FindNames(ITreeNode node)
+  {
+    return EmptyList<CommonNamedEntityDescriptor>.Enumerable;
   }
 }

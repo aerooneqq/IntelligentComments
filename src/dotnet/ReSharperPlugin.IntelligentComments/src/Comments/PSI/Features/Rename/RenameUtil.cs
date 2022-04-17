@@ -70,14 +70,14 @@ public static class RenameUtil
 
   public static DocumentRange? TryGetReferenceRange([NotNull] ICommentNode commentNode, NameWithKind nameWithKind)
   {
-    var finders = LanguageManager.Instance.TryGetCachedServices<IReferenceInCommentFinder>(commentNode.Language);
+    var finders = LanguageManager.Instance.TryGetCachedServices<INamedEntitiesCommonFinder>(commentNode.Language);
     foreach (var finder in finders)
     {
-      if (finder.FindReferencesToNamedEntity(nameWithKind, commentNode) is { } references &&
+      if (finder.FindReferences(commentNode, nameWithKind) is { } references &&
           references.FirstOrDefault() is { } firstReference &&
-          commentNode.GetDocumentRange().Contains(firstReference.Range))
+          commentNode.GetDocumentRange().Contains(firstReference.EntityRange))
       {
-        return firstReference.Range;
+        return firstReference.EntityRange;
       }
     }
 
@@ -86,14 +86,14 @@ public static class RenameUtil
 
   public static DocumentRange? TryGetNameRange([NotNull] ICommentNode commentNode)
   {
-    var finders = LanguageManager.Instance.TryGetCachedServices<INamesInCommentFinder>(commentNode.Language);
+    var finders = LanguageManager.Instance.TryGetCachedServices<INamedEntitiesCommonFinder>(commentNode.Language);
     foreach (var finder in finders)
     {
       if (finder.FindNames(commentNode) is { } names &&
           names.FirstOrDefault() is { } firstName &&
-          commentNode.GetDocumentRange().Contains(firstName.NameRange))
+          commentNode.GetDocumentRange().Contains(firstName.EntityRange))
       {
-        return firstName.NameRange;
+        return firstName.EntityRange;
       }
     }
 

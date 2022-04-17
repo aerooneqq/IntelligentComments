@@ -5,7 +5,7 @@ using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.MultilineComments.ToDoComments;
 
 
-public interface IInlineToDoCommentCreator : ICommentFromNodeCreator, INamesInCommentFinder
+public interface IInlineToDoCommentCreator : ICommentFromNodeCreator, INamedEntitiesCommonFinder
 {
 }
 

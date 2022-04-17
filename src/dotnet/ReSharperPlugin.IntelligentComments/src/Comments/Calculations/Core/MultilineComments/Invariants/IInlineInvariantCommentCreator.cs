@@ -4,7 +4,7 @@ using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.MultilineComments.Invariants;
 
-public interface IInlineInvariantCommentCreator : ICommentFromNodeCreator, INamesInCommentFinder
+public interface IInlineInvariantCommentCreator : ICommentFromNodeCreator, INamedEntitiesCommonFinder
 {
   
 }

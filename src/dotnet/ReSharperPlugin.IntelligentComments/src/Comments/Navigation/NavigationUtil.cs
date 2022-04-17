@@ -138,7 +138,7 @@ internal static class NavigationUtil
     if (dataContext.GetData(ProjectModelDataConstants.SOLUTION) is not { } solution) return;
 
     var occurrences = NamesResolveUtil.FindAllReferencesForNamedEntity(extraction.NameWithKind, solution)
-      .Select(dto => new NamedEntityOccurence(dto.SourceFile, dto.Range.StartOffset))
+      .Select(dto => new NamedEntityOccurence(dto.SourceFile, dto.EntityRange.StartOffset))
       .Select(o => (IOccurrence)o)
       .ToList();
 

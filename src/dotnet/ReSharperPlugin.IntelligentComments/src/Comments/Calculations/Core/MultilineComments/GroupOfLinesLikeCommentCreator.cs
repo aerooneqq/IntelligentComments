@@ -13,7 +13,7 @@ using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.Content;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.MultilineComments;
 
-public abstract class GroupOfLinesLikeCommentCreator : ICommentFromNodeCreator, INamesInCommentFinder
+public abstract class GroupOfLinesLikeCommentCreator : ICommentFromNodeCreator, INamedEntitiesCommonFinder
 {
   [NotNull] protected readonly ILanguageManager LanguageManager;
   
@@ -103,10 +103,20 @@ public abstract class GroupOfLinesLikeCommentCreator : ICommentFromNodeCreator, 
 
   protected abstract TextHighlighter TryGetHighlighter([NotNull] IHighlightersProvider provider, int length);
 
-  public IEnumerable<NameInFileDescriptor> FindNames(ITreeNode node)
+  public IEnumerable<CommonNamedEntityDescriptor> FindReferences(ITreeNode node, NameWithKind nameWithKind)
+  {
+    return EmptyList<CommonNamedEntityDescriptor>.Enumerable;
+  }
+
+  public IEnumerable<CommonNamedEntityDescriptor> FindAllReferences(ITreeNode node)
+  {
+    return EmptyList<CommonNamedEntityDescriptor>.Enumerable;
+  }
+
+  public IEnumerable<CommonNamedEntityDescriptor> FindNames(ITreeNode node)
   {
     if (TryCreateGroupOfLinesCommentsNoMerge(node) is not var (_, groupOfLineComments))
-      return EmptyList<NameInFileDescriptor>.Enumerable;
+      return EmptyList<CommonNamedEntityDescriptor>.Enumerable;
 
     var text = GetGroupOfLinesCommentsText(groupOfLineComments);
     var matches = Regex.Matches(text, PatternWithName);
@@ -118,9 +128,9 @@ public abstract class GroupOfLinesLikeCommentCreator : ICommentFromNodeCreator, 
       //+2 cz comments starts with //
       var nameRange = groupOfLineComments.Range.StartOffset.Shift(2).Shift(index).ExtendRight(name.Length);
       
-      return new NameInFileDescriptor[] { new(sourceFile, nameRange, new NameWithKind(name, NameKind)) };
+      return new CommonNamedEntityDescriptor[] { new(sourceFile, nameRange, new NameWithKind(name, NameKind)) };
     }
     
-    return EmptyList<NameInFileDescriptor>.Enumerable;
+    return EmptyList<CommonNamedEntityDescriptor>.Enumerable;
   }
 }

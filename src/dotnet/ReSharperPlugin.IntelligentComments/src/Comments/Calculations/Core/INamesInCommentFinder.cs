@@ -9,10 +9,17 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core;
 
 public record struct NameWithKind(string Name, NameKind NameKind);
 
-public record struct NameInFileDescriptor(
-  [NotNull] IPsiSourceFile SourceFile, DocumentRange NameRange, NameWithKind NameWithKind);
+public record struct CommonNamedEntityDescriptor(
+  [NotNull] IPsiSourceFile SourceFile, DocumentRange EntityRange, NameWithKind NameWithKind);
 
-public interface INamesInCommentFinder
+public interface INamedEntitiesCommonFinder
 {
-  [NotNull] IEnumerable<NameInFileDescriptor> FindNames([NotNull] ITreeNode node);
+  [NotNull] 
+  IEnumerable<CommonNamedEntityDescriptor> FindReferences([NotNull] ITreeNode node, NameWithKind nameWithKind);
+
+  [NotNull]
+  IEnumerable<CommonNamedEntityDescriptor> FindAllReferences([NotNull] ITreeNode node);
+
+  [NotNull] 
+  IEnumerable<CommonNamedEntityDescriptor> FindNames([NotNull] ITreeNode node);
 }

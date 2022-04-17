@@ -4,7 +4,7 @@ using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.MultilineComments.HackComments;
 
-public interface IInlineHackCommentCreator : ICommentFromNodeCreator, INamesInCommentFinder
+public interface IInlineHackCommentCreator : ICommentFromNodeCreator, INamedEntitiesCommonFinder
 {
 }
 

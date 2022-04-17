@@ -14,15 +14,16 @@ public class NameReferenceFactory : IReferenceFactory
   {
     if (element.GetContainingFile() is not { } file) return ReferenceCollection.Empty;
 
-    var finders = LanguageManager.Instance.TryGetCachedServices<IReferenceInCommentFinder>(element.Language);
+    var finders = LanguageManager.Instance.TryGetCachedServices<INamedEntitiesCommonFinder>(element.Language);
     var references = new LocalList<IReference>();
 
     foreach (var finder in finders)
     {
       foreach (var referenceDescriptor in finder.FindAllReferences(element))
       {
-        var treeRange = file.Translate(referenceDescriptor.Range);
-        var reference = new NamedEntityReference(element, referenceDescriptor.NameWithKind, treeRange, referenceDescriptor.Range);
+        var range = referenceDescriptor.EntityRange;
+        var treeRange = file.Translate(range);
+        var reference = new NamedEntityReference(element, referenceDescriptor.NameWithKind, treeRange, range);
         references.Add(reference);
       }
     }

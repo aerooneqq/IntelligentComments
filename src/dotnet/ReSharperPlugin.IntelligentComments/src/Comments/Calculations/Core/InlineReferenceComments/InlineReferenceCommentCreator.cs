@@ -16,7 +16,7 @@ public interface IInlineReferenceCommentCreator : ICommentFromNodeCreator
 {
 }
 
-public abstract class InlineReferenceCommentCreator : IInlineReferenceCommentCreator, IReferenceInCommentFinder
+public abstract class InlineReferenceCommentCreator : IInlineReferenceCommentCreator, INamedEntitiesCommonFinder
 {
   public int Priority => CommentFromNodeCreatorsPriorities.Default;
 
@@ -64,26 +64,31 @@ public abstract class InlineReferenceCommentCreator : IInlineReferenceCommentCre
   public abstract InlineReferenceCommentInfo? TryExtractCompletionInlineReferenceInfo(
     [NotNull] ITreeNode node, DocumentOffset contextCaretDocumentOffset);
 
-  public IEnumerable<ReferenceInFileDescriptor> FindReferencesToNamedEntity(NameWithKind nameWithKind, ITreeNode node)
+  public IEnumerable<CommonNamedEntityDescriptor> FindReferences(ITreeNode node, NameWithKind nameWithKind)
   {
     return FindReferencesOrAll(node, nameWithKind);
   }
 
-  public IEnumerable<ReferenceInFileDescriptor> FindAllReferences(ITreeNode node)
+  public IEnumerable<CommonNamedEntityDescriptor> FindAllReferences(ITreeNode node)
   {
     return FindReferencesOrAll(node, null);
   }
 
-  private IEnumerable<ReferenceInFileDescriptor> FindReferencesOrAll([NotNull] ITreeNode node, NameWithKind? nameWithKind)
+  public IEnumerable<CommonNamedEntityDescriptor> FindNames(ITreeNode node)
+  {
+    return EmptyList<CommonNamedEntityDescriptor>.Enumerable;
+  }
+
+  private IEnumerable<CommonNamedEntityDescriptor> FindReferencesOrAll([NotNull] ITreeNode node, NameWithKind? nameWithKind)
   {
     if (TryExtractInlineReferenceInfo(node) is not { } info ||
         node.GetSourceFile() is not { } sourceFile ||
         (nameWithKind.HasValue && info.NameWithKind != nameWithKind.Value))
     {
-      return EmptyList<ReferenceInFileDescriptor>.Enumerable;
+      return EmptyList<CommonNamedEntityDescriptor>.Enumerable;
     }
 
-    return new[] { new ReferenceInFileDescriptor(info.NameWithKind, sourceFile, info.NameRange) };
+    return new[] { new CommonNamedEntityDescriptor(sourceFile, info.NameRange, info.NameWithKind) };
   }
 }
 
