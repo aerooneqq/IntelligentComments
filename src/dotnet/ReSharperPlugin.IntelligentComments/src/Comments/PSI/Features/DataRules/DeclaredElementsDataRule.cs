@@ -25,7 +25,7 @@ public class DeclaredElementsDataRule
     if (dataContext.GetData(ProjectModelDataConstants.SOLUTION) is not { } solution ||
         NavigationUtil.TryExtractNameFromNamedEntity(dataContext) is not { } extraction)
     {
-      return EnumerableCollection<IDeclaredElement>.Empty;
+      return dataContext.GetData(PsiDataConstants.DECLARED_ELEMENTS);
     } 
 
     var declaredElement = new NamedEntityDeclaredElement(solution, extraction.NameWithKind, extraction.DocumentRange);
