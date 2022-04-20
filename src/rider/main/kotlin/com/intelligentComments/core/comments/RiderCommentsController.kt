@@ -168,7 +168,12 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
     if (correspondingComment != null) {
       val foldingModel = editor.foldingModel as FoldingModelImpl
       val folding = commentsStorage.getFolding(commentIdentifier, editor)
+      var isFoldingExpanded = true
       if (folding != null) {
+        if (!(folding is CustomFoldRegion && folding.renderer is RendererWithRectangleModel)) {
+          isFoldingExpanded = folding.isExpanded
+        }
+
         foldingModel.runBatchFoldingOperation {
           foldingModel.removeFoldRegion(folding)
           commentsStorage.removeFolding(commentIdentifier, editor)
@@ -187,6 +192,7 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
         }
 
         val region = foldingModel.createFoldRegion(rangeMarker.startOffset, rangeMarker.endOffset, "...", null, false)
+        region?.isExpanded = isFoldingExpanded
         region?.markAsDocComment()
         if (region != null) {
           commentsStorage.addFoldingToComment(correspondingComment, region, editor)
