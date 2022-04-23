@@ -13,10 +13,10 @@ import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.editor.RangeMarker
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFileManager
 import com.intellij.psi.PsiDocumentManager
-import com.intellij.refactoring.suggested.range
 import com.intellij.util.application
 import com.intellij.util.xmlb.annotations.Attribute
 import com.intellij.util.xmlb.annotations.Tag
@@ -95,11 +95,10 @@ class RiderCommentsStateManager(
       val state = if (persistentState != null) {
         persistentState
       } else {
-        var displayKind = settingsProvider.commentsDisplayKind.value
-
-        val caretOffset = editor.caretModel.offset
-        if (commentIdentifier.rangeMarker.range?.grown(1)?.contains(caretOffset) == true) {
-          displayKind = CommentsDisplayKind.Code
+        val displayKind = if (isCaretWithinComment(editor, commentIdentifier.rangeMarker)) {
+          CommentsDisplayKind.Code
+        } else {
+          settingsProvider.commentsDisplayKind.value
         }
 
         CommentState(displayKind)
@@ -108,6 +107,15 @@ class RiderCommentsStateManager(
       state.setDisplayKind(adjustFinalStateWithSettings(state.displayKind, editor))
       return@getOrCreate state
     }
+  }
+
+  private fun isCaretWithinComment(editor: Editor, range: RangeMarker): Boolean {
+    val caretOffset = editor.caretModel.offset
+    val caretLine = editor.offsetToVisualLine(caretOffset, true)
+    val commentStartLine = editor.offsetToVisualLine(range.startOffset, true)
+    val commentEndLine = editor.offsetToVisualLine(range.endOffset, true)
+
+    return caretLine in commentStartLine..commentEndLine
   }
 
   private fun getPersistentState(editorId: EditorId, commentIdentifier: CommentIdentifier): CommentState? {
