@@ -4,7 +4,6 @@ import com.intelligentComments.core.comments.listeners.GutterMarkVisibilityMouse
 import com.intelligentComments.core.comments.states.RiderCommentsStateManager
 import com.intelligentComments.core.comments.states.canChangeFromCodeToRender
 import com.intelligentComments.core.domain.core.CommentBase
-import com.intelligentComments.core.settings.RiderIntelligentCommentsSettingsProvider
 import com.intelligentComments.ui.comments.renderers.DocCommentSwitchRenderModeGutterMark
 import com.intelligentComments.ui.comments.renderers.RendererWithRectangleModel
 import com.intellij.openapi.editor.CustomFoldRegion
@@ -35,17 +34,15 @@ class CommentsGutterMarksManager(project: Project) {
   }
 
   fun ensureAllGuttersAreInvisible(editor: Editor) {
-    application.executeOnPooledThread {
-      for (comment in controller.getAllCommentsFor(editor)) {
-        val gutterMark = comment.correspondingHighlighter.gutterIconRenderer as? DocCommentSwitchRenderModeGutterMark
-        if (gutterMark != null) {
-          gutterMark.isVisible = false
-        }
+    for (comment in controller.getAllCommentsFor(editor)) {
+      val gutterMark = comment.correspondingHighlighter.gutterIconRenderer as? DocCommentSwitchRenderModeGutterMark
+      if (gutterMark != null) {
+        gutterMark.isVisible = false
       }
+    }
 
-      application.invokeLater {
-        updateEditorGutter(editor)
-      }
+    application.invokeLater {
+      updateEditorGutter(editor)
     }
   }
 
