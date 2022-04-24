@@ -442,7 +442,7 @@ IntelligentCommentContent:
       SeeAlsoMemberContentSegment:HighlightedText:
         Text: Add(double, double) 
         Highlighters: Highlighter: [ReSharper.CSHARP_STATIC_METHOD_IDENTIFIER, 0, 19, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ProxyDomainReference::M:TaggedLibrary.Math.Add(System.Double,System.Double), ]
-        Proxy reference with real id: 706243446
+        ProxyDomainReference with raw value: M:TaggedLibrary.Math.Add(System.Double,System.Double)
     TextContentSegment:
       HighlightedText:
       Text: to add doubles.
@@ -450,15 +450,15 @@ IntelligentCommentContent:
       SeeAlsoMemberContentSegment:HighlightedText:
         Text: Subtract(int, int) 
         Highlighters: Highlighter: [ReSharper.CSHARP_STATIC_METHOD_IDENTIFIER, 0, 18, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ProxyDomainReference::M:TaggedLibrary.Math.Subtract(System.Int32,System.Int32), ]
-        Proxy reference with real id: -607651313
+        ProxyDomainReference with raw value: M:TaggedLibrary.Math.Subtract(System.Int32,System.Int32)
       SeeAlsoMemberContentSegment:HighlightedText:
         Text: Multiply(int, int) 
         Highlighters: Highlighter: [ReSharper.CSHARP_STATIC_METHOD_IDENTIFIER, 0, 18, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ProxyDomainReference::M:TaggedLibrary.Math.Multiply(System.Int32,System.Int32), ]
-        Proxy reference with real id: -421571163
+        ProxyDomainReference with raw value: M:TaggedLibrary.Math.Multiply(System.Int32,System.Int32)
       SeeAlsoMemberContentSegment:HighlightedText:
         Text: Divide(int, int) 
         Highlighters: Highlighter: [ReSharper.CSHARP_STATIC_METHOD_IDENTIFIER, 0, 16, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ProxyDomainReference::M:TaggedLibrary.Math.Divide(System.Int32,System.Int32), ]
-        Proxy reference with real id: -1364173742
+        ProxyDomainReference with raw value: M:TaggedLibrary.Math.Divide(System.Int32,System.Int32)
       ParamContentSegment:
         ContentSegments:
           TextContentSegment:
@@ -537,7 +537,7 @@ IntelligentCommentContent:
       SeeAlsoMemberContentSegment:HighlightedText:
         Text: Add(int, int) 
         Highlighters: Highlighter: [ReSharper.CSHARP_STATIC_METHOD_IDENTIFIER, 0, 13, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ProxyDomainReference::M:TaggedLibrary.Math.Add(System.Int32,System.Int32), ]
-        Proxy reference with real id: 1482555655
+        ProxyDomainReference with raw value: M:TaggedLibrary.Math.Add(System.Int32,System.Int32)
     TextContentSegment:
       HighlightedText:
       Text: to add integers.
@@ -545,15 +545,15 @@ IntelligentCommentContent:
       SeeAlsoMemberContentSegment:HighlightedText:
         Text: Subtract(double, double) 
         Highlighters: Highlighter: [ReSharper.CSHARP_STATIC_METHOD_IDENTIFIER, 0, 24, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ProxyDomainReference::M:TaggedLibrary.Math.Subtract(System.Double,System.Double), ]
-        Proxy reference with real id: -162450057
+        ProxyDomainReference with raw value: M:TaggedLibrary.Math.Subtract(System.Double,System.Double)
       SeeAlsoMemberContentSegment:HighlightedText:
         Text: Multiply(double, double) 
         Highlighters: Highlighter: [ReSharper.CSHARP_STATIC_METHOD_IDENTIFIER, 0, 24, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ProxyDomainReference::M:TaggedLibrary.Math.Multiply(System.Double,System.Double), ]
-        Proxy reference with real id: 305207735
+        ProxyDomainReference with raw value: M:TaggedLibrary.Math.Multiply(System.Double,System.Double)
       SeeAlsoMemberContentSegment:HighlightedText:
         Text: Divide(double, double) 
         Highlighters: Highlighter: [ReSharper.CSHARP_STATIC_METHOD_IDENTIFIER, 0, 22, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ProxyDomainReference::M:TaggedLibrary.Math.Divide(System.Double,System.Double), ]
-        Proxy reference with real id: -1941427501
+        ProxyDomainReference with raw value: M:TaggedLibrary.Math.Divide(System.Double,System.Double)
       ParamContentSegment:
         ContentSegments:
           TextContentSegment:
@@ -622,7 +622,7 @@ IntelligentCommentContent:
       SeeAlsoMemberContentSegment:HighlightedText:
         Text: Subtract(double, double) 
         Highlighters: Highlighter: [ReSharper.CSHARP_STATIC_METHOD_IDENTIFIER, 0, 24, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ProxyDomainReference::M:TaggedLibrary.Math.Subtract(System.Double,System.Double), ]
-        Proxy reference with real id: -797138164
+        ProxyDomainReference with raw value: M:TaggedLibrary.Math.Subtract(System.Double,System.Double)
     TextContentSegment:
       HighlightedText:
       Text: to subtract doubles.
@@ -630,15 +630,15 @@ IntelligentCommentContent:
       SeeAlsoMemberContentSegment:HighlightedText:
         Text: Add(int, int) 
         Highlighters: Highlighter: [ReSharper.CSHARP_STATIC_METHOD_IDENTIFIER, 0, 13, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ProxyDomainReference::M:TaggedLibrary.Math.Add(System.Int32,System.Int32), ]
-        Proxy reference with real id: -2073411701
+        ProxyDomainReference with raw value: M:TaggedLibrary.Math.Add(System.Int32,System.Int32)
       SeeAlsoMemberContentSegment:HighlightedText:
         Text: Multiply(int, int) 
         Highlighters: Highlighter: [ReSharper.CSHARP_STATIC_METHOD_IDENTIFIER, 0, 18, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ProxyDomainReference::M:TaggedLibrary.Math.Multiply(System.Int32,System.Int32), ]
-        Proxy reference with real id: 1477788522
+        ProxyDomainReference with raw value: M:TaggedLibrary.Math.Multiply(System.Int32,System.Int32)
       SeeAlsoMemberContentSegment:HighlightedText:
         Text: Divide(int, int) 
         Highlighters: Highlighter: [ReSharper.CSHARP_STATIC_METHOD_IDENTIFIER, 0, 16, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ProxyDomainReference::M:TaggedLibrary.Math.Divide(System.Int32,System.Int32), ]
-        Proxy reference with real id: -685242263
+        ProxyDomainReference with raw value: M:TaggedLibrary.Math.Divide(System.Int32,System.Int32)
       ParamContentSegment:
         ContentSegments:
           TextContentSegment:
@@ -701,7 +701,7 @@ IntelligentCommentContent:
       SeeAlsoMemberContentSegment:HighlightedText:
         Text: Subtract(int, int) 
         Highlighters: Highlighter: [ReSharper.CSHARP_STATIC_METHOD_IDENTIFIER, 0, 18, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ProxyDomainReference::M:TaggedLibrary.Math.Subtract(System.Int32,System.Int32), ]
-        Proxy reference with real id: -1105118687
+        ProxyDomainReference with raw value: M:TaggedLibrary.Math.Subtract(System.Int32,System.Int32)
     TextContentSegment:
       HighlightedText:
       Text: to subtract integers.
@@ -709,15 +709,15 @@ IntelligentCommentContent:
       SeeAlsoMemberContentSegment:HighlightedText:
         Text: Add(double, double) 
         Highlighters: Highlighter: [ReSharper.CSHARP_STATIC_METHOD_IDENTIFIER, 0, 19, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ProxyDomainReference::M:TaggedLibrary.Math.Add(System.Double,System.Double), ]
-        Proxy reference with real id: -2020838366
+        ProxyDomainReference with raw value: M:TaggedLibrary.Math.Add(System.Double,System.Double)
       SeeAlsoMemberContentSegment:HighlightedText:
         Text: Multiply(double, double) 
         Highlighters: Highlighter: [ReSharper.CSHARP_STATIC_METHOD_IDENTIFIER, 0, 24, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ProxyDomainReference::M:TaggedLibrary.Math.Multiply(System.Double,System.Double), ]
-        Proxy reference with real id: -1360698904
+        ProxyDomainReference with raw value: M:TaggedLibrary.Math.Multiply(System.Double,System.Double)
       SeeAlsoMemberContentSegment:HighlightedText:
         Text: Divide(double, double) 
         Highlighters: Highlighter: [ReSharper.CSHARP_STATIC_METHOD_IDENTIFIER, 0, 22, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ProxyDomainReference::M:TaggedLibrary.Math.Divide(System.Double,System.Double), ]
-        Proxy reference with real id: -635155300
+        ProxyDomainReference with raw value: M:TaggedLibrary.Math.Divide(System.Double,System.Double)
       ParamContentSegment:
         ContentSegments:
           TextContentSegment:
@@ -779,7 +779,7 @@ IntelligentCommentContent:
       SeeAlsoMemberContentSegment:HighlightedText:
         Text: Multiply(double, double) 
         Highlighters: Highlighter: [ReSharper.CSHARP_STATIC_METHOD_IDENTIFIER, 0, 24, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ProxyDomainReference::M:TaggedLibrary.Math.Multiply(System.Double,System.Double), ]
-        Proxy reference with real id: 161931313
+        ProxyDomainReference with raw value: M:TaggedLibrary.Math.Multiply(System.Double,System.Double)
     TextContentSegment:
       HighlightedText:
       Text: to multiply doubles.
@@ -787,15 +787,15 @@ IntelligentCommentContent:
       SeeAlsoMemberContentSegment:HighlightedText:
         Text: Add(int, int) 
         Highlighters: Highlighter: [ReSharper.CSHARP_STATIC_METHOD_IDENTIFIER, 0, 13, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ProxyDomainReference::M:TaggedLibrary.Math.Add(System.Int32,System.Int32), ]
-        Proxy reference with real id: 1410448024
+        ProxyDomainReference with raw value: M:TaggedLibrary.Math.Add(System.Int32,System.Int32)
       SeeAlsoMemberContentSegment:HighlightedText:
         Text: Subtract(int, int) 
         Highlighters: Highlighter: [ReSharper.CSHARP_STATIC_METHOD_IDENTIFIER, 0, 18, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ProxyDomainReference::M:TaggedLibrary.Math.Subtract(System.Int32,System.Int32), ]
-        Proxy reference with real id: 1238657187
+        ProxyDomainReference with raw value: M:TaggedLibrary.Math.Subtract(System.Int32,System.Int32)
       SeeAlsoMemberContentSegment:HighlightedText:
         Text: Divide(int, int) 
         Highlighters: Highlighter: [ReSharper.CSHARP_STATIC_METHOD_IDENTIFIER, 0, 16, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ProxyDomainReference::M:TaggedLibrary.Math.Divide(System.Int32,System.Int32), ]
-        Proxy reference with real id: 620085519
+        ProxyDomainReference with raw value: M:TaggedLibrary.Math.Divide(System.Int32,System.Int32)
       ParamContentSegment:
         ContentSegments:
           TextContentSegment:
@@ -857,7 +857,7 @@ IntelligentCommentContent:
       SeeAlsoMemberContentSegment:HighlightedText:
         Text: Multiply(int, int) 
         Highlighters: Highlighter: [ReSharper.CSHARP_STATIC_METHOD_IDENTIFIER, 0, 18, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ProxyDomainReference::M:TaggedLibrary.Math.Multiply(System.Int32,System.Int32), ]
-        Proxy reference with real id: -2015374034
+        ProxyDomainReference with raw value: M:TaggedLibrary.Math.Multiply(System.Int32,System.Int32)
     TextContentSegment:
       HighlightedText:
       Text: to multiply integers.
@@ -865,15 +865,15 @@ IntelligentCommentContent:
       SeeAlsoMemberContentSegment:HighlightedText:
         Text: Add(double, double) 
         Highlighters: Highlighter: [ReSharper.CSHARP_STATIC_METHOD_IDENTIFIER, 0, 19, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ProxyDomainReference::M:TaggedLibrary.Math.Add(System.Double,System.Double), ]
-        Proxy reference with real id: 2015505301
+        ProxyDomainReference with raw value: M:TaggedLibrary.Math.Add(System.Double,System.Double)
       SeeAlsoMemberContentSegment:HighlightedText:
         Text: Subtract(double, double) 
         Highlighters: Highlighter: [ReSharper.CSHARP_STATIC_METHOD_IDENTIFIER, 0, 24, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ProxyDomainReference::M:TaggedLibrary.Math.Subtract(System.Double,System.Double), ]
-        Proxy reference with real id: 394739389
+        ProxyDomainReference with raw value: M:TaggedLibrary.Math.Subtract(System.Double,System.Double)
       SeeAlsoMemberContentSegment:HighlightedText:
         Text: Divide(double, double) 
         Highlighters: Highlighter: [ReSharper.CSHARP_STATIC_METHOD_IDENTIFIER, 0, 22, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ProxyDomainReference::M:TaggedLibrary.Math.Divide(System.Double,System.Double), ]
-        Proxy reference with real id: -293620349
+        ProxyDomainReference with raw value: M:TaggedLibrary.Math.Divide(System.Double,System.Double)
       ParamContentSegment:
         ContentSegments:
           TextContentSegment:
@@ -947,7 +947,7 @@ IntelligentCommentContent:
       SeeAlsoMemberContentSegment:HighlightedText:
         Text: Divide(double, double) 
         Highlighters: Highlighter: [ReSharper.CSHARP_STATIC_METHOD_IDENTIFIER, 0, 22, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ProxyDomainReference::M:TaggedLibrary.Math.Divide(System.Double,System.Double), ]
-        Proxy reference with real id: 731338764
+        ProxyDomainReference with raw value: M:TaggedLibrary.Math.Divide(System.Double,System.Double)
     TextContentSegment:
       HighlightedText:
       Text: to divide doubles.
@@ -955,15 +955,15 @@ IntelligentCommentContent:
       SeeAlsoMemberContentSegment:HighlightedText:
         Text: Add(int, int) 
         Highlighters: Highlighter: [ReSharper.CSHARP_STATIC_METHOD_IDENTIFIER, 0, 13, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ProxyDomainReference::M:TaggedLibrary.Math.Add(System.Int32,System.Int32), ]
-        Proxy reference with real id: -213824915
+        ProxyDomainReference with raw value: M:TaggedLibrary.Math.Add(System.Int32,System.Int32)
       SeeAlsoMemberContentSegment:HighlightedText:
         Text: Subtract(int, int) 
         Highlighters: Highlighter: [ReSharper.CSHARP_STATIC_METHOD_IDENTIFIER, 0, 18, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ProxyDomainReference::M:TaggedLibrary.Math.Subtract(System.Int32,System.Int32), ]
-        Proxy reference with real id: 1036279821
+        ProxyDomainReference with raw value: M:TaggedLibrary.Math.Subtract(System.Int32,System.Int32)
       SeeAlsoMemberContentSegment:HighlightedText:
         Text: Multiply(int, int) 
         Highlighters: Highlighter: [ReSharper.CSHARP_STATIC_METHOD_IDENTIFIER, 0, 18, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ProxyDomainReference::M:TaggedLibrary.Math.Multiply(System.Int32,System.Int32), ]
-        Proxy reference with real id: 529933646
+        ProxyDomainReference with raw value: M:TaggedLibrary.Math.Multiply(System.Int32,System.Int32)
       ParamContentSegment:
         ContentSegments:
           TextContentSegment:
@@ -1036,7 +1036,7 @@ IntelligentCommentContent:
       SeeAlsoMemberContentSegment:HighlightedText:
         Text: Divide(int, int) 
         Highlighters: Highlighter: [ReSharper.CSHARP_STATIC_METHOD_IDENTIFIER, 0, 16, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ProxyDomainReference::M:TaggedLibrary.Math.Divide(System.Int32,System.Int32), ]
-        Proxy reference with real id: -69825882
+        ProxyDomainReference with raw value: M:TaggedLibrary.Math.Divide(System.Int32,System.Int32)
     TextContentSegment:
       HighlightedText:
       Text: to divide integers.
@@ -1044,15 +1044,15 @@ IntelligentCommentContent:
       SeeAlsoMemberContentSegment:HighlightedText:
         Text: Add(double, double) 
         Highlighters: Highlighter: [ReSharper.CSHARP_STATIC_METHOD_IDENTIFIER, 0, 19, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ProxyDomainReference::M:TaggedLibrary.Math.Add(System.Double,System.Double), ]
-        Proxy reference with real id: 1984589779
+        ProxyDomainReference with raw value: M:TaggedLibrary.Math.Add(System.Double,System.Double)
       SeeAlsoMemberContentSegment:HighlightedText:
         Text: Subtract(double, double) 
         Highlighters: Highlighter: [ReSharper.CSHARP_STATIC_METHOD_IDENTIFIER, 0, 24, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ProxyDomainReference::M:TaggedLibrary.Math.Subtract(System.Double,System.Double), ]
-        Proxy reference with real id: 2117264071
+        ProxyDomainReference with raw value: M:TaggedLibrary.Math.Subtract(System.Double,System.Double)
       SeeAlsoMemberContentSegment:HighlightedText:
         Text: Multiply(double, double) 
         Highlighters: Highlighter: [ReSharper.CSHARP_STATIC_METHOD_IDENTIFIER, 0, 24, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ProxyDomainReference::M:TaggedLibrary.Math.Multiply(System.Double,System.Double), ]
-        Proxy reference with real id: -635306987
+        ProxyDomainReference with raw value: M:TaggedLibrary.Math.Multiply(System.Double,System.Double)
       ParamContentSegment:
         ContentSegments:
           TextContentSegment:

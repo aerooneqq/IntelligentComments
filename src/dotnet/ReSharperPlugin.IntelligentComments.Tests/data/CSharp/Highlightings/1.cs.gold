@@ -401,7 +401,7 @@ IntelligentCommentContent:
       SeeAlsoMemberContentSegment:HighlightedText:
         Text: ExampleClass 
         Highlighters: Highlighter: [ReSharper.CSHARP_CLASS_IDENTIFIER, 0, 12, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ProxyDomainReference::T:ReSharperPlugin.IntelligentComments.Tests.data.CSharp.Highlightings.ExampleClass, ]
-        Proxy reference with real id: 981149140
+        ProxyDomainReference with raw value: T:ReSharperPlugin.IntelligentComments.Tests.data.CSharp.Highlightings.ExampleClass
     TextContentSegment:
       HighlightedText:
       Text: for a list of all
@@ -410,7 +410,7 @@ IntelligentCommentContent:
       SeeAlsoMemberContentSegment:HighlightedText:
         Text: Label 
         Highlighters: Highlighter: [ReSharper.CSHARP_PROPERTY_IDENTIFIER, 0, 5, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ProxyDomainReference::P:ReSharperPlugin.IntelligentComments.Tests.data.CSharp.Highlightings.ExampleClass.Label, ]
-        Proxy reference with real id: 2086100930
+        ProxyDomainReference with raw value: P:ReSharperPlugin.IntelligentComments.Tests.data.CSharp.Highlightings.ExampleClass.Label
 
 (3): IntelligentCommentsDocCommentFolding: (DocumentRange (4,051 - 4,674) on 1.cs)
 IntelligentCommentContent:
