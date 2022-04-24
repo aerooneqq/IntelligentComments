@@ -1,0 +1,36 @@
+﻿
+|/// <summary>
+/// sasdasa
+/// </summary>|(0)
+public class Test1
+{
+  
+}
+---------------------------------------------------------
+(0): IntelligentCommentsDocCommentFolding: RdDocComment (
+ content = RdIntelligentCommentContent (
+ content = RdContentSegments (
+  content = [
+   RdSummarySegment (
+ content = RdContentSegments (
+  content = [
+   RdTextSegment (
+ text = RdHighlightedText (
+  text = "sasdasa"  highlighters = [
+   RdTextHighlighter (
+    key = "ReSharper.CSHARP_DOC_COMMENT"    startOffset = 0    endOffset = 7    attributes = RdTextAttributes (
+     fontStyle = Regular     underline = False     fontWeight = 400    )
+    backgroundStyle = <null>    animation = <null>    references = <null>    isResharperHighlighter = True    errorSquiggles = <null>   )
+  ]
+ )
+)
+  ]
+ )
+)
+  ]
+ )
+)
+ range = RdTextRange (
+  startOffset = 2  endOffset = 44 )
+)
+
