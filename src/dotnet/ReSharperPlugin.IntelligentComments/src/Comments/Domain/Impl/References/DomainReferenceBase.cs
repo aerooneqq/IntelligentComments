@@ -55,10 +55,4 @@ public class ProxyDomainReference : DomainReferenceBase, IProxyDomainReference
 
     return realReference.Resolve(context);
   }
-
-  public override void Print(PrettyPrinter printer)
-  {
-    using var _ = printer.IndentCookie();
-    printer.Println($"Proxy reference with real id: {RealReferenceId}");
-  }
 }
