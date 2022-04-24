@@ -16,7 +16,7 @@ using JetBrains.Util;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.CodeHighlighting;
 using ReSharperPlugin.IntelligentComments.Comments.CodeFragmentsHighlighting;
 
-namespace ReSharperPlugin.IntelligentComments.Comments.Caches;
+namespace ReSharperPlugin.IntelligentComments.Comments.Caches.Sandboxes;
 
 public record SandboxFileInfo(
   [NotNull] LifetimeDefinition LifetimeDefinition,

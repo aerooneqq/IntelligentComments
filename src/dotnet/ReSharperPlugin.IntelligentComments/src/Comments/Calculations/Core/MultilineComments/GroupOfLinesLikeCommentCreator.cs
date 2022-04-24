@@ -15,8 +15,6 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.Multili
 
 public abstract class GroupOfLinesLikeCommentCreator : ICommentFromNodeCreator, INamedEntitiesCommonFinder
 {
-  [NotNull] protected readonly ILanguageManager LanguageManager;
-  
   //todo: bad, but ok for now
   [NotNull] protected abstract string Pattern { get; }
   [NotNull] protected abstract string PatternWithName { get; }
@@ -28,7 +26,6 @@ public abstract class GroupOfLinesLikeCommentCreator : ICommentFromNodeCreator, 
   
   protected GroupOfLinesLikeCommentCreator()
   {
-    LanguageManager = JetBrains.ReSharper.Psi.LanguageManager.Instance;
   }
 
   
@@ -37,7 +34,7 @@ public abstract class GroupOfLinesLikeCommentCreator : ICommentFromNodeCreator, 
     if (TryCreateGroupOfLinesCommentsNoMerge(node) is not var (buildResult, groupOfLineComments)) return null;
 
     var text = GetGroupOfLinesCommentsText(groupOfLineComments);
-    var provider = LanguageManager.GetService<IHighlightersProvider>(node.Language);
+    var provider = LanguageManager.Instance.GetService<IHighlightersProvider>(node.Language);
 
     if (CheckMatches(Regex.Matches(text, PatternWithName)))
     {
@@ -58,7 +55,7 @@ public abstract class GroupOfLinesLikeCommentCreator : ICommentFromNodeCreator, 
 
   private (CommentCreationResult, IGroupOfLineComments)? TryCreateGroupOfLinesCommentsNoMerge([NotNull] ITreeNode node)
   {
-    if (LanguageManager.TryGetService<IGroupOfLineCommentsCreator>(node.Language) is not { } builder) return null;
+    if (LanguageManager.Instance.TryGetService<IGroupOfLineCommentsCreator>(node.Language) is not { } builder) return null;
     if (builder.TryCreateNoMerge(node) is not { Comment: IGroupOfLineComments groupOfLineComments } buildResult) 
       return null;
 

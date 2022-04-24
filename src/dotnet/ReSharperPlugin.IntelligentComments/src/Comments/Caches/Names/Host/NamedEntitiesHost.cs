@@ -18,7 +18,7 @@ using ReSharperPlugin.IntelligentComments.Comments.Caches.Names.Todos;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments.Utils;
 using ReSharperPlugin.IntelligentComments.Comments.Domain;
 
-namespace ReSharperPlugin.IntelligentComments.Comments.Caches.Names;
+namespace ReSharperPlugin.IntelligentComments.Comments.Caches.Names.Host;
 
 [SolutionComponent]
 public class NamedEntitiesHost

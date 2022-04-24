@@ -21,7 +21,6 @@
 
     <ItemGroup>
       <Folder Include="src\Comments\Calculations\Core\Languages" />
-      <Folder Include="src\Comments\PSI" />
     </ItemGroup>
 
     <!-- TODO: uncomment for xaml icons -->

@@ -1,18 +1,13 @@
-# Build artifacts
 [Bb]in/
 [Oo]bj/
 build
 output
 .gradle
 .tmp
-
-# User-specific files
 *.suo
 *.user
 *.sln.docstates
 *.cache
-
-# IDEs
 /.idea/*.iml
 /.idea/*.xml
 /.idea/.idea.*/*.iml
@@ -20,3 +15,4 @@ output
 .vs
 _ReSharper*
 _dotTrace*
+packages/

@@ -16,6 +16,7 @@ using JetBrains.Rider.Model;
 using JetBrains.Util;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.References;
+using ReSharperPlugin.IntelligentComments.Comments.RdReferences;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.ClickDoc;
 

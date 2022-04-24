@@ -19,6 +19,7 @@ using JetBrains.Util;
 using JetBrains.Util.Maths;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.References;
+using ReSharperPlugin.IntelligentComments.Comments.RdReferences;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Navigation;
 

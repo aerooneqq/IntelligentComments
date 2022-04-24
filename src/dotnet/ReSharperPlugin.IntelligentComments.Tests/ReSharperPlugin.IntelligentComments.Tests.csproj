@@ -8,12 +8,24 @@
 
     <ItemGroup>
         <PackageReference Include="JetBrains.ReSharper.SDK.Tests" Version="$(SdkVersion)" />
+        <PackageReference Include="JetBrains.Rider.Rider.Backend" Version="213.0.20211207.80411" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
+        <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
     </ItemGroup>
 
     <ItemGroup>
         <Compile Remove="test/**/*" />
-        <Compile Include="test\CommentsHighlightingTest.cs" />
         <None Include="test/**/*" />
+        <Compile Remove="data\**" />
+        <None Remove="data\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\ReSharperPlugin.IntelligentComments\ReSharperPlugin.IntelligentComments.Rider.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="data\**" />
     </ItemGroup>
 
 </Project>

@@ -14,7 +14,7 @@ using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.References;
 
-namespace ReSharperPlugin.IntelligentComments.Comments.References;
+namespace ReSharperPlugin.IntelligentComments.Comments.RdReferences;
 
 [SolutionComponent]
 public class ReferenceResolverHost

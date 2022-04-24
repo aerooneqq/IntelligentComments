@@ -1,9 +1,14 @@
 using JetBrains.Annotations;
 using JetBrains.DocumentModel;
+using JetBrains.Rd.Base;
+using JetBrains.Rd.Util;
 using JetBrains.ReSharper.Daemon.CodeFolding;
 using JetBrains.ReSharper.Feature.Services.Daemon;
+using JetBrains.ReSharper.Psi.CSharp.Util;
 using JetBrains.TextControl.DocumentMarkup;
+using NuGet.Protocol;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
+using CommentsUtil = ReSharperPlugin.IntelligentComments.Comments.Domain.CommentsUtil;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Daemon;
 
@@ -14,7 +19,7 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Daemon;
   EffectType = EffectType.FOLDING, 
   GroupId = IntelligentCommentsHighlightings.GroupId, 
   TransmitUpdates = true)]
-public class CommentFoldingHighlighting : CodeFoldingHighlighting
+public class CommentFoldingHighlighting : CodeFoldingHighlighting, IHighlightingWithTestOutput
 {
   private const string DocCommentAttributeId = "IntelligentCommentsDocCommentFolding";
     
@@ -44,4 +49,17 @@ public class CommentFoldingHighlighting : CodeFoldingHighlighting
   {
     Comment = comment;
   }
+
+  
+  public override string ToString()
+  {
+    return CommentsUtil.ToRdComment(Comment).PrintToStringNoLimits()
+      .Replace("  ", " ")
+      .Replace("(", "(\n")
+      .Replace(")", ")\n")
+      .Replace("[", "[\n")
+      .Replace("]", "]\n");
+  }
+
+  public string TestOutput => ToString();
 }

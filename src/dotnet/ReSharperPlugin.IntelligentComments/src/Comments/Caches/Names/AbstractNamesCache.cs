@@ -11,6 +11,7 @@ using JetBrains.Lifetimes;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Caches;
 using JetBrains.ReSharper.Psi.Files;
+using JetBrains.ReSharper.Resources.Shell;
 using JetBrains.Util.PersistentMap;
 using ReSharperPlugin.IntelligentComments.Comments.Caches.Text.Trie;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments.Utils;
@@ -89,8 +90,8 @@ public abstract class AbstractNamesCache : SimpleICache<Dictionary<string, int>>
   private void QueueChanges(IPsiSourceFile sourceFile, IEnumerable<NamedEntity> entities)
   {
     if (!sourceFile.IsValid()) return;
-    
-    Locks.Queue(Lifetime, $"{GetType().Name}::QueueingChange", () =>
+
+    Locks.QueueReadLockOrRunSync(Lifetime, $"{GetType().Name}::QueueingChange", () =>
     {
       Change.Fire(new FileNamesChange(sourceFile, entities));
     });

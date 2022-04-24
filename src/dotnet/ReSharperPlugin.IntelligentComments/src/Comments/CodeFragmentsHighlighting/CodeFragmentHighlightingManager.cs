@@ -13,6 +13,7 @@ using JetBrains.ReSharper.Resources.Shell;
 using JetBrains.Rider.Model;
 using JetBrains.Util;
 using ReSharperPlugin.IntelligentComments.Comments.Caches;
+using ReSharperPlugin.IntelligentComments.Comments.Caches.Sandboxes;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.CodeHighlighting;
 using ReSharperPlugin.IntelligentComments.Comments.Domain;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl;

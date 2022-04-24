@@ -49,7 +49,7 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
   [NotNull] private readonly IHighlightersProvider myHighlightersProvider;
   [NotNull] private readonly IPsiServices myPsiServices;
   [NotNull] private readonly IPsiModule myPsiModule;
-  [NotNull] private readonly CodeFragmentHighlightingManager myCodeFragmentHighlightingManager;
+  [CanBeNull] private readonly CodeFragmentHighlightingManager myCodeFragmentHighlightingManager;
   [NotNull] private readonly ILanguageManager myLanguageManager;
   [NotNull] private readonly IDomainResolveContext myDomainResolveContext;
   [NotNull] private readonly string myDocCommentAttributeId;
@@ -66,7 +66,7 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
     myLanguageManager = LanguageManager.Instance;
     myHighlightersProvider = myLanguageManager.GetService<IHighlightersProvider>(comment.Language);
     myContentSegmentsStack = new Stack<ContentSegmentsMetadata>();
-    myCodeFragmentHighlightingManager = comment.GetSolution().GetComponent<CodeFragmentHighlightingManager>();
+    myCodeFragmentHighlightingManager = comment.GetSolution().TryGetComponent<CodeFragmentHighlightingManager>();
     myReferencesCache = comment.GetSolution().GetComponent<ReferencesCache>();
     myPsiServices = comment.GetPsiServices();
     myPsiModule = comment.GetPsiModule();
@@ -797,7 +797,7 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
         file.GetSourceFile()?.Document is { } document)
     {
       var request = new CodeHighlightingRequest(file.Language, code, document, operations);
-      var id = myCodeFragmentHighlightingManager.AddRequestForHighlighting(request);
+      var id = myCodeFragmentHighlightingManager?.AddRequestForHighlighting(request) ?? 0;
       
       var preliminaryHighlighter = myLanguageManager.GetService<IPreliminaryCodeHighlighter>(file.Language);
       var highlightedText = HighlightedText.CreateEmptyText();

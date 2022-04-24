@@ -9,8 +9,9 @@ using JetBrains.Rider.Backend.Features.TextControls;
 using JetBrains.Rider.Model;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments.Utils;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
+using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.References;
 
-namespace ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.References;
+namespace ReSharperPlugin.IntelligentComments.Comments.RdReferences;
 
 [SolutionComponent]
 public class RdReferenceConverter

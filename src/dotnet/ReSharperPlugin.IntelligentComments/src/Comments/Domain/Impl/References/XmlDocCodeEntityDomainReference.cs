@@ -8,6 +8,7 @@ using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.ReSharper.Psi.Util;
 using JetBrains.Util;
 using ReSharperPlugin.IntelligentComments.Comments.Caches;
+using ReSharperPlugin.IntelligentComments.Comments.Caches.Sandboxes;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.References;
@@ -66,8 +67,9 @@ public class SandBoxCodeEntityDomainReference : DomainReferenceBase, ISandBoxCod
     if (myAlreadyResolvedElement is { }) return new DeclaredElementDomainResolveResult(myAlreadyResolvedElement);
 
     var solution = context.Solution;
-    var sourceFile = solution.GetComponent<SandboxesCache>().TryGetSandboxPsiSourceFile(OriginalDocument, SandboxDocumentId);
-
+    var sourceFile = solution.TryGetComponent<SandboxesCache>()?.TryGetSandboxPsiSourceFile(OriginalDocument, SandboxDocumentId);
+    if (sourceFile is null) return new InvalidDomainResolveResult("Failed to get source files for document id");
+    
     var range = new TreeTextRange(new TreeOffset(Range.StartOffset), new TreeOffset(Range.EndOffset));
     var node = sourceFile?.GetPrimaryPsiFile()?.FindNodeAt(range);
     var declaredElement = node?.Parent?.GetReferences().FirstOrDefault()?.Resolve().DeclaredElement;
