@@ -23,7 +23,7 @@ public class RiderIntelligentCommentsZone : IZone,
 [ZoneDefinition]
 public class IntelligentCommentsZone : IZone,
   IRequire<IPsiLanguageZone>,
-  IRequire<IProjectModelZone>, 
+  IRequire<IProjectModelZone>,
   IRequire<ITextControlsZone>,
   IRequire<ILanguageCSharpZone>,
   IRequire<IDocumentModelZone>,

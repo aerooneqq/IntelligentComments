@@ -8,7 +8,6 @@ using JetBrains.TestFramework.Application.Zones;
 using JetBrains.TextControl;
 using NUnit.Framework;
 
-[assembly: RequiresThread(ApartmentState.STA)]
 [assembly: TestDataPathBase("../../../data")]
 [assembly: Apartment(ApartmentState.STA)]
 
@@ -17,9 +16,7 @@ namespace ReSharperPlugin.IntelligentComments.Tests;
 [ZoneMarker]
 public class ZoneMarker : IRequire<IntelligentCommentsZone>
 {
-  
 }
-
 
 [ZoneActivator]
 public class ZoneActivator : IActivate<IntelligentCommentsZone>
@@ -27,8 +24,8 @@ public class ZoneActivator : IActivate<IntelligentCommentsZone>
 }
 
 [ZoneDefinition]
-public class IntelligentCommentsTestsEnvZone : 
-  ITestsEnvZone, 
+public class IntelligentCommentsTestsEnvZone :
+  ITestsEnvZone,
   IRequire<IntelligentCommentsZone>,
   IRequire<PsiFeatureTestZone>
 {

@@ -23,8 +23,8 @@ public class CommentsHighlightingTest : CSharpHighlightingTestBase
     };
   }
 
-  protected override bool HighlightingPredicate(IHighlighting highlighting, IPsiSourceFile sourceFile,
-    IContextBoundSettingsStore settingsStore)
+  protected override bool HighlightingPredicate(
+    IHighlighting highlighting, IPsiSourceFile sourceFile, IContextBoundSettingsStore settingsStore)
   {
     return highlighting is CommentFoldingHighlighting;
   }
