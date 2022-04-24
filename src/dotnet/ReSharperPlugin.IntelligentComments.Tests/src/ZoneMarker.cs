@@ -18,11 +18,6 @@ public class ZoneMarker : IRequire<IntelligentCommentsZone>
 {
 }
 
-[ZoneActivator]
-public class ZoneActivator : IActivate<IntelligentCommentsZone>
-{
-}
-
 [ZoneDefinition]
 public class IntelligentCommentsTestsEnvZone :
   ITestsEnvZone,

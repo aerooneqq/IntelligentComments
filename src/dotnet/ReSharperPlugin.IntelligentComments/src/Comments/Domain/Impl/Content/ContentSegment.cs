@@ -67,6 +67,38 @@ public class SummaryContentSegment : EntityWithContentSegments, ISummarySegment
   }
 }
 
+public class ReturnContentSegment : EntityWithContentSegments, IReturnContentSegment
+{
+  public ReturnContentSegment(IContentSegments contentSegments) : base(contentSegments)
+  {
+  }
+}
+
+public class ParamContentSegment : EntityWithContentSegments, IParamContentSegment
+{
+  public IHighlightedText Name { get; }
+
+
+  public ParamContentSegment(IHighlightedText name) : base(Content.ContentSegments.CreateEmpty())
+  {
+    Name = name;
+  }
+}
+
+public class TypeParamSegment : ParamContentSegment, ITypeParamSegment
+{
+  public TypeParamSegment(IHighlightedText name) : base(name)
+  {
+  }
+}
+
+public class ParagraphContentSegment : EntityWithContentSegments, IParagraphContentSegment
+{
+  public ParagraphContentSegment(IContentSegments contentSegments) : base(contentSegments)
+  {
+  }
+}
+
 public class ExceptionContentSegment : EntityWithContentSegments, IExceptionSegment
 {
   public IHighlightedText ExceptionName { get; }
