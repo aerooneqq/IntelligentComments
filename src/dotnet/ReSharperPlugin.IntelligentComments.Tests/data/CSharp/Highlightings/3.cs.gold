@@ -1,0 +1,92 @@
+﻿namespace ReSharperPlugin.IntelligentComments.Tests.data.CSharp.Highlightings;
+
+|/// <summary>
+/// This is a generic class.
+/// </summary>
+/// <remarks>
+/// This example shows how to specify the <see cref="GenericClass{T}"/>
+/// type as a cref attribute.
+/// In generic classes and methods, you'll often want to reference the
+/// generic type, or the type parameter.
+/// </remarks>|(0)
+class GenericClass<T>
+{
+  |// Fields and members.|(1)
+}
+
+|/// <Summary>
+/// This shows examples of typeparamref and typeparam tags
+/// </Summary>|(2)
+public class ParamsAndParamRefs
+{
+  |/// <summary>
+  /// The GetGenericValue method.
+  /// </summary>
+  /// <remarks>
+  /// This sample shows how to specify the <see cref="GetGenericValue"/>
+  /// method as a cref attribute.
+  /// The parameter and return value are both of an arbitrary type,
+  /// <typeparamref name="T"/>
+  /// </remarks>|(3)
+  public static T GetGenericValue<T>(T para)
+  {
+    return para;
+  }
+}
+---------------------------------------------------------
+(0): IntelligentCommentsDocCommentFolding: (DocumentRange (82 - 390) on 3.cs)
+IntelligentCommentContent:
+  ContentSegments:
+      SummaryContentSegment:
+        ContentSegments:
+          TextContentSegment:
+            HighlightedText:
+            Text: This is a generic class.
+            Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 24, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
+      RemarksContentSegment:
+        ContentSegments:
+          TextContentSegment:
+            HighlightedText:
+            Text: This example shows how to specify the GenericClass<T>type as a cref attribute.
+              In generic classes and methods, you'll often want to reference the
+              generic type, or the type parameter.
+            Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 37, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
+              Highlighter: [ReSharper.CSHARP_CLASS_IDENTIFIER, 38, 53, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ProxyDomainReference::T:ReSharperPlugin.IntelligentComments.Tests.data.CSharp.Highlightings.GenericClass`1, ]
+              Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 53, 182, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
+
+(1): IntelligentCommentsDocCommentFolding: (DocumentRange (420 - 442) on 3.cs)
+TextContentSegment:
+  HighlightedText:
+  Text: Fields and members.
+  Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 19, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
+
+(2): IntelligentCommentsDocCommentFolding: (DocumentRange (449 - 538) on 3.cs)
+IntelligentCommentContent:
+  ContentSegments:
+      SummaryContentSegment:
+        ContentSegments:
+          TextContentSegment:
+            HighlightedText:
+            Text: This shows examples of typeparamref and typeparam tags
+            Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 54, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
+
+(3): IntelligentCommentsDocCommentFolding: (DocumentRange (578 - 889) on 3.cs)
+IntelligentCommentContent:
+  ContentSegments:
+      SummaryContentSegment:
+        ContentSegments:
+          TextContentSegment:
+            HighlightedText:
+            Text: The GetGenericValue method.
+            Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 27, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
+      RemarksContentSegment:
+        ContentSegments:
+          TextContentSegment:
+            HighlightedText:
+            Text: This sample shows how to specify the GetGenericValue<T>(T)method as a cref attribute.
+              The parameter and return value are both of an arbitrary type, T
+            Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 36, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
+              Highlighter: [ReSharper.CSHARP_STATIC_METHOD_IDENTIFIER, 37, 58, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ProxyDomainReference::M:ReSharperPlugin.IntelligentComments.Tests.data.CSharp.Highlightings.ParamsAndParamRefs.GetGenericValue``1(``0), ]
+              Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 58, 147, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
+              Highlighter: [ReSharper.CSHARP_TYPE_PARAMETER_IDENTIFIER, 148, 149, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
+
