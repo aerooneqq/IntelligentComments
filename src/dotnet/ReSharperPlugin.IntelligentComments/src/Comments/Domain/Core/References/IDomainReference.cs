@@ -1,10 +1,11 @@
 using JetBrains.Annotations;
 using JetBrains.DocumentModel;
 using JetBrains.ProjectModel;
+using JetBrains.Rd.Base;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
 
-public interface IDomainReference
+public interface IDomainReference : IPrintable
 {
   [NotNull] string RawValue { get; }
 

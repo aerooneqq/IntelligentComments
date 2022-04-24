@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using JetBrains.Annotations;
+using JetBrains.Rd.Util;
 using JetBrains.Util;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 
@@ -89,5 +90,28 @@ public class HighlightedText : IHighlightedText
 
     Text = sb.ToString();
     myHighlighters = newHighlighters;
+  }
+
+  public void Print(PrettyPrinter printer)
+  {
+    using (printer.IndentCookie())
+    {
+      printer.Println("HighlightedText:");
+
+      printer.Print("Text: ");
+      using (printer.IndentCookie())
+      {
+        printer.Println(Text);
+      }
+      
+      printer.Print("Highlighters: ");
+      using (printer.IndentCookie())
+      {
+        foreach (var highlighter in Highlighters)
+        {
+          highlighter.Print(printer);
+        }
+      }
+    }
   }
 }

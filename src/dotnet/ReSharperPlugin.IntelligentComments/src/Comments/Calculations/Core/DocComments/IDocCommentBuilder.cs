@@ -487,7 +487,7 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
   {
     var realReference = new XmlDocCodeEntityDomainReference(rawValue, myPsiServices, myPsiModule);
     var referenceId = myReferencesCache.AddReferenceIfNotPresent(myDomainResolveContext.Document, realReference);
-    return new ProxyDomainReference(referenceId);
+    return new ProxyDomainReference(referenceId, realReference.RawValue);
   }
 
   public override void VisitTypeParam(XmlElement element)

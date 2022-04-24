@@ -30,5 +30,9 @@ public class CommentsHighlightingTest : CSharpHighlightingTestBase
   }
   
 
-  [Test] public void TestSimpleComment() { DoNamedTest2(); }
+  [Test] public void Test0() { DoNamedTest2(); }
+  [Test] public void Test1() { DoNamedTest2(); }
+  [Test] public void Test2() { DoNamedTest2(); }
+  [Test] public void Test3() { DoNamedTest2(); }
+  [Test] public void Test4() { DoNamedTest2(); }
 }

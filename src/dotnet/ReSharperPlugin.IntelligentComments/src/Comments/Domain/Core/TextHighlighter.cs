@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using JetBrains.Annotations;
+using JetBrains.Rd.Base;
+using JetBrains.Rd.Util;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
@@ -24,13 +26,34 @@ public record TextHighlighter(
   [CanBeNull] IReadOnlyList<IDomainReference> References = null,
   [CanBeNull] TextAnimation TextAnimation = null,
   bool IsResharperHighlighter = false,
-  [CanBeNull] Squiggles ErrorSquiggles = null)
+  [CanBeNull] Squiggles ErrorSquiggles = null) : IPrintable
 {
   public bool IsValid() => StartOffset >= 0 && StartOffset < EndOffset;
   
   public TextHighlighter Shift(int delta)
   {
     return this with { StartOffset = StartOffset + delta, EndOffset = EndOffset + delta };
+  }
+
+  public void Print(PrettyPrinter printer)
+  {
+    printer.Print("Highlighter: [");
+    printer.Print(Key + ", ");
+    printer.Print(StartOffset + ", ");
+    printer.Print(EndOffset + ", ");
+    printer.Print(Attributes + ", ");
+
+    printer.Print("References: ");
+    if (References is { })
+    {
+      foreach (var reference in References)
+      {
+        printer.Print($"{reference.GetType().Name}::{reference.RawValue}, ");
+      }
+    }
+    
+    printer.Print("]");
+    printer.Println();
   }
 }
 

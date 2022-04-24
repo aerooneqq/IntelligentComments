@@ -1,5 +1,6 @@
 using JetBrains.Annotations;
 using JetBrains.Diagnostics;
+using JetBrains.Rd.Util;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.Content;
 
@@ -10,10 +11,6 @@ public class TextContentSegment : ITextContentSegment
   public IHighlightedText Text { get; }
 
 
-  public TextContentSegment(string text) : this(new HighlightedText(text))
-  {
-  }
-  
   public TextContentSegment([NotNull] IHighlightedText text)
   {
     Text = text;
@@ -36,14 +33,16 @@ public class TextContentSegment : ITextContentSegment
       lastRightRange = highlighter.EndOffset;
     }
   }
+
+  public void Print(PrettyPrinter printer)
+  {
+    printer.Println($"{nameof(TextContentSegment)}:");
+    Text.Print(printer);
+  }
 }
   
 public class MergeableTextContentSegment : TextContentSegment, IMergeableContentSegment
 {
-  public MergeableTextContentSegment(string text) : base(text)
-  {
-  }
-
   public MergeableTextContentSegment([NotNull] IHighlightedText text) : base(text)
   {
   }

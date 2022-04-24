@@ -1,16 +1,18 @@
 using System.Collections.Generic;
 using JetBrains.Annotations;
+using JetBrains.Rd.Base;
+using JetBrains.Rd.Util;
 using JetBrains.Rider.Model;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments.Utils;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Domain.Core.Content;
 
-public interface IContentSegment
+public interface IContentSegment : IPrintable
 {
 }
 
-public interface IContentSegments
+public interface IContentSegments : IPrintable
 {
   [NotNull] IList<IContentSegment> Segments { get; }
 }
@@ -47,7 +49,7 @@ public interface IListSegment : IContentSegment
   [NotNull] IList<IListItem> Items { get; }
 }
 
-public interface IListItem
+public interface IListItem : IPrintable
 {
   [CanBeNull] IEntityWithContentSegments Header { get; }
   [CanBeNull] IEntityWithContentSegments Content { get; }
@@ -59,24 +61,28 @@ public interface ITableSegment : IContentSegment
   [NotNull] IList<ITableSegmentRow> Rows { get; }
 }
 
-public interface ITableSegmentRow
+public interface ITableSegmentRow : IPrintable
 {
   [NotNull] IList<ITableCell> Cells { get; }
 }
 
-public interface ITableCell
+public interface ITableCell : IPrintable
 {
   [NotNull] IContentSegments Content { get; }
   [CanBeNull] TableCellProperties Properties { get; }
 }
 
 public record TableCellProperties(
-  RdHorizontalAlignment HorizontalAlignment,
-  RdVerticalAlignment VerticalAlignment,
-  bool IsHeader)
+  RdHorizontalAlignment HorizontalAlignment, RdVerticalAlignment VerticalAlignment, bool IsHeader) : IPrintable
 {
   [NotNull] public static TableCellProperties DefaultProperties { get; } =
     new(RdHorizontalAlignment.Center, RdVerticalAlignment.Center, false);
+
+
+  public void Print(PrettyPrinter printer)
+  {
+    printer.Println($"TableCellProperties: [{HorizontalAlignment}, {VerticalAlignment}, {IsHeader}]");
+  }
 }
 
 public interface ICodeSegment : IContentSegment

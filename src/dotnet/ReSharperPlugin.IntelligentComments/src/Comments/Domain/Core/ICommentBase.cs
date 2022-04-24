@@ -1,10 +1,11 @@
 using JetBrains.Annotations;
 using JetBrains.DocumentModel;
+using JetBrains.Rd.Base;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.Content;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 
-public interface ICommentBase
+public interface ICommentBase : IPrintable
 {
   DocumentRange Range { get; }
 }

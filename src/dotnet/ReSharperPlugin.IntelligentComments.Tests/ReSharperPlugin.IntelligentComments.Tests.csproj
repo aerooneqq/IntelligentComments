@@ -15,6 +15,12 @@
 
     <ItemGroup>
         <Compile Remove="test/**/*" />
+        <Compile Include="data\CSharp\Highlightings\0.cs" />
+        <Compile Include="data\CSharp\Highlightings\1.cs" />
+        <Compile Include="data\CSharp\Highlightings\2.cs" />
+        <Compile Include="data\CSharp\Highlightings\3.cs" />
+        <Compile Include="data\CSharp\Highlightings\4.cs" />
+        <None Include="data\nuget.config" />
         <None Include="test/**/*" />
         <Compile Remove="data\**" />
         <None Remove="data\**" />

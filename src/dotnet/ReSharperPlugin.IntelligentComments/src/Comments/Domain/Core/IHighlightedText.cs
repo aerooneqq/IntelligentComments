@@ -1,9 +1,10 @@
 using System.Collections.Generic;
 using JetBrains.Annotations;
+using JetBrains.Rd.Base;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 
-public interface IHighlightedText
+public interface IHighlightedText : IPrintable
 {
   [NotNull] string Text { get; }
   [NotNull] IList<TextHighlighter> Highlighters { get; }

@@ -1,4 +1,5 @@
 using JetBrains.Annotations;
+using JetBrains.Rd.Util;
 using JetBrains.Util;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
 
@@ -26,6 +27,12 @@ public class HttpDomainReference : ExternalDomainReference, IHttpDomainReference
   {
     return new DomainWebResourceResolveResult(RawValue);
   }
+
+  public override void Print(PrettyPrinter printer)
+  {
+    using var _ = printer.IndentCookie();
+    printer.Println($"{nameof(HttpDomainReference)} with name: {DisplayName}");
+  }
 }
 
 public class DomainWebResourceResolveResult : DomainResolveResult
@@ -47,5 +54,12 @@ public class FileDomainReference : ExternalDomainReference, IFileDomainReference
   public FileDomainReference(FileSystemPath path) : base(path.FullPath)
   {
     Path = path;
+  }
+
+
+  public override void Print(PrettyPrinter printer)
+  {
+    using var _ = printer.IndentCookie();
+    printer.Println($"{nameof(FileDomainReference)} with path: {Path}");
   }
 }

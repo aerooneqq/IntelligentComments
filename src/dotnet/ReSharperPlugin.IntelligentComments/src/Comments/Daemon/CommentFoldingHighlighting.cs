@@ -1,3 +1,4 @@
+using System;
 using JetBrains.Annotations;
 using JetBrains.DocumentModel;
 using JetBrains.Rd.Base;
@@ -5,10 +6,12 @@ using JetBrains.Rd.Util;
 using JetBrains.ReSharper.Daemon.CodeFolding;
 using JetBrains.ReSharper.Feature.Services.Daemon;
 using JetBrains.ReSharper.Psi.CSharp.Util;
+using JetBrains.Rider.Model;
 using JetBrains.TextControl.DocumentMarkup;
 using NuGet.Protocol;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 using CommentsUtil = ReSharperPlugin.IntelligentComments.Comments.Domain.CommentsUtil;
+using Severity = JetBrains.ReSharper.Feature.Services.Daemon.Severity;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Daemon;
 
@@ -53,12 +56,9 @@ public class CommentFoldingHighlighting : CodeFoldingHighlighting, IHighlighting
   
   public override string ToString()
   {
-    return CommentsUtil.ToRdComment(Comment).PrintToStringNoLimits()
-      .Replace("  ", " ")
-      .Replace("(", "(\n")
-      .Replace(")", ")\n")
-      .Replace("[", "[\n")
-      .Replace("]", "]\n");
+    var printer = new PrettyPrinter();
+    Comment.Print(printer);
+    return printer.ToString();
   }
 
   public string TestOutput => ToString();

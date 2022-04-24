@@ -43,7 +43,7 @@ public class RdReferenceConverter
   {
     return reference switch
     {
-      RdProxyReference proxyReference => new ProxyDomainReference(proxyReference.RealReferenceId),
+      RdProxyReference proxyReference => new ProxyDomainReference(proxyReference.RealReferenceId, string.Empty),
       RdXmlDocCodeEntityReference xmlReference => TryGetXmlDocReference(textControlId, xmlReference),
       RdSandboxCodeEntityReference sandBoxReference => TryGetSandboxReference(sandBoxReference),
       RdNamedEntityReference nameReference => new NamedEntityDomainReference(nameReference.Name, ToNameKind(nameReference.NameKind)),

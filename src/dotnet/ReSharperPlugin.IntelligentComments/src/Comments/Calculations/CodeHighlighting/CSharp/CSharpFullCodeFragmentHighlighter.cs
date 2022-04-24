@@ -66,7 +66,7 @@ public class CSharpFullCodeFragmentHighlighter : CodeHighlighterBase, IFullCodeH
               var originalDocument = context.AdditionalData.GetData(CodeHighlightingKeys.OriginalDocument);
               var cache = element.GetSolution().GetComponent<ReferencesCache>();
               var id = cache.AddReferenceIfNotPresent(originalDocument, codeEntityReference);
-              highlighter = highlighter with { References = new[] { new ProxyDomainReference(id) } };
+              highlighter = highlighter with { References = new[] { new ProxyDomainReference(id, codeEntityReference.RawValue) } };
             }
           }
           else

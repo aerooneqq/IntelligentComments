@@ -1,5 +1,6 @@
 using JetBrains.Annotations;
 using JetBrains.DocumentModel;
+using JetBrains.Rd.Util;
 using JetBrains.ReSharper.Psi.Tree;
 using ReSharperPlugin.IntelligentComments.Comments.Caches.Names;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments.Utils;
@@ -24,6 +25,12 @@ public class NamedEntityDomainReference : DomainReferenceBase, INamedEntityDomai
 
   public override DomainResolveResult Resolve(IDomainResolveContext context) => 
     NamesResolveUtil.ResolveName(new NameWithKind(Name, NameKind), context);
+
+  public override void Print(PrettyPrinter printer)
+  {
+    using var _ = printer.IndentCookie();
+    printer.Println($"{nameof(NamedEntityDomainReference)} with name {Name} and kind {NameKind}");
+  }
 }
 
 public class NamedEntityDomainResolveResult : DomainResolveResult
