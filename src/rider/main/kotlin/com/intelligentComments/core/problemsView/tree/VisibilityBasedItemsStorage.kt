@@ -60,7 +60,7 @@ internal class VisibilityBasedItemsStorage<TId, TValue> {
 
     visibleItems.add(invisibleItem)
     currentVisibleKeys[id] = invisibleItem
-    return NodesChangeDto(NodeChangeKind.Add, intArrayOf(visibleItems.size - 1), arrayOf(invisibleItem))
+    return NodesChangeDto(NodeChangeKind.Add, IntArray(visibleItems.size) { it }, arrayOf(invisibleItem))
   }
 
   fun makeInvisibleIfNeeded(id: TId): List<NodesChangeDto> {
@@ -103,16 +103,16 @@ internal class VisibilityBasedItemsStorage<TId, TValue> {
 
   fun remove(id: TId): Pair<TValue, Int>? {
     assertThreading()
+    val invisibleValue = currentInvisibleKeys.remove(id)
+    if (invisibleValue != null) {
+      invisibleItems.remove(invisibleValue)
+    }
+
     val visibleValue = currentVisibleKeys.remove(id)
     if (visibleValue != null) {
       val index = visibleItems.indexOf(visibleValue)
       visibleItems.remove(visibleValue)
       return Pair(visibleValue, index)
-    }
-
-    val invisibleValue = currentInvisibleKeys.remove(id)
-    if (invisibleValue != null) {
-      invisibleItems.remove(invisibleValue)
     }
 
     return null
