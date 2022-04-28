@@ -21,6 +21,7 @@ import com.intellij.openapi.wm.ToolWindowFactory
 import com.intellij.ui.OnePixelSplitter
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.content.impl.ContentImpl
+import com.intellij.util.application
 import com.jetbrains.rd.ide.model.RdFileNames
 import com.jetbrains.rd.ide.model.RdNameKind
 import com.jetbrains.rd.ide.model.rdCommentsModel
@@ -40,25 +41,39 @@ class NamedEntityToolWindowFactory() : ToolWindowFactory {
     val todoComponent = NamedEntitiesComponent(project, NameKind.Todo)
     val hacksComponent = NamedEntitiesComponent(project, NameKind.Hack)
 
-    project.solution.rdCommentsModel.namedEntitiesChange.advise(project.lifetime) {
-      when (it.nameKind) {
+    toolWindow.contentManager.addContent(ContentImpl(invariantComponent, "Invariants", false))
+    toolWindow.contentManager.addContent(ContentImpl(todoComponent, "Todos", false))
+    toolWindow.contentManager.addContent(ContentImpl(hacksComponent, "Hacks", false))
+
+    fun updateTree(fileNames: RdFileNames) {
+      when (fileNames.nameKind) {
         RdNameKind.Hack -> {
-          hacksComponent.updateTree(it)
+          hacksComponent.updateTree(fileNames)
         }
 
         RdNameKind.Todo -> {
-          todoComponent.updateTree(it)
+          todoComponent.updateTree(fileNames)
         }
 
         RdNameKind.Invariant -> {
-          invariantComponent.updateTree(it)
+          invariantComponent.updateTree(fileNames)
         }
       }
     }
 
-    toolWindow.contentManager.addContent(ContentImpl(invariantComponent, "Invariants", false))
-    toolWindow.contentManager.addContent(ContentImpl(todoComponent, "Todos", false))
-    toolWindow.contentManager.addContent(ContentImpl(hacksComponent, "Hacks", false))
+    application.invokeLater {
+      val host = project.getComponent(RiderNamedEntitiesHost::class.java)
+      val currentEntities = host.getAllCurrentEntities()
+      for (entity in currentEntities) {
+        updateTree(entity)
+      }
+
+      host.fileEntitiesChanged.advise(project.lifetime) {
+        if (it != null) {
+          updateTree(it)
+        }
+      }
+    }
   }
 }
 

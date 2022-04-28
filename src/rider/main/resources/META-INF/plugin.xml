@@ -67,6 +67,9 @@
 
   <project-components>
     <component>
+      <implementation-class>com.intelligentComments.core.namesToolWindow.RiderNamedEntitiesHost</implementation-class>
+    </component>
+    <component>
       <implementation-class>com.intelligentComments.core.comments.states.RiderCommentsStateManager</implementation-class>
     </component>
     <component>
