@@ -96,12 +96,13 @@ class HighlightedTextImpl : HighlightedText {
         continue
       }
 
+      var incrementedIndex = false
       var i = left + maxLineLength
       while (i > left) {
         if (text[i] == ' ') {
           positionsOfAdditionalLineBreaks.add(i)
-          indicesOfLineBreaks.add(index, i)
-          ++index
+          indicesOfLineBreaks.add(++index, i)
+          incrementedIndex = true
           break
         }
 
@@ -113,8 +114,8 @@ class HighlightedTextImpl : HighlightedText {
         while (i < right) {
           if (text[i] == ' ') {
             positionsOfAdditionalLineBreaks.add(i)
-            indicesOfLineBreaks.add(i)
-            ++index
+            indicesOfLineBreaks.add(++index, i)
+            incrementedIndex = true
             break
           }
 
@@ -122,7 +123,9 @@ class HighlightedTextImpl : HighlightedText {
         }
       }
 
-      ++index
+      if (!incrementedIndex) {
+        ++index
+      }
     }
 
     val sb = StringBuilder(text)
