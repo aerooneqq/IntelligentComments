@@ -12,26 +12,17 @@
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
         <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
     </ItemGroup>
-
-    <ItemGroup>
-        <Compile Remove="test/**/*" />
-        <Compile Include="data\CSharp\Highlightings\0.cs" />
-        <Compile Include="data\CSharp\Highlightings\1.cs" />
-        <Compile Include="data\CSharp\Highlightings\2.cs" />
-        <Compile Include="data\CSharp\Highlightings\3.cs" />
-        <Compile Include="data\CSharp\Highlightings\4.cs" />
-        <None Include="data\nuget.config" />
-        <None Include="test/**/*" />
-        <Compile Remove="data\**" />
-        <None Remove="data\**" />
-    </ItemGroup>
-
+    
     <ItemGroup>
       <ProjectReference Include="..\ReSharperPlugin.IntelligentComments\ReSharperPlugin.IntelligentComments.Rider.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <EmbeddedResource Remove="data\**" />
+      <Content Include="data\CSharp\Highlightings\0.cs.gold" />
+      <Content Include="data\CSharp\Highlightings\1.cs.gold" />
+      <Content Include="data\CSharp\Highlightings\2.cs.gold" />
+      <Content Include="data\CSharp\Highlightings\3.cs.gold" />
+      <Content Include="data\CSharp\Highlightings\4.cs.gold" />
     </ItemGroup>
 
 </Project>

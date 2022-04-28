@@ -1,11 +1,12 @@
 using System.Collections.Generic;
-using JetBrains.Application.Components;
 using JetBrains.Application.Settings;
 using JetBrains.ProjectModel;
+using JetBrains.ReSharper.Daemon.CSharp.Stages;
 using JetBrains.ReSharper.Feature.Services.Daemon;
 using JetBrains.ReSharper.FeaturesTestFramework.Daemon;
 using JetBrains.ReSharper.Psi;
 using NUnit.Framework;
+using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments.Errors;
 using ReSharperPlugin.IntelligentComments.Comments.Daemon;
 
 namespace ReSharperPlugin.IntelligentComments.Tests.CSharp;
@@ -26,7 +27,7 @@ public class CommentsHighlightingTest : CSharpHighlightingTestBase
   protected override bool HighlightingPredicate(
     IHighlighting highlighting, IPsiSourceFile sourceFile, IContextBoundSettingsStore settingsStore)
   {
-    return highlighting is CommentFoldingHighlighting;
+    return highlighting is CommentFoldingHighlighting or CommentErrorHighlighting;
   }
   
 
@@ -35,4 +36,17 @@ public class CommentsHighlightingTest : CSharpHighlightingTestBase
   [Test] public void Test2() { DoNamedTest2(); }
   [Test] public void Test3() { DoNamedTest2(); }
   [Test] public void Test4() { DoNamedTest2(); }
+  [Test] public void Test5() { DoNamedTest2(); }
+  [Test] public void Test6() { DoNamedTest2(); }
+  
+  [Test] public void TestSimpleNamedEntitiesDeclarationsAndReferences() { DoNamedTest2(); }
+  [Test] public void TestInlineReferences() { DoNamedTest2(); }
+  [Test] public void TestInlineReferencesToInlineEntities() { DoNamedTest2(); }
+  [Test] public void TestImageSourceAttributeIsNotSet() { DoNamedTest2(); }
+  [Test] public void TestImageSourceNotSetError() { DoNamedTest2(); }
+  [Test] public void TestInvariantNameNotSet() { DoNamedTest2(); }
+  [Test] public void TestReferenceSourceIsNotSet() { DoNamedTest2(); }
+  [Test] public void TestReferenceSourceIsUnresolved() { DoNamedTest2(); }
+  [Test] public void TestNamedEntityDeclaredMoreThanOnceError() { DoNamedTest2(); }
+  [Test] public void TestNotWhiteListedAttributes() { DoNamedTest2(); }
 }

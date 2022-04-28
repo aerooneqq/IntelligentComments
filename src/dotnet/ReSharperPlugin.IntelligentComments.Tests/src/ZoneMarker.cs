@@ -1,11 +1,9 @@
 using System.Threading;
 using JetBrains.Application.BuildScript.Application.Zones;
-using JetBrains.Application.Environment;
-using JetBrains.ProjectModel;
+using JetBrains.ReSharper.Features.ReSpeller;
 using JetBrains.ReSharper.TestFramework;
 using JetBrains.TestFramework;
 using JetBrains.TestFramework.Application.Zones;
-using JetBrains.TextControl;
 using NUnit.Framework;
 
 [assembly: TestDataPathBase("../../../data")]
@@ -13,14 +11,10 @@ using NUnit.Framework;
 
 namespace ReSharperPlugin.IntelligentComments.Tests;
 
-[ZoneMarker]
-public class ZoneMarker : IRequire<IntelligentCommentsZone>
-{
-}
-
 [ZoneDefinition]
 public class IntelligentCommentsTestsEnvZone :
   ITestsEnvZone,
+  IRequire<IReSpellerZone>,
   IRequire<IntelligentCommentsZone>,
   IRequire<PsiFeatureTestZone>
 {
