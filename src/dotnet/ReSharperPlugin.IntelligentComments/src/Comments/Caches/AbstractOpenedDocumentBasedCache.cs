@@ -23,25 +23,28 @@ public abstract class AbstractOpenedDocumentBasedCache<TId, TValue> where TValue
     myCachesPerDocument = new Dictionary<IDocument, IDictionary<TId, TValue>>();
     textControlManager.TextControls.AddRemove.Advise(lifetime, args =>
     {
-      threading.Queue(lifetime, $"{GetType().Name}::InvalidatingCache", () =>
+      lifetime.TryExecute(() =>
       {
-        if (!args.IsRemoving) return;
-
-        lifetime.TryExecute(() =>
+        threading.Queue(lifetime, $"{GetType().Name}::InvalidatingCache", () =>
         {
-          lock (mySyncObject)
+          if (!args.IsRemoving) return;
+
+          lifetime.TryExecute(() =>
           {
-            var allOpenedDocuments = textControlManager.TextControls.Select(editor => editor.Document).ToSet();
-            var documentsToRemove = myCachesPerDocument.Keys.ToSet().Except(allOpenedDocuments);
-            foreach (var document in documentsToRemove)
+            lock (mySyncObject)
             {
-              if (myCachesPerDocument.TryGetValue(document, out var documentEntities))
+              var allOpenedDocuments = textControlManager.TextControls.Select(editor => editor.Document).ToSet();
+              var documentsToRemove = myCachesPerDocument.Keys.ToSet().Except(allOpenedDocuments);
+              foreach (var document in documentsToRemove)
               {
-                BeforeRemoval(document, documentEntities.Values);
-                myCachesPerDocument.Remove(document);
+                if (myCachesPerDocument.TryGetValue(document, out var documentEntities))
+                {
+                  BeforeRemoval(document, documentEntities.Values);
+                  myCachesPerDocument.Remove(document);
+                }
               }
             }
-          }
+          });
         });
       });
     });

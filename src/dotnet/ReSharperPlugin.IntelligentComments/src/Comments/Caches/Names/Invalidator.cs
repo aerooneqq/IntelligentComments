@@ -20,20 +20,19 @@ public class Invalidator
   [NotNull] private readonly SourcesTrigramIndex myTrigramIndex;
   [NotNull] private readonly DaemonImpl myDaemonImpl;
   [NotNull] private readonly SolutionAnalysisService mySolutionAnalysisService;
-  [NotNull] private readonly Dictionary<IPsiSourceFile, Dictionary<NameKind, ICollection<NamedEntity>>> myEntities;
 
-  
+
   public Invalidator(
-    Lifetime lifetime, 
-    [NotNull] [ItemNotNull] IEnumerable<INamesCache> caches, 
-    [NotNull] SourcesTrigramIndex trigramIndex, 
+    Lifetime lifetime,
+    [NotNull] ISolution solution,
+    [NotNull] [ItemNotNull] IEnumerable<INamesCache> caches,
     [NotNull] DaemonImpl daemonImpl,
     [NotNull] SolutionAnalysisService solutionAnalysisService)
   {
-    myTrigramIndex = trigramIndex;
+    myTrigramIndex = solution.GetComponent<SourcesTrigramIndex>();
     myDaemonImpl = daemonImpl;
     mySolutionAnalysisService = solutionAnalysisService;
-    myEntities = new Dictionary<IPsiSourceFile, Dictionary<NameKind, ICollection<NamedEntity>>>();
+    var entities = new Dictionary<IPsiSourceFile, Dictionary<NameKind, ICollection<NamedEntity>>>();
     
     foreach (var cache in caches)
     {
@@ -42,11 +41,11 @@ public class Invalidator
         var sourceFile = change.SourceFile;
         if (!sourceFile.IsValid())
         {
-          myEntities.Remove(sourceFile);
+          entities.Remove(sourceFile);
           return;
         }
 
-        var entitiesByKinds = myEntities.GetOrCreateValue(sourceFile, static () => new Dictionary<NameKind, ICollection<NamedEntity>>());
+        var entitiesByKinds = entities.GetOrCreateValue(sourceFile, static () => new Dictionary<NameKind, ICollection<NamedEntity>>());
         var kind = cache.NameKind;
         var newValues = new List<NamedEntity>(change.Entities.ToList());
         var oldValues = entitiesByKinds.TryGetValue(kind, out var oldValuesFromDict) switch
@@ -83,16 +82,25 @@ public class Invalidator
             namesToInvalidate.Add(nameWithKind);
           }
         }
+        else
+        {
+          namesToInvalidate.Add(nameWithKind);
+        }
       }
     }
     
     FillInvalidationSet(newMap, oldMap);
     FillInvalidationSet(oldMap, newMap);
-    
-    foreach (var file in myTrigramIndex.GetFilesContainingAllWords(namesToInvalidate.Select(name => name.Name)))
+
+    var names = namesToInvalidate.Select(name => name.Name).ToList();
+
+    if (names.Count != 0)
     {
-      myDaemonImpl.Invalidate(file.Document);
-      mySolutionAnalysisService.ReanalyzeFile(file);
+      foreach (var file in myTrigramIndex.GetFilesContainingAnyWords(names))
+      {
+        myDaemonImpl.Invalidate(file.Document);
+        mySolutionAnalysisService.ReanalyzeFile(file);
+      }
     }
   }
   
