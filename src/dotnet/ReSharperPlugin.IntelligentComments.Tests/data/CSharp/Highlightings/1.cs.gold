@@ -189,6 +189,7 @@ IntelligentCommentContent:
                     readers to be successful. This class contains
                     examples for the following:
                   Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 224, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
+          Table
           Header:
             Cell with properties: TableCellProperties: [Center, Center, False]
               ContentSegments:

@@ -1,0 +1,29 @@
+﻿namespace ReSharperPlugin.IntelligentComments.Tests.data.CSharp.Highlightings;
+
+|/// <summary>
+/// 
+/// </summary>
+/// |<reference source ="asdasdasd" />|(1)
+/// |<reference someAttr = "asdasdasd" />|(2)
+/// <reference invariant = |"asdsadasd"|(3) />
+/// <refernece invariant = "asdasdsdasd" source ="asdasdasd" />
+/// |<invariant source ="asdasda" />|(4)
+/// <invariant name = "asdasdasd" source = "asdasdA" />
+/// |<image asd = "asdasda" />|(0)|(5)
+public class NotWhiteListedAttributes
+{
+  
+}
+---------------------------------------------------------
+(0): IntelligentCommentsDocCommentFolding: (DocumentRange (82 - 431) on NotWhiteListedAttributes.cs)
+TextContentSegment:
+  HighlightedText:
+  Text: Invalid comment: [IC]: Reference tag can not contain attribute source
+  Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 17, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
+    Highlighter: [comment.error, 17, 69, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
+
+(1): ReSharper Underlined Error Highlighting: [IC]: Reference tag can not contain attribute source
+(2): ReSharper Underlined Error Highlighting: [IC]: Reference tag can not contain attribute someAttr
+(3): ReSharper Underlined Error Highlighting: [IC]: Failed to resolve Invariant "asdsadasd"
+(4): ReSharper Underlined Error Highlighting: [IC]: Tag "invariant" must have attribute "name" to be set
+(5): ReSharper Underlined Error Highlighting: [IC]: Tag "image" must have attribute "source" to be set

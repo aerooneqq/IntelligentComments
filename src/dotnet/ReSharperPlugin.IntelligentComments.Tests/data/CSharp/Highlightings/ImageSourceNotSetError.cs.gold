@@ -1,0 +1,16 @@
+﻿namespace ReSharperPlugin.IntelligentComments.Tests.data.CSharp.Highlightings;
+
+|/// <image |source=""|(1) />|(0)
+public class ImageSourceNotSetError
+{
+  
+}
+---------------------------------------------------------
+(0): IntelligentCommentsDocCommentFolding: (DocumentRange (82 - 105) on ImageSourceNotSetError.cs)
+TextContentSegment:
+  HighlightedText:
+  Text: Invalid comment: [IC]: Tag "image" must have attribute "source" to have non-empty value
+  Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 17, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
+    Highlighter: [comment.error, 17, 87, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
+
+(1): ReSharper Underlined Error Highlighting: [IC]: Tag "image" must have attribute "source" to have non-empty value

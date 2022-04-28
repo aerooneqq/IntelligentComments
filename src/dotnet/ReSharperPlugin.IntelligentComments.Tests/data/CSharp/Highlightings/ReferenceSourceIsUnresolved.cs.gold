@@ -1,0 +1,29 @@
+﻿namespace ReSharperPlugin.IntelligentComments.Tests.data.CSharp.Highlightings;
+
+|/// <summary>
+/// 
+/// </summary>
+/// <reference invariant = |"SDASDASDASDASDSDASDASDAS"|(1) />|(0)
+public class ReferenceSourceIsUnresolved
+{
+  |//reference to invariant: ASDASDASDASDASDD|(2)
+}
+---------------------------------------------------------
+(0): IntelligentCommentsDocCommentFolding: (DocumentRange (82 - 175) on ReferenceSourceIsUnresolved.cs)
+TextContentSegment:
+  HighlightedText:
+  Text: Invalid comment: [IC]: Failed to resolve Invariant "SDASDASDASDASDSDASDASDAS"
+  Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 17, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
+    Highlighter: [comment.error, 17, 77, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
+
+(1): ReSharper Underlined Error Highlighting: [IC]: Failed to resolve Invariant "SDASDASDASDASDSDASDASDAS"
+(2): IntelligentCommentsDocCommentFolding: (DocumentRange (224 - 266) on ReferenceSourceIsUnresolved.cs)
+InlineReference: 
+    HighlightedText:
+    Text: Reference to invariant: ASDASDASDASDASDD
+    Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 24, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
+      Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 24, 40, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: NamedEntityDomainReference::ASDASDASDASDASDD, ]
+  Description: 
+    HighlightedText:
+    Text: 
+    Highlighters: 
