@@ -207,10 +207,16 @@ internal static partial class DocCommentsBuilderUtil
   internal static IXmlAttribute TryGetCommonNameAttribute([NotNull] IXmlTag xmlTag) =>
     xmlTag.GetAttribute(CommonNameAttrName); 
   
-  internal static bool IsInvariantNameAttribute([CanBeNull] IXmlAttribute attribute)
+  internal static bool IsNamedEntityAttribute([CanBeNull] IXmlAttribute attribute)
   {
-    return attribute is { AttributeName: InvariantNameAttrName } &&
-           CheckIfAttributeBelongsToTag(attribute, InvariantTagName);
+    return attribute is { AttributeName: CommonNameAttrName } &&
+           IsInNamedEntityDeclarationTagByName(attribute);
+  }
+
+  internal static bool IsInNamedEntityDeclarationTagByName(IXmlAttribute attribute)
+  {
+    if (attribute.Parent is not IXmlTagHeader xmlTagHeader) return false;
+    return PossibleNamedEntityTags.Contains(xmlTagHeader.Name.XmlName);
   }
   
   internal static bool IsReferenceTag(IXmlTag xmlTag)

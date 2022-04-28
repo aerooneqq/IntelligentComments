@@ -59,7 +59,7 @@ public class CSharpTagAttributesCompletionProvider : ItemsProviderOfSpecificCont
     newSet.ExceptWith(xmlTagHeader.Attributes.Select(attr => attr.AttributeName));
     foreach (var attribute in newSet)
     {
-      var item = new CommentLookupItem($"{attribute}=\"\"", attribute, -1);
+      var item = new CommentLookupItem($"{attribute} = \"\"", attribute, -1);
       item.InitializeRanges(new TextLookupRanges(range, range), context.BasicContext);
       collector.Add(item);
     }

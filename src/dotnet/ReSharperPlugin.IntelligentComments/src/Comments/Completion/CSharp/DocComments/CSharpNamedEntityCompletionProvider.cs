@@ -8,15 +8,15 @@ using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments
 namespace ReSharperPlugin.IntelligentComments.Comments.Completion.CSharp.DocComments;
 
 [Language(typeof(CSharpLanguage))]
-public class CSharpInvariantNameCompletionProvider : ItemsProviderOfSpecificContext<DocCommentCompletionContext>
+public class CSharpNamedEntityCompletionProvider : ItemsProviderOfSpecificContext<DocCommentCompletionContext>
 {
   protected override bool AddLookupItems(DocCommentCompletionContext context, IItemsCollector collector)
   {
-    if (!DocCommentsBuilderUtil.IsInvariantNameAttribute(context.TryGetContextAttribute())) return false;
+    if (!DocCommentsBuilderUtil.IsNamedEntityAttribute(context.TryGetContextAttribute())) return false;
     if (context.TryFindDocumentedEntity() is not IDeclaration declaration) return false;
     if (CommentsCompletionExtensions.TryGetAttributeValueRanges(context.ContextToken) is not { } ranges) return false;
 
-    var name = declaration.DeclaredName + "::";
+    var name = declaration.DeclaredName;
     var item = new CommentLookupItem(name, name);
     item.InitializeRanges(ranges, context.BasicContext);
     
