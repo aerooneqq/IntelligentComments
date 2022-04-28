@@ -4,6 +4,7 @@ using JetBrains.Annotations;
 using JetBrains.Application.Progress;
 using JetBrains.Application.Threading;
 using JetBrains.Collections;
+using JetBrains.Collections.Viewable;
 using JetBrains.DataFlow;
 using JetBrains.Diagnostics;
 using JetBrains.DocumentModel;
@@ -19,12 +20,13 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Caches.Names;
 
 public record struct NamedEntity([NotNull] string Name, DocumentOffset? DocumentOffset);
 
-public record struct FileNamesChange([NotNull] IPsiSourceFile SourceFile, [NotNull] IEnumerable<NamedEntity> Entities);
+public record struct FileNamesChange(
+  [NotNull] IPsiSourceFile SourceFile, [NotNull] IEnumerable<NamedEntity> Entities, bool IsCacheLoaded);
 
 public interface INamesCache
 {
   public NameKind NameKind { get; }
-  [NotNull] ISignal<FileNamesChange> Change { get; }
+  [NotNull] JetBrains.DataFlow.ISignal<FileNamesChange> Change { get; }
 
   int GetNameCount([NotNull] string name);
   [NotNull] [ItemNotNull] IEnumerable<string> GetAllNamesFor([NotNull] string prefix);
@@ -43,12 +45,15 @@ public abstract class AbstractNamesCache : SimpleICache<Dictionary<string, int>>
       collection => new Dictionary<string, int>(collection)
     );
 
+  
+  private bool myIsLoaded;
+
 
   public NameKind NameKind { get; }
   [NotNull] protected Trie Trie { get; }
 
   
-  public ISignal<FileNamesChange> Change { get; }
+  public JetBrains.DataFlow.ISignal<FileNamesChange> Change { get; }
   public override string Version => "4";
 
   
@@ -61,7 +66,7 @@ public abstract class AbstractNamesCache : SimpleICache<Dictionary<string, int>>
   {
     NameKind = nameKind;
     Trie = new Trie();
-    Change = new Signal<FileNamesChange>(lifetime, $"{GetType().Name}::{nameof(Change)}");
+    Change = new JetBrains.DataFlow.Signal<FileNamesChange>(lifetime, $"{GetType().Name}::{nameof(Change)}");
   }
   
   
@@ -92,7 +97,7 @@ public abstract class AbstractNamesCache : SimpleICache<Dictionary<string, int>>
 
     Locks.QueueReadLockOrRunSync(Lifetime, $"{GetType().Name}::QueueingChange", () =>
     {
-      Change.Fire(new FileNamesChange(sourceFile, entities));
+      Change.Fire(new FileNamesChange(sourceFile, entities, myIsLoaded));
     });
   }
 
@@ -154,6 +159,7 @@ public abstract class AbstractNamesCache : SimpleICache<Dictionary<string, int>>
       IncreaseOrDecreaseCounts(namesCount, true);
     }
 
+    myIsLoaded = true;
     return obj;
   }
   
