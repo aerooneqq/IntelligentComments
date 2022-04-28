@@ -13,7 +13,7 @@ using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Domain;
 
-public static class CommentsUtil
+public static class CommentsDomainUtil
 {
   [NotNull]
   public static RdComment ToRdComment(this ICommentBase commentBase)

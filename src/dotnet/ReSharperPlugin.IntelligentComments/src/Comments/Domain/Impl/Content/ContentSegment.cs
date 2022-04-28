@@ -181,7 +181,7 @@ public class ListSegment : IListSegment
   public void Print(PrettyPrinter printer)
   {
     using var _ = printer.IndentCookie();
-    printer.Print($"List {ListKind}:");  
+    printer.Println($"List {ListKind}:");  
     
     using var __ = printer.IndentCookie();
     foreach (var item in Items)
@@ -224,6 +224,7 @@ public class TableSegment : ITableSegment
   
   public void Print(PrettyPrinter printer)
   {
+    printer.Println("Table");
     printer.Println("Header:");
     using (printer.IndentCookie())
     {

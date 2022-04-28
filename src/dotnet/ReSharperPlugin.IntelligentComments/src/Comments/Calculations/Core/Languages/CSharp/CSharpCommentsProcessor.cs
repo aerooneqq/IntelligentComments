@@ -50,17 +50,14 @@ public class CSharpCommentsProcessor : CommentsProcessorBase
 
   private void ProcessDocCommentBlock([NotNull] ICSharpDocCommentBlock docCommentBlock)
   {
-    if (ProcessKind is DaemonProcessKind.VISIBLE_DOCUMENT or DaemonProcessKind.SOLUTION_ANALYSIS)
+    var errorsCollector = LanguageManager.GetService<ICommentProblemsCollector>(docCommentBlock.Language);
+    if (errorsCollector.Run(docCommentBlock) is { Count: > 0 } errors)
     {
-      var errorsCollector = LanguageManager.GetService<ICommentProblemsCollector>(docCommentBlock.Language);
-      if (errorsCollector.Run(docCommentBlock) is { Count: > 0 } errors)
-      {
-        var range = docCommentBlock.GetDocumentRange();
-        Comments.Add(CommentProcessingResult.CreateWithErrors(errors, CSharpLanguage.Instance!, range));
-        return;
-      }
+      var range = docCommentBlock.GetDocumentRange();
+      Comments.Add(CommentProcessingResult.CreateWithErrors(errors, CSharpLanguage.Instance!, range));
+      return;
     }
-
+    
     if (ProcessKind is DaemonProcessKind.VISIBLE_DOCUMENT)
     {
       var builder = new CSharpDocCommentBuilder(docCommentBlock);

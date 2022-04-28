@@ -30,6 +30,7 @@ internal static class NamesResolveUtil
     var invariantNameCount = cache.GetNameCount(name);
     if (invariantNameCount != 1) return CreateInvalidResolveResult();
 
+    [NotNull]
     InvalidDomainResolveResult CreateInvalidResolveResult()
     {
       return new InvalidDomainResolveResult($"Failed to resolve {nameKind} \"{name}\" for this reference");

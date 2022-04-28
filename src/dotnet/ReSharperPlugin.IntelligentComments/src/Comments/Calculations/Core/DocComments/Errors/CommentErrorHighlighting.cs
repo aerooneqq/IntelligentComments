@@ -3,8 +3,8 @@ using JetBrains.ReSharper.Feature.Services.Daemon;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments.Errors;
 
-[StaticSeverityHighlighting(Severity.ERROR, typeof(CommentError), OverlapResolve = OverlapResolveKind.ERROR)]
-public class CommentError : IHighlighting
+[StaticSeverityHighlighting(Severity.ERROR, typeof(CommentErrorHighlighting), OverlapResolve = OverlapResolveKind.UNRESOLVED_ERROR)]
+public class CommentErrorHighlighting : IHighlighting
 {
   private readonly DocumentRange myRange;
   
@@ -13,7 +13,7 @@ public class CommentError : IHighlighting
   public string ErrorStripeToolTip { get; }
 
 
-  public CommentError(DocumentRange range, string errorMessage)
+  public CommentErrorHighlighting(DocumentRange range, string errorMessage)
   {
     myRange = range;
     ToolTip = errorMessage;

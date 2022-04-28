@@ -154,7 +154,7 @@ public abstract class CommentProblemsCollectorBase : ICommentProblemsCollector
     if (!range.IsValid()) return;
     
     var adjustedMessage = $"[IC]: {message}";
-    var error = new CommentError(range, adjustedMessage);
+    var error = new CommentErrorHighlighting(range, adjustedMessage);
     var info = new HighlightingInfo(range, error);
     context.Highlightings.Add(info);
   }

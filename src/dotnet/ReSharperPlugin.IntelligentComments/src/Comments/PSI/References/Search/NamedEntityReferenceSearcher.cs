@@ -26,7 +26,7 @@ public class NamedEntityReferenceSearcher : IDomainSpecificSearcher
     if (sourceFile.GetPrimaryPsiFile() is not { } psiFile) return false;
 
     [NotNull]
-    IEnumerable<IReference> ExtractSuitableReferences(ITreeNode node)
+    IEnumerable<IReference> ExtractSuitableReferences([NotNull] ITreeNode node)
     {
       return node.GetReferences()
         .OfType<INamedEntityReference>()
