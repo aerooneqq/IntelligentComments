@@ -12,6 +12,11 @@ public interface IContentSegment : IPrintable
 {
 }
 
+public interface IEntityWithInnerContentSegments : IContentSegment
+{
+  [NotNull] IEntityWithContentSegments Content { get; }
+}
+
 public interface IContentSegments : IPrintable
 {
   [NotNull] IList<IContentSegment> Segments { get; }
@@ -97,15 +102,13 @@ public interface IImageContentSegment : IContentSegment
   [NotNull] IHighlightedText Description { get; }
 }
 
-public interface ITicketContentSegment : IContentSegment
+public interface ITicketContentSegment : IEntityWithInnerContentSegments
 {
-  [NotNull] IEntityWithContentSegments Description { get; }
   [NotNull] IDomainReference Reference { get; }
 }
 
-public interface IToDoContentSegment : IContentSegmentWithOptionalName
+public interface IToDoContentSegment : IContentSegmentWithOptionalName, IEntityWithInnerContentSegments
 {
-  [NotNull] IEntityWithContentSegments Content { get; }
 }
 
 public interface IInlineContentSegment : IContentSegment
@@ -115,9 +118,8 @@ public interface IInlineContentSegment : IContentSegment
   [NotNull] IHighlightedText Text { get; }
 }
 
-public interface IHackContentSegment : IContentSegmentWithOptionalName
+public interface IHackContentSegment : IContentSegmentWithOptionalName, IEntityWithInnerContentSegments
 {
-  [NotNull] IEntityWithContentSegments Content { get; }
 }
 
 public interface IContentSegmentWithOptionalName : IContentSegment
@@ -125,10 +127,9 @@ public interface IContentSegmentWithOptionalName : IContentSegment
   [CanBeNull] IHighlightedText Name { get; }
 }
 
-public interface IInvariantContentSegment : IContentSegment
+public interface IInvariantContentSegment : IEntityWithInnerContentSegments
 {
   [NotNull] IHighlightedText Name { get; }
-  [NotNull] IEntityWithContentSegments Description { get; }
 }
 
 public interface IReferenceContentSegment : IContentSegment

@@ -23,12 +23,7 @@ public abstract class GroupOfLinesLikeCommentCreator : ICommentFromNodeCreator, 
 
   public int Priority => CommentFromNodeCreatorsPriorities.Default;
 
-  
-  protected GroupOfLinesLikeCommentCreator()
-  {
-  }
 
-  
   public CommentCreationResult? TryCreate(ITreeNode node)
   {
     if (TryCreateGroupOfLinesCommentsNoMerge(node) is not var (buildResult, groupOfLineComments)) return null;

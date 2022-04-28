@@ -16,6 +16,7 @@ using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments.Utils;
 using ReSharperPlugin.IntelligentComments.Comments.Completion.CSharp.DocComments;
+using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.Content;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.References;
 
@@ -98,7 +99,7 @@ internal static class NamesResolveUtil
     return node as ICommentNode;
   }
 
-  internal static CommonNamedEntityDescriptor? TryFindOneNameDeclarationIn(ICommentNode commentNode)
+  internal static CommonNamedEntityDescriptor? TryFindOneNameDeclarationIn([NotNull] ICommentNode commentNode)
   {
     var finders = LanguageManager.Instance.TryGetCachedServices<INamedEntitiesCommonFinder>(commentNode.Language);
     var names = new LocalList<CommonNamedEntityDescriptor>();
@@ -129,6 +130,11 @@ internal static class NamesResolveUtil
       if (DocCommentsBuilderUtil.TryGetCommonNameAttribute(tag) is not { } attribute) return;
 
       var segment = builder.Build(element);
+      if (segment is IEntityWithInnerContentSegments entityWithInnerContentSegments)
+      {
+        segment = entityWithInnerContentSegments.Content;
+      }
+      
       result = new NamedEntityDomainResolveResult(segment, docCommentBlock, attribute.Value.GetDocumentRange(), nameKind);
     });
 

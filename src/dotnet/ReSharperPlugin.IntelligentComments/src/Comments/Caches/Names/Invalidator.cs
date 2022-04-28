@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
@@ -18,6 +19,7 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Caches.Names;
 public class Invalidator
 {
   [NotNull] private readonly SourcesTrigramIndex myTrigramIndex;
+  [NotNull] private readonly ILogger myLogger;
   [NotNull] private readonly DaemonImpl myDaemonImpl;
   [NotNull] private readonly SolutionAnalysisService mySolutionAnalysisService;
 
@@ -25,11 +27,13 @@ public class Invalidator
   public Invalidator(
     Lifetime lifetime,
     [NotNull] ISolution solution,
+    [NotNull] ILogger logger,
     [NotNull] [ItemNotNull] IEnumerable<INamesCache> caches,
     [NotNull] DaemonImpl daemonImpl,
     [NotNull] SolutionAnalysisService solutionAnalysisService)
   {
     myTrigramIndex = solution.GetComponent<SourcesTrigramIndex>();
+    myLogger = logger;
     myDaemonImpl = daemonImpl;
     mySolutionAnalysisService = solutionAnalysisService;
     var entities = new Dictionary<IPsiSourceFile, Dictionary<NameKind, ICollection<NamedEntity>>>();
@@ -94,13 +98,20 @@ public class Invalidator
 
     var names = namesToInvalidate.Select(name => name.Name).ToList();
 
-    if (names.Count != 0)
+    try
     {
-      foreach (var file in myTrigramIndex.GetFilesContainingAnyWords(names))
+      if (names.Count != 0)
       {
-        myDaemonImpl.Invalidate(file.Document);
-        mySolutionAnalysisService.ReanalyzeFile(file);
+        foreach (var file in myTrigramIndex.GetFilesContainingAnyWords(names))
+        {
+          myDaemonImpl.Invalidate(file.Document);
+          mySolutionAnalysisService.ReanalyzeFile(file);
+        }
       }
+    }
+    catch (Exception ex)
+    {
+      myLogger.Warn(ex);
     }
   }
   

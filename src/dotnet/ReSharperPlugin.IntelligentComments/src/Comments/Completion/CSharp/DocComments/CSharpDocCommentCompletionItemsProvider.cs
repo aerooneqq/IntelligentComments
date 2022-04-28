@@ -22,7 +22,7 @@ public class CSharpDocCommentCompletionItemsProvider : ItemsProviderOfSpecificCo
   private static readonly TagInfo[] ourTags =
   {
     new(DocCommentsBuilderUtil.ImageTagName, new[] { DocCommentsBuilderUtil.ImageSourceAttrName }, true),
-    new(DocCommentsBuilderUtil.InvariantTagName, new[] { DocCommentsBuilderUtil.InvariantNameAttrName }, false),
+    new(DocCommentsBuilderUtil.InvariantTagName, new[] { DocCommentsBuilderUtil.InvariantNameAttrName }, true),
     new(DocCommentsBuilderUtil.ReferenceTagName, new[] { DocCommentsBuilderUtil.InvariantReferenceSourceAttrName }, false),
     new(DocCommentsBuilderUtil.ReferenceTagName, new[] { DocCommentsBuilderUtil.HackReferenceSourceAttributeName }, false),
     new(DocCommentsBuilderUtil.ReferenceTagName, new[] { DocCommentsBuilderUtil.TodoReferenceSourceAttributeName }, false),

@@ -73,22 +73,22 @@ public class CodeFragmentHighlightingManager
     myShellLocks.AssertMainThread();
     var id = rdRequest.Id;
 
-    void LogErrorAndSetNull(string message)
+    void LogWarnAndSetNull(string message)
     {
-      myLogger.Error(message);
+      myLogger.Warn(message);
       task.Set((RdHighlightedText) null);
       RemoveRequest(id);
     }
     
     if (TryGetRequest(id) is not { } request)
     {
-      LogErrorAndSetNull($"Failed to get request for id: {id}");
+      LogWarnAndSetNull($"Failed to get request for id: {id}");
       return;
     }
 
     if (TryCreateSandboxSourceFile(request) is not var (sourceFile, startOffset, endOffset))
     {
-      LogErrorAndSetNull($"Failed to create sandbox for {id}");
+      LogWarnAndSetNull($"Failed to create sandbox for {id}");
       return;
     }
 
@@ -98,14 +98,14 @@ public class CodeFragmentHighlightingManager
       {
         if (sourceFile.GetPrimaryPsiFile() is not { } file)
         {
-          LogErrorAndSetNull($"Primary PSI file was null for {sourceFile}");
+          LogWarnAndSetNull($"Primary PSI file was null for {sourceFile}");
           return;
         }
 
         var range = new TreeTextRange(new TreeOffset(startOffset), new TreeOffset(endOffset));
         if (request.Operations.TryFind(file, range) is not { } candidate)
         {
-          LogErrorAndSetNull($"Failed to find block for file with text: {file.GetText()}");
+          LogWarnAndSetNull($"Failed to find block for file with text: {file.GetText()}");
           return;
         }
 
@@ -131,7 +131,7 @@ public class CodeFragmentHighlightingManager
     {
       if (!myRequests.TryGetValue(id, out var request))
       {
-        myLogger.Error($"Failed to get highlighting request for {id}");
+        myLogger.Warn($"Failed to get highlighting request for {id}");
         return null;
       }
 

@@ -294,7 +294,7 @@ public record ImageContentSegment(IDomainReference SourceDomainReference, IHighl
 
 public record InvariantContentSegment(
   IHighlightedText Name,
-  IEntityWithContentSegments Description
+  IEntityWithContentSegments Content
 ) : IInvariantContentSegment
 {
   public void Print(PrettyPrinter printer)
@@ -303,7 +303,7 @@ public record InvariantContentSegment(
     
     using var _ = printer.IndentCookie();
     Name.Print(printer);
-    Description.Print(printer);
+    Content.Print(printer);
   }
 }
 
@@ -365,14 +365,14 @@ public record ToDoContentSegment(IHighlightedText Name, IEntityWithContentSegmen
   }
 }
 
-public record TicketContentSegment(IEntityWithContentSegments Description, IDomainReference Reference) : ITicketContentSegment
+public record TicketContentSegment(IEntityWithContentSegments Content, IDomainReference Reference) : ITicketContentSegment
 {
   public void Print(PrettyPrinter printer)
   {
     printer.Println($"TicketContentSegment: ");
     
     using var _ = printer.IndentCookie();
-    Description.Print(printer);
+    Content.Print(printer);
     Reference.Print(printer);
   }
 }

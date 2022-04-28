@@ -161,7 +161,7 @@ public static class CommentsDomainUtil
   [NotNull]
   private static RdTicketContentSegment ToRdTicket([NotNull] this ITicketContentSegment segment)
   {
-    return new RdTicketContentSegment(segment.Reference.ToRdReference(), segment.Description.ToRdContentSegment());
+    return new RdTicketContentSegment(segment.Reference.ToRdReference(), segment.Content.ToRdContentSegment());
   }
 
   [NotNull]
@@ -190,7 +190,7 @@ public static class CommentsDomainUtil
   public static RdTextInvariant ToRdInvariant([NotNull] this IInvariantContentSegment contentSegment)
   {
     return new RdTextInvariant(
-      contentSegment.Name.ToRdHighlightedText(), contentSegment.Description.ToRdContentSegment());
+      contentSegment.Name.ToRdHighlightedText(), contentSegment.Content.ToRdContentSegment());
   }
 
   [NotNull]
