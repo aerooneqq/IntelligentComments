@@ -56,6 +56,8 @@ public abstract class InlineReferenceCommentCreator : ISpecialGroupOfLinesCommen
     return new CommentCreationResult(comment, new[] { node });
   }
 
+  public abstract bool CanBeStartOfSpecialGroupOfLineComments(ITreeNode node);
+
   public abstract InlineReferenceCommentInfo? TryExtractInlineReferenceInfo([NotNull] ITreeNode node);
   public abstract InlineReferenceCommentInfo? TryExtractCompletionInlineReferenceInfo(
     [NotNull] ITreeNode node, DocumentOffset contextCaretDocumentOffset);

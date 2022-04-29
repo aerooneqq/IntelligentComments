@@ -19,6 +19,7 @@ public interface ICommentFromNodeCreator
 
 public interface ISpecialGroupOfLinesCommentsCreator : ICommentFromNodeCreator
 {
+  bool CanBeStartOfSpecialGroupOfLineComments([NotNull] ITreeNode node);
 }
 
 public static class CommentFromNodeCreatorsPriorities

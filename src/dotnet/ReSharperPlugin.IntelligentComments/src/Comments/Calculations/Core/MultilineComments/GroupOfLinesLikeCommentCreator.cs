@@ -44,7 +44,15 @@ public abstract class GroupOfLinesLikeCommentCreator : ISpecialGroupOfLinesComme
     text = text[(text.IndexOf(":", StringComparison.Ordinal) + 2)..];
     return buildResult with { Comment = CreateComment(groupOfLineComments, provider, text, null) };
   }
-  
+
+  public bool CanBeStartOfSpecialGroupOfLineComments(ITreeNode node)
+  {
+    if (node is not ICommentNode commentNode) return false;
+
+    return CheckMatches(Regex.Matches(commentNode.CommentText, Pattern)) ||
+           CheckMatches(Regex.Matches(commentNode.CommentText, PatternWithName));
+  }
+
   [NotNull] 
   private static string GetGroupOfLinesCommentsText([NotNull] IGroupOfLineComments comments) => comments.Text.Text.Text;
 

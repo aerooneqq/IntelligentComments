@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using JetBrains.Application.Settings;
 using JetBrains.ProjectModel;
-using JetBrains.ReSharper.Daemon.CSharp.Stages;
 using JetBrains.ReSharper.Feature.Services.Daemon;
 using JetBrains.ReSharper.FeaturesTestFramework.Daemon;
 using JetBrains.ReSharper.Psi;
@@ -49,4 +48,5 @@ public class CommentsHighlightingTest : CSharpHighlightingTestBase
   [Test] public void TestReferenceSourceIsUnresolved() { DoNamedTest2(); }
   [Test] public void TestNamedEntityDeclaredMoreThanOnceError() { DoNamedTest2(); }
   [Test] public void TestNotWhiteListedAttributes() { DoNamedTest2(); }
+  [Test] public void TestGroupOfLineCommentsWithSpecialComments() { DoNamedTest2(); }
 }

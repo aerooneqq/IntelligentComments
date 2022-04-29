@@ -14,6 +14,11 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.Languag
 [Language(typeof(CSharpLanguage))]
 public class CSharpInlineReferenceCommentCreator : InlineReferenceCommentCreator
 {
+  public override bool CanBeStartOfSpecialGroupOfLineComments(ITreeNode node)
+  {
+    return TryExtractInlineReferenceInfo(node) is { };
+  }
+
   public override InlineReferenceCommentInfo? TryExtractInlineReferenceInfo(ITreeNode node)
   {
     if (node is not ICSharpCommentNode commentNode ||

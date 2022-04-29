@@ -80,7 +80,7 @@ public class CSharpGroupOfLineCommentsCreator : GroupOfLineCommentsCreatorBase
   }
 
   [NotNull]
-  private static IReadOnlyList<ICSharpCommentNode> CollectLineComments(
+  private IReadOnlyList<ICSharpCommentNode> CollectLineComments(
     [NotNull] ICSharpCommentNode startCommentNode,
     bool mergeDividedComments)
   {
@@ -118,7 +118,7 @@ public class CSharpGroupOfLineCommentsCreator : GroupOfLineCommentsCreatorBase
         var shouldAddCurrentNodeToGroup = true;
         foreach (var creator in specialCommentsCreators)
         {
-          if (creator.TryCreate(commentNode) is { })
+          if (creator.CanBeStartOfSpecialGroupOfLineComments(commentNode))
           {
             shouldAddCurrentNodeToGroup = false;
             break;
