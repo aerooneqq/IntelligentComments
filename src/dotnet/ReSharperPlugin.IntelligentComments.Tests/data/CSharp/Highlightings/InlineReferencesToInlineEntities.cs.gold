@@ -19,14 +19,14 @@
 /// <reference invariant = "asdasdsdA" />|(3)
 public class InlineReferencesToInlineEntities
 {
-  |//invariant (name: asdasdsdA): asdlkjasdklsdjkalsdask 
-  //hack (name: HACK): aslkdsal;sad;lasdasd
-  //todo (name: TODO): asl;dkasl;dkasd;lasd|(4)
+  |//invariant (name: asdasdsdA): asdlkjasdklsdjkalsdask |(4)
+  |//hack (name: HACK): aslkdsal;sad;lasdasd|(5)
+  |//todo (name: TODO): asl;dkasl;dkasd;lasd|(6)
 }
 
-|//reference to invariant: asdasdsdA asdsal;dkasdl;dkl;dksal;daskl;dasl;kdask;ld|(5)
-|//reference to hack: HACK asdsal;dkasdl;dkl;dksal;daskl;dasl;kdask;ld|(6)
-|//reference to todo: TODO asdsal;dkasdl;dkl;dksal;daskl;dasl;kdask;ld|(7)
+|//reference to invariant: asdasdsdA asdsal;dkasdl;dkl;dksal;daskl;dasl;kdask;ld|(7)
+|//reference to hack: HACK asdsal;dkasdl;dkl;dksal;daskl;dasl;kdask;ld|(8)
+|//reference to todo: TODO asdsal;dkasdl;dkl;dksal;daskl;dasl;kdask;ld|(9)
 ---------------------------------------------------------
 (0): IntelligentCommentsDocCommentFolding: (DocumentRange (17 - 96) on InlineReferencesToInlineEntities.cs)
 InlineReference: 
@@ -137,7 +137,7 @@ IntelligentCommentContent:
               Text: 
               Highlighters: NamedEntityDomainReference with name asdasdsdA and kind Invariant
 
-(4): IntelligentCommentsDocCommentFolding: (DocumentRange (719 - 863) on InlineReferencesToInlineEntities.cs)
+(4): IntelligentCommentsDocCommentFolding: (DocumentRange (719 - 773) on InlineReferencesToInlineEntities.cs)
   EntityWithContentSegments:
     ContentSegments:
       InlineContentSegment with kind Invariant: 
@@ -145,11 +145,29 @@ IntelligentCommentContent:
           Text: asdasdsdA
           Highlighters: HighlightedText:
           Text: asdlkjasdklsdjkalsdask
-            hack (name: HACK): aslkdsal;sad;lasdasd
-            todo (name: TODO): asl;dkasl;dkasd;lasd
-          Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 102, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
+          Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 22, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
 
-(5): IntelligentCommentsDocCommentFolding: (DocumentRange (870 - 949) on InlineReferencesToInlineEntities.cs)
+(5): IntelligentCommentsDocCommentFolding: (DocumentRange (777 - 818) on InlineReferencesToInlineEntities.cs)
+  EntityWithContentSegments:
+    ContentSegments:
+      InlineContentSegment with kind Hack: 
+          HighlightedText:
+          Text: HACK
+          Highlighters: HighlightedText:
+          Text: aslkdsal;sad;lasdasd
+          Highlighters: Highlighter: [hack.text.color, 0, 20, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
+
+(6): IntelligentCommentsDocCommentFolding: (DocumentRange (822 - 863) on InlineReferencesToInlineEntities.cs)
+  EntityWithContentSegments:
+    ContentSegments:
+      InlineContentSegment with kind Todo: 
+          HighlightedText:
+          Text: TODO
+          Highlighters: HighlightedText:
+          Text: asl;dkasl;dkasd;lasd
+          Highlighters: Highlighter: [todo.text.color, 0, 20, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
+
+(7): IntelligentCommentsDocCommentFolding: (DocumentRange (870 - 949) on InlineReferencesToInlineEntities.cs)
 InlineReference: 
     HighlightedText:
     Text: Reference to invariant: asdasdsdA
@@ -160,7 +178,7 @@ InlineReference:
     Text: , asdsal;dkasdl;dkl;dksal;daskl;dasl;kdask;ld
     Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 45, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
 
-(6): IntelligentCommentsDocCommentFolding: (DocumentRange (951 - 1,020) on InlineReferencesToInlineEntities.cs)
+(8): IntelligentCommentsDocCommentFolding: (DocumentRange (951 - 1,020) on InlineReferencesToInlineEntities.cs)
 InlineReference: 
     HighlightedText:
     Text: Reference to hack: HACK
@@ -171,7 +189,7 @@ InlineReference:
     Text: , asdsal;dkasdl;dkl;dksal;daskl;dasl;kdask;ld
     Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 45, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
 
-(7): IntelligentCommentsDocCommentFolding: (DocumentRange (1,022 - 1,091) on InlineReferencesToInlineEntities.cs)
+(9): IntelligentCommentsDocCommentFolding: (DocumentRange (1,022 - 1,091) on InlineReferencesToInlineEntities.cs)
 InlineReference: 
     HighlightedText:
     Text: Reference to todo: TODO
