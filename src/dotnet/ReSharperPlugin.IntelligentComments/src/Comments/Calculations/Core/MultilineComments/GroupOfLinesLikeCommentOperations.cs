@@ -5,6 +5,7 @@ using JetBrains.Annotations;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Util;
+using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments.Errors;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments.Utils;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.Content;
@@ -13,7 +14,7 @@ using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.Content;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.MultilineComments;
 
-public abstract class GroupOfLinesLikeCommentCreator : ISpecialGroupOfLinesCommentsCreator, INamedEntitiesCommonFinder
+public abstract class GroupOfLinesLikeCommentOperations : ISpecialGroupOfLinesCommentsOperations, INamedEntitiesCommonFinder
 {
   //todo: bad, but ok for now
   [NotNull] protected abstract string Pattern { get; }
@@ -21,7 +22,7 @@ public abstract class GroupOfLinesLikeCommentCreator : ISpecialGroupOfLinesComme
   protected abstract NameKind NameKind { get; }
 
 
-  public int Priority => CommentFromNodeCreatorsPriorities.Default;
+  public int Priority => CommentFromNodeOperationsPriorities.Default;
 
 
   public CommentCreationResult? TryCreate(ITreeNode node)
@@ -45,6 +46,8 @@ public abstract class GroupOfLinesLikeCommentCreator : ISpecialGroupOfLinesComme
     return buildResult with { Comment = CreateComment(groupOfLineComments, provider, text, null) };
   }
 
+  public IEnumerable<CommentErrorHighlighting> FindErrors(ITreeNode node) => EmptyList<CommentErrorHighlighting>.Enumerable;
+
   public bool CanBeStartOfSpecialGroupOfLineComments(ITreeNode node)
   {
     if (node is not ICommentNode commentNode) return false;
@@ -58,7 +61,7 @@ public abstract class GroupOfLinesLikeCommentCreator : ISpecialGroupOfLinesComme
 
   private static (CommentCreationResult, IGroupOfLineComments)? TryCreateGroupOfLinesCommentsNoMerge([NotNull] ITreeNode node)
   {
-    if (LanguageManager.Instance.TryGetService<IGroupOfLineCommentsCreator>(node.Language) is not { } builder) return null;
+    if (LanguageManager.Instance.TryGetService<IGroupOfLineCommentsOperations>(node.Language) is not { } builder) return null;
     if (builder.TryCreateNoMerge(node) is not { Comment: IGroupOfLineComments groupOfLineComments } buildResult) 
       return null;
 

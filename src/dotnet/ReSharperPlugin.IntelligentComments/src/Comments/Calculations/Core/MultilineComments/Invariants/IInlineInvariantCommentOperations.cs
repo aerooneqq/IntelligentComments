@@ -4,12 +4,12 @@ using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.MultilineComments.Invariants;
 
-public interface IInlineInvariantCommentCreator : ICommentFromNodeCreator, INamedEntitiesCommonFinder
+public interface IInlineInvariantCommentOperations : ICommentFromNodeOperations, INamedEntitiesCommonFinder
 {
   
 }
 
-public abstract class InlineInvariantCommentCreator : GroupOfLinesLikeCommentCreator, IInlineInvariantCommentCreator
+public abstract class InlineInvariantCommentOperations : GroupOfLinesLikeCommentOperations, IInlineInvariantCommentOperations
 {
   [NotNull] [ItemNotNull] 
   private static readonly string[] ourInvariantPrefixes = { "Invariant", "invariant" };

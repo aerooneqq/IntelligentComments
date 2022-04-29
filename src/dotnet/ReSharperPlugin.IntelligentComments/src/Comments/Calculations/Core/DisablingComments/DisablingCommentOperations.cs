@@ -7,6 +7,8 @@ using JetBrains.ReSharper.Feature.Services.Daemon.Attributes;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
 using JetBrains.ReSharper.Psi.Tree;
+using JetBrains.Util;
+using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments.Errors;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.Content;
@@ -15,13 +17,13 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.Disabli
 
 public record struct InspectionDisablingCommentDto([NotNull] IEnumerable<string> InspectionNames);
 
-public abstract class DisablingCommentCreator : ICommentFromNodeCreator
+public abstract class DisablingCommentOperations : ICommentFromNodeOperations
 {
-  public int Priority => CommentFromNodeCreatorsPriorities.DisablingComment;
+  public int Priority => CommentFromNodeOperationsPriorities.DisablingComment;
 
   
   [CanBeNull]
-  public virtual CommentCreationResult? TryCreate([NotNull] ITreeNode node)
+  public virtual CommentCreationResult? TryCreate(ITreeNode node)
   {
     if (TryGetDisablingCommentDto(node, out var commentNode) is not { } inspectionDisablingComment || 
         commentNode is null)
@@ -77,9 +79,11 @@ public abstract class DisablingCommentCreator : ICommentFromNodeCreator
     
     return new CommentCreationResult(comment, new [] { commentNode });
   }
-  
+
+  public IEnumerable<CommentErrorHighlighting> FindErrors(ITreeNode node) => EmptyList<CommentErrorHighlighting>.Enumerable;
+
   [CanBeNull]
-  private InspectionDisablingCommentDto? TryGetDisablingCommentDto(
+  private static InspectionDisablingCommentDto? TryGetDisablingCommentDto(
     [CanBeNull] ITreeNode element,
     [CanBeNull] out ICSharpCommentNode cSharpCommentNode)
   {

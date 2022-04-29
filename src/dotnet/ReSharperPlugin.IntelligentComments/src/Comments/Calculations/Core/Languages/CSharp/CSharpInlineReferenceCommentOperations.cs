@@ -12,7 +12,7 @@ using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.InlineRefer
 namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.Languages.CSharp;
 
 [Language(typeof(CSharpLanguage))]
-public class CSharpInlineReferenceCommentCreator : InlineReferenceCommentCreator
+public class CSharpInlineReferenceCommentOperations : InlineReferenceCommentOperations
 {
   public override bool CanBeStartOfSpecialGroupOfLineComments(ITreeNode node)
   {

@@ -33,14 +33,21 @@ public class CSharpCommentsProcessor : CommentsProcessorBase
       return;
     }
     
-    var creators = LanguageManager
-      .TryGetCachedServices<ICommentFromNodeCreator>(element.Language)
-      .OrderByDescending(creator => creator.Priority);
+    var commentsOperations = LanguageManager
+      .TryGetCachedServices<ICommentFromNodeOperations>(element.Language)
+      .OrderByDescending(operations => operations.Priority);
     
-    foreach (var creator in creators)
+    foreach (var operation in commentsOperations)
     {
-      if (creator.TryCreate(element) is var (comment, nodes))
+      if (operation.TryCreate(element) is var (comment, nodes))
       {
+        var errors = operation.FindErrors(element).Select(error => new HighlightingInfo(error.CalculateRange(), error)).ToList();
+        if (errors.Count > 0)
+        {
+          Comments.Add(CommentProcessingResult.CreateWithErrors(errors, element.Language, comment.Range));
+          return;
+        }
+        
         VisitedNodes.AddRange(nodes);
         Comments.Add(CommentProcessingResult.CreateSuccess(comment));
         return;

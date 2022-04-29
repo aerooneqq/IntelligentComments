@@ -19,7 +19,7 @@ using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.Content;
 namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.Languages.CSharp;
 
 [Language(typeof(CSharpLanguage))]
-public class CSharpGroupOfLineCommentsCreator : GroupOfLineCommentsCreatorBase
+public class CSharpGroupOfLineCommentsOperations : GroupOfLineCommentsOperationsBase
 {
   public override CommentCreationResult? TryCreate(ITreeNode node) => TryCreate(node, true);
 
@@ -87,8 +87,8 @@ public class CSharpGroupOfLineCommentsCreator : GroupOfLineCommentsCreatorBase
     var comments = new List<ICSharpCommentNode> { startCommentNode };
     var currentNode = startCommentNode.NextSibling;
     var manager = LanguageManager.Instance;
-    var specialCommentsCreators = manager
-      .TryGetCachedServices<ISpecialGroupOfLinesCommentsCreator>(startCommentNode.Language)
+    var specialCommentsOperations = manager
+      .TryGetCachedServices<ISpecialGroupOfLinesCommentsOperations>(startCommentNode.Language)
       .OrderByDescending(creator => creator.Priority)
       .ToList();
 
@@ -116,9 +116,9 @@ public class CSharpGroupOfLineCommentsCreator : GroupOfLineCommentsCreatorBase
       if (currentNode is ICSharpCommentNode { CommentType: CommentType.END_OF_LINE_COMMENT } commentNode)
       {
         var shouldAddCurrentNodeToGroup = true;
-        foreach (var creator in specialCommentsCreators)
+        foreach (var operations in specialCommentsOperations)
         {
-          if (creator.CanBeStartOfSpecialGroupOfLineComments(commentNode))
+          if (operations.CanBeStartOfSpecialGroupOfLineComments(commentNode))
           {
             shouldAddCurrentNodeToGroup = false;
             break;

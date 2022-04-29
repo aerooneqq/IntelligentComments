@@ -4,11 +4,11 @@ using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.MultilineComments.HackComments;
 
-public interface IInlineHackCommentCreator : ICommentFromNodeCreator, INamedEntitiesCommonFinder
+public interface IInlineHackCommentOperations : ICommentFromNodeOperations, INamedEntitiesCommonFinder
 {
 }
 
-public abstract class InlineHackCommentCreator : GroupOfLinesLikeCommentCreator, IInlineHackCommentCreator
+public abstract class InlineHackCommentOperations : GroupOfLinesLikeCommentOperations, IInlineHackCommentOperations
 {
   [NotNull] [ItemNotNull] 
   private static readonly string[] ourHackPrefixes = { "Hack", "hack" };

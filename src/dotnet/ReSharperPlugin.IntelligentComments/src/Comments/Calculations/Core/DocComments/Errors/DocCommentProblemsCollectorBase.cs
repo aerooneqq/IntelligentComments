@@ -152,11 +152,7 @@ public abstract class CommentProblemsCollectorBase : ICommentProblemsCollector
   private void AddError(DocumentRange range, [NotNull] string message, [NotNull] Context context)
   {
     if (!range.IsValid()) return;
-    
-    var adjustedMessage = $"[IC]: {message}";
-    var error = new CommentErrorHighlighting(range, adjustedMessage);
-    var info = new HighlightingInfo(range, error);
-    context.Highlightings.Add(info);
+    context.Highlightings.Add(CommentErrorHighlighting.CreateInfo(message, range));
   }
 
   private bool CheckAttributePresenceAndNonEmptyValue(

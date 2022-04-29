@@ -12,12 +12,12 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Completion.CSharp.InlineR
 [SolutionComponent]
 public class CSharpInlineReferencesAutoPopupStrategy : CSharpAutoPopupStrategyBase
 {
-  [NotNull] private readonly InlineReferenceCommentCreator myCreator;
+  [NotNull] private readonly InlineReferenceCommentOperations myOperations;
 
 
   public CSharpInlineReferencesAutoPopupStrategy()
   {
-    myCreator = LanguageManager.Instance.GetService<InlineReferenceCommentCreator>(Language);
+    myOperations = LanguageManager.Instance.GetService<InlineReferenceCommentOperations>(Language);
   }
   
   
@@ -28,7 +28,7 @@ public class CSharpInlineReferencesAutoPopupStrategy : CSharpAutoPopupStrategyBa
       if (NamesResolveUtil.TryFindAnyCommentNode(node) is not { }) return false;
 
       var caretOffset = textControl.Caret.DocumentOffset();
-      return myCreator.TryExtractCompletionInlineReferenceInfo(node, caretOffset) is { };
+      return myOperations.TryExtractCompletionInlineReferenceInfo(node, caretOffset) is { };
     });
   }
 }

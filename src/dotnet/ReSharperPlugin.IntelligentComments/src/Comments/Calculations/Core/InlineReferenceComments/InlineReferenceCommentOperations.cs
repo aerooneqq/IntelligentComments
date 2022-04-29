@@ -1,9 +1,12 @@
 using System.Collections.Generic;
 using JetBrains.Annotations;
+using JetBrains.DocumentManagers;
 using JetBrains.DocumentModel;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Util;
+using ReSharperPlugin.IntelligentComments.Comments.Caches.Names;
+using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments.Errors;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments.Utils;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl;
@@ -12,9 +15,9 @@ using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.References;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.InlineReferenceComments;
 
-public abstract class InlineReferenceCommentCreator : ISpecialGroupOfLinesCommentsCreator, INamedEntitiesCommonFinder
+public abstract class InlineReferenceCommentOperations : ISpecialGroupOfLinesCommentsOperations, INamedEntitiesCommonFinder
 {
-  public int Priority => CommentFromNodeCreatorsPriorities.Default;
+  public int Priority => CommentFromNodeOperationsPriorities.Default;
 
   
   [CanBeNull]
@@ -25,6 +28,7 @@ public abstract class InlineReferenceCommentCreator : ISpecialGroupOfLinesCommen
     var description = HighlightedText.CreateEmptyText();
     var provider = LanguageManager.Instance.GetService<IHighlightersProvider>(node.Language);
 
+    [CanBeNull]
     TextHighlighter TryGetDocCommentHighlighter(int length) => provider.TryGetDocCommentHighlighter(length);
     
     if (descriptionText is { } && !descriptionText.IsNullOrWhitespace())
@@ -56,26 +60,31 @@ public abstract class InlineReferenceCommentCreator : ISpecialGroupOfLinesCommen
     return new CommentCreationResult(comment, new[] { node });
   }
 
+  public IEnumerable<CommentErrorHighlighting> FindErrors(ITreeNode node)
+  {
+    if (TryExtractInlineReferenceInfo(node) is not var (nameWithKind, _, nameRange)) 
+      return EmptyList<CommentErrorHighlighting>.Enumerable;
+
+    var document = nameRange.Document;
+    if (document.TryGetSolution() is not { } solution) return EmptyList<CommentErrorHighlighting>.Enumerable;
+
+    var domainResolveContext = new DomainResolveContextImpl(solution, document);
+    if (NamesResolveUtil.ResolveName(nameWithKind, domainResolveContext) is NamedEntityDomainResolveResult)
+      return EmptyList<CommentErrorHighlighting>.Enumerable;
+    
+    var message = $"Failed to resolve inline reference with name {nameWithKind.Name} with kind {nameWithKind.NameKind}";
+    return new[] { CommentErrorHighlighting.Create(message, nameRange) };
+  }
+
   public abstract bool CanBeStartOfSpecialGroupOfLineComments(ITreeNode node);
 
   public abstract InlineReferenceCommentInfo? TryExtractInlineReferenceInfo([NotNull] ITreeNode node);
   public abstract InlineReferenceCommentInfo? TryExtractCompletionInlineReferenceInfo(
     [NotNull] ITreeNode node, DocumentOffset contextCaretDocumentOffset);
 
-  public IEnumerable<CommonNamedEntityDescriptor> FindReferences(ITreeNode node, NameWithKind nameWithKind)
-  {
-    return FindReferencesOrAll(node, nameWithKind);
-  }
-
-  public IEnumerable<CommonNamedEntityDescriptor> FindAllReferences(ITreeNode node)
-  {
-    return FindReferencesOrAll(node, null);
-  }
-
-  public IEnumerable<CommonNamedEntityDescriptor> FindNames(ITreeNode node)
-  {
-    return EmptyList<CommonNamedEntityDescriptor>.Enumerable;
-  }
+  public IEnumerable<CommonNamedEntityDescriptor> FindReferences(ITreeNode node, NameWithKind nameWithKind) => FindReferencesOrAll(node, nameWithKind);
+  public IEnumerable<CommonNamedEntityDescriptor> FindAllReferences(ITreeNode node) => FindReferencesOrAll(node, null);
+  public IEnumerable<CommonNamedEntityDescriptor> FindNames(ITreeNode node) => EmptyList<CommonNamedEntityDescriptor>.Enumerable;
 
   private IEnumerable<CommonNamedEntityDescriptor> FindReferencesOrAll([NotNull] ITreeNode node, NameWithKind? nameWithKind)
   {

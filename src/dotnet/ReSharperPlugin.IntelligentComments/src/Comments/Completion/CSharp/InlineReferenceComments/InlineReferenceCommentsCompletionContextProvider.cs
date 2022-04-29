@@ -23,10 +23,10 @@ public class InlineReferenceCommentsCompletionContextProvider : ICodeCompletionC
                       NamesResolveUtil.TryFindAnyCommentNode(token.PrevSibling);
     
     if (commentNode is not { }) return null;
-    if (context.LanguageManager.TryGetService<InlineReferenceCommentCreator>(commentNode.Language) is not { } creator)
+    if (context.LanguageManager.TryGetService<InlineReferenceCommentOperations>(commentNode.Language) is not { } operations)
       return null;
 
-    if (creator.TryExtractCompletionInlineReferenceInfo(commentNode, context.CaretDocumentOffset) is not { } info) return null;
+    if (operations.TryExtractCompletionInlineReferenceInfo(commentNode, context.CaretDocumentOffset) is not { } info) return null;
     
     var range = info.NameRange;
     var textualRanges = new TextLookupRanges(range, range);

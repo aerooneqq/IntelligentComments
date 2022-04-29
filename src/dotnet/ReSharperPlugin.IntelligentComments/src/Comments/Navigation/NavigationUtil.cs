@@ -119,10 +119,10 @@ internal static class NavigationUtil
     DocumentOffset caretOffset)
   {
     if (NamesResolveUtil.TryFindAnyCommentNode(token) is not { } commentNode) return null;
-    if (LanguageManager.Instance.TryGetService<InlineReferenceCommentCreator>(token.Language) is not { } creator)
+    if (LanguageManager.Instance.TryGetService<InlineReferenceCommentOperations>(token.Language) is not { } operations)
       return null;
 
-    if (creator.TryExtractInlineReferenceInfo(commentNode) is not { } info) return null;
+    if (operations.TryExtractInlineReferenceInfo(commentNode) is not { } info) return null;
     if (info.NameRange.Contains(caretOffset))
     {
       return new NamedEntityExtraction(info.NameRange, info.NameWithKind);

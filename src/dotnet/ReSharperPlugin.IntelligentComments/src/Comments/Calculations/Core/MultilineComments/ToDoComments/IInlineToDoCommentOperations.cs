@@ -5,11 +5,11 @@ using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.MultilineComments.ToDoComments;
 
 
-public interface IInlineToDoCommentCreator : ICommentFromNodeCreator, INamedEntitiesCommonFinder
+public interface IInlineToDoCommentOperations : ICommentFromNodeOperations, INamedEntitiesCommonFinder
 {
 }
 
-public abstract class InlineToDoCommentCreator : GroupOfLinesLikeCommentCreator, IInlineToDoCommentCreator
+public abstract class InlineToDoCommentOperations : GroupOfLinesLikeCommentOperations, IInlineToDoCommentOperations
 {
   [NotNull]
   [ItemNotNull]
