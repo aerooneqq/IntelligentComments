@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using JetBrains.DocumentModel;
+using JetBrains.Rd.Base;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CodeStyle;
 using JetBrains.ReSharper.Psi.CSharp;
@@ -28,7 +29,7 @@ public class CSharpGroupOfLineCommentsCreator : GroupOfLineCommentsCreatorBase
     if (!CanProcessLineComment(startCommentNode)) return null;
     
     var groupOfLineComments = CollectLineComments(startCommentNode, mergeDividedComments);
-    var highlightedText = CreateTextFrom(startCommentNode, groupOfLineComments);
+    var highlightedText = CreateTextFrom(groupOfLineComments);
     var comment = CreateCommentFrom(highlightedText, groupOfLineComments);
     return new CommentCreationResult(comment, groupOfLineComments);
   }
@@ -37,13 +38,14 @@ public class CSharpGroupOfLineCommentsCreator : GroupOfLineCommentsCreatorBase
 
   [NotNull]
   private static IHighlightedText CreateTextFrom(
-    [NotNull] ICSharpCommentNode startCommentNode,
     [NotNull] IReadOnlyList<ICSharpCommentNode> commentNodes)
   {
+    if (commentNodes.Count == 0) return HighlightedText.CreateEmptyText();
+    
     var texts = commentNodes.Select(comment => DocCommentsBuilderUtil.PreprocessText(comment.CommentText, null));
     var text = DocCommentsBuilderUtil.PreprocessText(string.Join("\n", texts), null);
 
-    var highlightersProvider = LanguageManager.Instance.GetService<IHighlightersProvider>(startCommentNode.Language);
+    var highlightersProvider = LanguageManager.Instance.GetService<IHighlightersProvider>(commentNodes[0].Language);
     var highlighter = highlightersProvider?.TryGetDocCommentHighlighter(text.Length);
 
     return new HighlightedText(text, highlighter);
@@ -84,7 +86,12 @@ public class CSharpGroupOfLineCommentsCreator : GroupOfLineCommentsCreatorBase
   {
     var comments = new List<ICSharpCommentNode> { startCommentNode };
     var currentNode = startCommentNode.NextSibling;
-    
+    var manager = LanguageManager.Instance;
+    var specialCommentsCreators = manager
+      .TryGetCachedServices<ISpecialGroupOfLinesCommentsCreator>(startCommentNode.Language)
+      .OrderByDescending(creator => creator.Priority)
+      .ToList();
+
     while (currentNode is { })
     {
       if (currentNode.IsWhitespaceToken())
@@ -108,6 +115,18 @@ public class CSharpGroupOfLineCommentsCreator : GroupOfLineCommentsCreatorBase
       
       if (currentNode is ICSharpCommentNode { CommentType: CommentType.END_OF_LINE_COMMENT } commentNode)
       {
+        var shouldAddCurrentNodeToGroup = true;
+        foreach (var creator in specialCommentsCreators)
+        {
+          if (creator.TryCreate(commentNode) is { })
+          {
+            shouldAddCurrentNodeToGroup = false;
+            break;
+          }
+        }
+        
+        if (!shouldAddCurrentNodeToGroup) break;
+
         comments.Add(commentNode);
         currentNode = currentNode.NextSibling;
         continue;

@@ -17,6 +17,10 @@ public interface ICommentFromNodeCreator
   CommentCreationResult? TryCreate([NotNull] ITreeNode node);
 }
 
+public interface ISpecialGroupOfLinesCommentsCreator : ICommentFromNodeCreator
+{
+}
+
 public static class CommentFromNodeCreatorsPriorities
 {
   public const int DocComment = 4000;

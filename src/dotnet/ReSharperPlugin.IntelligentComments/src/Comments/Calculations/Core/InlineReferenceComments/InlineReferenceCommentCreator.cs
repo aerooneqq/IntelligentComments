@@ -12,11 +12,7 @@ using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.References;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.InlineReferenceComments;
 
-public interface IInlineReferenceCommentCreator : ICommentFromNodeCreator
-{
-}
-
-public abstract class InlineReferenceCommentCreator : IInlineReferenceCommentCreator, INamedEntitiesCommonFinder
+public abstract class InlineReferenceCommentCreator : ISpecialGroupOfLinesCommentsCreator, INamedEntitiesCommonFinder
 {
   public int Priority => CommentFromNodeCreatorsPriorities.Default;
 

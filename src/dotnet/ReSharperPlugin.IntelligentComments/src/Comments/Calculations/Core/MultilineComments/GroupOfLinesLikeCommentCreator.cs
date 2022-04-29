@@ -13,7 +13,7 @@ using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.Content;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.MultilineComments;
 
-public abstract class GroupOfLinesLikeCommentCreator : ICommentFromNodeCreator, INamedEntitiesCommonFinder
+public abstract class GroupOfLinesLikeCommentCreator : ISpecialGroupOfLinesCommentsCreator, INamedEntitiesCommonFinder
 {
   //todo: bad, but ok for now
   [NotNull] protected abstract string Pattern { get; }
@@ -48,7 +48,7 @@ public abstract class GroupOfLinesLikeCommentCreator : ICommentFromNodeCreator, 
   [NotNull] 
   private static string GetGroupOfLinesCommentsText([NotNull] IGroupOfLineComments comments) => comments.Text.Text.Text;
 
-  private (CommentCreationResult, IGroupOfLineComments)? TryCreateGroupOfLinesCommentsNoMerge([NotNull] ITreeNode node)
+  private static (CommentCreationResult, IGroupOfLineComments)? TryCreateGroupOfLinesCommentsNoMerge([NotNull] ITreeNode node)
   {
     if (LanguageManager.Instance.TryGetService<IGroupOfLineCommentsCreator>(node.Language) is not { } builder) return null;
     if (builder.TryCreateNoMerge(node) is not { Comment: IGroupOfLineComments groupOfLineComments } buildResult) 
