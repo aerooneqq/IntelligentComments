@@ -1,0 +1,85 @@
+﻿namespace ReSharperPlugin.IntelligentComments.Tests.data.CSharp.Highlightings;
+
+public class GroupOfLineCommentsWithSpecialComments
+{
+  |//asdasdasdsad
+  //asdasdsdasdasdasdasdasd|(0)
+  |//invariant (name: aSDASDAD0): ASDasdASDSDASDASD|(1)
+  |//reference to invariant: aSDASDAD0|(2)
+  |//asdasdasdasd
+  //asdsadasd
+  //asdasdasdasdsdasdsd
+  //asdsadsdasdasdsaasdasdasdasd|(3)
+  |//hack (name: ASDASDASDASD): ASDASDASDASD
+  //asdasddas|(4)
+  |//todo (name: ASDASDSDSDASDADASD): asdASDasdasdasdasdas|(5)
+  |//invariant: asldkaslsdl;ks;lskdasdl;k
+  //asdasdasdasdasdasdasdsa|(6)
+}
+---------------------------------------------------------
+(0): IntelligentCommentsDocCommentFolding: (DocumentRange (140 - 183) on GroupOfLineCommentsWithSpecialComments.cs)
+TextContentSegment:
+  HighlightedText:
+  Text: asdasdasdsad
+    asdasdsdasdasdasdasdasd
+  Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 36, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
+
+(1): IntelligentCommentsDocCommentFolding: (DocumentRange (187 - 235) on GroupOfLineCommentsWithSpecialComments.cs)
+  EntityWithContentSegments:
+    ContentSegments:
+      InlineContentSegment with kind Invariant: 
+          HighlightedText:
+          Text: aSDASDAD0
+          Highlighters: HighlightedText:
+          Text: ASDasdASDSDASDASD
+          Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 17, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
+
+(2): IntelligentCommentsDocCommentFolding: (DocumentRange (239 - 274) on GroupOfLineCommentsWithSpecialComments.cs)
+InlineReference: 
+    HighlightedText:
+    Text: Reference to invariant: aSDASDAD0
+    Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 24, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
+      Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 24, 33, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: NamedEntityDomainReference::aSDASDAD0, ]
+  Description: 
+    HighlightedText:
+    Text: 
+    Highlighters: 
+(3): IntelligentCommentsDocCommentFolding: (DocumentRange (278 - 366) on GroupOfLineCommentsWithSpecialComments.cs)
+TextContentSegment:
+  HighlightedText:
+  Text: asdasdasdasd
+    asdsadasd
+    asdasdasdasdsdasdsd
+    asdsadsdasdasdsaasdasdasdasd
+  Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 71, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
+
+(4): IntelligentCommentsDocCommentFolding: (DocumentRange (370 - 426) on GroupOfLineCommentsWithSpecialComments.cs)
+  EntityWithContentSegments:
+    ContentSegments:
+      InlineContentSegment with kind Hack: 
+          HighlightedText:
+          Text: ASDASDASDASD
+          Highlighters: HighlightedText:
+          Text: ASDASDASDASD
+            asdasddas
+          Highlighters: Highlighter: [hack.text.color, 0, 22, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
+
+(5): IntelligentCommentsDocCommentFolding: (DocumentRange (430 - 485) on GroupOfLineCommentsWithSpecialComments.cs)
+  EntityWithContentSegments:
+    ContentSegments:
+      InlineContentSegment with kind Todo: 
+          HighlightedText:
+          Text: ASDASDSDSDASDADASD
+          Highlighters: HighlightedText:
+          Text: asdASDasdasdasdasdas
+          Highlighters: Highlighter: [todo.text.color, 0, 20, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
+
+(6): IntelligentCommentsDocCommentFolding: (DocumentRange (489 - 556) on GroupOfLineCommentsWithSpecialComments.cs)
+  EntityWithContentSegments:
+    ContentSegments:
+      InlineContentSegment with kind Invariant: 
+          HighlightedText:
+          Text: asldkaslsdl;ks;lskdasdl;k
+            asdasdasdasdasdasdasdsa
+          Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 49, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
+
