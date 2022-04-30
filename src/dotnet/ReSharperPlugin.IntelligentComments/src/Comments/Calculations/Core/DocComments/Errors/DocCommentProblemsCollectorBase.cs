@@ -87,7 +87,7 @@ public abstract class DocCommentProblemsCollectorBase : IDocCommentProblemsColle
   {
     if (!CheckIfTagInTopmostContext(hackTag, context)) return;
     if (!CheckThatNameOccursNotMoreThanOnce(hackTag, context)) return;
-    if (!CheckThatTagHaveOnlyAttributesFromPredefinedSet(hackTag, DocCommentsBuilderUtil.PossibleNameEntityTagAttributes, context)) return;
+    if (!CheckThatTagHaveOnlyAttributesFromPredefinedSet(hackTag, DocCommentsBuilderUtil.PossibleNamedEntityTagAttributes, context)) return;
     if (!CheckThatAllChildrenAreTags(hackTag, context, DocCommentsBuilderUtil.PossibleInnerFirstLevelTagsOfHack))
       return;
 
@@ -119,7 +119,7 @@ public abstract class DocCommentProblemsCollectorBase : IDocCommentProblemsColle
   private void ProcessToDo([NotNull] IXmlTag todoTag, [NotNull] DocCommentErrorAnalyzerContext context)
   {
     if (!CheckIfTagInTopmostContext(todoTag, context)) return;
-    if (!CheckThatTagHaveOnlyAttributesFromPredefinedSet(todoTag, DocCommentsBuilderUtil.PossibleNameEntityTagAttributes, context)) return;
+    if (!CheckThatTagHaveOnlyAttributesFromPredefinedSet(todoTag, DocCommentsBuilderUtil.PossibleNamedEntityTagAttributes, context)) return;
     if (!CheckThatAllChildrenAreTags(todoTag, context, DocCommentsBuilderUtil.PossibleInnerFirstLevelTagsOfTodo)) return;
     if (!CheckThatNameOccursNotMoreThanOnce(todoTag, context)) return;
     CheckTicketsSectionsIfPresent(todoTag, context);
@@ -167,7 +167,7 @@ public abstract class DocCommentProblemsCollectorBase : IDocCommentProblemsColle
     CheckAttributePresenceAndNonEmptyValue(imageTag, DocCommentsBuilderUtil.ImageSourceAttrName, context);
   }
 
-  private void AddError(DocumentRange range, [NotNull] string message, [NotNull] DocCommentErrorAnalyzerContext context)
+  private static void AddError(DocumentRange range, [NotNull] string message, [NotNull] DocCommentErrorAnalyzerContext context)
   {
     if (!range.IsValid()) return;
     context.Highlightings.Add(CommentErrorHighlighting.CreateInfo(message, range));
@@ -177,12 +177,11 @@ public abstract class DocCommentProblemsCollectorBase : IDocCommentProblemsColle
     [NotNull] IXmlTag tag, [NotNull] string attributeName, [NotNull] DocCommentErrorAnalyzerContext context)
   {
     var haveSourceTag = CheckAttributePresence(tag, attributeName, context);
-    if (!haveSourceTag) return false;
-
-    return CheckAttributeValueIsNotEmpty(tag, attributeName, context);
+    return haveSourceTag && CheckAttributeValueIsNotEmpty(tag, attributeName, context);
   }
 
-  private bool CheckAttributePresence([NotNull] IXmlTag tag, [NotNull] string attributeName, [NotNull] DocCommentErrorAnalyzerContext context)
+  private static bool CheckAttributePresence(
+    [NotNull] IXmlTag tag, [NotNull] string attributeName, [NotNull] DocCommentErrorAnalyzerContext context)
   {
     if (tag.GetAttribute(attributeName) is { }) return true;
 
@@ -218,7 +217,7 @@ public abstract class DocCommentProblemsCollectorBase : IDocCommentProblemsColle
   private void ProcessInvariant([NotNull] IXmlTag invariantTag, [NotNull] DocCommentErrorAnalyzerContext context)
   {
     if (!CheckIfTagInTopmostContext(invariantTag, context)) return;
-    if (!CheckThatTagHaveOnlyAttributesFromPredefinedSet(invariantTag, DocCommentsBuilderUtil.PossibleNameEntityTagAttributes, context)) return;
+    if (!CheckThatTagHaveOnlyAttributesFromPredefinedSet(invariantTag, DocCommentsBuilderUtil.PossibleNamedEntityTagAttributes, context)) return;
     
     CheckThatNameOccursNotMoreThanOnce(invariantTag, context);
   }

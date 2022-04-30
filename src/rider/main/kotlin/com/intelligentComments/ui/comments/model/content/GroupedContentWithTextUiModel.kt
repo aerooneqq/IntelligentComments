@@ -4,7 +4,6 @@ import com.intelligentComments.core.domain.core.*
 import com.intelligentComments.core.domain.impl.HighlightedTextImpl
 import com.intelligentComments.core.settings.RiderIntelligentCommentsSettingsProvider
 import com.intelligentComments.ui.colors.ColorName
-import com.intelligentComments.ui.colors.Colors
 import com.intelligentComments.ui.colors.ColorsProvider
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intelligentComments.ui.comments.model.content.text.TextContentSegmentUiModel
@@ -70,12 +69,23 @@ abstract class GroupedContentUiModel(
 }
 
 fun getSecondLevelHeader(project: Project, text: String, parent: Parentable): HighlightedText {
-  val colorsProvider = project.service<ColorsProvider>()
-  val textColor = colorsProvider.getColorFor(Colors.TextInSectionsHeadersColor)
+  return HighlightedTextImpl(text, parent, tryGetHighlighter(project, text.length, parent))
+}
 
+private fun tryGetHighlighter(
+  project: Project,
+  length: Int,
+  parent: Parentable,
+  explicitlySetColor: ColorName? = null
+): TextHighlighter? {
+  val colorsProvider = project.service<ColorsProvider>()
   val attributes = TextAttributesImpl(false, 600f, Font.PLAIN)
-  val highlighter = CommonsHighlightersFactory.createHighlighter(text.length, textColor, attributes)
-  return HighlightedTextImpl(text, parent, listOf(highlighter))
+  return if (explicitlySetColor != null) {
+    val textColor = colorsProvider.getColorFor(explicitlySetColor)
+    CommonsHighlightersFactory.createHighlighter(length, textColor, attributes)
+  } else {
+    CommonsHighlightersFactory.tryCreateCommentHighlighter(parent, length)
+  }
 }
 
 fun getFirstLevelHeader(
@@ -85,11 +95,5 @@ fun getFirstLevelHeader(
   explicitlySetColor: ColorName? = null
 ): HighlightedText {
   val adjustedText = "$text:"
-  val colorsProvider = project.service<ColorsProvider>()
-  val colorKey = explicitlySetColor ?: Colors.TextInSectionsHeadersColor
-  val textColor = colorsProvider.getColorFor(colorKey)
-  val attributes = TextAttributesImpl(false, 600f, Font.PLAIN)
-  val highlighter = CommonsHighlightersFactory.createHighlighter(adjustedText.length - 1, textColor, attributes)
-
-  return HighlightedTextImpl(adjustedText, parent, listOf(highlighter))
+  return HighlightedTextImpl(adjustedText, parent, tryGetHighlighter(project, adjustedText.length, parent, explicitlySetColor))
 }

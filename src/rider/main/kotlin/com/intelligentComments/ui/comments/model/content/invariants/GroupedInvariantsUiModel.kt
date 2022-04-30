@@ -50,10 +50,18 @@ private fun extractTextFromInvariant(segment: ContentSegment): HighlightedText {
 }
 
 fun createStartTextOfNamedEntity(kind: NameKind, name: HighlightedText, parentSegment: ContentSegment): HighlightedText {
+  val kindText = "$kind ("
+  val kindHighlighter = CommonsHighlightersFactory.tryCreateCommentHighlighter(parentSegment, kindText.length)
+  val kindHighlightedText = HighlightedTextImpl(kindText, null, kindHighlighter)
+
+  val endText = "): "
+  val endTextHighlighter = CommonsHighlightersFactory.tryCreateCommentHighlighter(parentSegment, endText.length)
+  val endHighlightedText = HighlightedTextImpl(endText, null, endTextHighlighter)
+
   return HighlightedTextImpl.createEmpty(parentSegment)
-    .mergeWith("$kind (")
+    .mergeWith(kindHighlightedText)
     .mergeWith(name)
-    .mergeWith("): ")
+    .mergeWith(endHighlightedText)
 }
 
 fun mergeSegmentsTexts(
@@ -72,7 +80,7 @@ fun mergeSegmentsTexts(
 
       var highlighter: TextHighlighter? = null
       if (firstHighlighter != null) {
-        highlighter = CommonsHighlightersFactory.createHighlighter(delimiter.length,  firstHighlighter.textColor)
+        highlighter = CommonsHighlightersFactory.createHighlighter(delimiter.length, firstHighlighter.textColor)
       }
 
       text = text.mergeWith(HighlightedTextImpl(delimiter, highlighter))

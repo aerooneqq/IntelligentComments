@@ -54,7 +54,7 @@ internal static partial class DocCommentsBuilderUtil
   };
 
   [NotNull]
-  internal static HashSet<string> PossibleNameEntityTagAttributes { get; } = new()
+  internal static HashSet<string> PossibleNamedEntityTagAttributes { get; } = new()
   {
     CommonNameAttrName
   };
