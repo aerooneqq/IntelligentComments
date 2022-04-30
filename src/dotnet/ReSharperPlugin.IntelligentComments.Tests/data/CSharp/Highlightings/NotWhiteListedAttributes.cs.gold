@@ -7,9 +7,9 @@
 /// |<reference someAttr = "asdasdasd" />|(2)
 /// <reference invariant = |"asdsadasd"|(3) />
 /// <refernece invariant = "asdasdsdasd" source ="asdasdasd" />
-/// |<invariant source ="asdasda" />|(4)
-/// <invariant name = "asdasdasd" source = "asdasdA" />
-/// |<image asd = "asdasda" />|(0)|(5)
+/// <invariant |source ="asdasda"|(4) />
+/// <invariant name = "asdasdasd" |source = "asdasdA"|(5) />
+/// |<image asd = "asdasda" />|(0)|(6)
 public class NotWhiteListedAttributes
 {
   
@@ -25,5 +25,6 @@ TextContentSegment:
 (1): ReSharper Underlined Error Highlighting: [IC]: Reference tag can not contain attribute source
 (2): ReSharper Underlined Error Highlighting: [IC]: Reference tag can not contain attribute someAttr
 (3): ReSharper Underlined Error Highlighting: [IC]: Failed to resolve Invariant "asdsadasd"
-(4): ReSharper Underlined Error Highlighting: [IC]: Tag "invariant" must have attribute "name" to be set
-(5): ReSharper Underlined Error Highlighting: [IC]: Tag "image" must have attribute "source" to be set
+(4): ReSharper Underlined Error Highlighting: [IC]: invariant can not contain attribute source
+(5): ReSharper Underlined Error Highlighting: [IC]: invariant can not contain attribute source
+(6): ReSharper Underlined Error Highlighting: [IC]: Tag "image" must have attribute "source" to be set

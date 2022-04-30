@@ -1,18 +1,25 @@
 ﻿namespace ReSharperPlugin.IntelligentComments.Tests.data.CSharp.Highlightings;
 
-|/// |<invariant />|(1)
-/// <invariant |name=""|(2) />|(0)
+|/// <invariant />
+/// <invariant name="" />|(0)
 public class InvariantNameNotSet
 {
   
 }
 ---------------------------------------------------------
 (0): IntelligentCommentsDocCommentFolding: (DocumentRange (82 - 126) on InvariantNameNotSet.cs)
-TextContentSegment:
-  HighlightedText:
-  Text: Invalid comment: [IC]: Tag "invariant" must have attribute "name" to be set
-  Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 17, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
-    Highlighter: [comment.error, 17, 75, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
-
-(1): ReSharper Underlined Error Highlighting: [IC]: Tag "invariant" must have attribute "name" to be set
-(2): ReSharper Underlined Error Highlighting: [IC]: Tag "invariant" must have attribute "name" to have non-empty value
+IntelligentCommentContent:
+  ContentSegments:
+    Invariant: 
+        EntityWithContentSegments:
+          ContentSegments:
+            TextContentSegment:
+              HighlightedText:
+              Text: 
+              Highlighters: Invariant: 
+        EntityWithContentSegments:
+          ContentSegments:
+            TextContentSegment:
+              HighlightedText:
+              Text: 
+              Highlighters: 

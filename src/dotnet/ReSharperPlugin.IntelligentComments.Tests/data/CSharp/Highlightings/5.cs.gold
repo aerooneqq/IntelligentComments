@@ -136,6 +136,9 @@ IntelligentCommentContent:
               Highlighters: NamedEntityDomainReference with name asdasdasdasdasassadasdasd and kind Todo
     ToDoContentSegment: 
       Name:
+        HighlightedText:
+        Text: asdasdasdasdasassadasdasd
+        Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 25, TextHighlighterAttributes { FontStyle = Bold, Underline = False, FontWeight = 400 }, References: NamedEntityDomainReference::asdasdasdasdasassadasdasd, ]
         EntityWithContentSegments:
           ContentSegments:
             TextContentSegment:

@@ -2,10 +2,10 @@
 
 |/// <invariant name=|"1"|(1) />
 /// <invariant name=|"1"|(2) />
-/// <hack name="2" />
-/// <hack name="2" />
-/// <todo name="3" />
-/// <todo name="3" />|(0)
+/// <hack name=|"2"|(3) />
+/// <hack name=|"2"|(4) />
+/// <todo name=|"3"|(5) />
+/// <todo name=|"3"|(6) />|(0)
 public class NamedEntityDeclaredMoreThanOnceError
 {
   
@@ -14,9 +14,13 @@ public class NamedEntityDeclaredMoreThanOnceError
 (0): IntelligentCommentsDocCommentFolding: (DocumentRange (82 - 228) on NamedEntityDeclaredMoreThanOnceError.cs)
 TextContentSegment:
   HighlightedText:
-  Text: Invalid comment: [IC]: The invariant name "1" must occur only once in solution
+  Text: Invalid comment: [IC]: The Invariant name "1" must occur only once in solution
   Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 17, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
     Highlighter: [comment.error, 17, 78, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
 
-(1): ReSharper Underlined Error Highlighting: [IC]: The invariant name "1" must occur only once in solution
-(2): ReSharper Underlined Error Highlighting: [IC]: The invariant name "1" must occur only once in solution
+(1): ReSharper Underlined Error Highlighting: [IC]: The Invariant name "1" must occur only once in solution
+(2): ReSharper Underlined Error Highlighting: [IC]: The Invariant name "1" must occur only once in solution
+(3): ReSharper Underlined Error Highlighting: [IC]: The Hack name "2" must occur only once in solution
+(4): ReSharper Underlined Error Highlighting: [IC]: The Hack name "2" must occur only once in solution
+(5): ReSharper Underlined Error Highlighting: [IC]: The Todo name "3" must occur only once in solution
+(6): ReSharper Underlined Error Highlighting: [IC]: The Todo name "3" must occur only once in solution

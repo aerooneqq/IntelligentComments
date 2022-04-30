@@ -53,7 +53,10 @@ IntelligentCommentContent:
         Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 16, TextHighlighterAttributes { FontStyle = Bold, Underline = False, FontWeight = 400 }, References: NamedEntityDomainReference::TestClass::hello, ]
         EntityWithContentSegments:
           ContentSegments:
-    Reference: 
+            TextContentSegment:
+              HighlightedText:
+              Text: 
+              Highlighters: Reference: 
         HighlightedText:
         Text: TestClass::hello
         Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 16, TextHighlighterAttributes { FontStyle = Bold, Underline = False, FontWeight = 400 }, References: NamedEntityDomainReference::TestClass::hello, ]
