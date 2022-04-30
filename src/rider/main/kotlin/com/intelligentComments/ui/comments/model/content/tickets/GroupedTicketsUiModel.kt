@@ -2,7 +2,6 @@ package com.intelligentComments.ui.comments.model.content.tickets
 
 import com.intelligentComments.core.domain.core.*
 import com.intelligentComments.core.domain.impl.GroupedTicketsSegment
-import com.intelligentComments.core.domain.impl.HighlightedTextImpl
 import com.intelligentComments.ui.comments.model.UiInteractionModelBase
 import com.intelligentComments.ui.comments.model.content.GroupedContentUiModel
 import com.intelligentComments.ui.comments.model.content.getFirstLevelHeader
@@ -30,9 +29,6 @@ class GroupedTicketsUiModel(
           return@mergeSegmentsTexts createHighlightedTicketName(it)
         }
       })
-
-      override fun processSegments(strategy: ContentProcessingStrategy) {
-      }
     }
   ),
   getFirstLevelHeader(project, ticketsSectionName, model)

@@ -79,6 +79,6 @@ interface ModelWithContent {
   val contentSection: SectionUiModel
 }
 
-interface ModelWitchContentSegments {
+interface ModelWithContentSegments {
   val content: ContentSegmentsUiModel
 }

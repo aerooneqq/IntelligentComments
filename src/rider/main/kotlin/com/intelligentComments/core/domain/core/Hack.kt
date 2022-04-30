@@ -5,9 +5,7 @@ import com.intelligentComments.ui.comments.model.content.ContentSegmentUiModel
 import com.intelligentComments.ui.comments.model.content.hacks.HackWithTicketsUiModel
 import com.intellij.openapi.project.Project
 
-interface HackWithTicketsContentSegment : ContentSegment {
-  val content: EntityWithContentSegments
-
+interface HackWithTicketsContentSegment : ContentSegmentWithOptionalName, ContentSegmentWithInnerContent {
   override fun createUiModel(project: Project, parent: UiInteractionModelBase?): ContentSegmentUiModel {
     return HackWithTicketsUiModel(project, parent, this)
   }

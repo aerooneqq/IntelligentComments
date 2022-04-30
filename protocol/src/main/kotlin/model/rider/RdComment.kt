@@ -174,12 +174,14 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
     +"Bottom"
   }
 
-  val RdInvariant = basestruct extends RdContentSegment { }
+  val RdContentSegmentWithOptionalName = basestruct extends RdContentSegment {
+    field("Name", RdHighlightedText.nullable).optional
+  }
+
+  val RdInvariant = basestruct extends RdContentSegmentWithOptionalName { }
 
   val RdTextInvariant = structdef extends RdInvariant {
-    field("Name", RdHighlightedText)
-    field("Description", RdDefaultSegmentWithContent)
-    call("Evaluate", PredefinedType.int, PredefinedType.bool)
+    field("Description", RdHighlightedText)
   }
 
   val RdReference = basestruct {
@@ -285,10 +287,6 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
     + "Regular"
     + "Bold"
     + "Italic"
-  }
-
-  val RdContentSegmentWithOptionalName = basestruct extends RdContentSegment {
-    field("Name", RdHighlightedText.nullable).optional
   }
 
   val RdToDoContentSegment = structdef extends RdContentSegmentWithOptionalName {

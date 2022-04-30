@@ -1,6 +1,9 @@
 package com.intelligentComments.core.domain.rd
 
-import com.intelligentComments.core.domain.core.*
+import com.intelligentComments.core.domain.core.HighlightedText
+import com.intelligentComments.core.domain.core.InvariantSegment
+import com.intelligentComments.core.domain.core.Parentable
+import com.intelligentComments.core.domain.core.TextInvariantSegment
 import com.intellij.openapi.project.Project
 import com.jetbrains.rd.ide.model.RdInvariant
 import com.jetbrains.rd.ide.model.RdTextInvariant
@@ -24,6 +27,10 @@ class TextInvariantFromRdSegment(
   parent: Parentable?,
   project: Project
 ) : InvariantSegmentFromRd(invariant, parent), TextInvariantSegment {
-  override val description: EntityWithContentSegments = EntityWithContentSegmentsFromRd(invariant.description, this, project)
-  override val name: HighlightedText = invariant.name.toIdeaHighlightedText(project, this)
+  override val description: HighlightedText = invariant.description.toIdeaHighlightedText(project, this)
+  override val name: HighlightedText? = invariant.name?.toIdeaHighlightedText(project, this)
+
+  override fun isValid(): Boolean {
+    return name != null || description.text.isNotEmpty()
+  }
 }

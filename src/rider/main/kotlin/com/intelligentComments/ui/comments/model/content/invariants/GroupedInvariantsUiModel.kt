@@ -31,9 +31,6 @@ class GroupedInvariantsUiModel(
           extractTextFromInvariant(it)
         }
       })
-
-      override fun processSegments(strategy: ContentProcessingStrategy) {
-      }
     }
   ),
   getFirstLevelHeader(project, InvariantsSectionName, model)
@@ -43,7 +40,21 @@ class GroupedInvariantsUiModel(
   }
 }
 
-private fun extractTextFromInvariant(segment: ContentSegment) = (segment as TextInvariantSegment).name
+private fun extractTextFromInvariant(segment: ContentSegment): HighlightedText {
+  val name = (segment as TextInvariantSegment).name
+  if (name != null) {
+    return createStartTextOfNamedEntity(NameKind.Invariant, name, segment).mergeWith(segment.description)
+  }
+
+  return segment.description
+}
+
+fun createStartTextOfNamedEntity(kind: NameKind, name: HighlightedText, parentSegment: ContentSegment): HighlightedText {
+  return HighlightedTextImpl.createEmpty(parentSegment)
+    .mergeWith("$kind (")
+    .mergeWith(name)
+    .mergeWith("): ")
+}
 
 fun mergeSegmentsTexts(
   segments: List<ContentSegment>,

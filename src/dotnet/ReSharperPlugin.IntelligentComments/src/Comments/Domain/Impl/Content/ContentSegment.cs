@@ -294,15 +294,19 @@ public record ImageContentSegment(IDomainReference SourceDomainReference, IHighl
 
 public record InvariantContentSegment(
   IHighlightedText Name,
-  IEntityWithContentSegments Content
+  IHighlightedText Description
 ) : IInvariantContentSegment
 {
+  public IEntityWithContentSegments Content { get; } = 
+    new EntityWithContentSegments(new ContentSegments(new List<IContentSegment> { new TextContentSegment(Description) }));
+
+  
   public void Print(PrettyPrinter printer)
   {
     printer.Println("Invariant: ");
     
     using var _ = printer.IndentCookie();
-    Name.Print(printer);
+    Name?.Print(printer);
     Content.Print(printer);
   }
 }

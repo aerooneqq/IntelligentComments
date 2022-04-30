@@ -127,9 +127,9 @@ public interface IContentSegmentWithOptionalName : IContentSegment
   [CanBeNull] IHighlightedText Name { get; }
 }
 
-public interface IInvariantContentSegment : IEntityWithInnerContentSegments
+public interface IInvariantContentSegment : IContentSegmentWithOptionalName, IEntityWithInnerContentSegments
 {
-  [NotNull] IHighlightedText Name { get; }
+  [NotNull] IHighlightedText Description { get; }
 }
 
 public interface IReferenceContentSegment : IContentSegment

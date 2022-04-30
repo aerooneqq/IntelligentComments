@@ -141,38 +141,30 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
     }
     
     var imageSegment = new ImageContentSegment(reference, description);
-    ExecuteWithTopmostContentSegments(metadata => metadata.ContentSegments.Segments.Add(imageSegment));
+    AddToTopmostContentSegments(imageSegment);
   }
 
   protected override void VisitInvariant(XmlElement element)
   {
-    var solution = myDomainResolveContext.Solution;
     if (!IsTopmostContext()) return;
 
+    var solution = myDomainResolveContext.Solution;
     IDomainReference CreateInvariantNameReference([NotNull] string name) => new NamedEntityDomainReference(name, NameKind.Invariant);
     bool CheckReferenceValidity(IDomainReference reference) => CheckNamedEntityReferenceIsValid(reference, solution, NameKind.Invariant);
     const string attrName = DocCommentsBuilderUtil.InvariantNameAttrName;
     
-    var tagInfo = DocCommentsBuilderUtil.TryExtractTagInfo(
+    var tagInfo = DocCommentsBuilderUtil.TryExtractTagInfoFromInvariant(
       element, attrName, myHighlightersProvider, CreateInvariantNameReference, CheckReferenceValidity);
 
     if (BuildInvariantContentSegmentFrom(tagInfo) is not { } invariant) return;
-    ExecuteWithTopmostContentSegments(metadata => metadata.ContentSegments.Segments.Add(invariant));
+    AddToTopmostContentSegments(invariant);
   }
 
   [CanBeNull]
   private static InvariantContentSegment BuildInvariantContentSegmentFrom(TagInfo? tagInfo)
   {
     if (tagInfo is not var (nameText, descriptionText)) return null;
-
-    var segments = new List<IContentSegment>();
-    if (!descriptionText.Text.IsNullOrWhitespace())
-    {
-      segments.Add(new TextContentSegment(descriptionText));
-    }
-
-    var content = new EntityWithContentSegments(new ContentSegments(segments));
-    return new InvariantContentSegment(nameText, content);
+    return new InvariantContentSegment(nameText, descriptionText);
   }
   
   private static bool CheckNamedEntityReferenceIsValid(
@@ -194,16 +186,16 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
     IDomainReference CreateReference([NotNull] string name) => new NamedEntityDomainReference(name, nameKind);
     bool IsReferenceValid(IDomainReference reference) => CheckNamedEntityReferenceIsValid(reference, myDomainResolveContext.Solution, nameKind);
     
-    var tagInfo = DocCommentsBuilderUtil.TryExtractTagInfo(
+    var tagInfo = DocCommentsBuilderUtil.TryExtractTagInfoFromReference(
       element, nameKind, myHighlightersProvider, CreateReference, IsReferenceValid);
     
-    if (tagInfo is not var (nameText, descriptionText)) return;
+    if (tagInfo is not var (nameText, descriptionText) || nameText is null) return;
 
     var reference = new NamedEntityDomainReference(nameText.Text, nameKind);
     var segments = new ContentSegments(new List<IContentSegment> { new TextContentSegment(descriptionText) });
     var content = new EntityWithContentSegments(segments);
     var referenceSegment = new ReferenceContentSegment(reference, nameText, content);
-    ExecuteWithTopmostContentSegments(metadata => metadata.ContentSegments.Segments.Add(referenceSegment));
+    AddToTopmostContentSegments(referenceSegment);
   }
 
   public override void VisitSummary(XmlElement element)
@@ -251,7 +243,7 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
   {
     var highlightedText = new HighlightedText(text, new[] { highlighter });
     var textContentSegment = new MergeableTextContentSegment(highlightedText);
-    ExecuteWithTopmostContentSegments(metadata => metadata.ContentSegments.Segments.Add(textContentSegment));
+    AddToTopmostContentSegments(textContentSegment);
   }
   
   public override void VisitParam(XmlElement element)
@@ -280,7 +272,7 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
       ExecuteActionOverChildren(element, Visit);
     }
       
-    ExecuteWithTopmostContentSegments(segmentsMetadata => segmentsMetadata.ContentSegments.Segments.Add(paramSegment));
+    AddToTopmostContentSegments(paramSegment);
   }
     
   private void ExecuteWithTopmostContentSegments([NotNull] Action<ContentSegmentsMetadata> action)
@@ -296,6 +288,9 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
 
     action(myContentSegmentsStack.Peek());
   }
+  
+  private void AddToTopmostContentSegments([NotNull] IContentSegment segment) =>
+    ExecuteWithTopmostContentSegments(segmentsMetadata => segmentsMetadata.ContentSegments.Segments.Add(segment));
 
   public override void VisitText(XmlText text)
   {
@@ -304,7 +299,7 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
     var (processedText, length) = PreprocessTextWithContext(text.Value, text);
     var highlighter = myHighlightersProvider.TryGetReSharperHighlighter(myDocCommentAttributeId, length);
     var textContentSegment = new MergeableTextContentSegment(new HighlightedText(processedText, highlighter));
-    ExecuteWithTopmostContentSegments(metadata => metadata.ContentSegments.Segments.Add(textContentSegment));
+    AddToTopmostContentSegments(textContentSegment);
   }
 
   public override void VisitPara(XmlElement element)
@@ -326,8 +321,7 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
 
     if (addToTopmostSegments)
     {
-      ExecuteWithTopmostContentSegments(
-        segmentsMetadata => segmentsMetadata.ContentSegments.Segments.Add(entityWithContentSegments));
+      AddToTopmostContentSegments(entityWithContentSegments);
     }
   }
 
@@ -446,7 +440,7 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
     var seeAlso = factory.Invoke(attributeValue, innerText);
     if (IsTopmostContext())
     {
-      ExecuteWithTopmostContentSegments(metadata => metadata.ContentSegments.Segments.Add(seeAlso)); 
+      AddToTopmostContentSegments(seeAlso); 
     }
     else
     {
@@ -597,7 +591,7 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
       list.Items.Add(listItem);
     });
     
-    ExecuteWithTopmostContentSegments(metadata => metadata.ContentSegments.Segments.Add(list));
+    AddToTopmostContentSegments(list);
   }
 
   private void ExecuteActionOverTermsAndDescriptions(
@@ -646,7 +640,7 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
       table.Rows.Add(row);
     });
     
-    ExecuteWithTopmostContentSegments(metadata => metadata.ContentSegments.Segments.Add(table));
+    AddToTopmostContentSegments(table);
   }
   
   public override void VisitCode(XmlElement element)
@@ -662,7 +656,7 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
       
       var codeFragment = CreateCodeFragment(text);
       var codeSegment = new CodeSegment(codeFragment.PreliminaryText, codeFragment.HighlightingRequestId);
-      ExecuteWithTopmostContentSegments(metadata => metadata.ContentSegments.Segments.Add(codeSegment));
+      AddToTopmostContentSegments(codeSegment);
     }
   }
   
@@ -671,16 +665,21 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
     return !rawCodeText.Contains("\n");
   }
   
-  protected override void VisitHack(XmlElement element)
+  protected override void VisitHack(XmlElement element) =>
+    VisitHackOrTodo(
+      element, 
+      NameKind.Hack,
+      (length) => myHighlightersProvider.GetHackHighlighter(0, length),
+      (text, segments) => new HackContentSegment(text, segments)
+    );
+  
+  [CanBeNull]
+  private IHighlightedText TryGetNameFromNamedEntity(NameKind nameKind, [NotNull] XmlElement element)
   {
-    if (!IsTopmostContext()) return;
+    IDomainReference CreateReference([NotNull] string name) => new NamedEntityDomainReference(name, nameKind);
+    bool IsReferenceValid(IDomainReference reference) => CheckNamedEntityReferenceIsValid(reference, myDomainResolveContext.Solution, nameKind);
     
-    TextHighlighter CreateHackHighlighter(int length) => myHighlightersProvider.GetHackHighlighter(0, length);
-    if (TryFillDescriptionAndTickets(element, CreateHackHighlighter) is not { } entity) return;
-
-    var nameText = DocCommentsBuilderUtil.TryExtractNameAttribute(element, myHighlightersProvider,  NameKind.Hack);
-    var hackContentSegment = new HackContentSegment(nameText, entity);
-    ExecuteWithTopmostContentSegments(metadata => metadata.ContentSegments.Segments.Add(hackContentSegment));
+    return DocCommentsBuilderUtil.TryExtractNameAttributeFromNamedEntity(element, myHighlightersProvider, CreateReference, IsReferenceValid);
   }
 
   [CanBeNull]
@@ -695,17 +694,28 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
 
     return content;
   }
-  
-  protected override void VisitTodo(XmlElement element)
+
+  protected override void VisitTodo(XmlElement element) =>
+    VisitHackOrTodo(
+      element, 
+      NameKind.Todo,
+      (length) => myHighlightersProvider.GetToDoHighlighter(0, length),
+      (text, segments) => new ToDoContentSegment(text, segments)
+    );
+
+  private void VisitHackOrTodo(
+    [NotNull] XmlElement element, 
+    NameKind nameKind,
+    [NotNull] Func<int, TextHighlighter> highlighterCreator,
+    [NotNull] Func<IHighlightedText, IEntityWithContentSegments, IContentSegment> segmentCreator)
   {
     if (!IsTopmostContext()) return;
 
-    TextHighlighter CreateTodoHighlighter(int length) => myHighlightersProvider.GetToDoHighlighter(0, length);
-    if (TryFillDescriptionAndTickets(element, CreateTodoHighlighter) is not { } entity) return;
+    if (TryFillDescriptionAndTickets(element, highlighterCreator) is not { } entity) return;
     
-    var nameText = DocCommentsBuilderUtil.TryExtractNameAttribute(element, myHighlightersProvider, NameKind.Todo);
-    var todoContentSegment = new ToDoContentSegment(nameText, entity);
-    ExecuteWithTopmostContentSegments(metadata => metadata.ContentSegments.Segments.Add(todoContentSegment));
+    var nameText = TryGetNameFromNamedEntity(nameKind, element);
+    var todoContentSegment = segmentCreator(nameText, entity);
+    AddToTopmostContentSegments(todoContentSegment);
   }
 
   private bool FillDescriptionIfPresentTo(

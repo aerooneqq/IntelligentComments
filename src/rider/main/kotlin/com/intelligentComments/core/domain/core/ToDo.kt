@@ -16,9 +16,7 @@ interface TicketContentSegment : ContentSegment {
   }
 }
 
-interface ToDoWithTicketsContentSegment : ContentSegment {
-  val content: EntityWithContentSegments
-
+interface ToDoWithTicketsContentSegment : ContentSegmentWithOptionalName, ContentSegmentWithInnerContent {
   override fun createUiModel(project: Project, parent: UiInteractionModelBase?): ContentSegmentUiModel {
     return ToDoWithTicketsUiModel(project, parent, this)
   }

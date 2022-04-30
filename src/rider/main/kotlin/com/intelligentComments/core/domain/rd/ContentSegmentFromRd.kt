@@ -373,6 +373,7 @@ class HackContentSegmentFromRd(
   parent: Parentable?,
   project: Project
 ) : ContentSegmentFromRd(rdSegment, parent), HackWithTicketsContentSegment {
+  override val name: HighlightedText? = rdSegment.name?.toIdeaHighlightedText(project, this)
   override val content: EntityWithContentSegments = EntityWithContentSegmentsFromRd(rdSegment.description, this, project)
 
   init {
@@ -385,6 +386,7 @@ class ToDoContentSegmentFromRd(
   parent: Parentable?,
   project: Project
 ) : ContentSegmentFromRd(contentSegment, parent), ToDoWithTicketsContentSegment {
+  override val name: HighlightedText? = contentSegment.name?.toIdeaHighlightedText(project, this)
   override val content: EntityWithContentSegments = EntityWithContentSegmentsFromRd(contentSegment.content, this, project)
 
   init {

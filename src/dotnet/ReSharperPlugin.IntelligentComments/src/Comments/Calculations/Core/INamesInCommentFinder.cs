@@ -7,7 +7,7 @@ using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core;
 
-public record struct NameWithKind(string Name, NameKind NameKind);
+public record struct NameWithKind([NotNull] string Name, NameKind NameKind);
 
 public record struct CommonNamedEntityDescriptor(
   [NotNull] IPsiSourceFile SourceFile, DocumentRange EntityRange, NameWithKind NameWithKind);

@@ -57,7 +57,7 @@ public class CSharpCommentsProcessor : CommentsProcessorBase
 
   private void ProcessDocCommentBlock([NotNull] ICSharpDocCommentBlock docCommentBlock)
   {
-    var errorsCollector = LanguageManager.GetService<ICommentProblemsCollector>(docCommentBlock.Language);
+    var errorsCollector = LanguageManager.GetService<IDocCommentProblemsCollector>(docCommentBlock.Language);
     if (errorsCollector.Run(docCommentBlock) is { Count: > 0 } errors)
     {
       var range = docCommentBlock.GetDocumentRange();

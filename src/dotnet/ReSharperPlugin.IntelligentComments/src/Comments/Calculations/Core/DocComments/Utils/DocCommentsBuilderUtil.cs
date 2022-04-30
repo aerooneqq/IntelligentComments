@@ -20,7 +20,7 @@ using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl;
 namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments.Utils;
 
 internal record struct TextProcessingResult([NotNull] string ProcessedText, int EffectiveLength);
-internal record struct TagInfo([NotNull] IHighlightedText NameText, [NotNull] IHighlightedText DescriptionText);
+internal record struct TagInfo([CanBeNull] IHighlightedText NameText, [NotNull] IHighlightedText DescriptionText);
 
 public enum NameKind
 {
@@ -291,13 +291,7 @@ internal static partial class DocCommentsBuilderUtil
 
     return new NameWithKind(attribute.UnquotedValue, nameKind);
   }
-  
-  [CanBeNull]
-  internal static IXmlAttribute TryGetInvariantAttribute([CanBeNull] IXmlTag invariantTag)
-  {
-    return invariantTag?.GetAttribute(InvariantNameAttrName);
-  }
-  
+
   [CanBeNull]
   internal static IXmlAttribute TryGetOneReferenceSourceAttribute([CanBeNull] IXmlTag referenceTag)
   {
@@ -317,7 +311,7 @@ internal static partial class DocCommentsBuilderUtil
     return PreprocessText(attribute.UnquotedValue, null);
   }
 
-  internal static TagInfo? TryExtractTagInfo(
+  internal static TagInfo? TryExtractTagInfoFromInvariant(
     [NotNull] XmlElement element,
     [NotNull] string attributeName,
     [NotNull] IHighlightersProvider provider,
@@ -325,14 +319,14 @@ internal static partial class DocCommentsBuilderUtil
     [CanBeNull] Func<IDomainReference, bool> referenceValidityChecker = null)
   {
     var nameText = TryExtractNameAttribute(element, provider, attributeName, nameReferenceCreator, referenceValidityChecker);
-    return nameText is null ? null : TryExtractTagInfo(element, provider, nameText);
+    return TryExtractTagInfo(element, provider, nameText);
   }
   
   private static TagInfo? TryExtractDescription(
     [NotNull] string description,
     [CanBeNull] string nextTextSibling,
     [NotNull] IHighlightersProvider provider, 
-    [NotNull] IHighlightedText nameText)
+    [CanBeNull] IHighlightedText nameText)
   {
     var descriptionText = HighlightedText.CreateEmptyText();
     var (processedText, length) = PreprocessTextWithContext(description, nextTextSibling);
@@ -345,23 +339,24 @@ internal static partial class DocCommentsBuilderUtil
   private static TagInfo? TryExtractTagInfo(
     [NotNull] XmlElement element, 
     [NotNull] IHighlightersProvider provider, 
-    [NotNull] IHighlightedText nameText)
+    [CanBeNull] IHighlightedText nameText)
   {
     if (!ElementHasOneTextChild(element, out var description)) return new TagInfo(nameText, HighlightedText.EmptyText);
     return TryExtractDescription(description, (element.NextSibling as XmlText)?.Value, provider, nameText);
   }
 
-  internal static TagInfo? TryExtractTagInfo(
+  internal static TagInfo? TryExtractTagInfoFromReference(
     [NotNull] XmlElement element,
     NameKind nameKind,
     [NotNull] IHighlightersProvider provider,
     [CanBeNull] Func<string, IDomainReference> nameReferenceCreator = null,
     [CanBeNull] Func<IDomainReference, bool> referenceValidityChecker = null)
   {
-    var nameText = TryExtractNameAttribute(element, provider, nameKind, nameReferenceCreator, referenceValidityChecker);
+    var nameText = TryExtractNameAttributeFromReference(element, provider, nameKind, nameReferenceCreator, referenceValidityChecker);
     return nameText is null ? null : TryExtractTagInfo(element, provider, nameText);
   }
 
+  [CanBeNull]
   internal static IHighlightedText TryExtractNameAttribute(
     [NotNull] XmlElement element,
     [NotNull] IHighlightersProvider highlightersProvider,
@@ -408,7 +403,7 @@ internal static partial class DocCommentsBuilderUtil
   }
   
   [CanBeNull]
-  internal static IHighlightedText TryExtractNameAttribute(
+  internal static IHighlightedText TryExtractNameAttributeFromReference(
     [NotNull] XmlElement element,
     [NotNull] IHighlightersProvider highlightersProvider,
     NameKind nameKind,
@@ -417,6 +412,16 @@ internal static partial class DocCommentsBuilderUtil
   {
     if (TryGetReferenceAttributeNameFrom(nameKind) is not { } attributeName) return null;
     return TryExtractNameAttribute(element, highlightersProvider, attributeName, nameReferenceCreator, referenceValidityChecker);
+  }
+  
+  [CanBeNull]
+  internal static IHighlightedText TryExtractNameAttributeFromNamedEntity(
+    [NotNull] XmlElement element,
+    [NotNull] IHighlightersProvider highlightersProvider,
+    [CanBeNull] Func<string, IDomainReference> nameReferenceCreator = null,
+    [CanBeNull] Func<IDomainReference, bool> referenceValidityChecker = null)
+  {
+    return TryExtractNameAttribute(element, highlightersProvider, CommonNameAttrName, nameReferenceCreator, referenceValidityChecker);
   }
   
   internal static bool ElementHasOneTextChild([NotNull] XmlElement element, [NotNull] out string value)

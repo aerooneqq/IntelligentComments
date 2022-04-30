@@ -20,9 +20,6 @@ class GroupedExceptionUiModel(
     object : ContentSegments {
       override val segments: Collection<ContentSegment> = listOf(it)
       override val parent: Parentable = model
-
-      override fun processSegments(strategy: ContentProcessingStrategy) {
-      }
     }
   },
   getFirstLevelHeader(

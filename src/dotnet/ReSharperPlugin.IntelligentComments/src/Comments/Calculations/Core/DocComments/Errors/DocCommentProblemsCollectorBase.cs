@@ -4,7 +4,6 @@ using System.Linq;
 using JetBrains.Annotations;
 using JetBrains.Diagnostics;
 using JetBrains.DocumentModel;
-using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Feature.Services.Daemon;
 using JetBrains.ReSharper.Features.ReSpeller.Analyzers;
 using JetBrains.ReSharper.Psi;
@@ -12,29 +11,29 @@ using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.ReSharper.Psi.Xml.Tree;
 using JetBrains.Util;
 using JetBrains.Util.Logging;
-using ReSharperPlugin.IntelligentComments.Comments.Caches.Names.Invariants;
+using ReSharperPlugin.IntelligentComments.Comments.Caches.Names;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments.Utils;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.References;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments.Errors;
 
-public record Context([NotNull] IDocCommentBlock AdjustedComment, [NotNull] List<HighlightingInfo> Highlightings);
+public record DocCommentErrorAnalyzerContext([NotNull] IDocCommentBlock AdjustedComment, [NotNull] List<HighlightingInfo> Highlightings);
 
-public interface ICommentProblemsCollector : IRecursiveElementProcessor<Context>
+public interface IDocCommentProblemsCollector : IRecursiveElementProcessor<DocCommentErrorAnalyzerContext>
 {
-  ICollection<HighlightingInfo> Run([NotNull] IDocCommentBlock comment);
+  [NotNull] [ItemNotNull] ICollection<HighlightingInfo> Run([NotNull] IDocCommentBlock comment);
 }
  
-public abstract class CommentProblemsCollectorBase : ICommentProblemsCollector
+public abstract class DocCommentProblemsCollectorBase : IDocCommentProblemsCollector
 {
-  [NotNull] private static readonly ILogger ourLogger = Logger.GetLogger<CommentProblemsCollectorBase>();
-  [NotNull] private readonly IDictionary<string, Action<IXmlTag, Context>> myTagsProcessors;
+  [NotNull] private static readonly ILogger ourLogger = Logger.GetLogger<DocCommentProblemsCollectorBase>();
+  [NotNull] private readonly IDictionary<string, Action<IXmlTag, DocCommentErrorAnalyzerContext>> myTagsProcessors;
   
   
-  protected CommentProblemsCollectorBase()
+  protected DocCommentProblemsCollectorBase()
   {
-    myTagsProcessors = new Dictionary<string, Action<IXmlTag, Context>>
+    myTagsProcessors = new Dictionary<string, Action<IXmlTag, DocCommentErrorAnalyzerContext>>
     {
       [DocCommentsBuilderUtil.ImageTagName] = ProcessImage,
       [DocCommentsBuilderUtil.InvariantTagName] = ProcessInvariant,
@@ -45,8 +44,7 @@ public abstract class CommentProblemsCollectorBase : ICommentProblemsCollector
   }
   
   
-  [NotNull]
-  public ICollection<HighlightingInfo> Run([NotNull] IDocCommentBlock comment)
+  public ICollection<HighlightingInfo> Run(IDocCommentBlock comment)
   {
     if (DocCommentsBuilderUtil.TryGetAdjustedComment(comment) is not { } adjustedComment)
     {
@@ -58,7 +56,7 @@ public abstract class CommentProblemsCollectorBase : ICommentProblemsCollector
 
     var xmlDocPsi = psiHelper.GetXmlDocPsi(adjustedComment);
     var highlightings = new List<HighlightingInfo>();
-    var context = new Context(adjustedComment, highlightings);
+    var context = new DocCommentErrorAnalyzerContext(adjustedComment, highlightings);
     
     xmlDocPsi?.XmlFile.ProcessThisAndDescendants(this, context);
 
@@ -74,9 +72,9 @@ public abstract class CommentProblemsCollectorBase : ICommentProblemsCollector
     return highlightings;
   }
 
-  public bool IsProcessingFinished(Context context) => false;
+  public bool IsProcessingFinished(DocCommentErrorAnalyzerContext context) => false;
 
-  public void ProcessBeforeInterior(ITreeNode element, Context context)
+  public void ProcessBeforeInterior(ITreeNode element, DocCommentErrorAnalyzerContext context)
   {
     if (element is not IXmlTag xmlTag) return;
     if (myTagsProcessors.TryGetValue(xmlTag.GetTagName(), out var processor))
@@ -85,36 +83,56 @@ public abstract class CommentProblemsCollectorBase : ICommentProblemsCollector
     }
   }
 
-  private void ProcessHack(IXmlTag hackTag, Context context)
+  private void ProcessHack(IXmlTag hackTag, DocCommentErrorAnalyzerContext context)
   {
+    if (!CheckIfTagInTopmostContext(hackTag, context)) return;
+    if (!CheckThatNameOccursNotMoreThanOnce(hackTag, context)) return;
+    if (!CheckThatTagHaveOnlyAttributesFromPredefinedSet(hackTag, DocCommentsBuilderUtil.PossibleNameEntityTagAttributes, context)) return;
     if (!CheckThatAllChildrenAreTags(hackTag, context, DocCommentsBuilderUtil.PossibleInnerFirstLevelTagsOfHack))
       return;
 
     CheckTicketsSectionsIfPresent(hackTag, context);
   }
 
-  private bool CheckTicketsSectionsIfPresent([NotNull] IXmlTag parentTag, [NotNull] Context context)
+  private bool CheckTicketsSectionsIfPresent([NotNull] IXmlTag parentTag, [NotNull] DocCommentErrorAnalyzerContext context)
   {
     var ticketsTag = parentTag.InnerTags.FirstOrDefault(
       child => child.Header.Name.XmlName == DocCommentsBuilderUtil.TicketsSectionTagName);
     
     return ticketsTag is null || CheckTicketsTag(ticketsTag, context);
   }
-  
-  private void ProcessToDo([NotNull] IXmlTag todoTag, [NotNull] Context context)
+
+  private bool CheckIfTagInTopmostContext([NotNull] IXmlTag tag, DocCommentErrorAnalyzerContext context)
   {
+    if (IsTopmostContext(tag)) return true;
+    
+    var tagName = tag.Header.Name.XmlName;
+    AddError(tag.GetDocumentRange(), $"Tag {tagName} must be used only in topmost context", context);
+    return false;
+  }
+  
+  private static bool IsTopmostContext([NotNull] IXmlTag xmlTag)
+  {
+    return xmlTag.Parent is IXmlFile;
+  }
+  
+  private void ProcessToDo([NotNull] IXmlTag todoTag, [NotNull] DocCommentErrorAnalyzerContext context)
+  {
+    if (!CheckIfTagInTopmostContext(todoTag, context)) return;
+    if (!CheckThatTagHaveOnlyAttributesFromPredefinedSet(todoTag, DocCommentsBuilderUtil.PossibleNameEntityTagAttributes, context)) return;
     if (!CheckThatAllChildrenAreTags(todoTag, context, DocCommentsBuilderUtil.PossibleInnerFirstLevelTagsOfTodo)) return;
+    if (!CheckThatNameOccursNotMoreThanOnce(todoTag, context)) return;
     CheckTicketsSectionsIfPresent(todoTag, context);
   }
 
-  private bool CheckTicketsTag([NotNull] IXmlTag xmlTag, [NotNull] Context context)
+  private bool CheckTicketsTag([NotNull] IXmlTag xmlTag, [NotNull] DocCommentErrorAnalyzerContext context)
   {
     return CheckThatAllChildrenAreTags(xmlTag, context, DocCommentsBuilderUtil.PossibleInnerFirstLevelTagsOfTicketsSection);
   }
 
   private bool CheckThatAllChildrenAreTags(
     [NotNull] IXmlTag parent, 
-    [NotNull] Context context,
+    [NotNull] DocCommentErrorAnalyzerContext context,
     [CanBeNull] ISet<string> possibleTagsNames = null)
   {
     if (parent.IsEmptyTag) return true;
@@ -144,19 +162,19 @@ public abstract class CommentProblemsCollectorBase : ICommentProblemsCollector
     return !anyError;
   }
 
-  private void ProcessImage([NotNull] IXmlTag imageTag, [NotNull] Context context)
+  private void ProcessImage([NotNull] IXmlTag imageTag, [NotNull] DocCommentErrorAnalyzerContext context)
   {
     CheckAttributePresenceAndNonEmptyValue(imageTag, DocCommentsBuilderUtil.ImageSourceAttrName, context);
   }
 
-  private void AddError(DocumentRange range, [NotNull] string message, [NotNull] Context context)
+  private void AddError(DocumentRange range, [NotNull] string message, [NotNull] DocCommentErrorAnalyzerContext context)
   {
     if (!range.IsValid()) return;
     context.Highlightings.Add(CommentErrorHighlighting.CreateInfo(message, range));
   }
 
   private bool CheckAttributePresenceAndNonEmptyValue(
-    [NotNull] IXmlTag tag, [NotNull] string attributeName, [NotNull] Context context)
+    [NotNull] IXmlTag tag, [NotNull] string attributeName, [NotNull] DocCommentErrorAnalyzerContext context)
   {
     var haveSourceTag = CheckAttributePresence(tag, attributeName, context);
     if (!haveSourceTag) return false;
@@ -164,7 +182,7 @@ public abstract class CommentProblemsCollectorBase : ICommentProblemsCollector
     return CheckAttributeValueIsNotEmpty(tag, attributeName, context);
   }
 
-  private bool CheckAttributePresence([NotNull] IXmlTag tag, [NotNull] string attributeName, [NotNull] Context context)
+  private bool CheckAttributePresence([NotNull] IXmlTag tag, [NotNull] string attributeName, [NotNull] DocCommentErrorAnalyzerContext context)
   {
     if (tag.GetAttribute(attributeName) is { }) return true;
 
@@ -174,7 +192,7 @@ public abstract class CommentProblemsCollectorBase : ICommentProblemsCollector
   }
 
   private bool CheckAttributeValueIsNotEmpty(
-    [NotNull] IXmlTag tag, [NotNull] string attributeName, [NotNull] Context context)
+    [NotNull] IXmlTag tag, [NotNull] string attributeName, [NotNull] DocCommentErrorAnalyzerContext context)
   {
     var attribute = tag.GetAttribute(attributeName);
     var attributeValue = attribute?.UnquotedValue;
@@ -187,24 +205,25 @@ public abstract class CommentProblemsCollectorBase : ICommentProblemsCollector
     return false;
   }
 
-  private void ProcessReference([NotNull] IXmlTag referenceTag, [NotNull] Context context)
+  private void ProcessReference([NotNull] IXmlTag referenceTag, [NotNull] DocCommentErrorAnalyzerContext context)
   {
     if (!CheckThatReferenceHasExactlyOneOfNeededTags(referenceTag, context)) return;
     if (DocCommentsBuilderUtil.TryExtractOneReferenceNameKindFromReferenceTag(referenceTag) is not { } extraction) return;
     if (DocCommentsBuilderUtil.TryGetOneReferenceSourceAttribute(referenceTag) is not { } attribute) return;
-
+    if (!CheckIfTagInTopmostContext(referenceTag, context)) return;
+    
     CheckIfNameReferenceSourceIsResolved(extraction, attribute, context);
   }
 
-  private void ProcessInvariant([NotNull] IXmlTag invariantTag, [NotNull] Context context)
+  private void ProcessInvariant([NotNull] IXmlTag invariantTag, [NotNull] DocCommentErrorAnalyzerContext context)
   {
-    if (!CheckAttributePresenceAndNonEmptyValue(invariantTag, DocCommentsBuilderUtil.InvariantNameAttrName, context)) 
-      return;
+    if (!CheckIfTagInTopmostContext(invariantTag, context)) return;
+    if (!CheckThatTagHaveOnlyAttributesFromPredefinedSet(invariantTag, DocCommentsBuilderUtil.PossibleNameEntityTagAttributes, context)) return;
     
-    CheckThatInvariantNameOccursOnce(invariantTag, context);
+    CheckThatNameOccursNotMoreThanOnce(invariantTag, context);
   }
 
-  private bool CheckThatReferenceHasExactlyOneOfNeededTags([NotNull] IXmlTag referenceTag, [NotNull] Context context)
+  private bool CheckThatReferenceHasExactlyOneOfNeededTags([NotNull] IXmlTag referenceTag, [NotNull] DocCommentErrorAnalyzerContext context)
   {
     var needAttrsCount = 0;
     var tagRange = referenceTag.GetDocumentRange();
@@ -237,26 +256,55 @@ public abstract class CommentProblemsCollectorBase : ICommentProblemsCollector
     return true;
   }
 
-  private bool CheckThatInvariantNameOccursOnce([NotNull] IXmlTag invariantTag, [NotNull] Context context)
+  private bool CheckThatTagHaveOnlyAttributesFromPredefinedSet(
+    [NotNull] IXmlTag tag, 
+    [NotNull] ISet<string> possibleAttributes, 
+    [NotNull] DocCommentErrorAnalyzerContext context)
   {
-    var invariantNameAttribute = DocCommentsBuilderUtil.TryGetInvariantAttribute(invariantTag);
-    Assertion.AssertNotNull(invariantNameAttribute, "attribute != null");
+    var visitedAttributes = new HashSet<string>();
+    var tagName = tag.Header.Name.XmlName;
+    
+    foreach (var attribute in tag.GetAttributes())
+    {
+      var attrName = attribute.AttributeName;
+      if (possibleAttributes.Contains(attrName))
+      {
+        if (visitedAttributes.Contains(attrName))
+        {
+          AddError(attribute.GetDocumentRange(), $"{tagName} already defined attribute {attrName}", context);
+          return false;
+        }
 
-    var name = DocCommentsBuilderUtil.GetInvariantName(invariantNameAttribute);
-    var cache = invariantTag.GetSolution().GetComponent<InvariantsNamesNamesCache>();
+        visitedAttributes.Add(attrName);
+        continue;
+      }
+      
+      AddError(attribute.GetDocumentRange(), $"{tagName} can not contain attribute {attrName}", context);
+      return false;
+    }
+
+    return true;
+  }
+
+  private bool CheckThatNameOccursNotMoreThanOnce([NotNull] IXmlTag namedEntityTag, [NotNull] DocCommentErrorAnalyzerContext context)
+  {
+    if (DocCommentsBuilderUtil.TryGetCommonNameAttribute(namedEntityTag) is not { } nameAttribute) return true;
+    if (DocCommentsBuilderUtil.TryExtractNameFrom(namedEntityTag) is not var (name, nameKind)) return true;
+
+    var cache = NamesCacheUtil.GetCacheFor(context.AdjustedComment.GetSolution(), nameKind);
     var invariantNameCount = cache.GetNameCount(name);
 
     if (invariantNameCount == 1) return true;
 
-    var range = invariantNameAttribute.Value.GetDocumentRange();
-    AddError(range, $"The invariant name \"{name}\" must occur only once in solution", context);
+    var range = nameAttribute.Value.GetDocumentRange();
+    AddError(range, $"The {nameKind} name \"{name}\" must occur only once in solution", context);
     return false;
   }
 
   private bool CheckIfNameReferenceSourceIsResolved(
     NameWithKind extraction,
     [NotNull] IXmlAttribute attribute,
-    [NotNull] Context context)
+    [NotNull] DocCommentErrorAnalyzerContext context)
   {
     var (name, nameKind) = extraction;
     var reference = new NamedEntityDomainReference(name, nameKind);
@@ -280,9 +328,9 @@ public abstract class CommentProblemsCollectorBase : ICommentProblemsCollector
     return true;
   }
   
-  public bool InteriorShouldBeProcessed(ITreeNode element, Context context) => true;
+  public bool InteriorShouldBeProcessed(ITreeNode element, DocCommentErrorAnalyzerContext context) => true;
 
-  public void ProcessAfterInterior(ITreeNode element, Context context)
+  public void ProcessAfterInterior(ITreeNode element, DocCommentErrorAnalyzerContext context)
   {
   }
 }

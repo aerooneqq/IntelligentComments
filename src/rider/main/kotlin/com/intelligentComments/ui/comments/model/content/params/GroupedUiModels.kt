@@ -1,6 +1,5 @@
 package com.intelligentComments.ui.comments.model.content.params
 
-import com.intelligentComments.core.domain.core.ContentProcessingStrategy
 import com.intelligentComments.core.domain.core.ContentSegments
 import com.intelligentComments.core.domain.core.Parentable
 import com.intelligentComments.core.domain.impl.GroupedParamSegment
@@ -25,9 +24,6 @@ class GroupedParamsUiModel(
     object : ContentSegments {
       override val segments = listOf(it)
       override val parent: Parentable = model
-
-      override fun processSegments(strategy: ContentProcessingStrategy) {
-      }
     }
   },
   getFirstLevelHeader(project, groupedParamsSectionName, model)
@@ -52,9 +48,6 @@ class GroupedTypeParamsUiModel(
     object : ContentSegments {
       override val segments = listOf(it)
       override val parent: Parentable = model
-
-      override fun processSegments(strategy: ContentProcessingStrategy) {
-      }
     }
   },
   getFirstLevelHeader(project, groupedTypeParamsSectionName, model)

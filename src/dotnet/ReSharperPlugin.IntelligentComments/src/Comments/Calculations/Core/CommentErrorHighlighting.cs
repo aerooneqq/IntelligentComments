@@ -8,7 +8,8 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComm
 [StaticSeverityHighlighting(Severity.ERROR, typeof(CommentErrorHighlighting), OverlapResolve = OverlapResolveKind.UNRESOLVED_ERROR)]
 public class CommentErrorHighlighting : IHighlighting
 {
-  [NotNull] public const string ErrorPrefix = "[IC]: ";
+  [NotNull] public const string ErrorPrefix = "[IC]";
+  [NotNull] public const string ErrorPrefixWithColonAndSpace = $"{ErrorPrefix}: ";
   
   [NotNull]
   public static HighlightingInfo CreateInfo([NotNull] string message, DocumentRange range)
@@ -20,7 +21,7 @@ public class CommentErrorHighlighting : IHighlighting
   public static CommentErrorHighlighting Create([NotNull] string message, DocumentRange range)
   {
     Assertion.Assert(range.IsValid(), "range.IsValid()");
-    var adjustedMessage = $"[IC]: {message}";
+    var adjustedMessage = $"{ErrorPrefixWithColonAndSpace}{message}";
     return new CommentErrorHighlighting(range, adjustedMessage);
   }
   

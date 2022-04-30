@@ -5,6 +5,6 @@ using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments
 namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.Languages.CSharp;
 
 [Language(typeof(CSharpLanguage))]
-public class CSharpCommentProblemsCollector : CommentProblemsCollectorBase
+public class CSharpDocCommentProblemsCollector : DocCommentProblemsCollectorBase
 {
 }

@@ -41,10 +41,26 @@ interface ContentSegment : Parentable, UniqueEntity {
   }
 }
 
+interface ContentSegmentWithInnerContent : ContentSegment {
+  val content: EntityWithContentSegments
+}
+
+interface ContentSegmentWithOptionalName : ContentSegment {
+  val name: HighlightedText?
+}
+
 interface ContentSegments : Parentable {
   val segments: Collection<ContentSegment>
 
-  fun processSegments(strategy: ContentProcessingStrategy)
+  fun processSegments(strategy: ContentProcessingStrategy) {
+  }
+}
+
+fun createContentSegmentsFor(segments: List<ContentSegment>, parent: Parentable? = null): ContentSegments {
+  return object : UniqueEntityImpl(), ContentSegments {
+    override val segments: Collection<ContentSegment> = segments
+    override val parent: Parentable? = parent
+  }
 }
 
 interface EntityWithContentSegments : ContentSegment {
@@ -84,6 +100,13 @@ interface TextContentSegment : ContentSegment {
 
   override fun createUiModel(project: Project, parent: UiInteractionModelBase?): ContentSegmentUiModel {
     return TextContentSegmentUiModel(project, parent, this)
+  }
+}
+
+fun createTextSegmentFor(text: HighlightedText, parent: Parentable? = null): TextContentSegment {
+  return object : UniqueEntityImpl(), TextContentSegment {
+    override val highlightedText: HighlightedText = text
+    override val parent: Parentable? = null
   }
 }
 

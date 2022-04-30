@@ -83,7 +83,7 @@ internal static class NamesResolveUtil
     }
 
     if (results.Count != 1) return null;
-          
+    
     var resolvedName = results.First();
     if (resolvedName.NameWithKind != nameWithKind) return null;
 

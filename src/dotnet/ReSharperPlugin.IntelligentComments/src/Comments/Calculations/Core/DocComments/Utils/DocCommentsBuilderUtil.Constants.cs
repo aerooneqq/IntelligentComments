@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using JetBrains.Annotations;
 
 namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments.Utils;
@@ -44,6 +45,7 @@ internal static partial class DocCommentsBuilderUtil
   [NotNull] internal const string CRef = "cref";
 
 
+  [NotNull]
   internal static HashSet<string> PossibleNamedEntityTags { get; } = new()
   {
     TodoTagName,
@@ -51,6 +53,13 @@ internal static partial class DocCommentsBuilderUtil
     InvariantTagName
   };
 
+  [NotNull]
+  internal static HashSet<string> PossibleNameEntityTagAttributes { get; } = new()
+  {
+    CommonNameAttrName
+  };
+
+  [NotNull]
   internal static HashSet<string> PossibleTicketAttributes { get; } = new()
   {
     TicketSourceAttrName

@@ -189,8 +189,7 @@ public static class CommentsDomainUtil
   [NotNull]
   public static RdTextInvariant ToRdInvariant([NotNull] this IInvariantContentSegment contentSegment)
   {
-    return new RdTextInvariant(
-      contentSegment.Name.ToRdHighlightedText(), contentSegment.Content.ToRdContentSegment());
+    return new RdTextInvariant(contentSegment.Description.ToRdHighlightedText(), contentSegment?.Name?.ToRdHighlightedText());
   }
 
   [NotNull]
@@ -294,7 +293,6 @@ public static class CommentsDomainUtil
     };
   }
 
-  
   [NotNull]
   public static RdNamedEntityReference ToRdReference([NotNull] this INamedEntityDomainReference reference)
   {

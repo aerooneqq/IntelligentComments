@@ -29,9 +29,6 @@ class GroupedReferencesUiModel(
           extractTextFromReference(it)
         }
       })
-
-      override fun processSegments(strategy: ContentProcessingStrategy) {
-      }
     }
   ),
   getFirstLevelHeader(project, referenceSectionName, model)
