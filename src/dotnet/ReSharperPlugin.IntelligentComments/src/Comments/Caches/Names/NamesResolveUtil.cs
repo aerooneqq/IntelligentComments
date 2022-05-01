@@ -16,6 +16,7 @@ using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments.Utils;
 using ReSharperPlugin.IntelligentComments.Comments.Completion.CSharp.DocComments;
+using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.Content;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core.References;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Impl.References;
@@ -73,21 +74,21 @@ internal static class NamesResolveUtil
   private static DomainResolveResult TryResolveNameInInlineComment([NotNull] ITreeNode token, NameWithKind nameWithKind)
   {
     if (TryFindNearestCommentNode(token) is not { } commentNode) return null;
+    if (TryFindOneNameDeclarationIn(commentNode) is not { } resolvedName) return null;
 
-    var nameFinders = LanguageManager.Instance.TryGetCachedServices<INamedEntitiesCommonFinder>(commentNode.Language);
-
-    var results = new LocalList<CommonNamedEntityDescriptor>();
-    foreach (var finder in nameFinders)
-    {
-      results.AddRange(finder.FindNames(commentNode));
-    }
-
-    if (results.Count != 1) return null;
-    
-    var resolvedName = results.First();
     if (resolvedName.NameWithKind != nameWithKind) return null;
 
-    return new NamedEntityDomainResolveResult(null, commentNode, resolvedName.EntityRange, nameWithKind.NameKind);
+    IContentSegment segment = null;
+    foreach (var operation in CommentOperationsUtil.CollectSpecialOperations(token))
+    {
+      if (operation.TryCreate(commentNode) is { Comment: IInlineComment { Content: { } content } })
+      {
+        segment = content;
+        break;
+      }
+    }
+
+    return new NamedEntityDomainResolveResult(segment, commentNode, resolvedName.EntityRange, nameWithKind.NameKind);
   }
 
   [CanBeNull]

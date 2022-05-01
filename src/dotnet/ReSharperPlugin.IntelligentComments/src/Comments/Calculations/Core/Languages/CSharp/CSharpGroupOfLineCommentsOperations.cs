@@ -86,11 +86,6 @@ public class CSharpGroupOfLineCommentsOperations : GroupOfLineCommentsOperations
   {
     var comments = new List<ICSharpCommentNode> { startCommentNode };
     var currentNode = startCommentNode.NextSibling;
-    var manager = LanguageManager.Instance;
-    var specialCommentsOperations = manager
-      .TryGetCachedServices<ISpecialGroupOfLinesCommentsOperations>(startCommentNode.Language)
-      .OrderByDescending(creator => creator.Priority)
-      .ToList();
 
     while (currentNode is { })
     {
@@ -116,7 +111,7 @@ public class CSharpGroupOfLineCommentsOperations : GroupOfLineCommentsOperations
       if (currentNode is ICSharpCommentNode { CommentType: CommentType.END_OF_LINE_COMMENT } commentNode)
       {
         var shouldAddCurrentNodeToGroup = true;
-        foreach (var operations in specialCommentsOperations)
+        foreach (var operations in CommentOperationsUtil.CollectSpecialOperations(currentNode))
         {
           if (operations.CanBeStartOfSpecialGroupOfLineComments(commentNode))
           {

@@ -33,11 +33,7 @@ public class CSharpCommentsProcessor : CommentsProcessorBase
       return;
     }
     
-    var commentsOperations = LanguageManager
-      .TryGetCachedServices<ICommentFromNodeOperations>(element.Language)
-      .OrderByDescending(operations => operations.Priority);
-    
-    foreach (var operation in commentsOperations)
+    foreach (var operation in CommentOperationsUtil.CollectOperations(element))
     {
       if (operation.TryCreate(element) is var (comment, nodes))
       {

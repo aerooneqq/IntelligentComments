@@ -18,21 +18,21 @@ internal readonly struct WithPushedToStackContentSegments : IDisposable
   [NotNull] private readonly Stack<ContentSegmentsMetadata> myStack;
   [NotNull] private readonly ILogger myLogger;
 
-    
+
   public WithPushedToStackContentSegments([NotNull] Stack<ContentSegmentsMetadata> stack, [NotNull] ILogger logger)
     : this(stack, ContentSegmentsMetadata.CreateEmpty(), logger)
   {
   }
-      
+
   public WithPushedToStackContentSegments(
-    [NotNull] Stack<ContentSegmentsMetadata> stack, ContentSegmentsMetadata metadata, ILogger logger)
+    [NotNull] Stack<ContentSegmentsMetadata> stack, ContentSegmentsMetadata metadata, [NotNull] ILogger logger)
   {
     myStack = stack;
     myLogger = logger;
     myStack.Push(metadata);
   }
-    
-      
+
+
   public void Dispose()
   {
     if (myStack.Count == 0)
@@ -40,7 +40,7 @@ internal readonly struct WithPushedToStackContentSegments : IDisposable
       myLogger.LogAssertion("Stack was empty before possible Pop()");
       return;
     }
-        
+
     var contentSegments = myStack.Pop();
     var segments = contentSegments.ContentSegments.Segments;
 
@@ -54,7 +54,7 @@ internal readonly struct WithPushedToStackContentSegments : IDisposable
         }
       }
     }
-        
+
     var index = 0;
     while (index != segments.Count)
     {
@@ -72,11 +72,11 @@ internal readonly struct WithPushedToStackContentSegments : IDisposable
         ++index;
         continue;
       }
-          
+
       currentTextSegment.MergeWith(nextTextSegment);
       segments.RemoveAt(index + 1);
     }
-        
+
     Normalize();
   }
 }
