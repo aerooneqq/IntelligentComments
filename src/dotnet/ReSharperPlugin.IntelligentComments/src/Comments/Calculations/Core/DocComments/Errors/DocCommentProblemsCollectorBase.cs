@@ -133,7 +133,7 @@ public abstract class DocCommentProblemsCollectorBase : IDocCommentProblemsColle
   private bool CheckThatAllChildrenAreTags(
     [NotNull] IXmlTag parent, 
     [NotNull] DocCommentErrorAnalyzerContext context,
-    [CanBeNull] ISet<string> possibleTagsNames = null)
+    [CanBeNull] IReadOnlySet<string> possibleTagsNames = null)
   {
     if (parent.IsEmptyTag) return true;
 
@@ -257,7 +257,7 @@ public abstract class DocCommentProblemsCollectorBase : IDocCommentProblemsColle
 
   private bool CheckThatTagHaveOnlyAttributesFromPredefinedSet(
     [NotNull] IXmlTag tag, 
-    [NotNull] ISet<string> possibleAttributes, 
+    [NotNull] IReadOnlySet<string> possibleAttributes, 
     [NotNull] DocCommentErrorAnalyzerContext context)
   {
     var visitedAttributes = new HashSet<string>();

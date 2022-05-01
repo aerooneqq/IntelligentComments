@@ -46,7 +46,7 @@ internal static partial class DocCommentsBuilderUtil
 
 
   [NotNull]
-  internal static HashSet<string> PossibleNamedEntityTags { get; } = new()
+  internal static IReadOnlySet<string> PossibleNamedEntityTags { get; } = new JetHashSet<string>()
   {
     TodoTagName,
     HackTagName,
@@ -54,39 +54,39 @@ internal static partial class DocCommentsBuilderUtil
   };
 
   [NotNull]
-  internal static HashSet<string> PossibleNamedEntityTagAttributes { get; } = new()
+  internal static IReadOnlySet<string> PossibleNamedEntityTagAttributes { get; } = new JetHashSet<string>()
   {
     CommonNameAttrName
   };
 
   [NotNull]
-  internal static HashSet<string> PossibleTicketAttributes { get; } = new()
+  internal static IReadOnlySet<string> PossibleTicketAttributes { get; } = new JetHashSet<string>()
   {
     TicketSourceAttrName
   };
 
   [NotNull]
-  internal static HashSet<string> PossibleInnerFirstLevelTagsOfTodo { get; } = new()
+  internal static IReadOnlySet<string> PossibleInnerFirstLevelTagsOfTodo { get; } = new JetHashSet<string>()
   {
     DescriptionTagName,
     TicketsSectionTagName
   };
 
   [NotNull]
-  internal static HashSet<string> PossibleInnerFirstLevelTagsOfHack { get; } = new()
+  internal static IReadOnlySet<string> PossibleInnerFirstLevelTagsOfHack { get; } = new JetHashSet<string>()
   {
     DescriptionTagName,
     TicketsSectionTagName
   };
 
   [NotNull]
-  internal static HashSet<string> PossibleInnerFirstLevelTagsOfTicketsSection { get; } = new()
+  internal static IReadOnlySet<string> PossibleInnerFirstLevelTagsOfTicketsSection { get; } = new JetHashSet<string>()
   {
     TicketTagName
   };
 
   [NotNull] 
-  internal static HashSet<string> PossibleReferenceTagSourceAttributes { get; } = new() 
+  internal static IReadOnlySet<string> PossibleReferenceTagSourceAttributes { get; } = new JetHashSet<string>() 
   {
     InvariantReferenceSourceAttrName,
     HackReferenceSourceAttributeName,
@@ -97,10 +97,10 @@ internal static partial class DocCommentsBuilderUtil
   internal static string PossibleReferenceTagAttributesPresentation { get; } = string.Join(", ", PossibleReferenceTagSourceAttributes);
 
 
-  [NotNull] private static readonly ISet<char> ourCharsWithNoNeedToAddSpaceAfter = new HashSet<char>
+  [NotNull] private static readonly IReadOnlySet<char> ourCharsWithNoNeedToAddSpaceAfter = new JetHashSet<char>
   {
     '(', '[', '{',
   };
   
-  [NotNull] private static readonly ISet<char> ourWhitespaceChars = new HashSet<char> { ' ', '\n', '\r', '\t' };
+  [NotNull] private static readonly IReadOnlySet<char> ourWhitespaceChars = new JetHashSet<char> { ' ', '\n', '\r', '\t' };
 }

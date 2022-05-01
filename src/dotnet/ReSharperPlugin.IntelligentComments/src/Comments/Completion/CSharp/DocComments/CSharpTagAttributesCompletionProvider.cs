@@ -16,22 +16,22 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Completion.CSharp.DocComm
 [Language(typeof(CSharpLanguage))]
 public class CSharpTagAttributesCompletionProvider : ItemsProviderOfSpecificContext<DocCommentCompletionContext>
 {
-  [NotNull] private static readonly IReadOnlyDictionary<string, ISet<string>> ourTagsPossibleAttributes =
-    new Dictionary<string, ISet<string>>
+  [NotNull] private static readonly IReadOnlyDictionary<string, IReadOnlySet<string>> ourTagsPossibleAttributes =
+    new Dictionary<string, IReadOnlySet<string>>
     {
-      [DocCommentsBuilderUtil.ListTagName] = new HashSet<string> { DocCommentsBuilderUtil.ListTypeAttributeName },
+      [DocCommentsBuilderUtil.ListTagName] = new JetHashSet<string> { DocCommentsBuilderUtil.ListTypeAttributeName },
       
-      [DocCommentsBuilderUtil.ParamTagName] = new HashSet<string> { DocCommentsBuilderUtil.ParamNameAttrName },
-      [DocCommentsBuilderUtil.ParamRefTagName] = new HashSet<string> { DocCommentsBuilderUtil.ParamRefNameAttrName },
-      [DocCommentsBuilderUtil.TypeParamTagName] = new HashSet<string> { DocCommentsBuilderUtil.TypeParamNameAttrName },
-      [DocCommentsBuilderUtil.TypeParamRefTagName] = new HashSet<string> { DocCommentsBuilderUtil.TypeParamRefNameAttrName },
+      [DocCommentsBuilderUtil.ParamTagName] = new JetHashSet<string> { DocCommentsBuilderUtil.ParamNameAttrName },
+      [DocCommentsBuilderUtil.ParamRefTagName] = new JetHashSet<string> { DocCommentsBuilderUtil.ParamRefNameAttrName },
+      [DocCommentsBuilderUtil.TypeParamTagName] = new JetHashSet<string> { DocCommentsBuilderUtil.TypeParamNameAttrName },
+      [DocCommentsBuilderUtil.TypeParamRefTagName] = new JetHashSet<string> { DocCommentsBuilderUtil.TypeParamRefNameAttrName },
       
-      [DocCommentsBuilderUtil.ImageTagName] = new HashSet<string> { DocCommentsBuilderUtil.ImageSourceAttrName },
-      [DocCommentsBuilderUtil.InvariantTagName] = new HashSet<string> { DocCommentsBuilderUtil.InvariantNameAttrName },
+      [DocCommentsBuilderUtil.ImageTagName] = new JetHashSet<string> { DocCommentsBuilderUtil.ImageSourceAttrName },
+      [DocCommentsBuilderUtil.InvariantTagName] = new JetHashSet<string> { DocCommentsBuilderUtil.InvariantNameAttrName },
       [DocCommentsBuilderUtil.ReferenceTagName] = DocCommentsBuilderUtil.PossibleReferenceTagSourceAttributes,
       
-      [DocCommentsBuilderUtil.HackTagName] = new HashSet<string> { DocCommentsBuilderUtil.HackNameAttrName },
-      [DocCommentsBuilderUtil.TodoTagName] = new HashSet<string> { DocCommentsBuilderUtil.TodoNameAttrName },
+      [DocCommentsBuilderUtil.HackTagName] = new JetHashSet<string> { DocCommentsBuilderUtil.HackNameAttrName },
+      [DocCommentsBuilderUtil.TodoTagName] = new JetHashSet<string> { DocCommentsBuilderUtil.TodoNameAttrName },
       [DocCommentsBuilderUtil.TicketTagName] = DocCommentsBuilderUtil.PossibleTicketAttributes
     };
 
