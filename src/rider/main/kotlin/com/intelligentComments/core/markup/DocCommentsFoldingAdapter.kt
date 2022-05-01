@@ -18,10 +18,7 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.impl.source.tree.injected.changesHandler.range
 import com.intellij.util.application
 import com.jetbrains.rd.ide.model.RdCommentFoldingModel
-import com.jetbrains.rd.platform.util.lifetime
 import com.jetbrains.rd.util.lifetime.Lifetime
-import com.jetbrains.rd.util.reactive.Property
-import com.jetbrains.rd.util.reactive.whenTrue
 import com.jetbrains.rdclient.daemon.FrontendMarkupAdapterListener
 import com.jetbrains.rdclient.daemon.highlighters.MarkupListenerAggregator
 
@@ -75,32 +72,35 @@ class DocCommentsFoldingAdapter(private val editor: EditorImpl) : FrontendMarkup
   }
 
   override fun afterBulkAdd(highlighters: List<RangeHighlighterEx>) {
+    application.assertIsDispatchThread()
     editor.project?.let {
       updateScheduler.queueUpdate { continuation ->
-        val controller = it.getComponent(RiderCommentsController::class.java) ?: return@queueUpdate
-        val commentsCreator = it.service<RiderCommentsCreator>()
+        application.runReadAction {
+          val controller = it.getComponent(RiderCommentsController::class.java) ?: return@runReadAction
+          val commentsCreator = it.service<RiderCommentsCreator>()
 
-        rangeMarkerCache.invalidateAndSort()
+          rangeMarkerCache.invalidateAndSort()
 
-        application.invokeLater {
-          executeOverDocHighlighters(highlighters) { highlighter, model ->
-            if (!highlighter.isValid) return@executeOverDocHighlighters
+          application.invokeLater {
+            executeOverDocHighlighters(highlighters) { highlighter, model ->
+              if (!highlighter.isValid) return@executeOverDocHighlighters
 
-            val marker = getRangeMarkerFor(highlighter.range, highlighter.document)
-            marker.isGreedyToRight = true
+              val marker = getRangeMarkerFor(highlighter.range, highlighter.document)
+              marker.isGreedyToRight = true
 
-            val comment = commentsCreator.createComment(model.comment, marker, highlighter)
-            controller.addComment(editor, comment)
+              val comment = commentsCreator.createComment(model.comment, marker, highlighter)
+              controller.addComment(editor, comment)
 
-            highlighter.putUserData(commentKey, comment)
-            highlighter.isGreedyToRight = true
+              highlighter.putUserData(commentKey, comment)
+              highlighter.isGreedyToRight = true
 
-            if (settings.commentsDisplayKind.value != CommentsDisplayKind.Code) {
-              highlighter.gutterIconRenderer = DocCommentSwitchRenderModeGutterMark(comment, editor, it)
+              if (settings.commentsDisplayKind.value != CommentsDisplayKind.Code) {
+                highlighter.gutterIconRenderer = DocCommentSwitchRenderModeGutterMark(comment, editor, it)
+              }
             }
-          }
 
-          continuation(Unit)
+            continuation(Unit)
+          }
         }
       }
     }

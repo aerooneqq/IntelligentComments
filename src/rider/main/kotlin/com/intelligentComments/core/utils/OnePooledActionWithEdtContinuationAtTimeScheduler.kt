@@ -2,8 +2,7 @@ package com.intelligentComments.core.utils
 
 import com.intellij.util.application
 import com.jetbrains.rd.platform.util.getLogger
-import java.util.LinkedList
-import java.util.Queue
+import java.util.*
 
 
 typealias UpdateAction = ((Unit) -> Unit) -> Unit
