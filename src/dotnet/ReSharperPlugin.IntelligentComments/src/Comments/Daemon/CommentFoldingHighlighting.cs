@@ -1,3 +1,4 @@
+using System;
 using JetBrains.Annotations;
 using JetBrains.DocumentModel;
 using JetBrains.Rd.Util;
@@ -14,7 +15,7 @@ namespace ReSharperPlugin.IntelligentComments.Comments.Daemon;
   DocCommentAttributeId,
   NotRecyclable = true,
   EffectType = EffectType.FOLDING, 
-  GroupId = IntelligentCommentsHighlightings.GroupId, 
+  GroupId = IntelligentCommentsHighlightings.GroupId,
   TransmitUpdates = true)]
 public class CommentFoldingHighlighting : CodeFoldingHighlighting, IHighlightingWithTestOutput
 {

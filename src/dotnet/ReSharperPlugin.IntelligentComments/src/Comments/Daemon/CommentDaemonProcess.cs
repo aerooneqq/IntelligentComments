@@ -33,7 +33,7 @@ public class CommentDaemonProcess : IDaemonStageProcess
       file.ProcessThisAndDescendants(processor);
       foreach (var (highlightingInfos, commentBase) in processor.ProcessedComments)
       {
-        if (commentBase is { } comment && myDaemonProcessKind == DaemonProcessKind.VISIBLE_DOCUMENT)
+        if (highlightingInfos.Count == 0 && commentBase is { } comment && myDaemonProcessKind == DaemonProcessKind.VISIBLE_DOCUMENT)
         {
           result.Add(new HighlightingInfo(comment.Range, CommentFoldingHighlighting.Create(comment)));
         }

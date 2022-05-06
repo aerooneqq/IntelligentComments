@@ -5,7 +5,7 @@ using JetBrains.ReSharper.Feature.Services.Daemon;
 using JetBrains.ReSharper.FeaturesTestFramework.Daemon;
 using JetBrains.ReSharper.Psi;
 using NUnit.Framework;
-using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments.Errors;
+using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core;
 using ReSharperPlugin.IntelligentComments.Comments.Daemon;
 
 namespace ReSharperPlugin.IntelligentComments.Tests.CSharp;

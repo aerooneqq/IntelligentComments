@@ -3,7 +3,7 @@ using JetBrains.Diagnostics;
 using JetBrains.DocumentModel;
 using JetBrains.ReSharper.Feature.Services.Daemon;
 
-namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments.Errors;
+namespace ReSharperPlugin.IntelligentComments.Comments.Calculations.Core;
 
 [StaticSeverityHighlighting(Severity.ERROR, typeof(CommentErrorHighlighting), OverlapResolve = OverlapResolveKind.UNRESOLVED_ERROR)]
 public class CommentErrorHighlighting : IHighlighting
