@@ -12,7 +12,6 @@ interface ChangeManager {
     fun getInstance(): ChangeManager = ApplicationManager.getApplication().getService(ChangeManager::class.java)
   }
 
-
   fun dispatch(change: Change)
   fun addListener(lifetime: Lifetime, listener: ChangeListener)
 }

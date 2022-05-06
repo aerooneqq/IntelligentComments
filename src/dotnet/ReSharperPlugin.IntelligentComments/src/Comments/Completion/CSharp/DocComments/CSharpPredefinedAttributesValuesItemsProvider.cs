@@ -20,7 +20,9 @@ public class CSharpPredefinedAttributesValuesItemsProvider : ItemsProviderOfSpec
       {
         [DocCommentsBuilderUtil.ListTypeAttributeName] = new()
         {
-          DocCommentsBuilderUtil.ListListType, DocCommentsBuilderUtil.ListTableType
+          DocCommentsBuilderUtil.ListNumberType,
+          DocCommentsBuilderUtil.ListBulletType, 
+          DocCommentsBuilderUtil.ListTableType
         }
       }
     };

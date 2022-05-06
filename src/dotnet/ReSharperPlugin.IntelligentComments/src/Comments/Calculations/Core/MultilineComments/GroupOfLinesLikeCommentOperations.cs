@@ -5,6 +5,7 @@ using JetBrains.Annotations;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Util;
+using ReSharperPlugin.IntelligentComments.Comments.Caches.Names;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments.Errors;
 using ReSharperPlugin.IntelligentComments.Comments.Calculations.Core.DocComments.Utils;
 using ReSharperPlugin.IntelligentComments.Comments.Domain.Core;
@@ -27,16 +28,11 @@ public abstract class GroupOfLinesLikeCommentOperations : ISpecialGroupOfLinesCo
 
   public CommentCreationResult? TryCreate(ITreeNode node)
   {
-    if (TryCreateGroupOfLinesCommentsNoMerge(node) is not var (buildResult, groupOfLineComments)) return null;
-
-    var text = GetGroupOfLinesCommentsText(groupOfLineComments);
-    var provider = LanguageManager.Instance.GetService<IHighlightersProvider>(node.Language);
-
-    if (CheckMatches(Regex.Matches(text, PatternWithName)))
+    if (TryGetCommentInfoDto(node) is not var ((buildResult, groupOfLineComments), text, provider)) return null;
+    
+    if (TryExtractName(text, provider) is { } name)
     {
-      var (_, name) = ExtractName(text);
       text = text[(text.IndexOf("):", StringComparison.Ordinal) + 3)..];
-
       return buildResult with { Comment = CreateComment(groupOfLineComments, provider, text, name) };
     }
     
@@ -46,7 +42,45 @@ public abstract class GroupOfLinesLikeCommentOperations : ISpecialGroupOfLinesCo
     return buildResult with { Comment = CreateComment(groupOfLineComments, provider, text, null) };
   }
 
-  public IEnumerable<CommentErrorHighlighting> FindErrors(ITreeNode node) => EmptyList<CommentErrorHighlighting>.Enumerable;
+  private record struct CommentInfoDto(CommentCreationDto Result, [NotNull] string Text, [NotNull] IHighlightersProvider Provider);
+
+  private static CommentInfoDto? TryGetCommentInfoDto([NotNull] ITreeNode node)
+  {
+    if (TryCreateGroupOfLinesCommentsNoMerge(node) is not { } creationDto) return null;
+
+    var (_, groupOfLineComments) = creationDto;
+    var text = GetGroupOfLinesCommentsText(groupOfLineComments);
+    var provider = LanguageManager.Instance.GetService<IHighlightersProvider>(node.Language);
+
+    return new CommentInfoDto(creationDto, text, provider);
+  }
+  
+  [CanBeNull]
+  private string TryExtractName([NotNull] string text, [NotNull] IHighlightersProvider provider)
+  {
+    if (!CheckMatches(Regex.Matches(text, PatternWithName))) return null;
+    
+    var (_, name) = ExtractName(text);
+    return name;
+  }
+
+  public IEnumerable<CommentErrorHighlighting> FindErrors(ITreeNode node)
+  {
+    if (TryGetCommentInfoDto(node) is not var ((_, _), text, provider)) 
+      return EmptyList<CommentErrorHighlighting>.Enumerable;
+    
+    if (TryExtractName(text, provider) is not { } name) return EmptyList<CommentErrorHighlighting>.Enumerable;
+
+    var cache = NamesCacheUtil.GetCacheFor(node.GetSolution(), NameKind);
+    if (cache.GetNameCount(name) == 1) return EmptyList<CommentErrorHighlighting>.Enumerable;
+    
+    var range = node.GetDocumentRange();
+    var message = $"The {NameKind} name \"{name}\" must occur only once in solution";
+    return new[]
+    {
+      CommentErrorHighlighting.Create(message, range),
+    };
+  }
 
   public bool CanBeStartOfSpecialGroupOfLineComments(ITreeNode node)
   {
@@ -59,18 +93,18 @@ public abstract class GroupOfLinesLikeCommentOperations : ISpecialGroupOfLinesCo
   [NotNull] 
   private static string GetGroupOfLinesCommentsText([NotNull] IGroupOfLineComments comments) => comments.Text.Text.Text;
 
-  private static (CommentCreationResult, IGroupOfLineComments)? TryCreateGroupOfLinesCommentsNoMerge([NotNull] ITreeNode node)
+  private record struct CommentCreationDto(CommentCreationResult CreationResult, [NotNull] IGroupOfLineComments Comment);
+  private static CommentCreationDto? TryCreateGroupOfLinesCommentsNoMerge([NotNull] ITreeNode node)
   {
     if (LanguageManager.Instance.TryGetService<IGroupOfLineCommentsOperations>(node.Language) is not { } builder) return null;
     if (builder.TryCreateNoMerge(node) is not { Comment: IGroupOfLineComments groupOfLineComments } buildResult) 
       return null;
 
-    return (buildResult, groupOfLineComments);
+    return new CommentCreationDto(buildResult, groupOfLineComments);
   }
 
   private static bool CheckMatches([NotNull] MatchCollection matches) => matches.Count == 1 && matches[0].Success && matches[0].Index == 0;
-
-
+  
   protected record struct NameExtraction(int Index, [NotNull] string Name);
   
   [NotNull]

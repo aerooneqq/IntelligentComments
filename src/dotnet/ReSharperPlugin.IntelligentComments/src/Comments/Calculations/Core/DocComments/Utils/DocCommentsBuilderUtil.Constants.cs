@@ -23,7 +23,8 @@ internal static partial class DocCommentsBuilderUtil
 
   [NotNull] internal const string ListTypeAttributeName = "type";
   [NotNull] internal const string ListTableType = "table";
-  [NotNull] internal const string ListListType = "list";
+  [NotNull] internal const string ListNumberType = "number";
+  [NotNull] internal const string ListBulletType = "bullet";
 
   [NotNull] internal const string CommonNameAttrName = "name";
   [NotNull] internal const string TicketNameAttrName = CommonNameAttrName;
