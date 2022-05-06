@@ -88,25 +88,36 @@ class RiderCommentsStateManager(
     val editorId = editor.getEditorId() ?: return CommentState.defaultInstance
     val editorCommentsStates = states.getOrCreate(editorId) { CommentsIdentifierStorage() }
     val existingState = editorCommentsStates.getWithAdditionalSearch(commentIdentifier)
-    if (existingState != null) return existingState
+    if (existingState != null) {
+      return adjustCommentStateBasedOnCaretPosition(existingState, editor, commentIdentifier)
+    }
 
     val persistentState = getPersistentState(editorId, commentIdentifier)
     return editorCommentsStates.getOrCreate(commentIdentifier) {
       val state = if (persistentState != null) {
-        persistentState
+        adjustCommentStateBasedOnCaretPosition(persistentState, editor, commentIdentifier)
       } else {
-        val displayKind = if (isCaretWithinComment(editor, commentIdentifier.rangeMarker)) {
-          CommentsDisplayKind.Code
-        } else {
-          settingsProvider.commentsDisplayKind.value
-        }
-
-        CommentState(displayKind)
+        val settingValue = settingsProvider.commentsDisplayKind.value
+        adjustCommentStateBasedOnCaretPosition(CommentState(settingValue), editor, commentIdentifier)
       }
 
       state.setDisplayKind(adjustFinalStateWithSettings(state.displayKind, editor))
       return@getOrCreate state
     }
+  }
+
+  private fun adjustCommentStateBasedOnCaretPosition(
+    state: CommentState,
+    editor: Editor,
+    identifier: CommentIdentifier
+  ): CommentState {
+    val adjustedKind = if (isCaretWithinComment(editor, identifier.rangeMarker)) {
+      CommentsDisplayKind.Code
+    } else {
+      state.displayKind
+    }
+
+    return CommentState(adjustedKind)
   }
 
   private fun isCaretWithinComment(editor: Editor, range: RangeMarker): Boolean {
