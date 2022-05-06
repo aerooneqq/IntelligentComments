@@ -81,10 +81,10 @@ public abstract class AbstractNamesCache : SimpleICache<Dictionary<string, int>>
     var entities = new List<NamedEntity>();
     foreach (var (name, infos) in nameInfos)
     {
-      if (infos.Count != 1) continue;
-
-      var info = infos.First();
-      entities.Add(new NamedEntity(name, info.Offset));
+      foreach (var info in infos)
+      {
+        entities.Add(new NamedEntity(name, info.Offset));
+      }
     }
     
     QueueChanges(sourceFile, entities);
