@@ -1,0 +1,9 @@
+﻿namespace ReSharperPlugin.IntelligentComments.Tests.data.CSharp.Highlightings;
+
+/// |<reference source="" />|(0)
+public class ReferenceSourceIsNotSet
+{
+  
+}
+---------------------------------------------------------
+(0): ReSharper Underlined Error Highlighting: [IC]: Reference tag can not contain attribute source

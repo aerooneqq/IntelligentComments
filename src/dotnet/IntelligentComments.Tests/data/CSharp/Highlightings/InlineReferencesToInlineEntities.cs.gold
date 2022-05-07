@@ -1,0 +1,205 @@
+﻿namespace C1;
+
+|//reference to invariant: asdasdsdA asdsal;dkasdl;dkl;dksal;daskl;dasl;kdask;ld|(0)
+|//reference to hack: HACK asdsal;dkasdl;dkl;dksal;daskl;dasl;kdask;ld|(1)
+|//reference to todo: TODO asdsal;dkasdl;dkl;dksal;daskl;dasl;kdask;ld|(2)
+
+
+|/// <summary>
+/// asdasasd
+/// </summary>
+/// <invariant name = "TestClass::hello1" />
+/// <hack name = "TestClass::hello1" />
+/// <todo name = "TestClass::hello1" />
+/// <reference hack = "TestClass::hello1" />
+/// <reference todo = "TestClass::hello1" />
+/// <reference invariant = "TestClass::hello1" />
+/// <reference hack = "HACK" />
+/// <reference todo="TODO" />
+/// <reference invariant = "asdasdsdA" />|(3)
+public class InlineReferencesToInlineEntities
+{
+  |//invariant (name: asdasdsdA): asdlkjasdklsdjkalsdask |(4)
+  |//hack (name: HACK): aslkdsal;sad;lasdasd|(5)
+  |//todo (name: TODO): asl;dkasl;dkasd;lasd|(6)
+}
+
+|//reference to invariant: asdasdsdA asdsal;dkasdl;dkl;dksal;daskl;dasl;kdask;ld|(7)
+|//reference to hack: HACK asdsal;dkasdl;dkl;dksal;daskl;dasl;kdask;ld|(8)
+|//reference to todo: TODO asdsal;dkasdl;dkl;dksal;daskl;dasl;kdask;ld|(9)
+---------------------------------------------------------
+(0): IntelligentCommentsDocCommentFolding: (DocumentRange (17 - 96) on InlineReferencesToInlineEntities.cs)
+InlineReference: 
+    HighlightedText:
+    Text: Reference to invariant: asdasdsdA
+    Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 24, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
+      Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 24, 33, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: NamedEntityDomainReference::asdasdsdA, ]
+  Description: 
+    HighlightedText:
+    Text: , asdsal;dkasdl;dkl;dksal;daskl;dasl;kdask;ld
+    Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 45, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
+
+(1): IntelligentCommentsDocCommentFolding: (DocumentRange (98 - 167) on InlineReferencesToInlineEntities.cs)
+InlineReference: 
+    HighlightedText:
+    Text: Reference to hack: HACK
+    Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 19, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
+      Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 19, 23, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: NamedEntityDomainReference::HACK, ]
+  Description: 
+    HighlightedText:
+    Text: , asdsal;dkasdl;dkl;dksal;daskl;dasl;kdask;ld
+    Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 45, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
+
+(2): IntelligentCommentsDocCommentFolding: (DocumentRange (169 - 238) on InlineReferencesToInlineEntities.cs)
+InlineReference: 
+    HighlightedText:
+    Text: Reference to todo: TODO
+    Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 19, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
+      Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 19, 23, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: NamedEntityDomainReference::TODO, ]
+  Description: 
+    HighlightedText:
+    Text: , asdsal;dkasdl;dkl;dksal;daskl;dasl;kdask;ld
+    Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 45, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
+
+(3): IntelligentCommentsDocCommentFolding: (DocumentRange (244 - 665) on InlineReferencesToInlineEntities.cs)
+IntelligentCommentContent:
+  ContentSegments:
+      SummaryContentSegment:
+        ContentSegments:
+          TextContentSegment:
+            HighlightedText:
+            Text: asdasasd
+            Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 8, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
+    Invariant: 
+        HighlightedText:
+        Text: TestClass::hello1
+        Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 17, TextHighlighterAttributes { FontStyle = Bold, Underline = False, FontWeight = 400 }, References: NamedEntityDomainReference::TestClass::hello1, ]
+        EntityWithContentSegments:
+          ContentSegments:
+            TextContentSegment:
+              HighlightedText:
+              Text: 
+              Highlighters: Reference: 
+        HighlightedText:
+        Text: TestClass::hello1
+        Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 17, TextHighlighterAttributes { FontStyle = Bold, Underline = False, FontWeight = 400 }, References: NamedEntityDomainReference::TestClass::hello1, ]
+        EntityWithContentSegments:
+          ContentSegments:
+            TextContentSegment:
+              HighlightedText:
+              Text: 
+              Highlighters: NamedEntityDomainReference with name TestClass::hello1 and kind Hack
+    Reference: 
+        HighlightedText:
+        Text: TestClass::hello1
+        Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 17, TextHighlighterAttributes { FontStyle = Bold, Underline = False, FontWeight = 400 }, References: NamedEntityDomainReference::TestClass::hello1, ]
+        EntityWithContentSegments:
+          ContentSegments:
+            TextContentSegment:
+              HighlightedText:
+              Text: 
+              Highlighters: NamedEntityDomainReference with name TestClass::hello1 and kind Todo
+    Reference: 
+        HighlightedText:
+        Text: TestClass::hello1
+        Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 17, TextHighlighterAttributes { FontStyle = Bold, Underline = False, FontWeight = 400 }, References: NamedEntityDomainReference::TestClass::hello1, ]
+        EntityWithContentSegments:
+          ContentSegments:
+            TextContentSegment:
+              HighlightedText:
+              Text: 
+              Highlighters: NamedEntityDomainReference with name TestClass::hello1 and kind Invariant
+    Reference: 
+        HighlightedText:
+        Text: HACK
+        Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 4, TextHighlighterAttributes { FontStyle = Bold, Underline = False, FontWeight = 400 }, References: NamedEntityDomainReference::HACK, ]
+        EntityWithContentSegments:
+          ContentSegments:
+            TextContentSegment:
+              HighlightedText:
+              Text: 
+              Highlighters: NamedEntityDomainReference with name HACK and kind Hack
+    Reference: 
+        HighlightedText:
+        Text: TODO
+        Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 4, TextHighlighterAttributes { FontStyle = Bold, Underline = False, FontWeight = 400 }, References: NamedEntityDomainReference::TODO, ]
+        EntityWithContentSegments:
+          ContentSegments:
+            TextContentSegment:
+              HighlightedText:
+              Text: 
+              Highlighters: NamedEntityDomainReference with name TODO and kind Todo
+    Reference: 
+        HighlightedText:
+        Text: asdasdsdA
+        Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 9, TextHighlighterAttributes { FontStyle = Bold, Underline = False, FontWeight = 400 }, References: NamedEntityDomainReference::asdasdsdA, ]
+        EntityWithContentSegments:
+          ContentSegments:
+            TextContentSegment:
+              HighlightedText:
+              Text: 
+              Highlighters: NamedEntityDomainReference with name asdasdsdA and kind Invariant
+
+(4): IntelligentCommentsDocCommentFolding: (DocumentRange (719 - 773) on InlineReferencesToInlineEntities.cs)
+  EntityWithContentSegments:
+    ContentSegments:
+      InlineContentSegment with kind Invariant: 
+          HighlightedText:
+          Text: asdasdsdA
+          Highlighters: HighlightedText:
+          Text: asdlkjasdklsdjkalsdask
+          Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 22, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
+
+(5): IntelligentCommentsDocCommentFolding: (DocumentRange (777 - 818) on InlineReferencesToInlineEntities.cs)
+  EntityWithContentSegments:
+    ContentSegments:
+      InlineContentSegment with kind Hack: 
+          HighlightedText:
+          Text: HACK
+          Highlighters: HighlightedText:
+          Text: aslkdsal;sad;lasdasd
+          Highlighters: Highlighter: [hack.text.color, 0, 20, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
+
+(6): IntelligentCommentsDocCommentFolding: (DocumentRange (822 - 863) on InlineReferencesToInlineEntities.cs)
+  EntityWithContentSegments:
+    ContentSegments:
+      InlineContentSegment with kind Todo: 
+          HighlightedText:
+          Text: TODO
+          Highlighters: HighlightedText:
+          Text: asl;dkasl;dkasd;lasd
+          Highlighters: Highlighter: [todo.text.color, 0, 20, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
+
+(7): IntelligentCommentsDocCommentFolding: (DocumentRange (870 - 949) on InlineReferencesToInlineEntities.cs)
+InlineReference: 
+    HighlightedText:
+    Text: Reference to invariant: asdasdsdA
+    Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 24, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
+      Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 24, 33, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: NamedEntityDomainReference::asdasdsdA, ]
+  Description: 
+    HighlightedText:
+    Text: , asdsal;dkasdl;dkl;dksal;daskl;dasl;kdask;ld
+    Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 45, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
+
+(8): IntelligentCommentsDocCommentFolding: (DocumentRange (951 - 1,020) on InlineReferencesToInlineEntities.cs)
+InlineReference: 
+    HighlightedText:
+    Text: Reference to hack: HACK
+    Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 19, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
+      Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 19, 23, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: NamedEntityDomainReference::HACK, ]
+  Description: 
+    HighlightedText:
+    Text: , asdsal;dkasdl;dkl;dksal;daskl;dasl;kdask;ld
+    Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 45, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
+
+(9): IntelligentCommentsDocCommentFolding: (DocumentRange (1,022 - 1,091) on InlineReferencesToInlineEntities.cs)
+InlineReference: 
+    HighlightedText:
+    Text: Reference to todo: TODO
+    Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 19, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
+      Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 19, 23, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: NamedEntityDomainReference::TODO, ]
+  Description: 
+    HighlightedText:
+    Text: , asdsal;dkasdl;dkl;dksal;daskl;dasl;kdask;ld
+    Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 45, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
+

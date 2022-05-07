@@ -1,0 +1,9 @@
+﻿namespace ReSharperPlugin.IntelligentComments.Tests.data.CSharp.Highlightings;
+
+/// <image |source=""|(0) />
+public class ImageSourceNotSetError
+{
+  
+}
+---------------------------------------------------------
+(0): ReSharper Underlined Error Highlighting: [IC]: Tag "image" must have attribute "source" to have non-empty value

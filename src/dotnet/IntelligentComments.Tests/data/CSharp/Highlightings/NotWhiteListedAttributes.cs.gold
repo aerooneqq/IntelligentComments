@@ -1,0 +1,23 @@
+﻿namespace ReSharperPlugin.IntelligentComments.Tests.data.CSharp.Highlightings;
+
+/// <summary>
+/// 
+/// </summary>
+/// |<reference source ="asdasdasd" />|(0)
+/// |<reference someAttr = "asdasdasd" />|(1)
+/// <reference invariant = |"asdsadasd"|(2) />
+/// <refernece invariant = "asdasdsdasd" source ="asdasdasd" />
+/// <invariant |source ="asdasda"|(3) />
+/// <invariant name = "asdasdasd" |source = "asdasdA"|(4) />
+/// |<image asd = "asdasda" />|(5)
+public class NotWhiteListedAttributes
+{
+  
+}
+---------------------------------------------------------
+(0): ReSharper Underlined Error Highlighting: [IC]: Reference tag can not contain attribute source
+(1): ReSharper Underlined Error Highlighting: [IC]: Reference tag can not contain attribute someAttr
+(2): ReSharper Underlined Error Highlighting: [IC]: Failed to resolve Invariant "asdsadasd"
+(3): ReSharper Underlined Error Highlighting: [IC]: invariant can not contain attribute source
+(4): ReSharper Underlined Error Highlighting: [IC]: invariant can not contain attribute source
+(5): ReSharper Underlined Error Highlighting: [IC]: Tag "image" must have attribute "source" to be set

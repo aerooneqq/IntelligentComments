@@ -1,0 +1,13 @@
+﻿namespace ReSharperPlugin.IntelligentComments.Tests.data.CSharp.Highlightings;
+
+/// <summary>
+/// 
+/// </summary>
+/// <reference invariant = |"SDASDASDASDASDSDASDASDAS"|(0) />
+public class ReferenceSourceIsUnresolved
+{
+  //reference to invariant: |ASDASDASDASDASDD|(1)
+}
+---------------------------------------------------------
+(0): ReSharper Underlined Error Highlighting: [IC]: Failed to resolve Invariant "SDASDASDASDASDSDASDASDAS"
+(1): ReSharper Underlined Error Highlighting: [IC]: Failed to resolve inline reference with name ASDASDASDASDASDD with kind Invariant

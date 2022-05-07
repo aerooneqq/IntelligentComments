@@ -1,0 +1,19 @@
+﻿namespace ReSharperPlugin.IntelligentComments.Tests.data.CSharp.Highlightings;
+
+/// <invariant name=|"1"|(0) />
+/// <invariant name=|"1"|(1) />
+/// <hack name=|"2"|(2) />
+/// <hack name=|"2"|(3) />
+/// <todo name=|"3"|(4) />
+/// <todo name=|"3"|(5) />
+public class NamedEntityDeclaredMoreThanOnceError
+{
+  
+}
+---------------------------------------------------------
+(0): ReSharper Underlined Error Highlighting: [IC]: The Invariant name "1" must occur only once in solution
+(1): ReSharper Underlined Error Highlighting: [IC]: The Invariant name "1" must occur only once in solution
+(2): ReSharper Underlined Error Highlighting: [IC]: The Hack name "2" must occur only once in solution
+(3): ReSharper Underlined Error Highlighting: [IC]: The Hack name "2" must occur only once in solution
+(4): ReSharper Underlined Error Highlighting: [IC]: The Todo name "3" must occur only once in solution
+(5): ReSharper Underlined Error Highlighting: [IC]: The Todo name "3" must occur only once in solution

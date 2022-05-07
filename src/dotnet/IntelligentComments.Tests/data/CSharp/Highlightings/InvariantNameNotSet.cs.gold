@@ -1,0 +1,25 @@
+﻿namespace ReSharperPlugin.IntelligentComments.Tests.data.CSharp.Highlightings;
+
+|/// <invariant />
+/// <invariant name="" />|(0)
+public class InvariantNameNotSet
+{
+  
+}
+---------------------------------------------------------
+(0): IntelligentCommentsDocCommentFolding: (DocumentRange (82 - 126) on InvariantNameNotSet.cs)
+IntelligentCommentContent:
+  ContentSegments:
+    Invariant: 
+        EntityWithContentSegments:
+          ContentSegments:
+            TextContentSegment:
+              HighlightedText:
+              Text: 
+              Highlighters: Invariant: 
+        EntityWithContentSegments:
+          ContentSegments:
+            TextContentSegment:
+              HighlightedText:
+              Text: 
+              Highlighters: 
