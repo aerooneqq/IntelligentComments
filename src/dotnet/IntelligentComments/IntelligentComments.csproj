@@ -1,0 +1,32 @@
+﻿<Project>
+    <PropertyGroup>
+        <LanguageTargets>$(MSBuildToolsPath)\Microsoft.CSharp.targets</LanguageTargets>
+        <LangVersion>10</LangVersion>
+    </PropertyGroup>
+
+    <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
+
+    <PropertyGroup>
+        <TargetFramework>net472</TargetFramework>
+        <AssemblyName>IntelligentComments</AssemblyName>
+        <RootNamespace>IntelligentComments</RootNamespace>
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="JetBrains.Annotations" Version="2021.3.0" />
+      <PackageReference Include="JetBrains.Lifetimes" Version="2021.3.4" />
+      <PackageReference Include="JetBrains.RdFramework" Version="2021.3.4" />
+      <PackageReference Include="JetBrains.ReSharper.TestRunner.Abstractions" Version="2.6.1" />
+      <PackageReference Include="JetBrains.Rider.SDK" Version="2021.3.0">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+      <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+    </ItemGroup>
+    
+    <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
+</Project>

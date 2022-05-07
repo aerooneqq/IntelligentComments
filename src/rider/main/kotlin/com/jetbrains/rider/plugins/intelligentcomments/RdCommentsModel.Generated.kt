@@ -56,7 +56,7 @@ class RdCommentsModel private constructor(
             serializers.register(RdExceptionsSegment)
             serializers.register(RdTextSegment)
             serializers.register(RdImageSegment)
-            serializers.register(ListKind.marshaller)
+            serializers.register(RdListKind.marshaller)
             serializers.register(RdListSegment)
             serializers.register(RdListItem)
             serializers.register(RdTableSegment)
@@ -129,7 +129,7 @@ class RdCommentsModel private constructor(
         private val __RdHighlightedTextNullableSerializer = RdHighlightedText.nullable()
         private val __IntNullableSerializer = FrameworkMarshallers.Int.nullable()
         
-        const val serializationHash = 6518684531235817811L
+        const val serializationHash = 4238808610467141779L
         
     }
     override val serializersOwner: ISerializersOwner get() = RdCommentsModel
@@ -189,20 +189,6 @@ class RdCommentsModel private constructor(
 }
 val Solution.rdCommentsModel get() = getOrCreateExtension("rdCommentsModel", ::RdCommentsModel)
 
-
-
-/**
- * #### Generated from [RdComment.kt:129]
- */
-enum class ListKind {
-    Bullet, 
-    Number;
-    
-    companion object {
-        val marshaller = FrameworkMarshallers.enum<ListKind>()
-        
-    }
-}
 
 
 /**
@@ -3517,10 +3503,24 @@ data class RdListItem (
 
 
 /**
+ * #### Generated from [RdComment.kt:129]
+ */
+enum class RdListKind {
+    Bullet, 
+    Number;
+    
+    companion object {
+        val marshaller = FrameworkMarshallers.enum<RdListKind>()
+        
+    }
+}
+
+
+/**
  * #### Generated from [RdComment.kt:134]
  */
 class RdListSegment (
-    val listKind: ListKind,
+    val listKind: RdListKind,
     val listContent: List<RdListItem>,
     val header: RdHighlightedText? = null
 ) : RdContentSegment (
@@ -3532,7 +3532,7 @@ class RdListSegment (
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdListSegment  {
-            val listKind = buffer.readEnum<ListKind>()
+            val listKind = buffer.readEnum<RdListKind>()
             val listContent = buffer.readList { RdListItem.read(ctx, buffer) }
             val header = buffer.readNullable { RdHighlightedText.read(ctx, buffer) }
             return RdListSegment(listKind, listContent, header)

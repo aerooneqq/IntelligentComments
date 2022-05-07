@@ -154,11 +154,12 @@ patchPluginXml {
 }
 
 prepareSandbox {
-    def outputFolder = "${rootDir}/src/dotnet/${DotnetPluginId}/bin/${DotnetPluginId}.Rider/${BuildConfiguration}"
+    def outputFolder = "${rootDir}/src/dotnet/${DotnetPluginId}/bin/${DotnetPluginId}/${BuildConfiguration}"
     def dllFiles = [
             "$outputFolder/${DotnetPluginId}.dll",
             "$outputFolder/${DotnetPluginId}.pdb",
-            // TODO: add additional assemblies
+            "$outputFolder/${CoomonDll}.dll",
+            "$outputFolder/${CoomonDll}.pdb",
     ]
 
     dllFiles.forEach({ f ->

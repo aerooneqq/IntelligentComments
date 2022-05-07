@@ -126,13 +126,13 @@ object RdCommentsModel : Ext(SolutionModel.Solution) {
     field("Description", RdHighlightedText)
   }
 
-  val ListKind = enum {
+  val RdListKind = enum {
     + "Bullet"
     + "Number"
   }
 
   val RdListSegment = structdef extends RdContentSegment {
-    field("ListKind", ListKind)
+    field("ListKind", RdListKind)
     field("ListContent", immutableList(RdListItem))
     field("Header", RdHighlightedText.nullable).optional
   }

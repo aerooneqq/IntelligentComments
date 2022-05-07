@@ -125,8 +125,8 @@ class ListSegmentFromRd(
   }
 
   override val listKind: ListSegmentKind = when (segment.listKind) {
-    ListKind.Number -> ListSegmentKind.Number
-    ListKind.Bullet -> ListSegmentKind.Bullet
+    RdListKind.Number -> ListSegmentKind.Number
+    RdListKind.Bullet -> ListSegmentKind.Bullet
     else -> throw IllegalArgumentException(segment.listKind.toString())
   }
 
