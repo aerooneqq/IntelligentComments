@@ -14,18 +14,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="JetBrains.Annotations" Version="2021.3.0" />
-      <PackageReference Include="JetBrains.Lifetimes" Version="2021.3.4" />
-      <PackageReference Include="JetBrains.RdFramework" Version="2021.3.4" />
-      <PackageReference Include="JetBrains.ReSharper.TestRunner.Abstractions" Version="2.6.1" />
-      <PackageReference Include="JetBrains.Rider.SDK" Version="2021.3.0">
-        <PrivateAssets>all</PrivateAssets>
-        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      </PackageReference>
       <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0">
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
+      <PackageReference Include="JetBrains.Rider.SDK" Version="$(SdkVersion)" />
     </ItemGroup>
     
     <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />

@@ -8,17 +8,17 @@ using IntelligentComments.Comments.Domain.Impl;
 using IntelligentComments.Comments.Domain.Impl.References;
 using JetBrains.Annotations;
 using JetBrains.ProjectModel;
-using JetBrains.RdBackend.Common.Features.SyntaxHighlighting.CSharp;
 using JetBrains.ReSharper.Daemon.CSharp.Stages;
+using JetBrains.ReSharper.Daemon.CSharp.Syntax;
 using JetBrains.ReSharper.Feature.Services.Daemon;
 using JetBrains.ReSharper.Feature.Services.Daemon.Attributes;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.ReSharper.Psi.CSharp.Parsing;
+using JetBrains.ReSharper.Psi.Resolve;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Util;
 using JetBrains.Util.Logging;
-using IReference = JetBrains.ReSharper.Psi.Resolve.IReference;
 
 namespace IntelligentComments.Comments.Calculations.CodeHighlighting.CSharp;
 

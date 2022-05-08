@@ -26,6 +26,6 @@ internal class CommentLookupItem : TextLookupItemBase
 
   protected override RichText GetDisplayName()
   {
-    return new RichText(myPresentation, new TextStyle(FontStyle.Bold));
+    return new RichText(myPresentation, new TextStyle(JetFontStyles.Bold));
   }
 }

@@ -10,6 +10,7 @@ import com.jetbrains.rd.util.reactive.*
 import com.jetbrains.rd.util.string.*
 import com.jetbrains.rd.util.*
 import kotlin.reflect.KClass
+import kotlin.jvm.JvmStatic
 
 
 
@@ -123,6 +124,7 @@ class RdCommentsModel private constructor(
             serializers.register(RdResolveResult_Unknown)
             serializers.register(RdNamedEntityItem_Unknown)
         }
+        
         
         
         

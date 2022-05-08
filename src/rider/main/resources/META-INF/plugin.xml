@@ -1,7 +1,7 @@
 <idea-plugin require-restart="true">
   <id>com.intelligentComments</id>
   <name>IntelligentComments</name>
-  <version>_PLACEHOLDER_</version>
+  <version>1.0.0-EAP1</version>
   <vendor>AS</vendor>
   <depends>com.intellij.modules.rider</depends>
 

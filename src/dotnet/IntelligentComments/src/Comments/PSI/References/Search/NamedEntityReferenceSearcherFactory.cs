@@ -23,8 +23,8 @@ public class NamedEntityReferenceSearcherFactory : DomainSpecificSearcherFactory
   
   
   public override bool IsCompatibleWithLanguage(PsiLanguageType languageType) => true;
-
-  public override IDomainSpecificSearcher CreateReferenceSearcher(IDeclaredElementsSet elements, bool findCandidates)
+  
+  public override IDomainSpecificSearcher CreateReferenceSearcher(IDeclaredElementsSet elements, ReferenceSearcherParameters parameters)
   {
     if (elements.Count != 1) return null;
     if (elements.First() is not NamedEntityDeclaredElement namedEntityDeclaredElement) return null;

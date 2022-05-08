@@ -5,4 +5,4 @@ Added:
 - Settings to customize view of rendered comments, in which files to render comments
 - Push-to-hint behaviour for rendered comments
 - Action "Hide Or Render All Comments" to hide or render comments in current editor
-- Epxerimental features to store implicit dependencies between entities in the code base
+- Experimental features to store implicit dependencies between entities in the code base

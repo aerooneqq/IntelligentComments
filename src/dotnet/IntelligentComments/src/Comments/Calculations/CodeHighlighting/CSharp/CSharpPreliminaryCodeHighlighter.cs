@@ -1,6 +1,6 @@
 using IntelligentComments.Comments.Domain.Impl;
 using JetBrains.Annotations;
-using JetBrains.RdBackend.Common.Features.SyntaxHighlighting.CSharp;
+using JetBrains.ReSharper.Daemon.CSharp.Syntax;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.ReSharper.Psi.Tree;

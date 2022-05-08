@@ -77,7 +77,7 @@ internal class TagLookupItem : TextLookupItemBase
 
   protected override RichText GetDisplayName()
   {
-    var presentation = new RichText("<").Append(myTag, new TextStyle(FontStyle.Bold)).Append(Space);
+    var presentation = new RichText("<").Append(myTag, new TextStyle(JetFontStyles.Bold)).Append(Space);
     foreach (var attribute in myAttributes)
     {
       presentation = presentation.Append(attribute).Append(Space).Append("=").Append(Space).Append("\"\"").Append(Space);
