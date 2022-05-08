@@ -1,8 +1,8 @@
-# Changelog
-All notable changes to this project will be documented in this file.
-
-The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
-and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
-
-## 2021.2.0
-- Initial version
+## 1.0.0-EAP1
+Added:
+- Functionality to render single-line, multiline, documentation comments and group of single-line comments
+- Different modes of displaying comments: render mode, edit mode, hidden mode
+- Settings to customize view of rendered comments, in which files to render comments
+- Push-to-hint behaviour for rendered comments
+- Action "Hide Or Render All Comments" to hide or render comments in current editor
+- Epxerimental features to store implicit dependencies between entities in the code base
