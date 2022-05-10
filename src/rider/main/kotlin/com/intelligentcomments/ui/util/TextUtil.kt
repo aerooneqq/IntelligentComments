@@ -13,14 +13,17 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.impl.EditorImpl
 import com.intellij.openapi.util.use
 import com.intellij.util.Range
+import com.jetbrains.rd.platform.diagnostics.logAssertion
+import com.jetbrains.rd.platform.util.getLogger
 import java.awt.*
 import javax.swing.Icon
 import kotlin.math.max
 import kotlin.math.min
-import kotlin.test.assertNotNull
 
 class TextUtil {
   companion object {
+    private val logger = getLogger<TextUtil>()
+
     fun getFont(editor: Editor): Font {
       val size = RiderIntelligentCommentsSettingsProvider.getInstance().fontSize.value
       editor as EditorImpl
@@ -86,7 +89,10 @@ class TextUtil {
       val charArray = line.toCharArray()
 
       val lineHighlighters = getLinesHighlighters(listOf(line), highlighters)[0]
-      assertNotNull(lineHighlighters, "lineHighlighters != null")
+      if (lineHighlighters == null) {
+        logger.logAssertion("lineHighlighters == null")
+        return 0
+      }
 
       var width = 0
       executeActionOverRanges(charArray, lineHighlighters) { range, model ->
@@ -202,7 +208,10 @@ class TextUtil {
 
       for (i in lines.indices) {
         val currentHighlighters = linesHighlighters[i]
-        assertNotNull(currentHighlighters, "linesHighlighters[i] != null")
+        if (currentHighlighters == null) {
+          logger.logAssertion("currentHighlighters == null")
+          return rect
+        }
 
         val lineHeight = getLineHeightWithHighlighters(editor, currentHighlighters)
         textDelta += lineHeight
@@ -238,7 +247,11 @@ class TextUtil {
       delta: Int
     ): Rectangle {
       val rangesWithHighlighters = getLinesHighlighters(listOf(line), highlighters)[0]
-      assertNotNull(rangesWithHighlighters, "rangesWithHighlighters != null")
+      if (rangesWithHighlighters == null) {
+        logger.logAssertion("rangesWithHighlighters == null")
+        return rect
+      }
+
       val lineHeight = getLineHeightWithHighlighters(editor, rangesWithHighlighters)
       UpdatedRectCookie(rect, yDelta = lineHeight, heightDelta = lineHeight).use {
         renderLineWithHighlighters(g, rect, editor, line, rangesWithHighlighters)
@@ -301,7 +314,10 @@ class TextUtil {
           actionWithTextRange(Range(charIndex, line.size), null)
           charIndex = line.size
         } else {
-          assert(charIndex <= highlighterModel.range.from)
+          if (charIndex > highlighterModel.range.from) {
+            logger.logAssertion("charIndex > highlighterModel.range.from")
+            return
+          }
 
           if (charIndex < highlighterModel.range.from) {
             val range = Range(charIndex, highlighterModel.range.from)
@@ -486,7 +502,9 @@ class TextUtil {
     private fun assertNoOverlappingHighlighters(lineHighlightersWithRanges: HashMap<Int, List<RangeWithHighlighter>>) {
       for ((_, highlightersWithRange) in lineHighlightersWithRanges) {
         for (i in 1 until highlightersWithRange.size) {
-          assert(highlightersWithRange[i - 1].range.to <= highlightersWithRange[i].range.from)
+          if (highlightersWithRange[i - 1].range.to > highlightersWithRange[i].range.from) {
+            logger.logAssertion("highlightersWithRange[i - 1].range.to > highlightersWithRange[i].range.from")
+          }
         }
       }
     }
@@ -516,11 +534,18 @@ class TextUtil {
       var yDelta = 0
       val project = editor.project
 
-      assertNotNull(project, "editor.project != null")
+      if (project == null) {
+        logger.logAssertion("editor.project == null")
+        return
+      }
+
       for (i in lines.indices) {
         val chars = lines[i].toCharArray()
         val lineHighlighters = linesHighlighters[i]
-        assertNotNull(lineHighlighters, "linesHighlighters[i] != null")
+        if (lineHighlighters == null) {
+          logger.logAssertion("linesHighlighters[i] == null")
+          return
+        }
 
         var textLength = 0
         val lineHeight = getLineHeightWithHighlighters(editor, lineHighlighters)

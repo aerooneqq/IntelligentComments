@@ -15,6 +15,7 @@ plugins {
     id("me.filippov.gradle.jvm.wrapper") version "0.10.0"
     id("org.jetbrains.kotlin.jvm") version "1.5.31"
     id("org.jetbrains.intellij") version "1.5.2"
+    id("com.ullink.nuget") version "2.23"
 }
 
 apply {
@@ -30,6 +31,10 @@ val riderDll: String by project
 val buildConfiguration: String by project
 val jvmVersion: String by project
 val theGradleVersion: String by project
+val backendPluginId: String by project
+val vendor: String by project
+
+val theDescription = "The plugin renders comments and provides some features to store implicit dependencies between entities in the code-base"
 
 fun calculateVersionForPluginProps(): String {
     val dashIndex = sdkVersion.indexOf("-")
@@ -40,7 +45,7 @@ fun calculateVersionForPluginProps(): String {
     return "$sdkVersion.0"
 }
 
-fun AbstractCopyTask.copyReSharperDllsToSandbox() {
+fun getAllDlls(): List<String> {
     val outputFolder = "${rootDir}/src/dotnet/${riderProjectName}/bin/${riderProjectName}/${buildConfiguration}"
     val dllFiles = listOf(
       "$outputFolder/${riderDll}.dll",
@@ -48,6 +53,12 @@ fun AbstractCopyTask.copyReSharperDllsToSandbox() {
       "$outputFolder/${commonDll}.dll",
       "$outputFolder/${commonDll}.pdb",
     )
+
+    return dllFiles
+}
+
+fun AbstractCopyTask.copyReSharperDllsToSandbox() {
+    val dllFiles = getAllDlls()
 
     for (f in dllFiles) {
         from(f) { into("${rootProject.name}/dotnet") }
@@ -162,6 +173,26 @@ tasks {
         }
     }
 
+    val packDlls by registering(com.ullink.NuGetPack::class) {
+        val nuspecFile = file("$rootDir/intelligentcomments.nuspec")
+        var text = nuspecFile.readText()
+        text = Regex("<id>[\\s\\S]*</id>").replace(text, "<id>$backendPluginId</id>")
+        text = Regex("<version>[\\s\\S]*</version>").replace(text, "<version>$pluginVersion</version>")
+        text = Regex("<authors>[\\s\\S]*</authors>").replace(text, "<authors>$vendor</authors>")
+
+        val sb = StringBuilder()
+        for (dll in getAllDlls()) {
+            sb.append("<file src=\"${dll.replace("\\", "/")}\" target=\"lib/net472\" />\n")
+        }
+
+        text = Regex("<files>[\\s\\S]*</files>").replace(text, "<files>\n$sb</files>")
+        nuspecFile.writeText(text)
+
+        nugetExePath = file("${rootDir.canonicalPath}/tools/nuget.exe").canonicalPath
+        setNuspecFile(nuspecFile.canonicalPath)
+        setDestinationDir(file("$rootDir/output").canonicalPath)
+    }
+
     compileKotlin {
         dependsOn(rdgen)
         kotlinOptions {
@@ -172,6 +203,7 @@ tasks {
     buildPlugin {
         dependsOn(compileDotNet)
         dependsOn(compileKotlin)
+        dependsOn(packDlls)
     }
 
     patchPluginXml {
@@ -207,12 +239,12 @@ tasks {
         dependsOn(buildPlugin)
         token.set(System.getenv("PUBLISH_TOKEN"))
 
-        doLast {
-            exec {
-                executable("dotnet")
-                args("nuget", "push", "output/${riderProjectName}.${version}.nupkg","--api-key","$token","--source","https://plugins.jetbrains.com")
-                workingDir(rootDir)
-            }
-        }
+//        doLast {
+//            exec {
+//                executable("dotnet")
+//                args("nuget", "push", "$rootDir/output/${riderProjectName}.${version}.nupkg","--api-key","$token","--source","https://plugins.jetbrains.com")
+//                workingDir(rootDir)
+//            }
+//        }
     }
 }

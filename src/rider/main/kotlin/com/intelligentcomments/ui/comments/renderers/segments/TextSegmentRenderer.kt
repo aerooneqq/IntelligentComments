@@ -7,12 +7,14 @@ import com.intelligentcomments.ui.core.RectanglesModel
 import com.intelligentcomments.ui.util.RenderAdditionalInfo
 import com.intelligentcomments.ui.util.TextUtil
 import com.intellij.openapi.editor.Editor
+import com.jetbrains.rd.platform.diagnostics.logAssertion
+import com.jetbrains.rd.platform.util.getLogger
 import java.awt.Graphics
 import java.awt.Rectangle
 import kotlin.math.max
-import kotlin.test.assertNotNull
 
 open class TextRendererBase(private val textUiWrapper: HighlightedTextUiWrapper) : SegmentRenderer {
+  private val logger = getLogger<TextRendererBase>()
   private val cachedLines = textUiWrapper.text.split('\n')
   private val cachedLinesHighlighters = TextUtil.getLinesHighlighters(cachedLines, textUiWrapper.highlighters)
 
@@ -34,7 +36,11 @@ open class TextRendererBase(private val textUiWrapper: HighlightedTextUiWrapper)
     var height = 0
     for (i in cachedLines.indices) {
       val lineHighlighters = cachedLinesHighlighters[i]
-      assertNotNull(lineHighlighters, "cachedLinesHighlighters[i] != null")
+      if (lineHighlighters == null) {
+        logger.logAssertion("cachedLinesHighlighters[i] == null")
+        continue
+      }
+
       height += TextUtil.getLineHeightWithHighlighters(editor, lineHighlighters)
     }
 

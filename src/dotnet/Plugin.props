@@ -8,9 +8,5 @@
     <Authors>AS</Authors>
     <Copyright>Copyright $([System.DateTime]::Now.Year) AS</Copyright>
     <PackageTags>Rider Plugin Comments</PackageTags>
-
-    <PackageProjectUrl></PackageProjectUrl>
-    <PackageLicenseUrl></PackageLicenseUrl>
-    <PackageIconUrl></PackageIconUrl>
   </PropertyGroup>
 </Project>

@@ -28,7 +28,6 @@ import com.jetbrains.rdclient.document.getFirstDocumentId
 import com.jetbrains.rdclient.editors.FrontendTextControlHost
 import com.jetbrains.rdclient.util.idea.LifetimedProjectComponent
 import com.jetbrains.rider.document.RiderDocumentHost
-import kotlin.test.assertNotNull
 
 
 class RiderCommentsController(project: Project) : LifetimedProjectComponent(project) {
@@ -152,7 +151,10 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
 
   private fun doUpdateCommentToMathState(commentIdentifier: CommentIdentifier, editor: Editor, state: CommentState) {
     val comment = getComment(commentIdentifier, editor.document)
-    assertNotNull(comment, "comment != null")
+    if (comment == null) {
+      logger.logAssertion("comment == null")
+      return
+    }
 
     if (!state.isInRenderMode || !comment.isValid()) {
       toggleEditMode(commentIdentifier, editor)

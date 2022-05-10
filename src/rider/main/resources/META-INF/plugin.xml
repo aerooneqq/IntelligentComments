@@ -4,6 +4,7 @@
   <version>1.0.0-EAP1</version>
   <vendor>AS</vendor>
   <depends>com.intellij.modules.rider</depends>
+  <description>The plugin renders comments and provides some features to store implicit dependencies between entities in the code-base</description>
 
   <extensions defaultExtensionNs="com.intellij">
     <toolWindow factoryClass="com.intelligentcomments.core.namesToolWindow.NamedEntityToolWindowFactory"
