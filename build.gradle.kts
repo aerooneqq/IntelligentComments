@@ -1,3 +1,5 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+
 buildscript {
     repositories {
         maven { setUrl("https://cache-redirector.jetbrains.com/maven-central") }
@@ -38,6 +40,27 @@ fun calculateVersionForPluginProps(): String {
     return "$sdkVersion.0"
 }
 
+fun AbstractCopyTask.copyReSharperDllsToSandbox() {
+    val outputFolder = "${rootDir}/src/dotnet/${riderProjectName}/bin/${riderProjectName}/${buildConfiguration}"
+    val dllFiles = listOf(
+      "$outputFolder/${riderDll}.dll",
+      "$outputFolder/${riderDll}.pdb",
+      "$outputFolder/${commonDll}.dll",
+      "$outputFolder/${commonDll}.pdb",
+    )
+
+    for (f in dllFiles) {
+        from(f) { into("${rootProject.name}/dotnet") }
+    }
+
+    doLast {
+        for (f in dllFiles) {
+            val file = file(f)
+            if (!file.exists()) throw RuntimeException("File \"$file\" does not exist")
+        }
+    }
+}
+
 val rdLibDirectory: () -> File = { file("${tasks.setupDependencies.get().idea.get().classes}/lib/rd") }
 extra["rdLibDirectory"] = rdLibDirectory
 
@@ -58,13 +81,25 @@ sourceSets {
         java.srcDir("src/rider/main/kotlin")
         resources.srcDir("src/rider/main/resources")
     }
+    test {
+        java.srcDir("test/kotlin")
+    }
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
+dependencies {
+    testImplementation("org.testng:testng:7.5")
 }
 
 apply(plugin = "com.jetbrains.rdgen")
 configure<com.jetbrains.rd.generator.gradle.RdGenExtension> {
     val modelDir = file("$rootDir/protocol/src/main/kotlin/model")
     val csOutput = file("$rootDir/src/dotnet/IntelligentComments.Rider/Model")
-    val ktOutput = file("$rootDir/src/rider/main/kotlin/com/jetbrains/rider/plugins/intelligentcomments")
+    val ktOutput = file("$rootDir/src/rider/main/kotlin/com/intelligentcomments/model")
 
     verbose = true
     classpath({
@@ -78,7 +113,6 @@ configure<com.jetbrains.rd.generator.gradle.RdGenExtension> {
     generator {
         language = "kotlin"
         transform = "asis"
-        namespace = "com.jetbrains.rider.model"
         root = "com.jetbrains.rider.model.nova.ide.IdeRoot"
         directory = "$ktOutput"
     }
@@ -137,6 +171,7 @@ tasks {
 
     buildPlugin {
         dependsOn(compileDotNet)
+        dependsOn(compileKotlin)
     }
 
     patchPluginXml {
@@ -146,29 +181,26 @@ tasks {
     }
 
     runIde {
-        dependsOn(compileDotNet)
+        dependsOn(buildPlugin)
         jvmArgs("-Xmx1500m")
     }
 
+    test {
+        useTestNG()
+        testLogging {
+            showStandardStreams = true
+            exceptionFormat = TestExceptionFormat.FULL
+        }
+
+        environment["LOCAL_ENV_RUN"] = "true"
+    }
+
     prepareSandbox {
-        val outputFolder = "${rootDir}/src/dotnet/${riderProjectName}/bin/${riderProjectName}/${buildConfiguration}"
-        val dllFiles = listOf(
-          "$outputFolder/${riderDll}.dll",
-          "$outputFolder/${riderDll}.pdb",
-          "$outputFolder/${commonDll}.dll",
-          "$outputFolder/${commonDll}.pdb",
-        )
+        copyReSharperDllsToSandbox()
+    }
 
-        for (f in dllFiles) {
-            from(f) { into("${rootProject.name}/dotnet") }
-        }
-
-        doLast {
-            for (f in dllFiles) {
-                val file = file(f)
-                if (!file.exists()) throw RuntimeException("File \"$file\" does not exist")
-            }
-        }
+    prepareTestingSandbox {
+        copyReSharperDllsToSandbox()
     }
 
     publishPlugin {

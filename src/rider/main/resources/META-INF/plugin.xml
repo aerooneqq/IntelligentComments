@@ -1,45 +1,45 @@
 <idea-plugin require-restart="true">
-  <id>com.intelligentComments</id>
+  <id>com.intelligentcomments</id>
   <name>IntelligentComments</name>
   <version>1.0.0-EAP1</version>
   <vendor>AS</vendor>
   <depends>com.intellij.modules.rider</depends>
 
   <extensions defaultExtensionNs="com.intellij">
-    <toolWindow factoryClass="com.intelligentComments.core.namesToolWindow.NamedEntityToolWindowFactory"
+    <toolWindow factoryClass="com.intelligentcomments.core.namesToolWindow.NamedEntityToolWindowFactory"
                 anchor="bottom"
                 id="Hacks, Todos and Invariants"/>
 
-    <applicationService serviceImplementation="com.intelligentComments.core.changes.ChangeManagerImpl"
-                        serviceInterface="com.intelligentComments.core.changes.ChangeManager" />
-    <applicationService serviceImplementation="com.intelligentComments.core.settings.RiderIntelligentCommentsSettingsProviderImpl"
-                        serviceInterface="com.intelligentComments.core.settings.RiderIntelligentCommentsSettingsProvider" />
-    <applicationConfigurable instance="com.intelligentComments.core.settings.RiderCommentsConfigurable"
+    <applicationService serviceImplementation="com.intelligentcomments.core.changes.ChangeManagerImpl"
+                        serviceInterface="com.intelligentcomments.core.changes.ChangeManager" />
+    <applicationService serviceImplementation="com.intelligentcomments.core.settings.RiderIntelligentCommentsSettingsProviderImpl"
+                        serviceInterface="com.intelligentcomments.core.settings.RiderIntelligentCommentsSettingsProvider" />
+    <applicationConfigurable instance="com.intelligentcomments.core.settings.RiderCommentsConfigurable"
                              groupId="tools"
                              id="intelligentCommentsSettings" />
 
-    <projectService serviceInterface="com.intelligentComments.ui.colors.ColorsProvider"
-                    serviceImplementation="com.intelligentComments.ui.colors.ColorsProviderImpl"/>
-    <projectService serviceImplementation="com.intelligentComments.core.domain.impl.ContentProcessingStrategyImpl" />
-    <projectService serviceImplementation="com.intelligentComments.core.comments.RiderCommentsCreator" />
-    <projectService serviceImplementation="com.intelligentComments.core.comments.listeners.CommentsEditorsListenersManager" />
-    <projectService serviceImplementation="com.intelligentComments.core.comments.CommentsGutterMarksManager" />
-    <projectService serviceImplementation="com.intelligentComments.core.comments.codeHighlighting.CodeFragmentHighlightingHost" />
-    <projectService serviceImplementation="com.intelligentComments.core.comments.HighlightersClickHandler" />
-    <projectService serviceImplementation="com.intelligentComments.core.comments.docs.CommentClickDocHost" />
-    <projectService serviceImplementation="com.intelligentComments.core.comments.navigation.CommentsNavigationHost" />
-    <projectService serviceImplementation="com.intelligentComments.core.comments.docs.CommentsHoverDocManager" />
-    <projectService serviceImplementation="com.intelligentComments.core.comments.popups.IntelligentCommentPopupManager" />
-    <projectService serviceImplementation="com.intelligentComments.core.comments.resolver.FrontendReferenceResolverHost" />
+    <projectService serviceInterface="com.intelligentcomments.ui.colors.ColorsProvider"
+                    serviceImplementation="com.intelligentcomments.ui.colors.ColorsProviderImpl"/>
+    <projectService serviceImplementation="com.intelligentcomments.core.domain.impl.ContentProcessingStrategyImpl" />
+    <projectService serviceImplementation="com.intelligentcomments.core.comments.RiderCommentsCreator" />
+    <projectService serviceImplementation="com.intelligentcomments.core.comments.listeners.CommentsEditorsListenersManager" />
+    <projectService serviceImplementation="com.intelligentcomments.core.comments.CommentsGutterMarksManager" />
+    <projectService serviceImplementation="com.intelligentcomments.core.comments.codeHighlighting.CodeFragmentHighlightingHost" />
+    <projectService serviceImplementation="com.intelligentcomments.core.comments.HighlightersClickHandler" />
+    <projectService serviceImplementation="com.intelligentcomments.core.comments.docs.CommentClickDocHost" />
+    <projectService serviceImplementation="com.intelligentcomments.core.comments.navigation.CommentsNavigationHost" />
+    <projectService serviceImplementation="com.intelligentcomments.core.comments.docs.CommentsHoverDocManager" />
+    <projectService serviceImplementation="com.intelligentcomments.core.comments.popups.IntelligentCommentPopupManager" />
+    <projectService serviceImplementation="com.intelligentcomments.core.comments.resolver.FrontendReferenceResolverHost" />
 
-    <problemsViewPanelProvider implementation="com.intelligentComments.core.problemsView.IntelligentCommentsProblemsViewPanelProvider" />
-    <rdclient.highlighterModelSupport implementation="com.intelligentComments.core.markup.DocCommentsFoldingHighlightersSupport" />
+    <problemsViewPanelProvider implementation="com.intelligentcomments.core.problemsView.IntelligentCommentsProblemsViewPanelProvider" />
+    <rdclient.highlighterModelSupport implementation="com.intelligentcomments.core.markup.DocCommentsFoldingHighlightersSupport" />
 
-    <editorFactoryListener implementation="com.intelligentComments.core.comments.listeners.RiderEditorsListener" />
+    <editorFactoryListener implementation="com.intelligentcomments.core.comments.listeners.RiderEditorsListener" />
   </extensions>
 
   <actions>
-    <action class="com.intelligentComments.core.actions.HideOrShowCommentsInEditorAction"
+    <action class="com.intelligentcomments.core.actions.HideOrShowCommentsInEditorAction"
             id="HideOrRenderComments"
             text="Hide Or Render All Comments">
       <keyboard-shortcut first-keystroke="control shift A" keymap="$default" />
@@ -47,12 +47,12 @@
       <keyboard-shortcut first-keystroke="control shift A" keymap="Mac OS X 10.5+" />
     </action>
 
-    <action class="com.intelligentComments.core.actions.FindReferencesToInvariantAction"
+    <action class="com.intelligentcomments.core.actions.FindReferencesToInvariantAction"
             text="Find References To Invariant"
             id="FindReferencesToInvariantAction" >
       <keyboard-shortcut first-keystroke="control alt R" keymap="$default" />
     </action>
-    <action class="com.intelligentComments.core.actions.NavigateToInvariantAction"
+    <action class="com.intelligentcomments.core.actions.NavigateToInvariantAction"
             text="Navigate To Invariant"
             id="NavigateToInvariantAction">
       <keyboard-shortcut first-keystroke="control alt shift Z" keymap="$default" />
@@ -61,38 +61,38 @@
 
   <application-components>
     <component>
-      <implementation-class>com.intelligentComments.core.settings.RiderCommentsSettings</implementation-class>
+      <implementation-class>com.intelligentcomments.core.settings.RiderCommentsSettings</implementation-class>
     </component>
   </application-components>
 
   <project-components>
     <component>
-      <implementation-class>com.intelligentComments.core.namesToolWindow.RiderNamedEntitiesHost</implementation-class>
+      <implementation-class>com.intelligentcomments.core.namesToolWindow.RiderNamedEntitiesHost</implementation-class>
     </component>
     <component>
-      <implementation-class>com.intelligentComments.core.comments.states.RiderCommentsStateManager</implementation-class>
+      <implementation-class>com.intelligentcomments.core.comments.states.RiderCommentsStateManager</implementation-class>
     </component>
     <component>
-      <implementation-class>com.intelligentComments.core.comments.RiderCommentsPushToHintController</implementation-class>
+      <implementation-class>com.intelligentcomments.core.comments.RiderCommentsPushToHintController</implementation-class>
     </component>
     <component>
-      <implementation-class>com.intelligentComments.core.comments.RiderCommentsController</implementation-class>
+      <implementation-class>com.intelligentcomments.core.comments.RiderCommentsController</implementation-class>
     </component>
     <component>
-      <implementation-class>com.intelligentComments.core.protocol.ProtocolModelsRegistrar</implementation-class>
+      <implementation-class>com.intelligentcomments.core.protocol.ProtocolModelsRegistrar</implementation-class>
     </component>
     <component>
-      <implementation-class>com.intelligentComments.core.comments.RiderCommentsUpdater</implementation-class>
+      <implementation-class>com.intelligentcomments.core.comments.RiderCommentsUpdater</implementation-class>
     </component>
     <component>
-      <implementation-class>com.intelligentComments.core.comments.listeners.EditorsColorsChangeListener</implementation-class>
+      <implementation-class>com.intelligentcomments.core.comments.listeners.EditorsColorsChangeListener</implementation-class>
     </component>
     <component>
-      <implementation-class>com.intelligentComments.core.comments.listeners.RiderEditorsListener</implementation-class>
+      <implementation-class>com.intelligentcomments.core.comments.listeners.RiderEditorsListener</implementation-class>
     </component>
     <component>
       <implementation-class>
-        com.intelligentComments.core.problemsView.IntelligentCommentsExtensionsRegistrar
+          com.intelligentcomments.core.problemsView.IntelligentCommentsExtensionsRegistrar
       </implementation-class>
       <loadForDefaultProject />
     </component>
