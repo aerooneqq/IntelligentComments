@@ -39,7 +39,12 @@ public class NamesProcessor : INamesProcessor, IRecursiveElementProcessor<Dictio
     {
       foreach (var descriptor in finder.FindNames(element))
       {
-        if (descriptor.NameWithKind.NameKind != myWantedNameKind) continue;
+        if (descriptor.NameWithKind.NameKind != myWantedNameKind ||
+            descriptor.NameWithKind.Name.IsNullOrEmpty() ||
+            descriptor.NameWithKind.Name.IsNullOrWhitespace())
+        {
+          continue;
+        }
         
         var infos = context.GetOrCreateValue(descriptor.NameWithKind.Name, static () => new List<NamedEntityInfo>());
         infos.Add(new NamedEntityInfo(element.GetDocumentStartOffset()));
