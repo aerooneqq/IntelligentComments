@@ -1,11 +1,19 @@
 package model.rider
 
 import com.jetbrains.rd.generator.nova.*
+import com.jetbrains.rider.model.nova.ide.ShellModel
 import com.jetbrains.rider.model.nova.ide.SolutionModel
 import com.jetbrains.rider.model.nova.ide.SolutionModel.RdDocumentId
 import com.jetbrains.rider.model.nova.ide.SolutionModel.RdTextRange
 import com.jetbrains.rider.model.nova.ide.SolutionModel.TextControlId
 
+
+@Suppress("unused")
+object RdCommentsSettingsModel : Ext(ShellModel) {
+  init {
+    property("EnableExperimentalFeatures", PredefinedType.bool)
+  }
+}
 
 @Suppress("unused")
 object RdCommentsModel : Ext(SolutionModel.Solution) {

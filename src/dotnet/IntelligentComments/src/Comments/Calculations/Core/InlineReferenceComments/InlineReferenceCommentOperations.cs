@@ -5,9 +5,11 @@ using IntelligentComments.Comments.Domain.Core;
 using IntelligentComments.Comments.Domain.Impl;
 using IntelligentComments.Comments.Domain.Impl.Content;
 using IntelligentComments.Comments.Domain.Impl.References;
+using IntelligentComments.Comments.Settings;
 using JetBrains.Annotations;
 using JetBrains.DocumentManagers;
 using JetBrains.DocumentModel;
+using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Util;
@@ -16,12 +18,20 @@ namespace IntelligentComments.Comments.Calculations.Core.InlineReferenceComments
 
 public abstract class InlineReferenceCommentOperations : ISpecialGroupOfLinesCommentsOperations, INamedEntitiesCommonFinder
 {
+  [NotNull] private readonly ICommentsSettings mySettings;
   public int Priority => CommentFromNodeOperationsPriorities.Default;
+
+
+  protected InlineReferenceCommentOperations([NotNull] ICommentsSettings settings)
+  {
+    mySettings = settings;
+  }
 
   
   [CanBeNull]
   public virtual CommentCreationResult? TryCreate([NotNull] ITreeNode node)
   {
+    if (!mySettings.ExperimentalFeaturesEnabled.Value) return null;
     if (TryExtractInlineReferenceInfo(node) is not var ((name, nameKind), descriptionText, _)) return null;
     
     var description = HighlightedText.CreateEmptyText();
@@ -61,6 +71,9 @@ public abstract class InlineReferenceCommentOperations : ISpecialGroupOfLinesCom
 
   public IEnumerable<CommentErrorHighlighting> FindErrors(ITreeNode node)
   {
+    if (!mySettings.ExperimentalFeaturesEnabled.Value)
+      return EmptyList<CommentErrorHighlighting>.Enumerable;
+    
     if (TryExtractInlineReferenceInfo(node) is not var (nameWithKind, _, nameRange)) 
       return EmptyList<CommentErrorHighlighting>.Enumerable;
 
@@ -89,7 +102,8 @@ public abstract class InlineReferenceCommentOperations : ISpecialGroupOfLinesCom
   {
     if (TryExtractInlineReferenceInfo(node) is not { } info ||
         node.GetSourceFile() is not { } sourceFile ||
-        (nameWithKind.HasValue && info.NameWithKind != nameWithKind.Value))
+        (nameWithKind.HasValue && info.NameWithKind != nameWithKind.Value) ||
+        !mySettings.ExperimentalFeaturesEnabled.Value)
     {
       return EmptyList<CommonNamedEntityDescriptor>.Enumerable;
     }

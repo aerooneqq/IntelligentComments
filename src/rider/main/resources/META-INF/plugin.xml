@@ -62,6 +62,9 @@
 
   <application-components>
     <component>
+      <implementation-class>com.intelligentcomments.core.settings.RiderCommentsSettingsSynchronizerHost</implementation-class>
+    </component>
+    <component>
       <implementation-class>com.intelligentcomments.core.settings.RiderCommentsSettings</implementation-class>
     </component>
   </application-components>

@@ -9,6 +9,7 @@ import com.intelligentcomments.core.namesToolWindow.tree.NameCellRenderer
 import com.intelligentcomments.core.namesToolWindow.tree.NameTreeModel
 import com.intelligentcomments.core.namesToolWindow.tree.NamesTree
 import com.intelligentcomments.core.problemsView.handleDoubleClick
+import com.intelligentcomments.core.settings.RiderIntelligentCommentsSettingsProvider
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.actionSystem.ActionManager
 import com.intellij.openapi.actionSystem.AnAction
@@ -38,6 +39,8 @@ class NamedEntityToolWindowFactory() : ToolWindowFactory {
     val invariantComponent = NamedEntitiesComponent(project, NameKind.Invariant)
     val todoComponent = NamedEntitiesComponent(project, NameKind.Todo)
     val hacksComponent = NamedEntitiesComponent(project, NameKind.Hack)
+
+    val components = listOf(invariantComponent, todoComponent, hacksComponent)
 
     toolWindow.contentManager.addContent(ContentImpl(invariantComponent, "Invariants", false))
     toolWindow.contentManager.addContent(ContentImpl(todoComponent, "Todos", false))
@@ -69,6 +72,14 @@ class NamedEntityToolWindowFactory() : ToolWindowFactory {
       host.fileEntitiesChanged.advise(project.lifetime) {
         if (it != null) {
           updateTree(it)
+        }
+      }
+
+      RiderIntelligentCommentsSettingsProvider.getInstance().useExperimentalFeatures.advise(project.lifetime) {
+        if (!it) {
+          for (component in components) {
+            component.clear()
+          }
         }
       }
     }
@@ -143,6 +154,10 @@ class NamedEntitiesComponent(project: Project, nameKind: NameKind) : OnePixelSpl
 
   fun updateTree(model: RdFileNames) {
     treeModel.addOrUpdate(FileTreeModel(model))
+  }
+
+  fun clear() {
+    treeModel.clear()
   }
 }
 

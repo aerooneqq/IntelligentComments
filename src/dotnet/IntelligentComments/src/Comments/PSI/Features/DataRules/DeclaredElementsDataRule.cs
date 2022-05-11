@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using IntelligentComments.Comments.PSI.DeclaredElements;
 using IntelligentComments.Comments.PSI.Features.Navigation;
+using IntelligentComments.Comments.Settings;
 using JetBrains.Annotations;
 using JetBrains.Application;
 using JetBrains.Application.DataContext;
@@ -14,15 +15,22 @@ namespace IntelligentComments.Comments.PSI.Features.DataRules;
 [ShellComponent]
 public class DeclaredElementsDataRule
 {
-  public DeclaredElementsDataRule(Lifetime lifetime, [NotNull] DataContexts dataContexts)
+  [NotNull] private readonly ICommentsSettings mySettings;
+
+  
+  public DeclaredElementsDataRule(Lifetime lifetime, [NotNull] DataContexts dataContexts, [NotNull] ICommentsSettings settings)
   {
+    mySettings = settings;
     dataContexts.RegisterDataRule(lifetime, "NamedEntitiesDeclaredElement", PsiDataConstants.DECLARED_ELEMENTS, AddNamedEntitiesElements);
   }
 
-  private static ICollection<IDeclaredElement> AddNamedEntitiesElements(IDataContext dataContext)
+  
+  [CanBeNull]
+  private ICollection<IDeclaredElement> AddNamedEntitiesElements(IDataContext dataContext)
   {
     if (dataContext.GetData(ProjectModelDataConstants.SOLUTION) is not { } solution ||
-        NavigationUtil.TryExtractNameFromNamedEntity(dataContext) is not { } extraction)
+        NavigationUtil.TryExtractNameFromNamedEntity(dataContext) is not { } extraction ||
+        !mySettings.ExperimentalFeaturesEnabled.Value)
     {
       return dataContext.GetData(PsiDataConstants.DECLARED_ELEMENTS);
     } 

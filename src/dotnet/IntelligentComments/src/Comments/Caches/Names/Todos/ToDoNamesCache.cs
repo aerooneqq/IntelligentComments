@@ -1,4 +1,5 @@
 using IntelligentComments.Comments.Calculations.Core.DocComments.Utils;
+using IntelligentComments.Comments.Settings;
 using JetBrains.Annotations;
 using JetBrains.Application.Threading;
 using JetBrains.Lifetimes;
@@ -13,8 +14,9 @@ public class ToDoNamesCache : AbstractNamesCache
   public ToDoNamesCache(
     Lifetime lifetime,
     [NotNull] IShellLocks locks,
+    [NotNull] ICommentsSettings settings,
     [NotNull] IPersistentIndexManager persistentIndexManager)
-    : base(lifetime, NameKind.Todo, locks, persistentIndexManager)
+    : base(lifetime, NameKind.Todo, locks, settings, persistentIndexManager)
   {
   }
 

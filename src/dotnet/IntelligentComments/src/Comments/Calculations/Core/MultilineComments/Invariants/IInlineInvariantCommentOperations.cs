@@ -1,5 +1,6 @@
 using IntelligentComments.Comments.Calculations.Core.DocComments.Utils;
 using IntelligentComments.Comments.Domain.Core;
+using IntelligentComments.Comments.Settings;
 using JetBrains.Annotations;
 
 namespace IntelligentComments.Comments.Calculations.Core.MultilineComments.Invariants;
@@ -17,6 +18,11 @@ public abstract class InlineInvariantCommentOperations : GroupOfLinesLikeComment
   protected sealed override string Pattern => $"[ ]*({string.Join("|", ourInvariantPrefixes)}): .*";
   protected override string PatternWithName => @$"[ ]*({string.Join("|", ourInvariantPrefixes)}) \(name: .+\): .*";
   protected override NameKind NameKind => NameKind.Invariant;
+  
+  
+  protected InlineInvariantCommentOperations([NotNull] ICommentsSettings settings) : base(settings)
+  {
+  }
   
   
   protected sealed override TextHighlighter TryGetHighlighter(IHighlightersProvider provider, int length)

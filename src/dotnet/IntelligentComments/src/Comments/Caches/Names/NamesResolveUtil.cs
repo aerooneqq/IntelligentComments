@@ -23,8 +23,16 @@ using JetBrains.Util;
 
 namespace IntelligentComments.Comments.Caches.Names;
 
-internal static class NamesResolveUtil
+public static class NamesResolveUtil
 {
+  [NotNull]
+  public static IEnumerable<NameKind> AllNameKinds { get; } = new HashSet<NameKind>()
+  {
+    NameKind.Hack,
+    NameKind.Invariant,
+    NameKind.Todo
+  };
+
   public static DomainResolveResult ResolveName(NameWithKind nameWithKind, [NotNull] IDomainResolveContext context)
   {
     var (name, nameKind) = nameWithKind;

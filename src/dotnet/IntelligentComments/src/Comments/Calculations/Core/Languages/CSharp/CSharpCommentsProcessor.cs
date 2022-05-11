@@ -40,15 +40,19 @@ public class CSharpCommentsProcessor : CommentsProcessorBase
     {
       if (operation.TryCreate(element) is var (comment, nodes))
       {
+        VisitedNodes.AddRange(nodes);
         var errors = operation.FindErrors(element).Select(error => new HighlightingInfo(error.CalculateRange(), error)).ToList();
         if (errors.Count > 0)
         {
           Comments.Add(CommentProcessingResult.CreateWithErrors(errors, element.Language, comment.Range));
           return;
         }
-        
-        VisitedNodes.AddRange(nodes);
-        Comments.Add(CommentProcessingResult.CreateSuccess(comment));
+
+        if (ProcessKind == DaemonProcessKind.VISIBLE_DOCUMENT)
+        {
+          Comments.Add(CommentProcessingResult.CreateSuccess(comment));          
+        }
+
         return;
       }
     }

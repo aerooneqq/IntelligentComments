@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using IntelligentComments.Comments.Calculations.Core;
 using IntelligentComments.Comments.Calculations.Core.DocComments.Utils;
+using IntelligentComments.Comments.Daemon;
+using IntelligentComments.Comments.Settings;
 using JetBrains.Annotations;
 using JetBrains.Collections;
 using JetBrains.Lifetimes;
@@ -11,6 +13,10 @@ using JetBrains.ReSharper.Daemon;
 using JetBrains.ReSharper.Daemon.Impl;
 using JetBrains.ReSharper.Feature.Services.Text;
 using JetBrains.ReSharper.Psi;
+using JetBrains.ReSharper.Psi.Caches;
+using JetBrains.ReSharper.Resources.Shell;
+using JetBrains.TextControl;
+using JetBrains.TextControl.DocumentMarkup;
 using JetBrains.Util;
 
 namespace IntelligentComments.Comments.Caches.Names;
@@ -20,7 +26,10 @@ public class Invalidator
 {
   [NotNull] private readonly SourcesTrigramIndex myTrigramIndex;
   [NotNull] private readonly ILogger myLogger;
+  [NotNull] private readonly IPersistentIndexManager myPersistentIndexManager;
   [NotNull] private readonly DaemonImpl myDaemonImpl;
+  [NotNull] private readonly ITextControlManager myTextControlManager;
+  [NotNull] private readonly IDocumentMarkupManager myDocumentMarkupManager;
   [NotNull] private readonly SolutionAnalysisService mySolutionAnalysisService;
 
 
@@ -29,14 +38,23 @@ public class Invalidator
     [NotNull] ISolution solution,
     [NotNull] ILogger logger,
     [NotNull] [ItemNotNull] IEnumerable<INamesCache> caches,
+    [NotNull] ICommentsSettings settings,
+    [NotNull] IPersistentIndexManager persistentIndexManager,
     [NotNull] DaemonImpl daemonImpl,
+    [NotNull] ITextControlManager textControlManager,
+    [NotNull] IDocumentMarkupManager documentMarkupManager,
     [NotNull] SolutionAnalysisService solutionAnalysisService)
   {
     myTrigramIndex = solution.GetComponent<SourcesTrigramIndex>();
     myLogger = logger;
+    myPersistentIndexManager = persistentIndexManager;
     myDaemonImpl = daemonImpl;
+    myTextControlManager = textControlManager;
+    myDocumentMarkupManager = documentMarkupManager;
     mySolutionAnalysisService = solutionAnalysisService;
     var entities = new Dictionary<IPsiSourceFile, Dictionary<NameKind, ICollection<NamedEntity>>>();
+    
+    settings.ExperimentalFeaturesEnabled.Advise(lifetime, _ => InvalidateEverything());
     
     foreach (var cache in caches)
     {
@@ -68,7 +86,30 @@ public class Invalidator
     }
   }
 
-  
+
+  private void InvalidateEverything()
+  {
+    using (ReadLockCookie.Create())
+    {
+      InvalidateFiles(myPersistentIndexManager.GetAllSourceFiles());
+    }
+  }
+
+  private void InvalidateFiles(IEnumerable<IPsiSourceFile> files)
+  {
+    var openedDocuments = myTextControlManager.TextControls.Select(editor => editor.Document).ToHashSet();
+    foreach (var sourceFile in files)
+    {
+      mySolutionAnalysisService.ReanalyzeFile(sourceFile);
+        
+      if (openedDocuments.Contains(sourceFile.Document))
+      {
+        myDocumentMarkupManager.GetMarkupModel(sourceFile.Document).RemoveAllHighlighters();
+        myDaemonImpl.Invalidate(sourceFile.Document);
+      }
+    }
+  }
+
   private void Invalidate([NotNull] ICollection<NamedEntity> old, [NotNull] ICollection<NamedEntity> @new, NameKind kind)
   {
     var newMap = CreateNameWithKindsToCountMap(@new.Select(entity => new NameWithKind(entity.Name, kind)));
@@ -102,11 +143,7 @@ public class Invalidator
     {
       if (names.Count != 0)
       {
-        foreach (var file in myTrigramIndex.GetFilesContainingAnyWords(names))
-        {
-          myDaemonImpl.Invalidate(file.Document);
-          mySolutionAnalysisService.ReanalyzeFile(file);
-        }
+        InvalidateFiles(myTrigramIndex.GetFilesContainingAnyWords(names));
       }
     }
     catch (Exception ex)

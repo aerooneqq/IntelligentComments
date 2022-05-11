@@ -42,7 +42,9 @@ class RiderCommentsStateManager(
 
 
   init {
-    ChangeManager.getInstance().addListener(componentLifetime, this)
+    application.invokeLater {
+      ChangeManager.getInstance().addListener(componentLifetime, this)
+    }
   }
 
 

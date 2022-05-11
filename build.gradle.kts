@@ -235,16 +235,12 @@ tasks {
         copyReSharperDllsToSandbox()
     }
 
+    buildSearchableOptions {
+        enabled = false
+    }
+
     publishPlugin {
         dependsOn(buildPlugin)
         token.set(System.getenv("PUBLISH_TOKEN"))
-
-//        doLast {
-//            exec {
-//                executable("dotnet")
-//                args("nuget", "push", "$rootDir/output/${riderProjectName}.${version}.nupkg","--api-key","$token","--source","https://plugins.jetbrains.com")
-//                workingDir(rootDir)
-//            }
-//        }
     }
 }

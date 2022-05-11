@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using IntelligentComments.Comments.Caches.Text.Trie;
 using IntelligentComments.Comments.Calculations.Core.DocComments.Utils;
+using IntelligentComments.Comments.Settings;
 using JetBrains.Annotations;
 using JetBrains.Application.Progress;
 using JetBrains.Application.Threading;
@@ -45,6 +46,7 @@ public abstract class AbstractNamesCache : SimpleICache<Dictionary<string, int>>
 
   
   private bool myIsLoaded;
+  [NotNull] private readonly ICommentsSettings mySettings;
 
 
   public NameKind NameKind { get; }
@@ -59,9 +61,11 @@ public abstract class AbstractNamesCache : SimpleICache<Dictionary<string, int>>
     Lifetime lifetime,
     NameKind nameKind,
     [NotNull] IShellLocks locks,
+    [NotNull] ICommentsSettings settings,
     [NotNull] IPersistentIndexManager persistentIndexManager)
     : base(lifetime, locks, persistentIndexManager, ourMarshaller)
   {
+    mySettings = settings;
     NameKind = nameKind;
     Trie = new Trie();
     Change = new JetBrains.DataFlow.Signal<FileNamesChange>(lifetime, $"{GetType().Name}::{nameof(Change)}");
@@ -91,7 +95,7 @@ public abstract class AbstractNamesCache : SimpleICache<Dictionary<string, int>>
 
   private void QueueChanges(IPsiSourceFile sourceFile, IEnumerable<NamedEntity> entities)
   {
-    if (!sourceFile.IsValid()) return;
+    if (!mySettings.ExperimentalFeaturesEnabled.Value || !sourceFile.IsValid()) return;
 
     Locks.QueueReadLockOrRunSync(Lifetime, $"{GetType().Name}::QueueingChange", () =>
     {

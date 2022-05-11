@@ -5,6 +5,7 @@ using IntelligentComments.Comments.Caches.Names;
 using IntelligentComments.Comments.Calculations.Core.DocComments.Utils;
 using IntelligentComments.Comments.Domain.Core.References;
 using IntelligentComments.Comments.Domain.Impl.References;
+using IntelligentComments.Comments.Settings;
 using JetBrains.Annotations;
 using JetBrains.Diagnostics;
 using JetBrains.DocumentModel;
@@ -27,12 +28,14 @@ public interface IDocCommentProblemsCollector : IRecursiveElementProcessor<DocCo
  
 public abstract class DocCommentProblemsCollectorBase : IDocCommentProblemsCollector
 {
+  [NotNull] private readonly ICommentsSettings mySettings;
   [NotNull] private static readonly ILogger ourLogger = Logger.GetLogger<DocCommentProblemsCollectorBase>();
   [NotNull] private readonly IDictionary<string, Action<IXmlTag, DocCommentErrorAnalyzerContext>> myTagsProcessors;
   
   
-  protected DocCommentProblemsCollectorBase()
+  protected DocCommentProblemsCollectorBase([NotNull] ICommentsSettings settings)
   {
+    mySettings = settings;
     myTagsProcessors = new Dictionary<string, Action<IXmlTag, DocCommentErrorAnalyzerContext>>
     {
       [DocCommentsBuilderUtil.ImageTagName] = ProcessImage,
@@ -46,7 +49,8 @@ public abstract class DocCommentProblemsCollectorBase : IDocCommentProblemsColle
   
   public ICollection<HighlightingInfo> Run(IDocCommentBlock comment)
   {
-    if (DocCommentsBuilderUtil.TryGetAdjustedComment(comment) is not { } adjustedComment)
+    if (DocCommentsBuilderUtil.TryGetAdjustedComment(comment) is not { } adjustedComment ||
+        !mySettings.ExperimentalFeaturesEnabled.Value)
     {
       return EmptyList<HighlightingInfo>.Instance;
     }

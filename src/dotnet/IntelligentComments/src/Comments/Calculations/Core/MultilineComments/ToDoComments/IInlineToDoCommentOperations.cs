@@ -1,5 +1,6 @@
 using IntelligentComments.Comments.Calculations.Core.DocComments.Utils;
 using IntelligentComments.Comments.Domain.Core;
+using IntelligentComments.Comments.Settings;
 using JetBrains.Annotations;
 
 namespace IntelligentComments.Comments.Calculations.Core.MultilineComments.ToDoComments;
@@ -19,6 +20,11 @@ public abstract class InlineToDoCommentOperations : GroupOfLinesLikeCommentOpera
   protected sealed override string PatternWithName => @$"[ ]*({string.Join("|", ourToDoPrefixes)}) \(name: .+\): .*";
   protected override NameKind NameKind => NameKind.Todo;
 
+  
+  protected InlineToDoCommentOperations([NotNull] ICommentsSettings settings) : base(settings)
+  {
+  }
+  
   
   protected sealed override TextHighlighter TryGetHighlighter(IHighlightersProvider provider, int length)
   {

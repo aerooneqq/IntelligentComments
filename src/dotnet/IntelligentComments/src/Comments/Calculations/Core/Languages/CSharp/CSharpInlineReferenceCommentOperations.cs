@@ -2,6 +2,7 @@ using System;
 using System.Text.RegularExpressions;
 using IntelligentComments.Comments.Calculations.Core.DocComments.Utils;
 using IntelligentComments.Comments.Calculations.Core.InlineReferenceComments;
+using IntelligentComments.Comments.Settings;
 using JetBrains.Annotations;
 using JetBrains.DocumentModel;
 using JetBrains.ReSharper.Psi;
@@ -14,6 +15,11 @@ namespace IntelligentComments.Comments.Calculations.Core.Languages.CSharp;
 [Language(typeof(CSharpLanguage))]
 public class CSharpInlineReferenceCommentOperations : InlineReferenceCommentOperations
 {
+  public CSharpInlineReferenceCommentOperations([NotNull] ICommentsSettings settings) : base(settings)
+  {
+  }
+  
+  
   public override bool CanBeStartOfSpecialGroupOfLineComments(ITreeNode node)
   {
     return TryExtractInlineReferenceInfo(node) is { };

@@ -1,5 +1,7 @@
 using IntelligentComments.Comments.Caches.Names;
 using IntelligentComments.Comments.Calculations.Core.DocComments.Utils;
+using IntelligentComments.Comments.Settings;
+using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Feature.Services.CodeCompletion.Infrastructure;
 using JetBrains.ReSharper.Feature.Services.CodeCompletion.Infrastructure.LookupItems;
 using JetBrains.ReSharper.Psi;
@@ -14,7 +16,8 @@ public class CSharpReferenceSourceCompletionProvider : ItemsProviderOfSpecificCo
   {
     if (context.TryGetContextAttribute() is not { } attribute ||
         DocCommentsBuilderUtil.TryExtractNameFromPossibleReferenceSourceAttribute(attribute) is not { } extraction ||
-        CommentsCompletionExtensions.TryGetAttributeValueRanges(context.ContextToken) is not { } ranges)
+        CommentsCompletionExtensions.TryGetAttributeValueRanges(context.ContextToken) is not { } ranges ||
+        !context.BasicContext.Solution.GetComponent<ICommentsSettings>().ExperimentalFeaturesEnabled.Value)
     {
       return false;
     }

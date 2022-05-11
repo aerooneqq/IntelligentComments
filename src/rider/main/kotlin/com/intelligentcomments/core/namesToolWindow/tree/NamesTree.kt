@@ -89,6 +89,12 @@ internal class NamesTree : AbstractTreeModel() {
     treeNodesInserted(TreePath(arrayOf(root, model)), IntArray(model.size) { it }, model.allNames.toTypedArray())
   }
 
+  fun clear() {
+    val size = files.size
+    files.clear()
+    treeNodesRemoved(TreePath(root), IntArray(size) { it }, arrayOf())
+  }
+
   operator fun get(index: Int): FileTreeModel {
     return files[index]
   }

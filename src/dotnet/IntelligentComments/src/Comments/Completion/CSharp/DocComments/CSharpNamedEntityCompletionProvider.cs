@@ -1,4 +1,6 @@
 using IntelligentComments.Comments.Calculations.Core.DocComments.Utils;
+using IntelligentComments.Comments.Settings;
+using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Feature.Services.CodeCompletion.Infrastructure;
 using JetBrains.ReSharper.Feature.Services.CodeCompletion.Infrastructure.LookupItems;
 using JetBrains.ReSharper.Psi;
@@ -12,6 +14,7 @@ public class CSharpNamedEntityCompletionProvider : ItemsProviderOfSpecificContex
 {
   protected override bool AddLookupItems(DocCommentCompletionContext context, IItemsCollector collector)
   {
+    if (!context.BasicContext.Solution.GetComponent<ICommentsSettings>().ExperimentalFeaturesEnabled.Value) return false;
     if (!DocCommentsBuilderUtil.IsNamedEntityAttribute(context.TryGetContextAttribute())) return false;
     if (context.TryFindDocumentedEntity() is not IDeclaration declaration) return false;
     if (CommentsCompletionExtensions.TryGetAttributeValueRanges(context.ContextToken) is not { } ranges) return false;

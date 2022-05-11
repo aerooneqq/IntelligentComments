@@ -1,4 +1,5 @@
 using IntelligentComments.Comments.Calculations.Core.DocComments.Utils;
+using IntelligentComments.Comments.Settings;
 using JetBrains.Annotations;
 using JetBrains.Application.Threading;
 using JetBrains.Lifetimes;
@@ -13,8 +14,9 @@ public class InvariantsNamesNamesCache : AbstractNamesCache
   public InvariantsNamesNamesCache(
     Lifetime lifetime,
     [NotNull] IShellLocks locks,
+    [NotNull] ICommentsSettings settings,
     [NotNull] IPersistentIndexManager persistentIndexManager)
-    : base(lifetime, NameKind.Invariant, locks, persistentIndexManager)
+    : base(lifetime, NameKind.Invariant, locks, settings, persistentIndexManager)
   {
   }
 

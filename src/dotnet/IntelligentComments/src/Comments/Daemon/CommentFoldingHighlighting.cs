@@ -11,20 +11,20 @@ namespace IntelligentComments.Comments.Daemon;
 
 [StaticSeverityHighlighting(Severity.INFO, typeof(IntelligentCommentsHighlightings))]
 [RegisterHighlighter(
-  DocCommentAttributeId,
+  CommentFoldingHighlightingId,
   NotRecyclable = true,
   EffectType = EffectType.FOLDING, 
   GroupId = IntelligentCommentsHighlightings.GroupId,
   TransmitUpdates = true)]
 public class CommentFoldingHighlighting : CodeFoldingHighlighting, IHighlightingWithTestOutput
 {
-  [NotNull] private const string DocCommentAttributeId = "IntelligentCommentsDocCommentFolding";
+  [NotNull] public const string CommentFoldingHighlightingId = "IntelligentCommentsDocCommentFolding";
     
   public static CommentFoldingHighlighting Create([NotNull] ICommentBase comment)
   {
     return new CommentFoldingHighlighting(
       comment,
-      DocCommentAttributeId,
+      CommentFoldingHighlightingId,
       string.Empty,
       comment.Range,
       true,

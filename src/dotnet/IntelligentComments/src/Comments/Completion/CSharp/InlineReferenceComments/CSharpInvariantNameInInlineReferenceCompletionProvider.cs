@@ -1,4 +1,6 @@
 using IntelligentComments.Comments.Caches.Names;
+using IntelligentComments.Comments.Settings;
+using JetBrains.Annotations;
 using JetBrains.ReSharper.Feature.Services.CodeCompletion.Infrastructure;
 using JetBrains.ReSharper.Feature.Services.CodeCompletion.Infrastructure.LookupItems;
 using JetBrains.ReSharper.Psi;

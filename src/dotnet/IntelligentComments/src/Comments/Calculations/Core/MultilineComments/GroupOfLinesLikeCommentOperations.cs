@@ -7,7 +7,9 @@ using IntelligentComments.Comments.Domain.Core;
 using IntelligentComments.Comments.Domain.Core.Content;
 using IntelligentComments.Comments.Domain.Impl;
 using IntelligentComments.Comments.Domain.Impl.Content;
+using IntelligentComments.Comments.Settings;
 using JetBrains.Annotations;
+using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Util;
@@ -16,6 +18,9 @@ namespace IntelligentComments.Comments.Calculations.Core.MultilineComments;
 
 public abstract class GroupOfLinesLikeCommentOperations : ISpecialGroupOfLinesCommentsOperations, INamedEntitiesCommonFinder
 {
+  [NotNull] private readonly ICommentsSettings mySettings;
+
+  
   //todo: bad, but ok for now
   [NotNull] protected abstract string Pattern { get; }
   [NotNull] protected abstract string PatternWithName { get; }
@@ -25,11 +30,16 @@ public abstract class GroupOfLinesLikeCommentOperations : ISpecialGroupOfLinesCo
   public int Priority => CommentFromNodeOperationsPriorities.Default;
 
 
+  protected GroupOfLinesLikeCommentOperations([NotNull] ICommentsSettings settings)
+  {
+    mySettings = settings;
+  }
+  
   public CommentCreationResult? TryCreate(ITreeNode node)
   {
     if (TryGetCommentInfoDto(node) is not var ((buildResult, groupOfLineComments), text, provider)) return null;
     
-    if (TryExtractName(text, provider) is { } name)
+    if (mySettings.ExperimentalFeaturesEnabled.Value && TryExtractName(text, provider) is { } name)
     {
       text = text[(text.IndexOf("):", StringComparison.Ordinal) + 3)..];
       return buildResult with { Comment = CreateComment(groupOfLineComments, provider, text, name) };
@@ -65,6 +75,9 @@ public abstract class GroupOfLinesLikeCommentOperations : ISpecialGroupOfLinesCo
 
   public IEnumerable<CommentErrorHighlighting> FindErrors(ITreeNode node)
   {
+    if (!node.GetSolution().GetComponent<ICommentsSettings>().ExperimentalFeaturesEnabled.Value)
+      return EmptyList<CommentErrorHighlighting>.Enumerable;
+    
     if (TryGetCommentInfoDto(node) is not var ((_, _), text, provider)) 
       return EmptyList<CommentErrorHighlighting>.Enumerable;
     

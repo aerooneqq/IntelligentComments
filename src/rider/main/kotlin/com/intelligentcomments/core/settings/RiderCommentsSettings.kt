@@ -43,6 +43,7 @@ class RiderCommentsSettings : PersistentStateComponent<Element> {
   var showOnlySummary = false
   var renderCommentsOnlyInDecompiledSources = false
 
+  var useExperimentalFeatures = true
 
   fun applyToSettings(settings: RiderIntelligentCommentsSettingsProvider) {
     settings.commentsDisplayKind.set(computeDisplayKind())
@@ -61,6 +62,8 @@ class RiderCommentsSettings : PersistentStateComponent<Element> {
     settings.useItalicFont.set(useItalicFontForComments)
     settings.showOnlySummary.set(showOnlySummary)
     settings.renderCommentsOnlyInDecompiledSources.set(renderCommentsOnlyInDecompiledSources)
+
+    settings.useExperimentalFeatures.set(useExperimentalFeatures)
   }
 
   private fun computeDisplayKind(): CommentsDisplayKind {
@@ -86,7 +89,8 @@ class RiderCommentsSettings : PersistentStateComponent<Element> {
       showFirstLevelHeaderWhenOneElement != settings.showFirstLevelHeaderWhenOneElement.value ||
       useItalicFontForComments != settings.useItalicFont.value ||
       showOnlySummary != settings.showOnlySummary.value ||
-      renderCommentsOnlyInDecompiledSources != settings.renderCommentsOnlyInDecompiledSources.value
+      renderCommentsOnlyInDecompiledSources != settings.renderCommentsOnlyInDecompiledSources.value ||
+      useExperimentalFeatures != settings.useExperimentalFeatures.value
   }
 
   fun reset(settings: RiderIntelligentCommentsSettingsProvider) {
@@ -108,6 +112,8 @@ class RiderCommentsSettings : PersistentStateComponent<Element> {
     useItalicFontForComments = settings.useItalicFont.value
     showOnlySummary = settings.showOnlySummary.value
     renderCommentsOnlyInDecompiledSources = settings.renderCommentsOnlyInDecompiledSources.value
+
+    useExperimentalFeatures = settings.useExperimentalFeatures.value
   }
 
   fun createSettingsChange(settings: RiderIntelligentCommentsSettingsProvider): SettingsChange {

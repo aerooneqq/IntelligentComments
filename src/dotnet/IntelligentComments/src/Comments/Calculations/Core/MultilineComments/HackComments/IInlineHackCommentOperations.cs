@@ -1,5 +1,6 @@
 using IntelligentComments.Comments.Calculations.Core.DocComments.Utils;
 using IntelligentComments.Comments.Domain.Core;
+using IntelligentComments.Comments.Settings;
 using JetBrains.Annotations;
 
 namespace IntelligentComments.Comments.Calculations.Core.MultilineComments.HackComments;
@@ -16,6 +17,11 @@ public abstract class InlineHackCommentOperations : GroupOfLinesLikeCommentOpera
   protected sealed override string Pattern => $"[ ]*({string.Join("|", ourHackPrefixes)}): .*";
   protected override string PatternWithName => @$"[ ]*({string.Join("|", ourHackPrefixes)}) \(name: .+\): .*";
   protected override NameKind NameKind => NameKind.Hack;
+  
+  
+  protected InlineHackCommentOperations([NotNull] ICommentsSettings settings) : base(settings)
+  {
+  }
   
   
   protected sealed override TextHighlighter TryGetHighlighter(IHighlightersProvider provider, int length)
