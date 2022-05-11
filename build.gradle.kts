@@ -34,7 +34,9 @@ val theGradleVersion: String by project
 val backendPluginId: String by project
 val vendor: String by project
 
-val theDescription = "The plugin renders comments and provides some features to store implicit dependencies between entities in the code-base"
+fun getPluginDescription(): String {
+    return file("$rootDir/plugin_description.txt").readText().replace(Regex("(?s)\r?\n"), "<br />\n")
+}
 
 fun calculateVersionForPluginProps(): String {
     val dashIndex = sdkVersion.indexOf("-")
@@ -207,9 +209,18 @@ tasks {
     }
 
     patchPluginXml {
-        changeNotes.set(file("${rootDir}/CHANGELOG.md").readText())
+        val matches = Regex("(?s)(.+?)(?=##|\$)").findAll(file("${rootDir}/CHANGELOG.md").readText())
+        val text = StringBuilder()
+        for (match in matches) {
+            text.append(match.value)
+        }
+
+        val notes = text.replace(Regex("(?s)\r?\n"), "<br />\n")
+        changeNotes.set(notes)
+
         version.set(pluginVersion)
         pluginId.set(intellijPluginId)
+        pluginDescription.set(getPluginDescription())
     }
 
     runIde {

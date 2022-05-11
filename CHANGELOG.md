@@ -1,5 +1,7 @@
-## 1.0.0-EAP1
+1.0.0-EAP1
+
 Added:
+
 - Functionality to render single-line, multiline, documentation comments and group of single-line comments
 - Different modes of displaying comments: render mode, edit mode, hidden mode
 - Settings to customize view of rendered comments, in which files to render comments
