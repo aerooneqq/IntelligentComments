@@ -52,7 +52,7 @@ public interface ICommentsProcessor : IRecursiveElementProcessor
 public abstract class CommentsProcessorBase : ICommentsProcessor
 {
   [NotNull] [ItemNotNull] protected readonly IList<CommentProcessingResult> Comments;
-  [NotNull] [ItemNotNull] protected readonly IList<ITreeNode> VisitedNodes;
+  [NotNull] [ItemNotNull] protected readonly ISet<ITreeNode> VisitedNodes;
   [NotNull] protected readonly ILanguageManager LanguageManager;
   protected readonly DaemonProcessKind ProcessKind;
 
@@ -66,7 +66,7 @@ public abstract class CommentsProcessorBase : ICommentsProcessor
     LanguageManager = JetBrains.ReSharper.Psi.LanguageManager.Instance;
     ProcessKind = processKind;
     Comments = new List<CommentProcessingResult>();
-    VisitedNodes = new List<ITreeNode>();
+    VisitedNodes = new HashSet<ITreeNode>();
   }
 
 

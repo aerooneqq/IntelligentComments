@@ -1,6 +1,7 @@
 using System.Linq;
 using IntelligentComments.Comments.Calculations.Core.DocComments.Errors;
 using JetBrains.Annotations;
+using JetBrains.Application;
 using JetBrains.ReSharper.Feature.Services.Daemon;
 using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
@@ -27,6 +28,8 @@ public class CSharpCommentsProcessor : CommentsProcessorBase
   
   public override void ProcessBeforeInteriorInternal(ITreeNode element)
   {
+    Interruption.Current.CheckAndThrow();
+    
     if (element is ICSharpDocCommentBlock docCommentBlock)
     {
       ProcessDocCommentBlock(docCommentBlock);
