@@ -4,7 +4,7 @@
         The main Math class
         Contains all methods for performing basic math functions
     */|(0)
-        |/// <summary>
+    |/// <summary>
     /// The main <c>Math</c> class.
     /// Contains all methods for performing basic math functions.
     /// <list type="bullet">
@@ -298,7 +298,7 @@ TextContentSegment:
     Contains all methods for performing basic math functions
   Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 76, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
 
-(1): IntelligentCommentsDocCommentFolding: (DocumentRange (147 - 1,056) on 4.cs)
+(1): IntelligentCommentsDocCommentFolding: (DocumentRange (143 - 1,052) on 4.cs)
 IntelligentCommentContent:
   ContentSegments:
       SummaryContentSegment:
@@ -383,13 +383,13 @@ IntelligentCommentContent:
                     integers and doubles.
                   Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 63, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
 
-(2): IntelligentCommentsDocCommentFolding: (DocumentRange (1,096 - 1,139) on 4.cs)
+(2): IntelligentCommentsDocCommentFolding: (DocumentRange (1,092 - 1,135) on 4.cs)
 TextContentSegment:
   HighlightedText:
   Text: Adds two integers and returns the result
   Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 40, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
 
-(3): IntelligentCommentsDocCommentFolding: (DocumentRange (1,149 - 2,138) on 4.cs)
+(3): IntelligentCommentsDocCommentFolding: (DocumentRange (1,145 - 2,134) on 4.cs)
 IntelligentCommentContent:
   ContentSegments:
       SummaryContentSegment:
@@ -434,7 +434,7 @@ IntelligentCommentContent:
               Text: Thrown when one parameter is Int32.MaxValue and the other
                 is greater than 0.
               Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 28, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
-                Highlighter: [see.text, 29, 43, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
+                Highlighter: [see.text, 29, 43, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ProxyDomainReference::!:Int32.MaxValue, ]
                 Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 44, 76, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
     TextContentSegment:
       HighlightedText:
@@ -473,20 +473,20 @@ IntelligentCommentContent:
             Text: An integer.
             Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 11, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
 
-(4): IntelligentCommentsDocCommentFolding: (DocumentRange (2,208 - 2,318) on 4.cs)
+(4): IntelligentCommentsDocCommentFolding: (DocumentRange (2,204 - 2,314) on 4.cs)
 TextContentSegment:
   HighlightedText:
   Text: If any parameter is equal to the max value of an integer
     and the other is greater than zero
   Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 91, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
 
-(5): IntelligentCommentsDocCommentFolding: (DocumentRange (2,550 - 2,592) on 4.cs)
+(5): IntelligentCommentsDocCommentFolding: (DocumentRange (2,546 - 2,588) on 4.cs)
 TextContentSegment:
   HighlightedText:
   Text: Adds two doubles and returns the result
   Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 39, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
 
-(6): IntelligentCommentsDocCommentFolding: (DocumentRange (2,602 - 3,599) on 4.cs)
+(6): IntelligentCommentsDocCommentFolding: (DocumentRange (2,598 - 3,595) on 4.cs)
 IntelligentCommentContent:
   ContentSegments:
       SummaryContentSegment:
@@ -568,20 +568,20 @@ IntelligentCommentContent:
             Text: A double precision number.
             Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 26, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
 
-(7): IntelligentCommentsDocCommentFolding: (DocumentRange (3,678 - 3,788) on 4.cs)
+(7): IntelligentCommentsDocCommentFolding: (DocumentRange (3,674 - 3,784) on 4.cs)
 TextContentSegment:
   HighlightedText:
   Text: If any parameter is equal to the max value of an integer
     and the other is greater than zero
   Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 91, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
 
-(8): IntelligentCommentsDocCommentFolding: (DocumentRange (4,028 - 4,087) on 4.cs)
+(8): IntelligentCommentsDocCommentFolding: (DocumentRange (4,024 - 4,083) on 4.cs)
 TextContentSegment:
   HighlightedText:
   Text: Subtracts an integer from another and returns the result
   Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 56, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
 
-(9): IntelligentCommentsDocCommentFolding: (DocumentRange (4,097 - 4,899) on 4.cs)
+(9): IntelligentCommentsDocCommentFolding: (DocumentRange (4,093 - 4,895) on 4.cs)
 IntelligentCommentContent:
   ContentSegments:
       SummaryContentSegment:
@@ -653,13 +653,13 @@ IntelligentCommentContent:
             Text: An integer.
             Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 11, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
 
-(10): IntelligentCommentsDocCommentFolding: (DocumentRange (5,010 - 5,067) on 4.cs)
+(10): IntelligentCommentsDocCommentFolding: (DocumentRange (5,006 - 5,063) on 4.cs)
 TextContentSegment:
   HighlightedText:
   Text: Subtracts a double from another and returns the result
   Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 54, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
 
-(11): IntelligentCommentsDocCommentFolding: (DocumentRange (5,077 - 5,953) on 4.cs)
+(11): IntelligentCommentsDocCommentFolding: (DocumentRange (5,073 - 5,949) on 4.cs)
 IntelligentCommentContent:
   ContentSegments:
       SummaryContentSegment:
@@ -732,13 +732,13 @@ IntelligentCommentContent:
             Text: A double precision number.
             Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 26, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
 
-(12): IntelligentCommentsDocCommentFolding: (DocumentRange (6,073 - 6,122) on 4.cs)
+(12): IntelligentCommentsDocCommentFolding: (DocumentRange (6,069 - 6,118) on 4.cs)
 TextContentSegment:
   HighlightedText:
   Text: Multiplies two integers and returns the result
   Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 46, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
 
-(13): IntelligentCommentsDocCommentFolding: (DocumentRange (6,132 - 6,942) on 4.cs)
+(13): IntelligentCommentsDocCommentFolding: (DocumentRange (6,128 - 6,938) on 4.cs)
 IntelligentCommentContent:
   ContentSegments:
       SummaryContentSegment:
@@ -810,13 +810,13 @@ IntelligentCommentContent:
             Text: An integer.
             Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 11, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
 
-(14): IntelligentCommentsDocCommentFolding: (DocumentRange (7,053 - 7,101) on 4.cs)
+(14): IntelligentCommentsDocCommentFolding: (DocumentRange (7,049 - 7,097) on 4.cs)
 TextContentSegment:
   HighlightedText:
   Text: Multiplies two doubles and returns the result
   Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 45, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
 
-(15): IntelligentCommentsDocCommentFolding: (DocumentRange (7,111 - 7,970) on 4.cs)
+(15): IntelligentCommentsDocCommentFolding: (DocumentRange (7,107 - 7,966) on 4.cs)
 IntelligentCommentContent:
   ContentSegments:
       SummaryContentSegment:
@@ -888,13 +888,13 @@ IntelligentCommentContent:
             Text: A double precision number.
             Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 26, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
 
-(16): IntelligentCommentsDocCommentFolding: (DocumentRange (8,090 - 8,145) on 4.cs)
+(16): IntelligentCommentsDocCommentFolding: (DocumentRange (8,086 - 8,141) on 4.cs)
 TextContentSegment:
   HighlightedText:
   Text: Divides an integer by another and returns the result
   Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 52, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
 
-(17): IntelligentCommentsDocCommentFolding: (DocumentRange (8,155 - 9,134) on 4.cs)
+(17): IntelligentCommentsDocCommentFolding: (DocumentRange (8,151 - 9,130) on 4.cs)
 IntelligentCommentContent:
   ContentSegments:
       SummaryContentSegment:
@@ -978,13 +978,13 @@ IntelligentCommentContent:
             Text: An integer divisor.
             Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 19, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
 
-(18): IntelligentCommentsDocCommentFolding: (DocumentRange (9,243 - 9,296) on 4.cs)
+(18): IntelligentCommentsDocCommentFolding: (DocumentRange (9,239 - 9,292) on 4.cs)
 TextContentSegment:
   HighlightedText:
   Text: Divides a double by another and returns the result
   Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 50, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
 
-(19): IntelligentCommentsDocCommentFolding: (DocumentRange (9,306 - 10,319) on 4.cs)
+(19): IntelligentCommentsDocCommentFolding: (DocumentRange (9,302 - 10,315) on 4.cs)
 IntelligentCommentContent:
   ContentSegments:
       SummaryContentSegment:

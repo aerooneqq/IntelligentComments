@@ -331,7 +331,7 @@ IntelligentCommentContent:
             Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 3, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
               Highlighter: [ReSharper.CSHARP_PROPERTY_IDENTIFIER, 4, 9, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ProxyDomainReference::P:ReSharperPlugin.IntelligentComments.Tests.data.CSharp.Highlightings.ExampleClass.Label, ]
               Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 10, 14, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
-              Highlighter: [see.langword, 15, 21, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
+              Highlighter: [see.langword, 15, 21, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: LangWordDomainReference::string, ]
               Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 21, 46, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
             ParagraphContentSegment:
               ContentSegments:
@@ -395,9 +395,9 @@ IntelligentCommentContent:
                 greater than 0.
                 Note that here you can also use //docs.microsoft.com/dotnet/api/system.int32.maxvalueto point a web page instead.
               Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 28, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
-                Highlighter: [see.text, 29, 37, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
+                Highlighter: [see.text, 29, 37, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ProxyDomainReference::!:Int32.MaxValue, ]
                 Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 38, 102, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
-                Highlighter: [see.http, 103, 156, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
+                Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 103, 156, TextHighlighterAttributes { FontStyle = Regular, Underline = True, FontWeight = 400 }, References: HttpDomainReference::https://docs.microsoft.com/dotnet/api/system.int32.maxvalue, ]
                 Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 156, 184, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
       SeeAlsoMemberContentSegment:HighlightedText:
         Text: ExampleClass 
