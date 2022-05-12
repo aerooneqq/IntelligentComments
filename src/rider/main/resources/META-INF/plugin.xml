@@ -41,17 +41,6 @@
       <keyboard-shortcut first-keystroke="control shift A" keymap="Mac OS X" />
       <keyboard-shortcut first-keystroke="control shift A" keymap="Mac OS X 10.5+" />
     </action>
-
-    <action class="com.intelligentcomments.core.actions.FindReferencesToInvariantAction"
-            text="Find References To Invariant"
-            id="FindReferencesToInvariantAction" >
-      <keyboard-shortcut first-keystroke="control alt R" keymap="$default" />
-    </action>
-    <action class="com.intelligentcomments.core.actions.NavigateToInvariantAction"
-            text="Navigate To Invariant"
-            id="NavigateToInvariantAction">
-      <keyboard-shortcut first-keystroke="control alt shift Z" keymap="$default" />
-    </action>
   </actions>
 
   <application-components>
