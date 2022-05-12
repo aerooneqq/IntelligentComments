@@ -97,7 +97,7 @@ public abstract class DocCommentProblemsCollectorBase : IDocCommentProblemsColle
 
     CheckTicketsSectionsIfPresent(hackTag, context);
   }
-
+  
   private bool CheckTicketsSectionsIfPresent([NotNull] IXmlTag parentTag, [NotNull] DocCommentErrorAnalyzerContext context)
   {
     var ticketsTag = parentTag.InnerTags.FirstOrDefault(
@@ -292,15 +292,22 @@ public abstract class DocCommentProblemsCollectorBase : IDocCommentProblemsColle
   private bool CheckThatNameOccursNotMoreThanOnce([NotNull] IXmlTag namedEntityTag, [NotNull] DocCommentErrorAnalyzerContext context)
   {
     if (DocCommentsBuilderUtil.TryGetCommonNameAttribute(namedEntityTag) is not { } nameAttribute) return true;
+    
+    var valueRange = nameAttribute.Value.GetDocumentRange();
+    if (nameAttribute.Value?.UnquotedValue is not { } value || value.IsNullOrWhitespace())
+    {
+      AddError(valueRange, "The name attribute must not be empty or whitespace", context);
+      return false;
+    }
+    
     if (DocCommentsBuilderUtil.TryExtractNameFrom(namedEntityTag) is not var (name, nameKind)) return true;
 
     var cache = NamesCacheUtil.GetCacheFor(context.AdjustedComment.GetSolution(), nameKind);
     var invariantNameCount = cache.GetNameCount(name);
 
     if (invariantNameCount == 1) return true;
-
-    var range = nameAttribute.Value.GetDocumentRange();
-    AddError(range, $"The {nameKind} name \"{name}\" must occur only once in solution", context);
+    
+    AddError(valueRange, $"The {nameKind} name \"{name}\" must occur only once in solution", context);
     return false;
   }
 

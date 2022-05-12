@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using IntelligentComments.Comments.Calculations.Core;
 using IntelligentComments.Comments.Calculations.Core.DocComments.Utils;
-using IntelligentComments.Comments.Daemon;
 using IntelligentComments.Comments.Settings;
 using JetBrains.Annotations;
 using JetBrains.Collections;
