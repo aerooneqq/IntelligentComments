@@ -1,9 +1,12 @@
 using System;
+using System.Collections.Generic;
 using IntelligentComments.Comments.Calculations;
+using IntelligentComments.Comments.Calculations.Core;
 using JetBrains.Annotations;
 using JetBrains.ReSharper.Feature.Services.Daemon;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Files;
+using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Util;
 
 namespace IntelligentComments.Comments.Daemon;
@@ -29,9 +32,15 @@ public class CommentDaemonProcess : IDaemonStageProcess
     
     foreach (var file in files)
     {
-      var processor = CommentsProcessorsProvider.CreateProcessorFor(file.Language, myDaemonProcessKind);
-      file.ProcessThisAndDescendants(processor);
-      foreach (var (highlightingInfos, commentBase) in processor.ProcessedComments)
+      if (LanguageManager.Instance.TryGetService<ICommentsProcessor>(file.Language) is not { } processor)
+      {
+        continue;
+      }
+
+      var context = CommentsProcessorContext.Create(myDaemonProcessKind);
+      file.ProcessThisAndDescendants(processor, context);
+      
+      foreach (var (highlightingInfos, commentBase) in context.ProcessedComments)
       {
         if (highlightingInfos.Count == 0 && commentBase is { } comment && myDaemonProcessKind == DaemonProcessKind.VISIBLE_DOCUMENT)
         {

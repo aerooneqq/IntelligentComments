@@ -44,44 +44,35 @@ public record CommentProcessingResult(
     new(EmptyList<HighlightingInfo>.Instance, comment);
 }
 
-public interface ICommentsProcessor : IRecursiveElementProcessor
+public record struct CommentsProcessorContext(
+  DaemonProcessKind ProcessKind,
+  IList<CommentProcessingResult> ProcessedComments,
+  ISet<ITreeNode> VisitedNodes)
 {
-  IReadOnlyList<CommentProcessingResult> ProcessedComments { get; }
+  public static CommentsProcessorContext Create(DaemonProcessKind processKind) =>
+    new(processKind, new List<CommentProcessingResult>(), new HashSet<ITreeNode>());
+}
+
+public interface ICommentsProcessor : IRecursiveElementProcessor<CommentsProcessorContext>
+{
 }
 
 public abstract class CommentsProcessorBase : ICommentsProcessor
 {
-  [NotNull] [ItemNotNull] protected readonly IList<CommentProcessingResult> Comments;
-  [NotNull] [ItemNotNull] protected readonly ISet<ITreeNode> VisitedNodes;
-  [NotNull] protected readonly ILanguageManager LanguageManager;
-  protected readonly DaemonProcessKind ProcessKind;
+  public bool IsProcessingFinished(CommentsProcessorContext context) => false;
 
-  
-  [NotNull] [ItemNotNull] public IReadOnlyList<CommentProcessingResult> ProcessedComments => Comments.AsIReadOnlyList();
-  public bool ProcessingIsFinished => false;
-
-
-  protected CommentsProcessorBase(DaemonProcessKind processKind)
+  public void ProcessBeforeInterior(ITreeNode element, CommentsProcessorContext context)
   {
-    LanguageManager = JetBrains.ReSharper.Psi.LanguageManager.Instance;
-    ProcessKind = processKind;
-    Comments = new List<CommentProcessingResult>();
-    VisitedNodes = new HashSet<ITreeNode>();
-  }
-
-
-  public void ProcessBeforeInterior(ITreeNode element)
-  {
-    if (VisitedNodes.Contains(element)) return;
-    VisitedNodes.Add(element);
+    if (context.VisitedNodes.Contains(element)) return;
+    context.VisitedNodes.Add(element);
     
-    ProcessBeforeInteriorInternal(element);
+    ProcessBeforeInteriorInternal(element, context);
   }
+
+  protected abstract void ProcessBeforeInteriorInternal(ITreeNode element, CommentsProcessorContext context);
   
-  public abstract void ProcessBeforeInteriorInternal(ITreeNode element);
-  
-  public bool InteriorShouldBeProcessed(ITreeNode element) => true;
-  public void ProcessAfterInterior(ITreeNode element)
+  public bool InteriorShouldBeProcessed(ITreeNode element, CommentsProcessorContext context) => true;
+  public void ProcessAfterInterior(ITreeNode element, CommentsProcessorContext context)
   {
   }
 }
