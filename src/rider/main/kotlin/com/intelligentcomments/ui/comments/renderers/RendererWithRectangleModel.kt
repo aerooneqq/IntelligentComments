@@ -30,30 +30,24 @@ abstract class RendererWithRectangleModel(
   private var rectModelYDelta = 0
 
   private val rectangleModelHolder = RectanglesModelHolder(baseModel)
-  private var myXDelta = -1
   private var cachedGutterMark: DocCommentSwitchRenderModeGutterMark? = null
 
   val gutterMark
     get() = cachedGutterMark
 
-  open val xDelta: Int
-    get() {
-      var currentDelta = myXDelta
-      if (currentDelta != -1) return currentDelta
+  open val xDelta: Int = initXDelta()
 
-      val document = baseModel.editor.document
-      val lineNumber = document.getLineNumber(baseModel.comment.identifier.rangeMarker.startOffset)
-      currentDelta = if (lineNumber < document.lineCount) {
-        val lineStartOffset = document.getLineStartOffset(lineNumber)
-        val contentStartOffset = CharArrayUtil.shiftForward(document.immutableCharSequence, lineStartOffset, " \t\n")
-        baseModel.editor.offsetToXY(contentStartOffset, false, true).x
-      } else {
-        baseModel.editor.insets.left
-      }
-
-      myXDelta = currentDelta
-      return currentDelta
+  private fun initXDelta(): Int {
+    val document = baseModel.editor.document
+    val lineNumber = document.getLineNumber(baseModel.comment.identifier.rangeMarker.startOffset)
+    return if (lineNumber < document.lineCount) {
+      val lineStartOffset = document.getLineStartOffset(lineNumber)
+      val contentStartOffset = CharArrayUtil.shiftForward(document.immutableCharSequence, lineStartOffset, " \t\n")
+      baseModel.editor.offsetToXY(contentStartOffset, false, true).x
+    } else {
+      baseModel.editor.insets.left
     }
+  }
 
   open val yDelta: Int = 0
 

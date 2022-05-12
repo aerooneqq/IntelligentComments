@@ -4,10 +4,11 @@ import com.intelligentcomments.core.comments.listeners.CommentsEditorsListenersM
 import com.intelligentcomments.core.comments.states.CommentState
 import com.intelligentcomments.core.comments.states.RiderCommentsStateManager
 import com.intelligentcomments.core.comments.storages.DocumentCommentsWithFoldingsStorage
-import com.intelligentcomments.core.domain.core.*
+import com.intelligentcomments.core.domain.core.CommentBase
+import com.intelligentcomments.core.domain.core.CommentIdentifier
 import com.intelligentcomments.core.settings.CommentsDisplayKind
 import com.intelligentcomments.core.settings.RiderIntelligentCommentsSettingsProvider
-import com.intelligentcomments.ui.comments.model.*
+import com.intelligentcomments.ui.comments.model.CollapsedCommentUiModel
 import com.intelligentcomments.ui.comments.renderers.CollapsedCommentRenderer
 import com.intelligentcomments.ui.comments.renderers.RendererWithRectangleModel
 import com.intellij.openapi.components.service
@@ -31,6 +32,7 @@ import com.jetbrains.rider.document.RiderDocumentHost
 
 
 class RiderCommentsController(project: Project) : LifetimedProjectComponent(project) {
+  private var isRunningBatchFoldingOperation = false
   private val commentsStorage: DocumentCommentsWithFoldingsStorage = DocumentCommentsWithFoldingsStorage()
   private val logger = getLogger<RiderDocumentHost>()
   private val commentsStateManager = project.getComponent(RiderCommentsStateManager::class.java)
@@ -55,12 +57,42 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
 
   fun getAllCommentsFor(editor: Editor) = commentsStorage.getAllComments(editor)
 
-  fun addComment(editor: Editor, comment: CommentBase) {
+  fun addComments(editor: Editor, comments: Collection<CommentBase>) {
     application.assertIsDispatchThread()
 
-    commentsStorage.addNewComment(comment, editor)
-    val state = commentsStateManager.restoreOrCreateCommentState(editor, comment.identifier)
-    updateCommentToMatchState(comment.identifier, editor.document, state)
+    editor.runBatchFoldingOperation {
+      for (comment in comments) {
+        commentsStorage.addNewComment(comment, editor)
+        val state = commentsStateManager.restoreOrCreateCommentState(editor, comment.identifier)
+        updateCommentToMatchState(comment.identifier, editor.document, state)
+      }
+    }
+  }
+
+  private fun assertThatInBatchFoldingUpdate(editor: Editor) {
+    application.assertIsDispatchThread()
+    val model = editor.foldingModel as FoldingModelImpl
+    if (model.isInBatchFoldingOperation) {
+      logger.logAssertion("Calling addComment without BatchFoldingOperation")
+    }
+  }
+
+  private fun Editor.runBatchFoldingOperation(action: () -> Unit) {
+    application.assertIsDispatchThread()
+    if (isRunningBatchFoldingOperation) {
+      logger.logAssertion("Already running batch operation, may be bad for performance to run one more")
+      action()
+    }
+
+    isRunningBatchFoldingOperation = true
+
+    try {
+      foldingModel.runBatchFoldingOperation {
+        action()
+      }
+    } finally {
+      isRunningBatchFoldingOperation = false
+    }
   }
 
   fun toggleModeChange(
@@ -69,7 +101,9 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
     transform: (CommentsDisplayKind) -> CommentsDisplayKind
   ) {
     executeWithCurrentState(commentIdentifier, editor) { commentState ->
-      changeStateAndUpdateComment(editor, commentIdentifier, transform(commentState.displayKind))
+      editor.runBatchFoldingOperation {
+        changeStateAndUpdateComment(editor, commentIdentifier, transform(commentState.displayKind))
+      }
     }
   }
 
@@ -77,10 +111,12 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
     editor: Editor,
     transform: (CommentsDisplayKind) -> CommentsDisplayKind
   ) {
-    val comments = commentsStorage.getAllComments(editor)
-    for (comment in comments) {
-      val actualState = commentsStateManager.changeDisplayKind(editor, comment.identifier, transform) ?: continue
-      updateCommentToMatchState(comment.identifier, editor.document, actualState)
+    editor.runBatchFoldingOperation {
+      val comments = commentsStorage.getAllComments(editor)
+      for (comment in comments) {
+        val actualState = commentsStateManager.changeDisplayKind(editor, comment.identifier, transform) ?: continue
+        updateCommentToMatchState(comment.identifier, editor.document, actualState)
+      }
     }
   }
 
@@ -104,8 +140,7 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
     val displayKind = RiderIntelligentCommentsSettingsProvider.getInstance().commentsDisplayKind.value
     if (displayKind != CommentsDisplayKind.Code) return
 
-    val foldingModel = editor.foldingModel as FoldingModelImpl
-    foldingModel.runBatchFoldingOperation {
+    editor.runBatchFoldingOperation {
       for (folding in commentsStorage.getAllFoldingsFor(editor)) {
         folding.isExpanded = !folding.isExpanded
       }
@@ -128,9 +163,14 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
       val id = comment.identifier
       executeWithCurrentState(id, editor) { state ->
         val cachedKind = state.displayKind
-        changeStateAndUpdateComment(editor, id, CommentsDisplayKind.Render)
+        editor.runBatchFoldingOperation {
+          changeStateAndUpdateComment(editor, id, CommentsDisplayKind.Render)
+        }
+
         lifetime.onTermination {
-          changeStateAndUpdateComment(editor, id, cachedKind)
+          editor.runBatchFoldingOperation {
+            changeStateAndUpdateComment(editor, id, cachedKind)
+          }
         }
       }
     }
@@ -141,11 +181,9 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
     document: Document,
     state: CommentState
   ) {
-    application.invokeLater {
-      val documentId = document.getFirstDocumentId(project) ?: return@invokeLater
-      for (editor in textControlHost.getAllEditors(documentId)) {
-        doUpdateCommentToMathState(commentIdentifier, editor, state)
-      }
+    val documentId = document.getFirstDocumentId(project) ?: return
+    for (editor in textControlHost.getAllEditors(documentId)) {
+      doUpdateCommentToMathState(commentIdentifier, editor, state)
     }
   }
 
@@ -176,29 +214,25 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
           isFoldingExpanded = folding.isExpanded
         }
 
-        foldingModel.runBatchFoldingOperation {
-          foldingModel.removeFoldRegion(folding)
-          commentsStorage.removeFolding(commentIdentifier, editor)
+        foldingModel.removeFoldRegion(folding)
+        commentsStorage.removeFolding(commentIdentifier, editor)
+      }
+
+      val rangeMarker = commentIdentifier.rangeMarker
+      val start = rangeMarker.startOffset
+      val end = rangeMarker.endOffset
+      val foldRegions = foldingModel.getRegionsOverlappingWith(start, end)
+      for (region in foldRegions) {
+        if (region.startOffset >= start && region.endOffset <= end) {
+          foldingModel.removeFoldRegion(region)
         }
       }
 
-      foldingModel.runBatchFoldingOperation {
-        val rangeMarker = commentIdentifier.rangeMarker
-        val start = rangeMarker.startOffset
-        val end = rangeMarker.endOffset
-        val foldRegions = foldingModel.getRegionsOverlappingWith(start, end)
-        for (region in foldRegions) {
-          if (region.startOffset >= start && region.endOffset <= end) {
-            foldingModel.removeFoldRegion(region)
-          }
-        }
-
-        val region = foldingModel.createFoldRegion(rangeMarker.startOffset, rangeMarker.endOffset, "...", null, false)
-        region?.isExpanded = isFoldingExpanded
-        region?.markAsDocComment()
-        if (region != null) {
-          commentsStorage.addFoldingToComment(correspondingComment, region, editor)
-        }
+      val region = foldingModel.createFoldRegion(rangeMarker.startOffset, rangeMarker.endOffset, "...", null, false)
+      region?.isExpanded = isFoldingExpanded
+      region?.markAsDocComment()
+      if (region != null) {
+        commentsStorage.addFoldingToComment(correspondingComment, region, editor)
       }
     }
   }
@@ -209,10 +243,9 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
 
   fun reRenderAllComments(editor: Editor) {
     commentsStorage.recreateAllCommentsFor(editor)
-    for (comment in commentsStorage.getAllComments(editor)) {
-      val state = commentsStateManager.getExistingCommentState(editor, comment.identifier) ?: continue
-
-      application.invokeLater {
+    editor.runBatchFoldingOperation {
+      for (comment in commentsStorage.getAllComments(editor)) {
+        val state = commentsStateManager.getExistingCommentState(editor, comment.identifier) ?: continue
         doUpdateCommentToMathState(comment.identifier, editor, state)
       }
     }
@@ -240,20 +273,21 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
   }
 
   private fun removeFoldRegion(editor: Editor, foldStartOffset: Int, foldEndOffset: Int) {
+    assertThatInBatchFoldingUpdate(editor)
     val foldingModel = editor.foldingModel
-    foldingModel.runBatchFoldingOperation {
-      val oldFolding = foldingModel.getFoldRegion(foldStartOffset, foldEndOffset)
-      if (oldFolding != null) {
-        if (oldFolding is CustomFoldRegion && oldFolding.renderer is RendererWithRectangleModel) {
-          val oldFoldingRenderer = oldFolding.renderer
-          if (oldFoldingRenderer is RendererWithRectangleModel) {
-            val oldComment = oldFoldingRenderer.baseModel.comment
-            commentsStorage.removeFolding(oldComment.identifier, editor)
-          }
+    val oldFolding = foldingModel.getFoldRegion(foldStartOffset, foldEndOffset)
+    if (oldFolding != null) {
+      if (oldFolding is CustomFoldRegion && oldFolding.renderer is RendererWithRectangleModel) {
+        val oldFoldingRenderer = oldFolding.renderer
+        if (oldFoldingRenderer is RendererWithRectangleModel) {
+          val oldComment = oldFoldingRenderer.baseModel.comment
+          commentsStorage.removeFolding(oldComment.identifier, editor)
         }
-
-        foldingModel.removeFoldRegion(oldFolding)
       }
+
+      foldingModel.removeFoldRegion(oldFolding)
+      foldingModel as FoldingModelImpl
+      foldingModel.updateCachedOffsets()
     }
   }
 
@@ -279,20 +313,19 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
     editor: Editor,
     state: CommentState
   ) {
+    assertThatInBatchFoldingUpdate(editor)
     val (foldStartLine, foldEndLine, foldStartOffset, foldEndOffset) = getFoldingInfo(comment, editor) ?: return
     removeFoldRegion(editor, foldStartOffset, foldEndOffset)
 
     val foldingModel = editor.foldingModel
-    foldingModel.runBatchFoldingOperation {
-      val renderer = getCommentFoldingRenderer(comment, editor, state)
-      val folding = foldingModel.addCustomLinesFolding(foldStartLine, foldEndLine, renderer)
+    val renderer = getCommentFoldingRenderer(comment, editor, state)
+    val folding = foldingModel.addCustomLinesFolding(foldStartLine, foldEndLine, renderer)
 
-      if (folding == null) {
-        logger.error("Failed to create folding region for ${comment.id}")
-      } else {
-        commentsStorage.addFoldingToComment(comment, folding, editor)
-        listenersManager.attachListenersIfNeeded(folding)
-      }
+    if (folding == null) {
+      logger.error("Failed to create folding region for ${comment.id}")
+    } else {
+      commentsStorage.addFoldingToComment(comment, folding, editor)
+      listenersManager.attachListenersIfNeeded(folding)
     }
   }
 
@@ -306,16 +339,6 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
       return CollapsedCommentRenderer(collapsedUiModel)
     }
 
-    val model = comment.createCommentUiModel(project, editor)
-    return model.renderer
-  }
-}
-
-fun CommentBase.createCommentUiModel(project: Project, editor: Editor): CommentUiModelBase {
-  return when (val comment = this) {
-    is DocComment -> DocCommentUiModel(comment, project, editor)
-    is CommentWithOneContentSegments -> CommentWithOneContentSegmentsUiModel(comment, project, editor)
-    is CommentWithOneTextSegment -> CommentWithOneTextSegmentUiModel(comment, project, editor)
-    else -> throw IllegalArgumentException(comment.javaClass.name)
+    return comment.uiModel.renderer
   }
 }

@@ -1,5 +1,6 @@
 package com.intelligentcomments.core.domain.core
 
+import com.intelligentcomments.ui.comments.model.CommentUiModelBase
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.markup.RangeHighlighter
 
@@ -7,6 +8,7 @@ import com.intellij.openapi.editor.markup.RangeHighlighter
 interface CommentBase : UniqueEntity, Parentable {
   val correspondingHighlighter: RangeHighlighter
   val identifier: CommentIdentifier
+  val uiModel: CommentUiModelBase
 
   fun isValid(): Boolean {
     return identifier.isValid

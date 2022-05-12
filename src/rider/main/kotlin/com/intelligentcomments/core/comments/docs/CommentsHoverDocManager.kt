@@ -1,6 +1,5 @@
 package com.intelligentcomments.core.comments.docs
 
-import com.intelligentcomments.core.comments.createCommentUiModel
 import com.intelligentcomments.core.comments.popups.IntelligentCommentPopupManager
 import com.intelligentcomments.core.domain.core.CommentBase
 import com.intellij.openapi.components.service
@@ -23,7 +22,7 @@ class CommentsHoverDocManager(private val project: Project) : LifetimedService()
     }
 
     val editor = e.editor
-    val model = comment.createCommentUiModel(project, editor)
+    val model = comment.uiModel
     val point = popupManager.calculatePointForPopupInComment(comment, e)
     popupManager.showPopupFor(model, editor, point)
   }

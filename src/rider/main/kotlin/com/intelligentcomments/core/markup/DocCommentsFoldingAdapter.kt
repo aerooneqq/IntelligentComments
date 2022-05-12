@@ -73,32 +73,38 @@ class DocCommentsFoldingAdapter(private val editor: EditorImpl) : FrontendMarkup
 
   override fun afterBulkAdd(highlighters: List<RangeHighlighterEx>) {
     application.assertIsDispatchThread()
-    editor.project?.let {
+    editor.project?.let { project ->
       updateScheduler.queueUpdate { continuation ->
         application.runReadAction {
-          val controller = it.getComponent(RiderCommentsController::class.java) ?: return@runReadAction
-          val commentsCreator = it.service<RiderCommentsCreator>()
+          val controller = project.getComponent(RiderCommentsController::class.java) ?: return@runReadAction
+          val commentsCreator = project.service<RiderCommentsCreator>()
 
           rangeMarkerCache.invalidateAndSort()
+          val ourHighlighters = highlighters.filter { it.getUserData(DocCommentModelKey) != null }
+          val highlightersWithComments = ourHighlighters.mapNotNull {
+            if (!it.isValid) return@mapNotNull null
+            val model = it.getUserData(DocCommentModelKey) ?: return@mapNotNull null
+
+            Pair(it, model)
+          }
 
           application.invokeLater {
-            executeOverDocHighlighters(highlighters) { highlighter, model ->
-              if (!highlighter.isValid) return@executeOverDocHighlighters
-
+            val comments = mutableListOf<CommentBase>()
+            for ((highlighter, model) in highlightersWithComments) {
               val marker = getRangeMarkerFor(highlighter.range, highlighter.document)
               marker.isGreedyToRight = true
 
-              val comment = commentsCreator.createComment(model.comment, marker, highlighter)
-              controller.addComment(editor, comment)
-
+              val comment = commentsCreator.createComment(editor, model.comment, marker, highlighter)
+              comments.add(comment)
               highlighter.putUserData(commentKey, comment)
               highlighter.isGreedyToRight = true
 
               if (settings.commentsDisplayKind.value != CommentsDisplayKind.Code) {
-                highlighter.gutterIconRenderer = DocCommentSwitchRenderModeGutterMark(comment, editor, it)
+                highlighter.gutterIconRenderer = DocCommentSwitchRenderModeGutterMark(comment, editor, project)
               }
             }
 
+            controller.addComments(editor, comments)
             continuation(Unit)
           }
         }

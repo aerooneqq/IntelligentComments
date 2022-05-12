@@ -49,8 +49,7 @@ class CollapsedCommentUiModel(
   }
 
 
-  override val renderer: RendererWithRectangleModel
-    get() = CollapsedCommentRenderer(this)
+  override val renderer: RendererWithRectangleModel = CollapsedCommentRenderer(this)
 
   override fun calculateStateHash(): Int {
     return contentSection.calculateStateHash()
