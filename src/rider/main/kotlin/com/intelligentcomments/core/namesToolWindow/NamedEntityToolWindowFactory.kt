@@ -84,7 +84,7 @@ class NamedEntityToolWindowFactory(private val project: Project) {
         }
 
         application.invokeLater {
-          val host = project.getComponent(RiderNamedEntitiesHost::class.java)
+          val host = project.getComponent(RiderCommentsNamedEntitiesHost::class.java)
           val currentEntities = host.getAllCurrentEntities()
           for (entity in currentEntities) {
             updateTree(entity)

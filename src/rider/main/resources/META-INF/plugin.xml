@@ -57,7 +57,7 @@
       <implementation-class>com.intelligentcomments.core.namesToolWindow.NamedEntityToolWindowFactory</implementation-class>
     </component>
     <component>
-      <implementation-class>com.intelligentcomments.core.namesToolWindow.RiderNamedEntitiesHost</implementation-class>
+      <implementation-class>com.intelligentcomments.core.namesToolWindow.RiderCommentsNamedEntitiesHost</implementation-class>
     </component>
     <component>
       <implementation-class>com.intelligentcomments.core.comments.states.RiderCommentsStateManager</implementation-class>

@@ -101,11 +101,11 @@ public class Invalidator
     foreach (var sourceFile in files)
     {
       mySolutionAnalysisService.ReanalyzeFile(sourceFile);
-        
+      
       if (openedDocuments.Contains(sourceFile.Document))
       {
         myDocumentMarkupManager.GetMarkupModel(sourceFile.Document).RemoveAllHighlighters();
-        myDaemonImpl.Invalidate(sourceFile.Document);
+        myDaemonImpl.ForceReHighlight(sourceFile.Document);
       }
     }
   }

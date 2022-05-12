@@ -22,7 +22,7 @@ public record struct NamedEntity([NotNull] string Name, DocumentOffset? Document
 public record struct FileNamesChange(
   [NotNull] IPsiSourceFile SourceFile, [NotNull] IEnumerable<NamedEntity> Entities, bool IsCacheLoaded);
 
-public interface INamesCache
+public interface INamesCache : IPsiSourceFileCache
 {
   public NameKind NameKind { get; }
   [NotNull] JetBrains.DataFlow.ISignal<FileNamesChange> Change { get; }

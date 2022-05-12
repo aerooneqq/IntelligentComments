@@ -29,17 +29,20 @@ public class NamedEntitiesHost
   private readonly Lifetime myLifetime;
   [NotNull] private readonly ILogger myLogger;
   [NotNull] private readonly IShellLocks myShellLocks;
+  [NotNull] private readonly IPsiCaches myPsiCaches;
   [NotNull] private readonly ISolution mySolution;
   [NotNull] private readonly ICommentsSettings mySettings;
   [NotNull] private readonly IPersistentIndexManager myIndex;
   [NotNull] private readonly Dictionary<NameKind, Dictionary<IPsiSourceFile, IEnumerable<RdNamedEntityItem>>> myCachedChanges;
   [NotNull] private readonly ISignal<RdFileNames> myNamedEntitiesChangeSignal;
+  [NotNull] private readonly IEnumerable<INamesCache> myCaches;
 
 
   public NamedEntitiesHost(
     Lifetime lifetime,
     [NotNull] ILogger logger,
     [NotNull] IShellLocks shellLocks,
+    [NotNull] IPsiCaches psiCaches,
     [NotNull] ISolution solution,
     [NotNull] IEnumerable<INamesCache> namesCaches,
     [NotNull] ICommentsSettings settings,
@@ -48,14 +51,15 @@ public class NamedEntitiesHost
     myLifetime = lifetime;
     myLogger = logger;
     myShellLocks = shellLocks;
+    myPsiCaches = psiCaches;
     mySolution = solution;
     mySettings = settings;
     myIndex = index;
     myCachedChanges = new Dictionary<NameKind, Dictionary<IPsiSourceFile, IEnumerable<RdNamedEntityItem>>>();
     myNamedEntitiesChangeSignal = solution.GetProtocolSolution().GetRdCommentsModel().NamedEntitiesChange;
 
-    var caches = namesCaches.ToList();
-    foreach (var cache in caches)
+    myCaches = namesCaches.ToList();
+    foreach (var cache in myCaches)
     {
       myCachedChanges[cache.NameKind] = new Dictionary<IPsiSourceFile, IEnumerable<RdNamedEntityItem>>();
     }
@@ -65,7 +69,7 @@ public class NamedEntitiesHost
       lifetime, $"{GetType().Name}::ProcessingChanges", SendChangesToFrontend,
       TimeSpan.FromMilliseconds(700), TimedActionsHost.Recurrence.Recurring, Rgc.Guarded);
     
-    foreach (var cache in caches)
+    foreach (var cache in myCaches)
     {
       cache.Change.Advise(lifetime, change => HandleCacheChange(cache, change));
     }
@@ -80,6 +84,21 @@ public class NamedEntitiesHost
       {
         myCachedChanges[nameKind].Clear();
       }
+    }
+    else
+    {
+      myShellLocks.QueueReadLock(myLifetime, $"{GetType().Name}::", () =>
+      {
+        foreach (var file in myIndex.GetAllSourceFiles())
+        {
+          foreach (var cache in myCaches)
+          {
+            cache.MarkAsDirty(file);
+          }
+        }
+        
+        myPsiCaches.Update();
+      });
     }
   }
 
