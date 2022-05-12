@@ -18,7 +18,7 @@ import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.wm.ToolWindow
-import com.intellij.openapi.wm.ToolWindowFactory
+import com.intellij.openapi.wm.ToolWindowManager
 import com.intellij.ui.OnePixelSplitter
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.content.impl.ContentImpl
@@ -26,6 +26,7 @@ import com.intellij.util.application
 import com.jetbrains.rd.ide.model.RdFileNames
 import com.jetbrains.rd.ide.model.RdNameKind
 import com.jetbrains.rd.platform.util.lifetime
+import com.jetbrains.rd.util.lifetime.SequentialLifetimes
 import com.jetbrains.rdclient.editors.FrontendTextControlHost
 import java.awt.BorderLayout
 import java.awt.event.MouseAdapter
@@ -34,51 +35,66 @@ import javax.swing.JPanel
 import javax.swing.JTree
 import javax.swing.tree.TreePath
 
-class NamedEntityToolWindowFactory() : ToolWindowFactory {
-  override fun createToolWindowContent(project: Project, toolWindow: ToolWindow) {
-    val invariantComponent = NamedEntitiesComponent(project, NameKind.Invariant)
-    val todoComponent = NamedEntitiesComponent(project, NameKind.Todo)
-    val hacksComponent = NamedEntitiesComponent(project, NameKind.Hack)
+class NamedEntityToolWindowFactory(private val project: Project) {
+  private var toolWindow: ToolWindow? = null
+  private val toolWindowLifetime = SequentialLifetimes(project.lifetime)
 
-    val components = listOf(invariantComponent, todoComponent, hacksComponent)
-
-    toolWindow.contentManager.addContent(ContentImpl(invariantComponent, "Invariants", false))
-    toolWindow.contentManager.addContent(ContentImpl(todoComponent, "Todos", false))
-    toolWindow.contentManager.addContent(ContentImpl(hacksComponent, "Hacks", false))
-
-    fun updateTree(fileNames: RdFileNames) {
-      when (fileNames.nameKind) {
-        RdNameKind.Hack -> {
-          hacksComponent.updateTree(fileNames)
-        }
-
-        RdNameKind.Todo -> {
-          todoComponent.updateTree(fileNames)
-        }
-
-        RdNameKind.Invariant -> {
-          invariantComponent.updateTree(fileNames)
-        }
+  init {
+    RiderIntelligentCommentsSettingsProvider.getInstance().useExperimentalFeatures.advise(project.lifetime) {
+      if (!it) {
+        toolWindow?.remove()
+        toolWindow = null
+        toolWindowLifetime.terminateCurrent()
+      } else {
+        createNewToolWindow()
       }
     }
+  }
 
+  private fun createNewToolWindow() {
     application.invokeLater {
-      val host = project.getComponent(RiderNamedEntitiesHost::class.java)
-      val currentEntities = host.getAllCurrentEntities()
-      for (entity in currentEntities) {
-        updateTree(entity)
-      }
+      if (toolWindow != null) return@invokeLater
+      val manager = ToolWindowManager.getInstance(project)
+      manager.invokeLater {
+        val invariantComponent = NamedEntitiesComponent(project, NameKind.Invariant)
+        val todoComponent = NamedEntitiesComponent(project, NameKind.Todo)
+        val hacksComponent = NamedEntitiesComponent(project, NameKind.Hack)
+        val newToolWindow = manager.registerToolWindow("Hacks, Todos and Invariants") { }
 
-      host.fileEntitiesChanged.advise(project.lifetime) {
-        if (it != null) {
-          updateTree(it)
+        newToolWindow.contentManager.addContent(ContentImpl(invariantComponent, "Invariants", false))
+        newToolWindow.contentManager.addContent(ContentImpl(todoComponent, "Todos", false))
+        newToolWindow.contentManager.addContent(ContentImpl(hacksComponent, "Hacks", false))
+
+        toolWindow = newToolWindow
+
+        fun updateTree(fileNames: RdFileNames) {
+          when (fileNames.nameKind) {
+            RdNameKind.Hack -> {
+              hacksComponent.updateTree(fileNames)
+            }
+
+            RdNameKind.Todo -> {
+              todoComponent.updateTree(fileNames)
+            }
+
+            RdNameKind.Invariant -> {
+              invariantComponent.updateTree(fileNames)
+            }
+          }
         }
-      }
 
-      RiderIntelligentCommentsSettingsProvider.getInstance().useExperimentalFeatures.advise(project.lifetime) {
-        if (!it) {
-          for (component in components) {
-            component.clear()
+        application.invokeLater {
+          val host = project.getComponent(RiderNamedEntitiesHost::class.java)
+          val currentEntities = host.getAllCurrentEntities()
+          for (entity in currentEntities) {
+            updateTree(entity)
+          }
+
+          val lifetime = toolWindowLifetime.next().lifetime
+          host.fileEntitiesChanged.advise(lifetime) {
+            if (it != null) {
+              updateTree(it)
+            }
           }
         }
       }

@@ -6,10 +6,6 @@
   <depends>com.intellij.modules.rider</depends>
 
   <extensions defaultExtensionNs="com.intellij">
-    <toolWindow factoryClass="com.intelligentcomments.core.namesToolWindow.NamedEntityToolWindowFactory"
-                anchor="bottom"
-                id="Hacks, Todos and Invariants"/>
-
     <applicationService serviceImplementation="com.intelligentcomments.core.changes.ChangeManagerImpl"
                         serviceInterface="com.intelligentcomments.core.changes.ChangeManager" />
     <applicationService serviceImplementation="com.intelligentcomments.core.settings.RiderIntelligentCommentsSettingsProviderImpl"
@@ -32,7 +28,6 @@
     <projectService serviceImplementation="com.intelligentcomments.core.comments.popups.IntelligentCommentPopupManager" />
     <projectService serviceImplementation="com.intelligentcomments.core.comments.resolver.FrontendReferenceResolverHost" />
 
-    <problemsViewPanelProvider implementation="com.intelligentcomments.core.problemsView.IntelligentCommentsProblemsViewPanelProvider" />
     <rdclient.highlighterModelSupport implementation="com.intelligentcomments.core.markup.DocCommentsFoldingHighlightersSupport" />
 
     <editorFactoryListener implementation="com.intelligentcomments.core.comments.listeners.RiderEditorsListener" />
@@ -70,6 +65,9 @@
 
   <project-components>
     <component>
+      <implementation-class>com.intelligentcomments.core.namesToolWindow.NamedEntityToolWindowFactory</implementation-class>
+    </component>
+    <component>
       <implementation-class>com.intelligentcomments.core.namesToolWindow.RiderNamedEntitiesHost</implementation-class>
     </component>
     <component>
@@ -97,7 +95,6 @@
       <implementation-class>
           com.intelligentcomments.core.problemsView.IntelligentCommentsExtensionsRegistrar
       </implementation-class>
-      <loadForDefaultProject />
     </component>
   </project-components>
 </idea-plugin>

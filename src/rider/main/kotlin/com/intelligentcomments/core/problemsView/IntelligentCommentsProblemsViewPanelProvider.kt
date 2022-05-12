@@ -3,14 +3,18 @@ package com.intelligentcomments.core.problemsView
 import com.intelligentcomments.core.namesToolWindow.createProblemsViewLikeComponent
 import com.intelligentcomments.core.namesToolWindow.setNodeExpandedState
 import com.intelligentcomments.core.problemsView.tree.*
-import com.intellij.analysis.problemsView.toolWindow.ProblemsViewPanelProvider
+import com.intelligentcomments.core.settings.RiderIntelligentCommentsSettingsProvider
 import com.intellij.analysis.problemsView.toolWindow.ProblemsViewTab
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.wm.ToolWindowManager
 import com.intellij.ui.OnePixelSplitter
+import com.intellij.ui.content.Content
+import com.intellij.ui.content.impl.ContentImpl
+import com.intellij.ui.content.impl.ContentManagerImpl
 import com.jetbrains.rd.platform.util.lifetime
 import com.jetbrains.rd.util.lifetime.Lifetime
-import com.jetbrains.rider.RiderProjectExtensionsConfigurator
+import com.jetbrains.rd.util.lifetime.SequentialLifetimes
 import com.jetbrains.rider.model.SolutionAnalysisModel
 import com.jetbrains.rider.model.SolutionAnalysisNavigation
 import com.jetbrains.rider.model.solutionAnalysisModel
@@ -24,22 +28,43 @@ import javax.swing.tree.TreePath
 
 
 class IntelligentCommentsExtensionsRegistrar(project: Project) {
+  private var currentContent: Content? = null
+  private val tabLifetimes = SequentialLifetimes(project.lifetime)
+
+
   init {
-    if (!project.isDefault) {
-      //xDDDDDDDDDDD
-      val unused = project.getComponent(RiderProjectExtensionsConfigurator::class.java)
-      val provider = IntelligentCommentsProblemsViewPanelProvider(project)
-      project.extensionArea.getExtensionPoint(ProblemsViewPanelProvider.EP).registerExtension(provider)
+    fun updateProblemsView(showOurTab: Boolean) {
+      val manager = ToolWindowManager.getInstance(project)
+
+      manager.invokeLater {
+        val toolWindow = manager.getToolWindow("Problems View")
+        val contentManager = toolWindow?.contentManager as? ContentManagerImpl
+
+        if (showOurTab) {
+          if (currentContent != null) return@invokeLater
+          val model = project.solution.solutionAnalysisModel
+          val lifetimeDef = tabLifetimes.next()
+          val tab = IntelligentCommentProblemsViewTab(project, model, lifetimeDef.lifetime)
+          val content = ContentImpl(tab, "Intelligent Comments", false).apply {
+            this.isCloseable = false
+          }
+
+          currentContent = content
+          contentManager?.addContent(content)
+        } else {
+          val copyOfCurrentContent = currentContent ?: return@invokeLater
+          contentManager?.removeContent(copyOfCurrentContent, true)
+          currentContent = null
+          tabLifetimes.terminateCurrent()
+        }
+      }
     }
-  }
-}
 
-class IntelligentCommentsProblemsViewPanelProvider(private val project: Project) : ProblemsViewPanelProvider {
-  override fun create(): ProblemsViewTab {
-    val model = project.solution.solutionAnalysisModel
-    val lifetime = project.lifetime.createNested()
-
-    return IntelligentCommentProblemsViewTab(project, model, lifetime)
+    val useExperimentalFeatures = RiderIntelligentCommentsSettingsProvider.getInstance().useExperimentalFeatures
+    updateProblemsView(useExperimentalFeatures.value)
+    useExperimentalFeatures.advise(project.lifetime) {
+      updateProblemsView(it)
+    }
   }
 }
 
