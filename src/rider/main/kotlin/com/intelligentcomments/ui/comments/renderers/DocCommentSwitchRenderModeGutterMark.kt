@@ -11,7 +11,6 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.Editor
-import com.intellij.openapi.editor.ScrollType
 import com.intellij.openapi.editor.impl.EditorImpl
 import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.openapi.project.Project
@@ -62,6 +61,9 @@ class DocCommentSwitchRenderModeGutterMark(
     return object : AnAction() {
       override fun actionPerformed(e: AnActionEvent) {
         e.dataContext.Editor?.let { editor ->
+          val commentStartLogicalPos = editor.offsetToLogicalPosition(comment.identifier.rangeMarker.startOffset)
+          editor.caretModel.moveToLogicalPosition(commentStartLogicalPos)
+
           controller.toggleModeChange(comment.identifier, editor as EditorImpl) {
             if (it == CommentsDisplayKind.Hide || it == CommentsDisplayKind.Render) {
               CommentsDisplayKind.Code
@@ -73,8 +75,6 @@ class DocCommentSwitchRenderModeGutterMark(
 
         application.invokeLater {
           guttersManager.makeGutterVisibleImmediately(comment, editor)
-          val commentStartLogicalPos = editor.offsetToLogicalPosition(comment.identifier.rangeMarker.startOffset)
-          editor.scrollingModel.scrollTo(commentStartLogicalPos, ScrollType.MAKE_VISIBLE)
         }
       }
     }
