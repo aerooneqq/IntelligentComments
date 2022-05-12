@@ -57,13 +57,13 @@ class CommentClickDocHost(private val project: Project) : LifetimedService() {
 
     val rdReference = reference.toRdReference(project)
     if (rdReference !is RdCodeEntityReference && rdReference !is RdProxyReference) {
-      logger.error("Expected RdCodeEntityReference or RdProxyReference, got $rdReference for ${commentIdentifier.moniker}")
+      logger.warn("Expected RdCodeEntityReference or RdProxyReference, got $rdReference for ${commentIdentifier.moniker}")
       return
     }
 
     val textControlId = editor.textControlId
     if (textControlId == null) {
-      logger.error("Got null documentId for ${commentIdentifier.moniker}")
+      logger.warn("Got null documentId for ${commentIdentifier.moniker}")
       return
     }
 

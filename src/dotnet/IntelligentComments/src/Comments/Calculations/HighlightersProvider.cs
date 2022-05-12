@@ -1,3 +1,4 @@
+using System.Drawing;
 using IntelligentComments.Comments.Domain.Core;
 using IntelligentComments.Comments.Domain.Core.References;
 using JetBrains.Annotations;
@@ -94,9 +95,20 @@ public abstract class HighlightersProvider : IHighlightersProvider
   public TextHighlighter GetSeeCodeEntityHighlighter(int startOffset, int endOffset) => 
     Get(SeeCodeEntityKey, startOffset, endOffset);
   
-  public TextHighlighter GetSeeHttpLinkHighlighter(int startOffset, int endOffset) => 
-    Get(SeeHttpKey, startOffset, endOffset);
-  
+  public TextHighlighter GetSeeHttpLinkHighlighter(int startOffset, int endOffset)
+  {
+    if (TryGetDocCommentHighlighter(endOffset) is not { } highlighter)
+    {
+      return Get(SeeHttpKey, startOffset, endOffset);
+    }
+
+    return highlighter with
+    {
+      Attributes = highlighter.Attributes with { Underline = true },
+      TextAnimation = new ForegroundTextAnimation(Color.MediumTurquoise)
+    };
+  }
+
   public TextHighlighter GetSeeLangWordHighlighter(int startOffset, int endOffset) => 
     Get(SeeLangWord, startOffset, endOffset);
   
@@ -141,7 +153,7 @@ public abstract class HighlightersProvider : IHighlightersProvider
   
   [CanBeNull]
   private TextHighlighter TryGetHighlighterWithReSharperId(
-    int startOffset, int endOffset, [CanBeNull] IDomainReference domainReference, IDomainResolveContext context)
+    int startOffset, int endOffset, [CanBeNull] IDomainReference domainReference, [NotNull] IDomainResolveContext context)
   {
     if (domainReference is { } && TryGetAttributeId(domainReference, context) is { } attributeId)
     {

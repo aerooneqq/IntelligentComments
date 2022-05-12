@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using IntelligentComments.Comments.Calculations.Core.DocComments.Utils;
 using IntelligentComments.Comments.Domain.Core;
@@ -470,8 +471,14 @@ public static class CommentsDomainUtil
     return textAnimation switch
     {
       UnderlineTextAnimation => new RdUnderlineTextAnimation(),
+      ForegroundTextAnimation animation => new RdForegroundColorAnimation(animation.HoveredColor.ToRdColor()),
       _ => throw new ArgumentOutOfRangeException(textAnimation.GetType().Name)
     };
+  }
+
+  private static RdColor ToRdColor(this Color color)
+  {
+    return new RdColor("#" + color.R.ToString("X2") + color.G.ToString("X2") + color.B.ToString("X2"));
   }
 
   [NotNull]

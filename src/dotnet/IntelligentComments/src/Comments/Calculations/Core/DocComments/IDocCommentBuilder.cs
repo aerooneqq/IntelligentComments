@@ -553,7 +553,7 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
       _ => throw new ArgumentOutOfRangeException(domainReference.GetType().Name)
     };
     
-    AddHighlightedText(content, highlighter);
+    AddHighlightedText(content, highlighter with { References = new [] { domainReference }});
   }
 
   public override void VisitList(XmlElement element)

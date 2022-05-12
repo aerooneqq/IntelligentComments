@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Drawing;
 using IntelligentComments.Comments.Domain.Core.References;
 using JetBrains.Annotations;
 using JetBrains.Rd.Base;
@@ -71,8 +72,18 @@ public abstract class TextAnimation
 
 public class UnderlineTextAnimation : TextAnimation
 {
-  public static UnderlineTextAnimation Instance { get; } = new();
+  [NotNull] public static UnderlineTextAnimation Instance { get; } = new();
   
   
   private UnderlineTextAnimation() { }
+}
+
+public class ForegroundTextAnimation : TextAnimation
+{
+  public Color HoveredColor { get; }
+  
+  public ForegroundTextAnimation(Color hoveredColor)
+  {
+    HoveredColor = hoveredColor;
+  }
 }
