@@ -55,6 +55,8 @@ interface NamedEntityReference : BackendReference {
   val name: String
 }
 
+interface LangWordReference : BackendReference
+
 interface ReferenceContentSegment : ContentSegment {
   val reference: Reference
   val name: HighlightedText

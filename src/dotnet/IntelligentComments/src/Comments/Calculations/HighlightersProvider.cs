@@ -109,8 +109,15 @@ public abstract class HighlightersProvider : IHighlightersProvider
     };
   }
 
-  public TextHighlighter GetSeeLangWordHighlighter(int startOffset, int endOffset) => 
-    Get(SeeLangWord, startOffset, endOffset);
+  public TextHighlighter GetSeeLangWordHighlighter(int startOffset, int endOffset)
+  {
+    if (TryGetReSharperHighlighter(DefaultLanguageAttributeIds.KEYWORD, endOffset) is not { } highlighter)
+    {
+      return Get(SeeLangWord, startOffset, endOffset);
+    }
+
+    return highlighter;
+  }
   
   public TextHighlighter GetExceptionHighlighter(int startOffset, int endOffset) => 
     Get(Exception, startOffset, endOffset);

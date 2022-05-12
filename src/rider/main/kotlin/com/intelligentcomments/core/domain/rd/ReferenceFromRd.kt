@@ -21,6 +21,7 @@ open class ReferenceFromRd(reference: RdReference) : UniqueEntityImpl(), Referen
         is RdHttpLinkReference -> HttpLinkReferenceFromRd(reference)
         is RdFileReference -> FileReferenceFromRd(reference)
         is RdNamedEntityReference -> InvariantReferenceFromRd(reference)
+        is RdLangWordReference -> LangWordReferenceFromRd(reference)
         else -> throw IllegalArgumentException(reference.toString())
       }
     }
@@ -108,4 +109,7 @@ class FileReferenceFromRd(reference: RdFileReference) : ExternalReferenceFromRd(
 class InvariantReferenceFromRd(reference: RdNamedEntityReference) : ReferenceFromRd(reference), NamedEntityReference {
   override val name: String = reference.name
   override val nameKind: NameKind = reference.nameKind.toIdeaNameKind()
+}
+
+class LangWordReferenceFromRd(reference: RdLangWordReference) : ReferenceFromRd(reference), LangWordReference {
 }
