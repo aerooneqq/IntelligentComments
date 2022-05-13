@@ -6,8 +6,8 @@ import com.intelligentcomments.ui.comments.model.UiInteractionModelBase
 import com.intelligentcomments.ui.comments.model.content.ContentSegmentUiModel
 import com.intelligentcomments.ui.comments.model.content.ContentSegmentsUiModel
 import com.intelligentcomments.ui.comments.model.highlighters.HighlightedTextUiWrapper
-import com.intelligentcomments.ui.comments.renderers.segments.invariants.InvariantRenderer
-import com.intelligentcomments.ui.comments.renderers.segments.invariants.TextDefaultInvariantRenderer
+import com.intelligentcomments.ui.comments.renderers.segments.TextRendererBase
+import com.intelligentcomments.ui.core.Renderer
 import com.intelligentcomments.ui.util.HashUtil
 import com.intellij.openapi.project.Project
 
@@ -31,5 +31,5 @@ class TextInvariantUiModel(
     return HashUtil.hashCode(name.calculateStateHash(), content.calculateStateHash())
   }
 
-  override fun createRenderer(): InvariantRenderer = TextDefaultInvariantRenderer(this)
+  override fun createRenderer(): Renderer = TextRendererBase(name)
 }
