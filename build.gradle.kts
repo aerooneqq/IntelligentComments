@@ -49,14 +49,13 @@ fun calculateVersionForPluginProps(): String {
 
 fun getAllDlls(): List<String> {
     val outputFolder = "${rootDir}/src/dotnet/${riderProjectName}/bin/${riderProjectName}/${buildConfiguration}"
-    val dllFiles = listOf(
-      "$outputFolder/${riderDll}.dll",
-      "$outputFolder/${riderDll}.pdb",
-      "$outputFolder/${commonDll}.dll",
-      "$outputFolder/${commonDll}.pdb",
-    )
 
-    return dllFiles
+    return listOf(
+        "$outputFolder/${riderDll}.dll",
+        "$outputFolder/${riderDll}.pdb",
+        "$outputFolder/${commonDll}.dll",
+        "$outputFolder/${commonDll}.pdb",
+    )
 }
 
 fun AbstractCopyTask.copyReSharperDllsToSandbox() {

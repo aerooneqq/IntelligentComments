@@ -1,7 +1,6 @@
 package com.intelligentcomments.test.cases
 
 import com.intelligentcomments.core.comments.RiderCommentsController
-import com.intelligentcomments.core.comments.createCommentUiModel
 import com.jetbrains.rdclient.testFramework.executeWithGold
 import com.jetbrains.rdclient.testFramework.waitForDaemon
 import com.jetbrains.rider.test.base.BaseTestWithSolution
@@ -37,7 +36,7 @@ class RectanglesModelTest : BaseTestWithSolution() {
       waitForDaemon()
       executeWithGold(testGoldFile) {
         for (comment in project.getComponent(RiderCommentsController::class.java).getAllCommentsFor(this)) {
-          val renderer = comment.createCommentUiModel(project, this).renderer
+          val renderer = comment.uiModel.renderer
           it.println(renderer.dumpRectangleModel(this))
         }
       }
