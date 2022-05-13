@@ -6,7 +6,7 @@ import com.intelligentcomments.core.domain.impl.HighlightedTextImpl
 import com.intelligentcomments.ui.comments.model.UiInteractionModelBase
 import com.intelligentcomments.ui.comments.model.content.GroupedContentUiModel
 import com.intelligentcomments.ui.comments.model.content.getFirstLevelHeader
-import com.intelligentcomments.ui.comments.renderers.segments.invariants.GroupedInvariantsRenderer
+import com.intelligentcomments.ui.comments.renderers.segments.LeftTextHeaderAndRightContentRenderer
 import com.intelligentcomments.ui.core.Renderer
 import com.intellij.openapi.project.Project
 
@@ -36,7 +36,7 @@ class GroupedInvariantsUiModel(
   getFirstLevelHeader(project, InvariantsSectionName, model)
 ) {
   override fun createRenderer(): Renderer {
-    return GroupedInvariantsRenderer(this)
+    return LeftTextHeaderAndRightContentRenderer(header, content)
   }
 }
 

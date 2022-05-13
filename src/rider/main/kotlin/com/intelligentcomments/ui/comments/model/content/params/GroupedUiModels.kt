@@ -7,8 +7,7 @@ import com.intelligentcomments.core.domain.impl.GroupedTypeParamSegment
 import com.intelligentcomments.ui.comments.model.UiInteractionModelBase
 import com.intelligentcomments.ui.comments.model.content.GroupedContentUiModel
 import com.intelligentcomments.ui.comments.model.content.getFirstLevelHeader
-import com.intelligentcomments.ui.comments.renderers.segments.GroupedParamsRenderer
-import com.intelligentcomments.ui.comments.renderers.segments.GroupedTypeParamsRenderer
+import com.intelligentcomments.ui.comments.renderers.segments.LeftTextHeaderAndRightContentRenderer
 import com.intelligentcomments.ui.core.Renderer
 import com.intellij.openapi.project.Project
 
@@ -29,7 +28,7 @@ class GroupedParamsUiModel(
   getFirstLevelHeader(project, groupedParamsSectionName, model)
 ) {
   override fun createRenderer(): Renderer {
-    return GroupedParamsRenderer(this)
+    return LeftTextHeaderAndRightContentRenderer(header, content)
   }
 }
 
@@ -53,6 +52,6 @@ class GroupedTypeParamsUiModel(
   getFirstLevelHeader(project, groupedTypeParamsSectionName, model)
 ) {
   override fun createRenderer(): Renderer {
-    return GroupedTypeParamsRenderer(this)
+    return LeftTextHeaderAndRightContentRenderer(header, content)
   }
 }

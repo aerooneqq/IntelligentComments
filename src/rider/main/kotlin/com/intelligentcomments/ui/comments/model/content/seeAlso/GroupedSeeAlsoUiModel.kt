@@ -5,7 +5,7 @@ import com.intelligentcomments.core.domain.core.SeeAlsoSegment
 import com.intelligentcomments.ui.comments.model.UiInteractionModelBase
 import com.intelligentcomments.ui.comments.model.content.GroupedContentWithTextUiModel
 import com.intelligentcomments.ui.comments.model.content.getFirstLevelHeader
-import com.intelligentcomments.ui.comments.renderers.segments.GroupedSeeAlsoRenderer
+import com.intelligentcomments.ui.comments.renderers.segments.LeftTextHeaderAndRightContentRenderer
 import com.intelligentcomments.ui.core.Renderer
 import com.intellij.openapi.project.Project
 
@@ -25,6 +25,6 @@ class GroupedSeeAlsoUiModel(
   )
 ) {
   override fun createRenderer(): Renderer {
-    return GroupedSeeAlsoRenderer(this)
+    return LeftTextHeaderAndRightContentRenderer(header, listOf(description))
   }
 }

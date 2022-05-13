@@ -6,7 +6,7 @@ import com.intelligentcomments.ui.comments.model.UiInteractionModelBase
 import com.intelligentcomments.ui.comments.model.content.GroupedContentUiModel
 import com.intelligentcomments.ui.comments.model.content.getFirstLevelHeader
 import com.intelligentcomments.ui.comments.model.content.invariants.mergeSegmentsTexts
-import com.intelligentcomments.ui.comments.renderers.segments.tickets.GroupedTicketsSegmentRenderer
+import com.intelligentcomments.ui.comments.renderers.segments.LeftTextHeaderAndRightContentRenderer
 import com.intelligentcomments.ui.core.Renderer
 import com.intellij.openapi.project.Project
 
@@ -34,6 +34,6 @@ class GroupedTicketsUiModel(
   getFirstLevelHeader(project, ticketsSectionName, model)
 ) {
   override fun createRenderer(): Renderer {
-    return GroupedTicketsSegmentRenderer(this)
+    return LeftTextHeaderAndRightContentRenderer(header, content)
   }
 }

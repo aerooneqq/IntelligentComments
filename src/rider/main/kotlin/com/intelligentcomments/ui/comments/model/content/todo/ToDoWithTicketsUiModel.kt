@@ -7,7 +7,6 @@ import com.intelligentcomments.ui.comments.model.UiInteractionModelBase
 import com.intelligentcomments.ui.comments.model.content.ContentSegmentUiModel
 import com.intelligentcomments.ui.comments.model.content.hacks.generateContentSegmentsUiModelForNamedEntity
 import com.intelligentcomments.ui.comments.renderers.ContentSegmentsRenderer
-import com.intelligentcomments.ui.comments.renderers.segments.SegmentRenderer
 import com.intelligentcomments.ui.core.Renderer
 import com.intellij.openapi.project.Project
 
@@ -22,5 +21,5 @@ class ToDoWithTicketsUiModel(
     return content.calculateStateHash()
   }
 
-  override fun createRenderer(): Renderer = object : ContentSegmentsRenderer(content), SegmentRenderer { }
+  override fun createRenderer(): Renderer = ContentSegmentsRenderer(content)
 }

@@ -5,7 +5,7 @@ import com.intelligentcomments.core.domain.core.SummaryContentSegment
 import com.intelligentcomments.ui.comments.model.UiInteractionModelBase
 import com.intelligentcomments.ui.comments.model.content.GroupedContentUiModel
 import com.intelligentcomments.ui.comments.model.content.getFirstLevelHeader
-import com.intelligentcomments.ui.comments.renderers.segments.GroupedSummariesRenderer
+import com.intelligentcomments.ui.comments.renderers.segments.LeftTextHeaderAndRightContentRenderer
 import com.intelligentcomments.ui.core.Renderer
 import com.intellij.openapi.project.Project
 
@@ -25,7 +25,7 @@ class GroupedSummaryUiModel(
   )
 ) {
   override fun createRenderer(): Renderer {
-    return GroupedSummariesRenderer(this)
+    return LeftTextHeaderAndRightContentRenderer(header, content, false)
   }
 }
 

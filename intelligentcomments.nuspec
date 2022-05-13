@@ -7,9 +7,9 @@
         <authors>AS</authors>
     </metadata>
     <files>
-<file src="C:/Users/aeroo/Desktop/C#/IntelligentComments/src/dotnet/IntelligentComments.Rider/bin/IntelligentComments.Rider/Release/IntelligentComments.Rider.dll" target="lib/net472" />
-<file src="C:/Users/aeroo/Desktop/C#/IntelligentComments/src/dotnet/IntelligentComments.Rider/bin/IntelligentComments.Rider/Release/IntelligentComments.Rider.pdb" target="lib/net472" />
-<file src="C:/Users/aeroo/Desktop/C#/IntelligentComments/src/dotnet/IntelligentComments.Rider/bin/IntelligentComments.Rider/Release/IntelligentComments.dll" target="lib/net472" />
-<file src="C:/Users/aeroo/Desktop/C#/IntelligentComments/src/dotnet/IntelligentComments.Rider/bin/IntelligentComments.Rider/Release/IntelligentComments.pdb" target="lib/net472" />
+<file src="/Users/aero/Programming/IntelligentComments/src/dotnet/IntelligentComments.Rider/bin/IntelligentComments.Rider/Release/IntelligentComments.Rider.dll" target="lib/net472" />
+<file src="/Users/aero/Programming/IntelligentComments/src/dotnet/IntelligentComments.Rider/bin/IntelligentComments.Rider/Release/IntelligentComments.Rider.pdb" target="lib/net472" />
+<file src="/Users/aero/Programming/IntelligentComments/src/dotnet/IntelligentComments.Rider/bin/IntelligentComments.Rider/Release/IntelligentComments.dll" target="lib/net472" />
+<file src="/Users/aero/Programming/IntelligentComments/src/dotnet/IntelligentComments.Rider/bin/IntelligentComments.Rider/Release/IntelligentComments.pdb" target="lib/net472" />
 </files>
 </package>

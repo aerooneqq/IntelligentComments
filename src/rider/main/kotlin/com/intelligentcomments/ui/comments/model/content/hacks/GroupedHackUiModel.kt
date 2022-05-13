@@ -7,7 +7,7 @@ import com.intelligentcomments.ui.comments.model.content.ContentSegmentsUiModel
 import com.intelligentcomments.ui.comments.model.content.GroupedContentUiModel
 import com.intelligentcomments.ui.comments.model.content.getFirstLevelHeader
 import com.intelligentcomments.ui.comments.model.content.invariants.createStartTextOfNamedEntity
-import com.intelligentcomments.ui.comments.renderers.segments.GroupedHacksRenderer
+import com.intelligentcomments.ui.comments.renderers.segments.LeftTextHeaderAndRightContentRenderer
 import com.intelligentcomments.ui.core.Renderer
 import com.intellij.openapi.project.Project
 
@@ -29,7 +29,7 @@ class GroupedHackUiModel(
   )
 ) {
   override fun createRenderer(): Renderer {
-    return GroupedHacksRenderer(this)
+    return LeftTextHeaderAndRightContentRenderer(header, content)
   }
 }
 

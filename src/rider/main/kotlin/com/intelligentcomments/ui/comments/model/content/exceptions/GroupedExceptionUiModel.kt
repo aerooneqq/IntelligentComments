@@ -4,7 +4,7 @@ import com.intelligentcomments.core.domain.core.*
 import com.intelligentcomments.ui.comments.model.UiInteractionModelBase
 import com.intelligentcomments.ui.comments.model.content.GroupedContentUiModel
 import com.intelligentcomments.ui.comments.model.content.getFirstLevelHeader
-import com.intelligentcomments.ui.comments.renderers.segments.GroupedExceptionsRenderer
+import com.intelligentcomments.ui.comments.renderers.segments.LeftTextHeaderAndRightContentRenderer
 import com.intelligentcomments.ui.core.Renderer
 import com.intellij.openapi.project.Project
 
@@ -29,7 +29,7 @@ class GroupedExceptionUiModel(
   )
 ) {
   override fun createRenderer(): Renderer {
-    return GroupedExceptionsRenderer(this)
+    return LeftTextHeaderAndRightContentRenderer(header, content)
   }
 }
 

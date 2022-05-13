@@ -4,7 +4,7 @@ import com.intelligentcomments.core.domain.core.*
 import com.intelligentcomments.core.domain.impl.HighlightedTextImpl
 import com.intelligentcomments.ui.comments.model.UiInteractionModelBase
 import com.intelligentcomments.ui.comments.model.highlighters.HighlightedTextUiWrapper
-import com.intelligentcomments.ui.comments.renderers.segments.InlineContentSegmentRenderer
+import com.intelligentcomments.ui.comments.renderers.segments.LeftTextHeaderAndRightContentRenderer
 import com.intelligentcomments.ui.core.Renderer
 import com.intelligentcomments.ui.util.HashUtil
 import com.intellij.openapi.project.Project
@@ -31,7 +31,7 @@ class InlineContentSegmentUiModel(
   }
 
   override fun createRenderer(): Renderer {
-    return InlineContentSegmentRenderer(this)
+    return LeftTextHeaderAndRightContentRenderer(header, content)
   }
 
   override fun calculateStateHash(): Int {
