@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
     <metadata>
         <id>IntelligentComments.Rider</id>
-        <version>1.0.0-EAP1</version>
+        <version>1.0.0-EAP2</version>
         <description>The plugin renders comments and provides some features to store implicit dependencies between entities in the code-base</description>
         <authors>AS</authors>
     </metadata>

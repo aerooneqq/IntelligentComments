@@ -1,3 +1,16 @@
+1.0.0-EAP2
+
+Added:
+
+- Setting "Use experimental features" to enable/disable experimental features 
+
+Fixed:
+
+- Performance when rendering comments in big files, such as Task.cs from standard library
+- Not correctly highlighting langword reference
+- Not correctly handling href reference
+- Not that good UX when switching comment to edit mode
+
 1.0.0-EAP1
 
 Added:
