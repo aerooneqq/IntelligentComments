@@ -7,7 +7,7 @@ import com.intelligentcomments.ui.comments.model.UiInteractionModelBase
 import com.intelligentcomments.ui.comments.model.content.ContentSegmentUiModel
 import com.intelligentcomments.ui.comments.model.content.ContentSegmentsUiModel
 import com.intelligentcomments.ui.comments.model.highlighters.HighlightedTextUiWrapper
-import com.intelligentcomments.ui.comments.renderers.segments.tickets.TicketSegmentRenderer
+import com.intelligentcomments.ui.comments.renderers.segments.LeftTextHeaderAndRightContentRenderer
 import com.intelligentcomments.ui.core.Renderer
 import com.intelligentcomments.ui.util.HashUtil
 import com.intellij.openapi.project.Project
@@ -30,7 +30,7 @@ class TicketUiModel(
     return HashUtil.hashCode(description.calculateStateHash())
   }
 
-  override fun createRenderer(): Renderer = TicketSegmentRenderer(this)
+  override fun createRenderer(): Renderer = LeftTextHeaderAndRightContentRenderer(displayName, description)
 }
 
 fun createHighlightedTicketName(ticket: TicketContentSegment): HighlightedText {

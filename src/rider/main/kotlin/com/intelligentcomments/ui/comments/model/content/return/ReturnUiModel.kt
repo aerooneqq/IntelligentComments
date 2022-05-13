@@ -6,7 +6,7 @@ import com.intelligentcomments.ui.comments.model.content.ContentSegmentUiModel
 import com.intelligentcomments.ui.comments.model.content.ContentSegmentsUiModel
 import com.intelligentcomments.ui.comments.model.content.getFirstLevelHeader
 import com.intelligentcomments.ui.comments.model.highlighters.HighlightedTextUiWrapper
-import com.intelligentcomments.ui.comments.renderers.segments.ReturnSegmentRenderer
+import com.intelligentcomments.ui.comments.renderers.segments.LeftTextHeaderAndRightContentRenderer
 import com.intelligentcomments.ui.core.Renderer
 import com.intelligentcomments.ui.util.HashUtil
 import com.intellij.openapi.project.Project
@@ -32,7 +32,7 @@ class ReturnUiModel(
   }
 
   override fun createRenderer(): Renderer {
-    return ReturnSegmentRenderer(this)
+    return LeftTextHeaderAndRightContentRenderer(headerText, content)
   }
 }
 

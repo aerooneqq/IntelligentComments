@@ -4,7 +4,7 @@ import com.intelligentcomments.core.domain.core.RemarksSegment
 import com.intelligentcomments.ui.comments.model.UiInteractionModelBase
 import com.intelligentcomments.ui.comments.model.content.ContentSegmentUiModel
 import com.intelligentcomments.ui.comments.model.content.ContentSegmentsUiModel
-import com.intelligentcomments.ui.comments.renderers.segments.RemarksSegmentRenderer
+import com.intelligentcomments.ui.comments.renderers.ContentSegmentsRenderer
 import com.intelligentcomments.ui.core.Renderer
 import com.intelligentcomments.ui.util.HashUtil
 import com.intellij.openapi.project.Project
@@ -22,6 +22,6 @@ class RemarksUiModel(
   }
 
   override fun createRenderer(): Renderer {
-    return RemarksSegmentRenderer(this)
+    return ContentSegmentsRenderer(content)
   }
 }

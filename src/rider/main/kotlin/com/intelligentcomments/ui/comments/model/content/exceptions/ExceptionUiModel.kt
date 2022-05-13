@@ -5,7 +5,7 @@ import com.intelligentcomments.ui.comments.model.UiInteractionModelBase
 import com.intelligentcomments.ui.comments.model.content.ContentSegmentUiModel
 import com.intelligentcomments.ui.comments.model.content.ContentSegmentsUiModel
 import com.intelligentcomments.ui.comments.model.highlighters.HighlightedTextUiWrapper
-import com.intelligentcomments.ui.comments.renderers.segments.ExceptionSegmentRenderer
+import com.intelligentcomments.ui.comments.renderers.segments.LeftTextHeaderAndRightContentRenderer
 import com.intelligentcomments.ui.core.Renderer
 import com.intelligentcomments.ui.util.HashUtil
 import com.intellij.openapi.project.Project
@@ -24,6 +24,6 @@ class ExceptionUiModel(
   }
 
   override fun createRenderer(): Renderer {
-    return ExceptionSegmentRenderer(this)
+    return LeftTextHeaderAndRightContentRenderer(name, content.contentSection.content)
   }
 }

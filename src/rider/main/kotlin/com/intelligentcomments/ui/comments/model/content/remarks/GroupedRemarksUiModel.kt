@@ -4,7 +4,7 @@ import com.intelligentcomments.core.domain.impl.GroupedRemarksSegment
 import com.intelligentcomments.ui.comments.model.UiInteractionModelBase
 import com.intelligentcomments.ui.comments.model.content.GroupedContentUiModel
 import com.intelligentcomments.ui.comments.model.content.getFirstLevelHeader
-import com.intelligentcomments.ui.comments.renderers.segments.GroupedRemarksRenderer
+import com.intelligentcomments.ui.comments.renderers.segments.LeftTextHeaderAndRightContentRenderer
 import com.intelligentcomments.ui.core.Renderer
 import com.intellij.openapi.project.Project
 
@@ -26,6 +26,6 @@ class GroupedRemarksUiModel(
   )
 ) {
   override fun createRenderer(): Renderer {
-    return GroupedRemarksRenderer(this)
+    return LeftTextHeaderAndRightContentRenderer(header, content)
   }
 }

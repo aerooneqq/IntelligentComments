@@ -205,7 +205,6 @@ tasks {
     buildPlugin {
         dependsOn(compileDotNet)
         dependsOn(compileKotlin)
-        dependsOn(packDlls)
     }
 
     patchPluginXml {
