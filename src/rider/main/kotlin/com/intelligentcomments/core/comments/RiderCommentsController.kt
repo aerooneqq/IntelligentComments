@@ -204,6 +204,7 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
 
   private fun toggleEditMode(commentIdentifier: CommentIdentifier, editor: Editor) {
     application.assertIsDispatchThread()
+    assertThatInBatchFoldingUpdate(editor)
 
     val correspondingComment = getComment(commentIdentifier, editor.document)
     if (correspondingComment != null) {
@@ -254,6 +255,7 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
 
   private fun toggleRenderMode(commentId: CommentIdentifier, editor: Editor, state: CommentState) {
     application.assertIsDispatchThread()
+    assertThatInBatchFoldingUpdate(editor)
 
     val correspondingComment = getComment(commentId, editor.document)
 
