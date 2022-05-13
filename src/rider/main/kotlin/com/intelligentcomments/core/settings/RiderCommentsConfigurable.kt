@@ -90,6 +90,10 @@ class RiderCommentsConfigurable : BoundConfigurable("Intelligent comments", null
         row {
           radioButton("Display comments in edit-mode").associateWith(viewModel::editMode)
         }
+
+        row {
+          checkBox("Use experimental features").associateWith(viewModel::useExperimentalFeatures)
+        }
       }
     }
   }
@@ -141,10 +145,6 @@ class RiderCommentsConfigurable : BoundConfigurable("Intelligent comments", null
   private fun createOtherDocCommentsOptions(panel: Panel) {
     panel.apply {
       buttonGroup("Other documentation comment render options:") {
-        row {
-          checkBox("Use experimental features").associateWith(viewModel::useExperimentalFeatures)
-        }
-
         row {
           checkBox("Show empty content").associateWith(viewModel::showEmptyContent)
         }
