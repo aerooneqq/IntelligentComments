@@ -82,6 +82,7 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
     if (isRunningBatchFoldingOperation) {
       logger.logAssertion("Already running batch operation, may be bad for performance to run one more")
       action()
+      return
     }
 
     isRunningBatchFoldingOperation = true
