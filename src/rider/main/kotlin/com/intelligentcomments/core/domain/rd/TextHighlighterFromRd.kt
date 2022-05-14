@@ -55,13 +55,17 @@ private fun RdTextHighlighter.toIdeaHighlighterFromReSharper(
 ): TextHighlighter {
   val textAttributes = tryGetTextAttributes(key) ?: return toIdeaHighlighterInternal(project, parent, null)
 
-  var textColor = when(EditorColorsManager.getInstance().isDarkEditor) {
-    true -> textAttributes.foregroundColor?.darker()
-    false -> textAttributes.foregroundColor?.brighter()
-  }
-
+  var textColor = textAttributes.foregroundColor?.adjustColorToTheme()
   textColor = textColor ?: return toIdeaHighlighterInternal(project, parent, null)
   return toIdeaHighlighterInternal(project, parent, textColor)
+}
+
+fun Color.adjustColorToTheme(): Color {
+  return if (EditorColorsManager.getInstance().isDarkEditor) {
+    darker()
+  } else {
+    brighter()
+  }
 }
 
 fun tryGetTextAttributes(key: String): TextAttributes? {
