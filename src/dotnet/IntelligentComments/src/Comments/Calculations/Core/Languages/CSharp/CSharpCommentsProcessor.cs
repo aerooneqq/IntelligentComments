@@ -33,6 +33,7 @@ public class CSharpCommentsProcessor : CommentsProcessorBase
       return;
     }
     
+    //reference to invariant: CollectOperationsMustOrderOperations
     foreach (var operation in CommentOperationsUtil.CollectOperations(element))
     {
       if (operation.TryCreate(element) is var (comment, nodes))
