@@ -44,7 +44,7 @@ interface RiderIntelligentCommentsSettingsProvider {
 }
 
 class RiderIntelligentCommentsSettingsProviderImpl : LifetimedService(), RiderIntelligentCommentsSettingsProvider {
-  override val commentsDisplayKind: Property<CommentsDisplayKind> = Property(CommentsDisplayKind.Hide)
+  override val commentsDisplayKind: Property<CommentsDisplayKind> = Property(CommentsDisplayKind.Render)
   override val groupingDelimiter: Property<String> = Property("\n")
   override val groupSeeAlso: Property<Boolean> = Property(true)
   override val groupReturns: Property<Boolean> = Property(true)
