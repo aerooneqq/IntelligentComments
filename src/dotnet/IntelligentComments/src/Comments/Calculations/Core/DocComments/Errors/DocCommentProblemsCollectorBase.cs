@@ -158,7 +158,7 @@ public abstract class DocCommentProblemsCollectorBase : IDocCommentProblemsColle
         if (!possibleTagsNames.Contains(tag.Header.Name.XmlName))
         {
           anyError = true;
-          AddError(tag.Header.GetDocumentRange(), $"Invalid tag", context);
+          AddError(tag.Header.GetDocumentRange(), "Invalid tag", context);
         }
       }
     }
@@ -226,7 +226,8 @@ public abstract class DocCommentProblemsCollectorBase : IDocCommentProblemsColle
     CheckThatNameOccursNotMoreThanOnce(invariantTag, context);
   }
 
-  private bool CheckThatReferenceHasExactlyOneOfNeededTags([NotNull] IXmlTag referenceTag, [NotNull] DocCommentErrorAnalyzerContext context)
+  private bool CheckThatReferenceHasExactlyOneOfNeededTags(
+    [NotNull] IXmlTag referenceTag, [NotNull] DocCommentErrorAnalyzerContext context)
   {
     var needAttrsCount = 0;
     var tagRange = referenceTag.GetDocumentRange();
