@@ -1,6 +1,7 @@
 package com.intelligentcomments.core.domain.core
 
 import com.intelligentcomments.core.domain.rd.BackendHighlightersKeys
+import com.intelligentcomments.core.domain.rd.adjustColorToTheme
 import com.intelligentcomments.core.domain.rd.tryGetTextAttributes
 import com.intelligentcomments.core.settings.RiderIntelligentCommentsSettingsProvider
 import java.awt.Color
@@ -45,7 +46,7 @@ object CommonsHighlightersFactory {
       parent,
       0,
       textLength,
-      attributes.foregroundColor.darker(),
+      attributes.foregroundColor.adjustColorToTheme(),
       attributes = getOrAdjustAttributes(),
       references = references,
       mouseInOutAnimation = animation

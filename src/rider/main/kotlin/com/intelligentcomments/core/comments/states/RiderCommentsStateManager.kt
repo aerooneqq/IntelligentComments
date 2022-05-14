@@ -22,7 +22,9 @@ import com.intellij.util.xmlb.annotations.Attribute
 import com.intellij.util.xmlb.annotations.Tag
 import com.intellij.util.xmlb.annotations.XCollection
 import com.jetbrains.rd.platform.diagnostics.logAssertion
+import com.jetbrains.rd.platform.util.getLogger
 import com.jetbrains.rd.util.getOrCreate
+import com.jetbrains.rdclient.document.textControlId
 import com.jetbrains.rdclient.editors.getPsiFile
 import com.jetbrains.rdclient.util.idea.LifetimedProjectComponent
 import com.jetbrains.rider.ideaInterop.find.scopes.RiderSolutionScope
@@ -146,17 +148,6 @@ class RiderCommentsStateManager(
     val editorId = editor.getEditorId()
     val editorCommentsStates = states[editorId] ?: return null
     return editorCommentsStates.getWithAdditionalSearch(commentIdentifier)
-  }
-
-  private fun Editor.getEditorId(): EditorId? {
-    val psiFile = getPsiFile()
-
-    if (psiFile == null) {
-      logger.logAssertion("Psi file was null for $this")
-      return null
-    }
-
-    return EditorId(psiFile.virtualFile.path)
   }
 
   fun changeDisplayKind(
@@ -291,4 +282,16 @@ fun isDecompiledEditor(editor: Editor): Boolean {
 fun isDecompiledEditor(project: Project, editorId: EditorId): Boolean {
   val file = VirtualFileManager.getInstance().findFileByNioPath(Path(editorId.moniker)) ?: return false
   return !RiderSolutionScope(project, true).contains(file)
+}
+
+fun Editor.getEditorId(): EditorId? {
+  val psiFile = getPsiFile()
+
+  val id = textControlId
+  if (psiFile == null || id == null) {
+    getLogger<RiderCommentsStateManager>().logAssertion("Psi file was null for $this")
+    return null
+  }
+
+  return EditorId(psiFile.virtualFile.path, id.tabIndex)
 }

@@ -3,7 +3,7 @@ package com.intelligentcomments.core.comments
 import com.intelligentcomments.core.comments.listeners.CommentsEditorsListenersManager
 import com.intelligentcomments.core.comments.states.CommentState
 import com.intelligentcomments.core.comments.states.RiderCommentsStateManager
-import com.intelligentcomments.core.comments.storages.DocumentCommentsWithFoldingsStorage
+import com.intelligentcomments.core.comments.storages.EditorCommentsWithFoldingsStorage
 import com.intelligentcomments.core.domain.core.CommentBase
 import com.intelligentcomments.core.domain.core.CommentIdentifier
 import com.intelligentcomments.core.settings.CommentsDisplayKind
@@ -14,7 +14,6 @@ import com.intelligentcomments.ui.comments.renderers.RendererWithRectangleModel
 import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.CustomFoldRegion
 import com.intellij.openapi.editor.CustomFoldRegionRenderer
-import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.impl.FoldingModelImpl
 import com.intellij.openapi.project.Project
@@ -25,18 +24,14 @@ import com.jetbrains.rd.platform.util.getLogger
 import com.jetbrains.rd.util.lifetime.Lifetime
 import com.jetbrains.rd.util.lifetime.onTermination
 import com.jetbrains.rdclient.daemon.highlighters.foldings.markAsDocComment
-import com.jetbrains.rdclient.document.getFirstDocumentId
-import com.jetbrains.rdclient.editors.FrontendTextControlHost
 import com.jetbrains.rdclient.util.idea.LifetimedProjectComponent
 import com.jetbrains.rider.document.RiderDocumentHost
 
 
 class RiderCommentsController(project: Project) : LifetimedProjectComponent(project) {
-  private var isRunningBatchFoldingOperation = false
-  private val commentsStorage: DocumentCommentsWithFoldingsStorage = DocumentCommentsWithFoldingsStorage()
+  private val commentsStorage: EditorCommentsWithFoldingsStorage = EditorCommentsWithFoldingsStorage()
   private val logger = getLogger<RiderDocumentHost>()
   private val commentsStateManager = project.getComponent(RiderCommentsStateManager::class.java)
-  private val textControlHost = FrontendTextControlHost.getInstance(project)
   private val listenersManager = project.service<CommentsEditorsListenersManager>()
   private val settings = RiderIntelligentCommentsSettingsProvider.getInstance()
 
@@ -64,7 +59,7 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
       for (comment in comments) {
         commentsStorage.addNewComment(comment, editor)
         val state = commentsStateManager.restoreOrCreateCommentState(editor, comment.identifier)
-        updateCommentToMatchState(comment.identifier, editor.document, state)
+        updateCommentToMatchState(comment.identifier, editor, state)
       }
     }
   }
@@ -79,20 +74,8 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
 
   private fun Editor.runBatchFoldingOperation(action: () -> Unit) {
     application.assertIsDispatchThread()
-    if (isRunningBatchFoldingOperation) {
-      logger.logAssertion("Already running batch operation, may be bad for performance to run one more")
+    foldingModel.runBatchFoldingOperation {
       action()
-      return
-    }
-
-    isRunningBatchFoldingOperation = true
-
-    try {
-      foldingModel.runBatchFoldingOperation {
-        action()
-      }
-    } finally {
-      isRunningBatchFoldingOperation = false
     }
   }
 
@@ -116,7 +99,7 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
       val comments = commentsStorage.getAllComments(editor)
       for (comment in comments) {
         val actualState = commentsStateManager.changeDisplayKind(editor, comment.identifier, transform) ?: continue
-        updateCommentToMatchState(comment.identifier, editor.document, actualState)
+        updateCommentToMatchState(comment.identifier, editor, actualState)
       }
     }
   }
@@ -127,7 +110,7 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
     action: (CommentState) -> Unit
   ) {
     application.assertIsDispatchThread()
-    val comment = getComment(commentIdentifier, editor.document) ?: return
+    val comment = getComment(commentIdentifier, editor) ?: return
     val commentState = commentsStateManager.getExistingCommentState(editor, comment.identifier)
     if (commentState == null) {
       logger.logAssertion("Trying to change render mode for a not registered comment ${comment.identifier}")
@@ -155,7 +138,7 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
   ) {
     val changedState = commentsStateManager.changeDisplayKind(editor, commentIdentifier, newDisplayKind)
     if (changedState != null) {
-      updateCommentToMatchState(commentIdentifier, editor.document, changedState)
+      updateCommentToMatchState(commentIdentifier, editor, changedState)
     }
   }
 
@@ -179,17 +162,14 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
 
   private fun updateCommentToMatchState(
     commentIdentifier: CommentIdentifier,
-    document: Document,
+    editor: Editor,
     state: CommentState
   ) {
-    val documentId = document.getFirstDocumentId(project) ?: return
-    for (editor in textControlHost.getAllEditors(documentId)) {
-      doUpdateCommentToMathState(commentIdentifier, editor, state)
-    }
+    doUpdateCommentToMathState(commentIdentifier, editor, state)
   }
 
   private fun doUpdateCommentToMathState(commentIdentifier: CommentIdentifier, editor: Editor, state: CommentState) {
-    val comment = getComment(commentIdentifier, editor.document)
+    val comment = getComment(commentIdentifier, editor)
     if (comment == null) {
       logger.logAssertion("comment == null")
       return
@@ -205,7 +185,7 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
   private fun toggleEditMode(commentIdentifier: CommentIdentifier, editor: Editor) {
     application.assertIsDispatchThread()
 
-    val correspondingComment = getComment(commentIdentifier, editor.document)
+    val correspondingComment = getComment(commentIdentifier, editor)
     if (correspondingComment != null) {
       val foldingModel = editor.foldingModel as FoldingModelImpl
       val folding = commentsStorage.getFolding(commentIdentifier, editor)
@@ -238,8 +218,8 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
     }
   }
 
-  private fun getComment(commentIdentifier: CommentIdentifier, document: Document): CommentBase? {
-    return commentsStorage.getComment(commentIdentifier, document)
+  private fun getComment(commentIdentifier: CommentIdentifier, editor: Editor): CommentBase? {
+    return commentsStorage.getComment(commentIdentifier, editor)
   }
 
   fun reRenderAllComments(editor: Editor) {
@@ -255,7 +235,7 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
   private fun toggleRenderMode(commentId: CommentIdentifier, editor: Editor, state: CommentState) {
     application.assertIsDispatchThread()
 
-    val correspondingComment = getComment(commentId, editor.document)
+    val correspondingComment = getComment(commentId, editor)
 
     if (correspondingComment != null && settings.commentsDisplayKind.value != CommentsDisplayKind.Code) {
       cacheCaretOffset(correspondingComment, state, editor)

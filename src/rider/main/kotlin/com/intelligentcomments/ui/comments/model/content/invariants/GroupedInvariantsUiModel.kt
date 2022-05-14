@@ -83,7 +83,7 @@ fun mergeSegmentsTexts(
         highlighter = CommonsHighlightersFactory.createHighlighter(delimiter.length, firstHighlighter.textColor)
       }
 
-      text = text.mergeWith(HighlightedTextImpl(delimiter, highlighter))
+      text = text.mergeWith(HighlightedTextImpl(delimiter, parent, highlighter))
     }
   }
 
