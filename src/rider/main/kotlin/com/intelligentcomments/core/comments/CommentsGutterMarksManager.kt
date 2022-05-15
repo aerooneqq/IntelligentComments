@@ -15,11 +15,12 @@ import com.intellij.refactoring.suggested.range
 import com.intellij.util.application
 import com.intellij.util.ui.update.MergingUpdateQueue
 import com.intellij.util.ui.update.Update
+import com.jetbrains.rd.util.getOrCreate
 
 class CommentsGutterMarksManager(project: Project) {
   private val controller = project.getComponent(RiderCommentsController::class.java)
   private val statesManager = project.getComponent(RiderCommentsStateManager::class.java)
-  private val visibleCommentsGutters = HashSet<CommentBase>()
+  private val visibleCommentsGutters = HashMap<Editor, HashSet<CommentBase>>()
 
   private val name = "${GutterMarkVisibilityMouseMoveListener::class.java.name}::queue"
   private val queue = MergingUpdateQueue(name, 200, true, null)
@@ -46,7 +47,9 @@ class CommentsGutterMarksManager(project: Project) {
     }
   }
 
-  fun getGutterVisibilityFor(comment: CommentBase) = visibleCommentsGutters.contains(comment)
+  fun getGutterVisibilityFor(editor: Editor, comment: CommentBase): Boolean {
+    return visibleCommentsGutters[editor]?.contains(comment) ?: false
+  }
 
   private fun updateGutterFor(editor: Editor, offset: Int) {
     val renderer = tryFindRendererFor(editor, offset)
@@ -110,12 +113,13 @@ class CommentsGutterMarksManager(project: Project) {
 
   private fun makeGutterVisible(gutter: DocCommentSwitchRenderModeGutterMark) {
     gutter.isVisible = true
-    visibleCommentsGutters.add(gutter.comment)
+    val visibleGutters = visibleCommentsGutters.getOrCreate(gutter.editor) { HashSet() }
+    visibleGutters.add(gutter.comment)
   }
 
   private fun clearVisibleGutters(editor: Editor) {
-    visibleCommentsGutters.forEach { tryFindGutterFor(it, editor)?.isVisible = false }
-    visibleCommentsGutters.clear()
+    visibleCommentsGutters[editor]?.forEach { tryFindGutterFor(it, editor)?.isVisible = false }
+    visibleCommentsGutters[editor]?.clear()
   }
 
   fun makeGutterVisibleImmediately(comment: CommentBase, editor: Editor) {

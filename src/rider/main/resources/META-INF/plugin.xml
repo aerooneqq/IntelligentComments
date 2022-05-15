@@ -54,6 +54,9 @@
 
   <project-components>
     <component>
+      <implementation-class>com.intelligentcomments.core.comments.listeners.FocusedEditorsListener</implementation-class>
+    </component>
+    <component>
       <implementation-class>com.intelligentcomments.core.namesToolWindow.NamedEntityToolWindowFactory</implementation-class>
     </component>
     <component>

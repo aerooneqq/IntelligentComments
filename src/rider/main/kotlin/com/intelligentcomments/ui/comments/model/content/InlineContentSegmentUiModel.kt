@@ -20,14 +20,20 @@ class InlineContentSegmentUiModel(
   }))
 
 
-  val header = HighlightedTextUiWrapper(project, parent, HighlightedTextImpl(createHeaderText(), segment))
+  val header = HighlightedTextUiWrapper(project, parent, createHeaderText())
 
 
-  private fun createHeaderText(): String {
+  private fun createHeaderText(): HighlightedText {
     val text = segment.nameKind.toPresentation()
-    val name = segment.name ?: return "$text:"
+    val name = segment.name
+    val finalText = if (name == null) {
+      "$text:"
+    } else {
+      "$text (${name.text}):"
+    }
 
-    return "$text (${name.text}):"
+    val highlighter = CommonsHighlightersFactory.tryCreateCommentHighlighter(segment, finalText.length)
+    return HighlightedTextImpl(finalText, segment, highlighter)
   }
 
   override fun createRenderer(): Renderer {

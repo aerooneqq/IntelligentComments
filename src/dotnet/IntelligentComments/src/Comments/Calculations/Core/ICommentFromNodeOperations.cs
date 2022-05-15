@@ -36,6 +36,9 @@ public static class CommentFromNodeOperationsPriorities
 
 public static class CommentOperationsUtil
 {
+  /// <invariant name = "CollectSpecialOperationsMustOrderOperations">
+  /// The operations must be ordered by priority
+  /// </invariant>
   [NotNull]
   [ItemNotNull]
   public static IList<ISpecialGroupOfLinesCommentsOperations> CollectSpecialOperations([NotNull] ITreeNode context)
@@ -45,7 +48,10 @@ public static class CommentOperationsUtil
       .OrderByDescending(creator => creator.Priority)
       .ToList();
   }
-
+  
+  /// <invariant name = "CollectOperationsMustOrderOperations">
+  /// The operations must be ordered by priority
+  /// </invariant>
   [NotNull]
   [ItemNotNull]
   public static IList<ICommentFromNodeOperations> CollectOperations([NotNull] ITreeNode context)

@@ -421,8 +421,12 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
       description ??= referenceRawText;
       
       (description, var length) = PreprocessTextWithContext(description, element);
+
+      var highlighter = myHighlightersProvider.GetSeeHttpLinkHighlighter(0, length) with
+      {
+        References = new[] { new HttpDomainReference(referenceRawText, referenceRawText) }
+      };
       
-      var highlighter = myHighlightersProvider.GetSeeAlsoLinkHighlighter(0, length);
       var highlightedText = new HighlightedText(description, new[] { highlighter });
       return new SeeAlsoLinkContentSegment(highlightedText, new HttpDomainReference(referenceRawText, referenceRawText));
     });

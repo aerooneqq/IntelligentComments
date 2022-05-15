@@ -87,6 +87,8 @@ public static class NamesResolveUtil
     if (resolvedName.NameWithKind != nameWithKind) return null;
 
     IContentSegment segment = null;
+    
+    //reference to invariant: CollectOperationsMustOrderOperations
     foreach (var operation in CommentOperationsUtil.CollectSpecialOperations(token))
     {
       if (operation.TryCreate(commentNode) is { Comment: IInlineComment { Content: { } content } })

@@ -2,36 +2,35 @@ package com.intelligentcomments.core.comments.storages
 
 import com.intelligentcomments.core.domain.core.CommentBase
 import com.intelligentcomments.core.domain.core.CommentIdentifier
-import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.Editor
 import com.jetbrains.rd.platform.util.getLogger
 
-open class DocumentCommentsStorage {
+open class EditorCommentsStorage {
   companion object {
-    private val logger = getLogger<DocumentCommentsStorage>()
+    private val logger = getLogger<EditorCommentsStorage>()
   }
 
   private val syncObject = Any()
-  private val comments = HashMap<Document, CommentsIdentifierStorage<CommentBase>>()
+  private val comments = HashMap<Editor, CommentsIdentifierStorage<CommentBase>>()
 
 
   fun findNearestLeftCommentTo(editor: Editor, offset: Int): CommentBase? {
     synchronized(syncObject) {
-      val documentComments = comments[editor.document] ?: return null
-      return documentComments.findNearestLeftToOffset(offset)
+      val editorComments = comments[editor] ?: return null
+      return editorComments.findNearestLeftToOffset(offset)
     }
   }
 
   fun findNearestCommentTo(editor: Editor, offset: Int): CommentBase? {
     synchronized(syncObject) {
-      val documentComments = comments[editor.document] ?: return null
-      return documentComments.findNearestToOffset(offset)
+      val editorComments = comments[editor] ?: return null
+      return editorComments.findNearestToOffset(offset)
     }
   }
 
   fun recreateAllCommentsFor(editor: Editor) {
     synchronized(syncObject) {
-      val storage = comments[editor.document] ?: return
+      val storage = comments[editor] ?: return
       val allComments = storage.getAllKeysAndValues().map { it.second.recreate(editor) }
       storage.clear()
       for (comment in allComments) {
@@ -42,14 +41,14 @@ open class DocumentCommentsStorage {
 
   fun getAllComments(editor: Editor): Collection<CommentBase> {
     synchronized(syncObject) {
-      return comments[editor.document]?.getAllKeysAndValues()?.map { it.second } ?: emptyList()
+      return comments[editor]?.getAllKeysAndValues()?.map { it.second } ?: emptyList()
     }
   }
 
-  fun getComment(commentIdentifier: CommentIdentifier, document: Document): CommentBase? {
+  fun getComment(commentIdentifier: CommentIdentifier, editor: Editor): CommentBase? {
     synchronized(syncObject) {
-      val documentComments = comments[document]
-      val comment = documentComments?.getWithAdditionalSearch(commentIdentifier)
+      val editorComments = comments[editor]
+      val comment = editorComments?.getWithAdditionalSearch(commentIdentifier)
 
       if (comment == null){
         logger.error("Comment for given ID $commentIdentifier does not exist")
@@ -61,16 +60,15 @@ open class DocumentCommentsStorage {
 
   fun addNewComment(comment: CommentBase, editor: Editor) {
     synchronized(syncObject) {
-      val document = editor.document
-      val documentComments = if (document !in comments) {
+      val editorComments = if (editor !in comments) {
         val storage = CommentsIdentifierStorage<CommentBase>()
-        comments[document] = storage
+        comments[editor] = storage
         storage
       } else {
-        comments[document] ?: return
+        comments[editor] ?: return
       }
 
-      documentComments.add(comment.identifier, comment)
+      editorComments.add(comment.identifier, comment)
     }
   }
 }

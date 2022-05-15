@@ -1,15 +1,24 @@
 package com.intelligentcomments.core.domain.core
 
+import com.intelligentcomments.core.comments.states.EditorId
+import com.intelligentcomments.core.comments.states.getEditorId
 import com.intelligentcomments.core.utils.DocumentUtils
 import com.intelligentcomments.ui.util.HashUtil
+import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.RangeMarker
 import com.intellij.openapi.project.Project
 
-class CommentIdentifier(val moniker: String, val rangeMarker: RangeMarker) : Comparable<CommentIdentifier> {
+class CommentIdentifier(
+  val moniker: String,
+  val rangeMarker: RangeMarker,
+  val editorId: EditorId
+) : Comparable<CommentIdentifier> {
   companion object {
-    fun create(project: Project, rangeMarker: RangeMarker): CommentIdentifier {
+    fun create(project: Project, rangeMarker: RangeMarker, editor: Editor): CommentIdentifier {
       val moniker = DocumentUtils.tryGetMoniker(rangeMarker.document, project) ?: throw IllegalArgumentException()
-      return CommentIdentifier(moniker, rangeMarker)
+      val editorId = editor.getEditorId() ?: throw IllegalArgumentException()
+
+      return CommentIdentifier(moniker, rangeMarker, editorId)
     }
   }
 

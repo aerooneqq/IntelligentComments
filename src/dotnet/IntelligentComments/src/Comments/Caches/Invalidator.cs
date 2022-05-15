@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using IntelligentComments.Comments.Caches.Names;
 using IntelligentComments.Comments.Calculations.Core;
 using IntelligentComments.Comments.Calculations.Core.DocComments.Utils;
+using IntelligentComments.Comments.Daemon;
 using IntelligentComments.Comments.Settings;
 using JetBrains.Annotations;
 using JetBrains.Collections;
@@ -18,11 +20,15 @@ using JetBrains.TextControl;
 using JetBrains.TextControl.DocumentMarkup;
 using JetBrains.Util;
 
-namespace IntelligentComments.Comments.Caches.Names;
+namespace IntelligentComments.Comments.Caches;
 
 [SolutionComponent]
 public class Invalidator
 {
+  [NotNull] private static readonly Func<IHighlighter, bool> ourHighlighterFilter =
+    highlighter => highlighter.UserData is CommentFoldingHighlighting; 
+
+  
   [NotNull] private readonly SourcesTrigramIndex myTrigramIndex;
   [NotNull] private readonly ILogger myLogger;
   [NotNull] private readonly IPersistentIndexManager myPersistentIndexManager;
@@ -100,12 +106,18 @@ public class Invalidator
     foreach (var sourceFile in files)
     {
       mySolutionAnalysisService.ReanalyzeFile(sourceFile);
+      var document = sourceFile.Document;
+
+      if (!openedDocuments.Contains(document)) continue;
       
-      if (openedDocuments.Contains(sourceFile.Document))
+      var model = myDocumentMarkupManager.GetMarkupModel(document);
+      var commentHighlighters = model.GetHighlightersEnumerable(highlighterFilter: ourHighlighterFilter);
+      foreach (var highlighter in commentHighlighters)
       {
-        myDocumentMarkupManager.GetMarkupModel(sourceFile.Document).RemoveAllHighlighters();
-        myDaemonImpl.ForceReHighlight(sourceFile.Document);
+        model.RemoveHighlighter(highlighter);
       }
+      
+      myDaemonImpl.ForceReHighlight(document);
     }
   }
 

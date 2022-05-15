@@ -22,18 +22,18 @@ import javax.swing.Icon
 
 class DocCommentSwitchRenderModeGutterMark(
   val comment: CommentBase,
-  private val editor: Editor,
+  val editor: Editor,
   project: Project
 ) : GutterIconRenderer(), MergableGutterIconRenderer {
   private val controller = project.getComponent(RiderCommentsController::class.java)
   private val commentsStatesManager = project.getComponent(RiderCommentsStateManager::class.java)
   private val guttersManager = project.service<CommentsGutterMarksManager>()
 
-  var isVisible: Boolean = guttersManager.getGutterVisibilityFor(comment)
+  var isVisible: Boolean = guttersManager.getGutterVisibilityFor(editor, comment)
 
 
   override fun equals(other: Any?): Boolean {
-    return other is DocCommentSwitchRenderModeGutterMark && comment == other.comment
+    return other is DocCommentSwitchRenderModeGutterMark && comment == other.comment && editor == other.editor
   }
 
   override fun hashCode(): Int {

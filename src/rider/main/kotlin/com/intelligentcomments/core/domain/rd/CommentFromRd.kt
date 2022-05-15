@@ -22,7 +22,7 @@ abstract class CommentFromRd(
   protected val commentsCreator = project.service<RiderCommentsCreator>()
 
   final override val parent: Parentable? = null
-  final override val identifier: CommentIdentifier = CommentIdentifier.create(project, rangeMarker)
+  final override val identifier: CommentIdentifier = CommentIdentifier.create(project, rangeMarker, editor)
   final override val uiModel: CommentUiModelBase
     get() = createUiModelInternal()
 

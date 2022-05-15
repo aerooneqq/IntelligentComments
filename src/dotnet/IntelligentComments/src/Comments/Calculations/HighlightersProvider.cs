@@ -4,6 +4,7 @@ using IntelligentComments.Comments.Domain.Core.References;
 using JetBrains.Annotations;
 using JetBrains.ReSharper.Daemon.CSharp.Highlighting;
 using JetBrains.ReSharper.Feature.Services.Daemon.Attributes;
+using JetBrains.ReSharper.Feature.Services.Daemon.Attributes.Idea;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.TextControl.DocumentMarkup;
@@ -122,8 +123,10 @@ public abstract class HighlightersProvider : IHighlightersProvider
   public TextHighlighter GetExceptionHighlighter(int startOffset, int endOffset) => 
     Get(Exception, startOffset, endOffset);
 
-  public TextHighlighter GetToDoHighlighter(int startOffset, int endOffset) =>
-    Get(ToDoText, startOffset, endOffset);
+  public TextHighlighter GetToDoHighlighter(int startOffset, int endOffset)
+  {
+    return Get("ReSharper.TODO_ITEM_NORMAL", startOffset, endOffset) with { IsResharperHighlighter = true };
+  }
 
   public TextHighlighter GetHackHighlighter(int startOffset, int endOffset) =>
     Get(HackText, startOffset, endOffset);
