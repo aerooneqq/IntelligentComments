@@ -89,6 +89,11 @@ class DocCommentsFoldingAdapter(private val editor: EditorImpl) : FrontendMarkup
           }
 
           application.invokeLater {
+            if (highlightersWithComments.isEmpty()) {
+              continuation(Unit)
+              return@invokeLater
+            }
+
             val comments = mutableListOf<CommentBase>()
             for ((highlighter, model) in highlightersWithComments) {
               val marker = getRangeMarkerFor(highlighter.range, highlighter.document)

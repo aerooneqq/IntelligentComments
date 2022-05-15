@@ -17,6 +17,7 @@ import com.intellij.openapi.editor.CustomFoldRegionRenderer
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.impl.FoldingModelImpl
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.Key
 import com.intellij.psi.impl.source.tree.injected.changesHandler.range
 import com.intellij.util.application
 import com.jetbrains.rd.platform.diagnostics.logAssertion
@@ -29,6 +30,10 @@ import com.jetbrains.rider.document.RiderDocumentHost
 
 
 class RiderCommentsController(project: Project) : LifetimedProjectComponent(project) {
+  companion object {
+    private val EditModeFolding = Key<Boolean>("EditModeFolding")
+  }
+
   private val commentsStorage: EditorCommentsWithFoldingsStorage = EditorCommentsWithFoldingsStorage()
   private val logger = getLogger<RiderDocumentHost>()
   private val commentsStateManager = project.getComponent(RiderCommentsStateManager::class.java)
@@ -213,6 +218,7 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
       val region = foldingModel.createFoldRegion(rangeMarker.startOffset, rangeMarker.endOffset, "...", null, false)
       region?.isExpanded = isFoldingExpanded
       region?.markAsDocComment()
+      region?.putUserData(EditModeFolding, true)
       if (region != null) {
         commentsStorage.addFoldingToComment(correspondingComment, region, editor)
       }
@@ -255,23 +261,27 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
     }
   }
 
-  private fun removeFoldRegion(editor: Editor, foldStartOffset: Int, foldEndOffset: Int) {
+  private fun removeFoldRegions(editor: Editor, foldStartOffset: Int, foldEndOffset: Int) {
     assertThatInBatchFoldingUpdate(editor)
-    val foldingModel = editor.foldingModel
-    val oldFolding = foldingModel.getFoldRegion(foldStartOffset, foldEndOffset)
-    if (oldFolding != null) {
+    val foldingModel = editor.foldingModel as FoldingModelImpl
+    val oldFoldings = foldingModel.getRegionsOverlappingWith(foldStartOffset, foldEndOffset)
+
+    for (oldFolding in oldFoldings) {
       if (oldFolding is CustomFoldRegion && oldFolding.renderer is RendererWithRectangleModel) {
         val oldFoldingRenderer = oldFolding.renderer
         if (oldFoldingRenderer is RendererWithRectangleModel) {
           val oldComment = oldFoldingRenderer.baseModel.comment
           commentsStorage.removeFolding(oldComment.identifier, editor)
         }
+      } else {
+        val userData = oldFolding.getUserData(EditModeFolding)
+        if (userData != null) {
+          foldingModel.removeFoldRegion(oldFolding)
+        }
       }
-
-      foldingModel.removeFoldRegion(oldFolding)
-      foldingModel as FoldingModelImpl
-      foldingModel.updateCachedOffsets()
     }
+
+    foldingModel.updateCachedOffsets()
   }
 
   data class FoldingInfo(val foldStartLine: Int, val foldEndLine: Int, val foldStartOffset: Int, val foldEndOffset: Int)
@@ -298,7 +308,7 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
   ) {
     assertThatInBatchFoldingUpdate(editor)
     val (foldStartLine, foldEndLine, foldStartOffset, foldEndOffset) = getFoldingInfo(comment, editor) ?: return
-    removeFoldRegion(editor, foldStartOffset, foldEndOffset)
+    removeFoldRegions(editor, foldStartOffset, foldEndOffset)
 
     val foldingModel = editor.foldingModel
     val renderer = getCommentFoldingRenderer(comment, editor, state)

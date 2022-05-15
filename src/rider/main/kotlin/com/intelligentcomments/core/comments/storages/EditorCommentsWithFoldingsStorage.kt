@@ -20,8 +20,31 @@ class EditorCommentsWithFoldingsStorage : EditorCommentsStorage() {
     editorFoldings[comment.identifier] = folding
   }
 
+  private fun invalidate(editor: Editor) {
+    val map = foldings[editor] ?: return
+
+    val idsToRemove = mutableSetOf<CommentIdentifier>()
+    for ((id, region) in map) {
+      if (!region.isValid) {
+        idsToRemove.add(id)
+      }
+    }
+
+    for (id in idsToRemove) {
+      map.remove(id)
+    }
+  }
+
   fun getFolding(commentIdentifier: CommentIdentifier, editor: Editor): FoldRegion? {
-    return foldings[editor]?.get(commentIdentifier)
+    val map = foldings[editor] ?: return null
+
+    val folding = map[commentIdentifier]
+    if (folding != null && !folding.isValid) {
+      map.remove(commentIdentifier)
+      return null
+    }
+
+    return folding
   }
 
   fun removeFolding(commentIdentifier: CommentIdentifier, editor: Editor) {
@@ -29,6 +52,7 @@ class EditorCommentsWithFoldingsStorage : EditorCommentsStorage() {
   }
 
   fun getAllFoldingsFor(editor: Editor): Collection<FoldRegion> {
+    invalidate(editor)
     return foldings[editor]?.values ?: emptyList()
   }
 }
