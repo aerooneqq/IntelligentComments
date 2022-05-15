@@ -94,6 +94,10 @@ class RiderCommentsConfigurable : BoundConfigurable("Intelligent comments", null
         row {
           checkBox("Use experimental features").associateWith(viewModel::useExperimentalFeatures)
         }
+
+        row {
+          checkBox("Render comments only for decompiled sources").associateWith(viewModel::renderCommentsOnlyInDecompiledSources)
+        }
       }
     }
   }
@@ -159,10 +163,6 @@ class RiderCommentsConfigurable : BoundConfigurable("Intelligent comments", null
 
         row {
           checkBox("Show only summary").associateWith(viewModel::showOnlySummary)
-        }
-
-        row {
-          checkBox("Render comments only for decompiled sources").associateWith(viewModel::renderCommentsOnlyInDecompiledSources)
         }
       }
     }
