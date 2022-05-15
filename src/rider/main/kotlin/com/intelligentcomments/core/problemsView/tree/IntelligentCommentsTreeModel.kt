@@ -40,7 +40,7 @@ internal class IntelligentCommentsTreeModel(
 
   private fun handleFileAddition(value: SolutionAnalysisErrors) {
     val fileName = value.fileName
-    if (files.contains(fileName)) return
+    if (files.contains(fileName) || fileWatchingLifetimes.contains(fileName)) return
 
     val fileWatchingLifetimeDef = lifetime.createNested()
     val fileWatchingLifetime = fileWatchingLifetimeDef.lifetime
