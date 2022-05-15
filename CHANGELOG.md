@@ -1,3 +1,14 @@
+1.0.0-EAP3
+
+Fixed:
+
+- Fixed too bright colors in todos and incorrect highlighting in some rendered comments
+- Fixed re-highlight of all file when editing names of named entities
+- Fixed initial settings: now comments are rendered instead of hiding
+- Fixed not deleting old folding regions for comments in edit mode
+- Fixed incorrect processing of multiple editors for single document
+- Fixed not correct place of some settings
+
 1.0.0-EAP2
 
 Added:
