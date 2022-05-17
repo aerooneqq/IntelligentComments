@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using IntelligentComments.Comments.Completion.CSharp.DocComments;
+using IntelligentComments.Comments.Completion;
 using IntelligentComments.Comments.PSI.DeclaredElements;
 using JetBrains.Annotations;
 using JetBrains.Application;
