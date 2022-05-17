@@ -42,7 +42,7 @@ fun generateContentSegmentsForNamedEntity(
   if (segment is ContentSegmentWithOptionalName) {
     val name = segment.name
     if (name != null) {
-      val nameText = createStartTextOfNamedEntity(kind, name, segment)
+      val nameText = createStartTextOfNamedEntity(kind, name, segment, true)
       segments.add(createTextSegmentFor(nameText, segment))
     }
   }
