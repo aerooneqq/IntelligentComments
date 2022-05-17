@@ -47,6 +47,12 @@ class RiderCommentsSettings : PersistentStateComponent<Element> {
 
   fun applyToSettings(settings: RiderIntelligentCommentsSettingsProvider) {
     settings.commentsDisplayKind.set(computeDisplayKind())
+
+    settings.renderDocComments.set(renderDocComments)
+    settings.renderMultilineComments.set(renderMultilineComments)
+    settings.renderGroupOfSingleLineComments.set(renderGroupOfSingleLineComments)
+    settings.renderSingleLineComments.set(renderSingleLineComments)
+
     settings.maxCharsInLine.set(maxCharsInLine)
 
     settings.groupSeeAlso.set(groupSeeAlso)
@@ -78,6 +84,10 @@ class RiderCommentsSettings : PersistentStateComponent<Element> {
 
   fun anySettingsChanged(settings: RiderIntelligentCommentsSettingsProvider): Boolean {
     return computeDisplayKind() != settings.commentsDisplayKind.value ||
+      renderDocComments != settings.renderDocComments.value ||
+      renderMultilineComments != settings.renderMultilineComments.value ||
+      renderSingleLineComments != settings.renderSingleLineComments.value ||
+      renderGroupOfSingleLineComments != settings.renderGroupOfSingleLineComments.value ||
       maxCharsInLine != settings.maxCharsInLine.value ||
       groupSeeAlso != settings.groupSeeAlso.value ||
       groupReturns != settings.groupReturns.value ||
@@ -97,6 +107,12 @@ class RiderCommentsSettings : PersistentStateComponent<Element> {
     renderComments = settings.commentsDisplayKind.value == CommentsDisplayKind.Render
     hideAllComments = settings.commentsDisplayKind.value == CommentsDisplayKind.Hide
     editMode = settings.commentsDisplayKind.value == CommentsDisplayKind.Code
+
+    renderSingleLineComments = settings.renderSingleLineComments.value
+    renderDocComments = settings.renderDocComments.value
+    renderMultilineComments = settings.renderMultilineComments.value
+    renderGroupOfSingleLineComments = settings.renderGroupOfSingleLineComments.value
+
     maxCharsInLine = settings.maxCharsInLine.value
 
     groupSeeAlso = settings.groupSeeAlso.value

@@ -64,22 +64,20 @@ class RiderCommentsConfigurable : BoundConfigurable("Intelligent comments", null
         }
 
         indent {
-          buttonGroup {
-            row {
-              checkBox("Render doc comments").enabledIf(renderComments!!.selected).bindSelected(viewModel::renderDocComments)
-            }
+          row {
+            checkBox("Render doc comments").enabledIf(renderComments!!.selected).associateWith(viewModel::renderDocComments)
+          }
 
-            row {
-              checkBox("Render multi-line comments").enabledIf(renderComments!!.selected).bindSelected(viewModel::renderMultilineComments)
-            }
+          row {
+            checkBox("Render multi-line comments").enabledIf(renderComments!!.selected).associateWith(viewModel::renderMultilineComments)
+          }
 
-            row {
-              checkBox("Render group of single-line comments").enabledIf(renderComments!!.selected).bindSelected(viewModel::renderGroupOfSingleLineComments)
-            }
+          row {
+            checkBox("Render group of single-line comments").enabledIf(renderComments!!.selected).associateWith(viewModel::renderGroupOfSingleLineComments)
+          }
 
-            row {
-              checkBox("Render single-line comments").enabledIf(renderComments!!.selected).bindSelected(viewModel::renderSingleLineComments)
-            }
+          row {
+            checkBox("Render single-line comments").enabledIf(renderComments!!.selected).associateWith(viewModel::renderSingleLineComments)
           }
         }
 

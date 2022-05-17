@@ -4,8 +4,7 @@ import com.intelligentcomments.core.comments.listeners.CommentsEditorsListenersM
 import com.intelligentcomments.core.comments.states.CommentState
 import com.intelligentcomments.core.comments.states.RiderCommentsStateManager
 import com.intelligentcomments.core.comments.storages.EditorCommentsWithFoldingsStorage
-import com.intelligentcomments.core.domain.core.CommentBase
-import com.intelligentcomments.core.domain.core.CommentIdentifier
+import com.intelligentcomments.core.domain.core.*
 import com.intelligentcomments.core.settings.CommentsDisplayKind
 import com.intelligentcomments.core.settings.RiderIntelligentCommentsSettingsProvider
 import com.intelligentcomments.ui.comments.model.CollapsedCommentUiModel
@@ -197,8 +196,37 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
     if (!state.isInRenderMode || !comment.isValid()) {
       toggleEditMode(commentIdentifier, editor)
     } else {
+      if (!checkIfCanRenderCommentBasedOnSettings(comment, editor)) {
+        toggleEditMode(commentIdentifier, editor)
+        return
+      }
+
       toggleRenderMode(commentIdentifier, editor, state)
     }
+  }
+
+  private fun checkIfCanRenderCommentBasedOnSettings(comment: CommentBase, editor: Editor): Boolean {
+    if (comment is MultilineComment) return settings.renderMultilineComments.value
+    if (comment is CommentWithOneTextSegment) return canRenderGroupOfLineComments(comment, editor)
+    if (comment is DocComment) return settings.renderDocComments.value
+    if (comment is InlineComment) return settings.renderSingleLineComments.value
+
+    throw IllegalArgumentException(comment.javaClass.name)
+  }
+
+  private fun canRenderGroupOfLineComments(comment: CommentWithOneTextSegment, editor: Editor): Boolean {
+    if (isSingleLineComment(comment, editor)) {
+      return settings.renderSingleLineComments.value
+    }
+
+    return settings.renderGroupOfSingleLineComments.value
+  }
+
+  private fun isSingleLineComment(comment: CommentWithOneTextSegment, editor: Editor): Boolean {
+    val document = editor.document
+    val startLine = document.getLineNumber(comment.identifier.rangeMarker.startOffset)
+    val endLine = document.getLineNumber(comment.identifier.rangeMarker.endOffset)
+    return startLine == endLine
   }
 
   private fun toggleEditMode(commentIdentifier: CommentIdentifier, editor: Editor) {
