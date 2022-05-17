@@ -110,6 +110,8 @@ class IntelligentCommentPopup(
       }
 
       val rectanglesModel = RectanglesModelUtil.buildRectanglesModel(editor, model, 0, 0).model
+
+      g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
       model.createRenderer().render(g, targetRect, editor, rectanglesModel, additionalInfo)
     }
   }
