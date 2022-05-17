@@ -17,6 +17,8 @@ class FoldingExpansionsListener : FoldingListener {
 
     application.invokeLater {
       region.editor.project?.let { project ->
+        if (project.isDisposed) return@let
+
         val editor = region.editor
         val model = editor.foldingModel as FoldingModelImpl
         val regions = model.getRegionsOverlappingWith(region.startOffset, region.endOffset)
