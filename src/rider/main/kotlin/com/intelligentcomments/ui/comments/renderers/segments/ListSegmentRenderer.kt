@@ -1,5 +1,6 @@
 package com.intelligentcomments.ui.comments.renderers.segments
 
+import com.intelligentcomments.core.domain.core.CommonsHighlightersFactory
 import com.intelligentcomments.core.domain.core.ListSegmentKind
 import com.intelligentcomments.ui.colors.Colors
 import com.intelligentcomments.ui.colors.ColorsProvider
@@ -112,7 +113,8 @@ class ListSegmentRenderer(private val model: ListContentSegmentUiModel) : Segmen
     rect: Rectangle,
     fontMetrics: FontMetrics
   ) {
-    val bulletColor = model.project.service<ColorsProvider>().getColorFor(Colors.ListItemBulletBackgroundColor)
+    val docCommentColor = CommonsHighlightersFactory.tryCreateCommentHighlighter(null, 1)?.textColor
+    val bulletColor = docCommentColor ?: model.project.service<ColorsProvider>().getColorFor(Colors.ListItemBulletBackgroundColor)
     val textHeight = TextUtil.getTextHeight(editor, null)
     val bulletRadius = textHeight / 2
     UpdatedGraphicsCookie(g, color = bulletColor).use {
