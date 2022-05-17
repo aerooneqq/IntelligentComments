@@ -12,7 +12,6 @@ import com.intellij.openapi.project.Project
 class ContentSegmentsUiModel : ContentSegmentUiModel, ModelWithContent {
   override val contentSection: SectionUiModel
 
-
   constructor(
     project: Project,
     parent: UiInteractionModelBase?,

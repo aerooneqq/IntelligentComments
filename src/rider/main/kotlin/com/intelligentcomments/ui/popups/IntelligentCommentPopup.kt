@@ -1,5 +1,6 @@
 package com.intelligentcomments.ui.popups
 
+import com.intelligentcomments.ui.comments.model.ModelWithContent
 import com.intelligentcomments.ui.comments.model.ModelWithContentSegments
 import com.intelligentcomments.ui.comments.model.UiInteractionModelBase
 import com.intelligentcomments.ui.comments.renderers.segments.LeftHeaderRightContentRenderer
@@ -71,6 +72,8 @@ class IntelligentCommentPopup(
         RenderAdditionalInfo(headerWidth)
       } else if (model is ModelWithContentSegments) {
         ContentSegmentsUtil.createRenderInfoFor(model.content.contentSection.content, editor)
+      } else if (model is ModelWithContent) {
+        ContentSegmentsUtil.createRenderInfoFor(model.contentSection.content, editor)
       } else {
         RenderAdditionalInfo.emptyInstance
       }
