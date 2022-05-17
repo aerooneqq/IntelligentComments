@@ -1,3 +1,14 @@
+1.0.0-EAP4
+
+Fixed:
+
+- Shifted comments' rendering inside collapsed fold regions
+- Rendering quality in popups
+- A bit incorrect rendering of invariants
+- Some exceptions
+- Forgotten unimplemented settings
+- Incorrect color in table's borders and list's numbers/bullet
+
 1.0.0-EAP3
 
 Fixed:
