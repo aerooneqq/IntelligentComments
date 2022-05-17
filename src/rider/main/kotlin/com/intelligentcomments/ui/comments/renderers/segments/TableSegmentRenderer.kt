@@ -1,5 +1,6 @@
 package com.intelligentcomments.ui.comments.renderers.segments
 
+import com.intelligentcomments.core.domain.core.CommonsHighlightersFactory
 import com.intelligentcomments.ui.colors.Colors
 import com.intelligentcomments.ui.colors.ColorsProvider
 import com.intelligentcomments.ui.comments.model.content.table.TableCellUiModel
@@ -62,8 +63,8 @@ class TableSegmentRenderer(private val table: TableContentSegmentUiModel) : Segm
   ) {
     val height = rowsHeights.sum()
     val width = colsWidths.sum()
-
-    val borderColor = table.project.service<ColorsProvider>().getColorFor(Colors.TableBorderBackgroundColor)
+    val docCommentColor = CommonsHighlightersFactory.tryCreateCommentHighlighter(null, 1)?.textColor
+    val borderColor = docCommentColor ?: table.project.service<ColorsProvider>().getColorFor(Colors.TableBorderBackgroundColor)
     UpdatedGraphicsCookie(g, color = borderColor).use {
       drawLines(g, rect, rowsHeights, width) { gr, r, delta, dim -> drawHorizontalLine(gr, r, delta, dim) }
       drawLines(g, rect, colsWidths, height) { gr, r, delta, dim -> drawVerticalLine(gr, r, delta, dim) }
