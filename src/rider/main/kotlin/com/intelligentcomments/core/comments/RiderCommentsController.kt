@@ -22,23 +22,33 @@ import com.intellij.psi.impl.source.tree.injected.changesHandler.range
 import com.intellij.util.application
 import com.jetbrains.rd.platform.diagnostics.logAssertion
 import com.jetbrains.rd.platform.util.getLogger
+import com.jetbrains.rd.platform.util.lifetime
 import com.jetbrains.rd.util.lifetime.Lifetime
 import com.jetbrains.rd.util.lifetime.onTermination
+import com.jetbrains.rd.util.reactive.AddRemove
 import com.jetbrains.rdclient.daemon.highlighters.foldings.markAsDocComment
+import com.jetbrains.rdclient.editors.FrontendTextControlHost
 import com.jetbrains.rdclient.util.idea.LifetimedProjectComponent
 import com.jetbrains.rider.document.RiderDocumentHost
 
+val EditModeFolding = Key<Boolean>("EditModeFolding")
 
 class RiderCommentsController(project: Project) : LifetimedProjectComponent(project) {
-  companion object {
-    private val EditModeFolding = Key<Boolean>("EditModeFolding")
-  }
-
   private val commentsStorage: EditorCommentsWithFoldingsStorage = EditorCommentsWithFoldingsStorage()
   private val logger = getLogger<RiderDocumentHost>()
   private val commentsStateManager = project.getComponent(RiderCommentsStateManager::class.java)
   private val listenersManager = project.service<CommentsEditorsListenersManager>()
   private val settings = RiderIntelligentCommentsSettingsProvider.getInstance()
+
+
+  init {
+    FrontendTextControlHost.getInstance(project).openedEditors.adviseAddRemove(project.lifetime) { addRemove, _, editor ->
+      if (addRemove == AddRemove.Remove) {
+        commentsStorage.removeAllEditorsFoldings(editor)
+        commentsStorage.removeAllEditorsComments(editor)
+      }
+    }
+  }
 
 
   fun findNearestLeftCommentToCurrentOffset(editor: Editor): CommentBase? {
@@ -51,6 +61,10 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
 
   fun getFolding(commentIdentifier: CommentIdentifier, editor: Editor): CustomFoldRegion? {
     return commentsStorage.getFolding(commentIdentifier, editor) as? CustomFoldRegion
+  }
+
+  fun tryGetComment(commentIdentifier: CommentIdentifier, editor: Editor): CommentBase? {
+    return commentsStorage.getComment(commentIdentifier, editor)
   }
 
   fun getAllFoldingsFor(editor: Editor) = commentsStorage.getAllFoldingsFor(editor)
@@ -239,6 +253,16 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
     }
   }
 
+  fun reRenderComments(comments: Collection<CommentBase>, editor: Editor) {
+    commentsStorage.recreateComments(comments, editor)
+    editor.runBatchFoldingOperation {
+      for (comment in comments) {
+        val state = commentsStateManager.getExistingCommentState(editor, comment.identifier) ?: continue
+        doUpdateCommentToMathState(comment.identifier, editor, state)
+      }
+    }
+  }
+
   private fun toggleRenderMode(commentId: CommentIdentifier, editor: Editor, state: CommentState) {
     application.assertIsDispatchThread()
     assertThatInBatchFoldingUpdate(editor)
@@ -272,6 +296,7 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
         if (oldFoldingRenderer is RendererWithRectangleModel) {
           val oldComment = oldFoldingRenderer.baseModel.comment
           commentsStorage.removeFolding(oldComment.identifier, editor)
+          foldingModel.removeFoldRegion(oldFolding)
         }
       } else {
         val userData = oldFolding.getUserData(EditModeFolding)
