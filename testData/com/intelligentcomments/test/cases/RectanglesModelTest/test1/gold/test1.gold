@@ -1,126 +1,1452 @@
-Rectangle[71, 181, 189, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[71, 121, 357, 75]=(com.intelligentcomments.ui.comments.model.content.text.TextContentSegmentUiModel, com.intelligentcomments.ui.comments.model.content.paragraphs.ParagraphUiModel, )
-Rectangle[71, 121, 357, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[71, 166, 315, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[99, 68, 84, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[0, 0, 733, 533]=(com.intelligentcomments.ui.comments.model.DocCommentUiModel, )
-Rectangle[71, 98, 322, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[379, 345, 189, 15]=(com.intelligentcomments.ui.comments.model.content.text.TextContentSegmentUiModel, com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[133, 345, 35, 15]=(com.intelligentcomments.ui.comments.model.content.text.TextContentSegmentUiModel, com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[71, 473, 336, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[71, 38, 357, 75]=(com.intelligentcomments.ui.comments.model.content.text.TextContentSegmentUiModel, )
-Rectangle[316, 318, 315, 15]=(com.intelligentcomments.ui.comments.model.content.text.TextContentSegmentUiModel, com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[190, 68, 147, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[71, 136, 350, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[71, 473, 616, 60]=(com.intelligentcomments.ui.comments.model.content.text.TextContentSegmentUiModel, com.intelligentcomments.ui.comments.model.content.paragraphs.ParagraphUiModel, )
-Rectangle[0, 15, 217, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[236, 237, 476, 15]=(com.intelligentcomments.ui.comments.model.content.text.TextContentSegmentUiModel, com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[77, 406, 147, 15]=(com.intelligentcomments.ui.comments.model.content.text.TextContentSegmentUiModel, com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[126, 237, 49, 15]=(com.intelligentcomments.ui.comments.model.content.text.TextContentSegmentUiModel, com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[71, 518, 196, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[323, 399, 301, 30]=(com.intelligentcomments.ui.comments.model.content.text.TextContentSegmentUiModel, )
-Rectangle[126, 210, 49, 15]=(com.intelligentcomments.ui.comments.model.content.text.TextContentSegmentUiModel, com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[0, 0, 343, 30]=(com.intelligentcomments.ui.comments.model.content.text.TextContentSegmentUiModel, com.intelligentcomments.ui.comments.model.content.summary.GroupedSummaryUiModel, )
-Rectangle[71, 68, 21, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[71, 151, 329, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[348, 291, 252, 15]=(com.intelligentcomments.ui.comments.model.content.text.TextContentSegmentUiModel, com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[313, 372, 322, 15]=(com.intelligentcomments.ui.comments.model.content.text.TextContentSegmentUiModel, com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[0, 38, 56, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[71, 204, 647, 261]=(com.intelligentcomments.ui.comments.model.content.table.TableContentSegmentUiModel, )
-Rectangle[119, 372, 63, 15]=(com.intelligentcomments.ui.comments.model.content.text.TextContentSegmentUiModel, com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[0, 38, 733, 495]=(com.intelligentcomments.ui.comments.model.content.remarks.GroupedRemarksUiModel, )
-Rectangle[71, 53, 357, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[136, 291, 28, 15]=(com.intelligentcomments.ui.comments.model.content.text.TextContentSegmentUiModel, com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[101, 318, 98, 15]=(com.intelligentcomments.ui.comments.model.content.text.TextContentSegmentUiModel, com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[362, 441, 224, 15]=(com.intelligentcomments.ui.comments.model.content.text.TextContentSegmentUiModel, com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[136, 264, 28, 15]=(com.intelligentcomments.ui.comments.model.content.text.TextContentSegmentUiModel, com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[323, 399, 301, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[71, 83, 336, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[0, 0, 343, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[71, 503, 273, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[323, 414, 154, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[71, 488, 336, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[71, 38, 322, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[243, 210, 462, 15]=(com.intelligentcomments.ui.comments.model.content.text.TextContentSegmentUiModel, com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[274, 264, 399, 15]=(com.intelligentcomments.ui.comments.model.content.text.TextContentSegmentUiModel, com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[105, 441, 91, 15]=(com.intelligentcomments.ui.comments.model.content.text.TextContentSegmentUiModel, com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[351, 503, 336, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
+Rectangle[195, 76, 151, 17]=
+(
+	HighlighterUiModel::116::233::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[136, 379, 36, 17]=
+(
+	TextContentSegmentUiModel::value[HighlighterUiModel::0::5::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+	HighlighterUiModel::0::5::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[0, 0, 353, 34]=
+(
+	TextContentSegmentUiModel::Every class and member should have a one sentence
+summary describing its purpose.[HighlighterUiModel::0::81::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+	GroupedSummaryUiModel::ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::Every class and member should have a one sentence
+summary describing its purpose.[HighlighterUiModel::0::81::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
 
-Rectangle[0, 38, 436, 68]=(com.intelligentcomments.ui.comments.model.content.remarks.GroupedRemarksUiModel, )
-Rectangle[0, 15, 126, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[71, 53, 175, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[0, 38, 56, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[70, 0, 189, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[28, 0, 35, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[71, 76, 350, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[0, 0, 436, 106]=(com.intelligentcomments.ui.comments.model.DocCommentUiModel, )
-Rectangle[141, 38, 28, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[71, 91, 301, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[0, 0, 21, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[71, 38, 21, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[0, 0, 259, 30]=(com.intelligentcomments.ui.comments.model.content.text.TextContentSegmentUiModel, com.intelligentcomments.ui.comments.model.content.value.ValueUiModel, )
-Rectangle[99, 38, 35, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[176, 38, 42, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[71, 38, 175, 30]=(com.intelligentcomments.ui.comments.model.content.text.TextContentSegmentUiModel, )
-Rectangle[71, 76, 350, 30]=(com.intelligentcomments.ui.comments.model.content.text.TextContentSegmentUiModel, com.intelligentcomments.ui.comments.model.content.paragraphs.ParagraphUiModel, )
+}
+)
+Rectangle[325, 350, 324, 17]=
+(
+	TextContentSegmentUiModel::Used to describe parameters and return values[HighlighterUiModel::0::45::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+	HighlighterUiModel::0::45::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[73, 186, 324, 17]=
+(
+	HighlighterUiModel::0::224::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[390, 379, 194, 17]=
+(
+	TextContentSegmentUiModel::Used to describe properties[HighlighterUiModel::0::27::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+	HighlighterUiModel::0::27::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[73, 152, 360, 17]=
+(
+	HighlighterUiModel::0::224::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[107, 483, 94, 17]=
+(
+	TextContentSegmentUiModel::example, code[HighlighterUiModel::0::13::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+	HighlighterUiModel::0::13::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[73, 135, 367, 17]=
+(
+	HighlighterUiModel::0::224::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[73, 203, 194, 17]=
+(
+	HighlighterUiModel::0::224::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[73, 551, 281, 17]=
+(
+	HighlighterUiModel::0::137::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[0, 0, 353, 17]=
+(
+	HighlighterUiModel::0::81::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[357, 321, 259, 17]=
+(
+	TextContentSegmentUiModel::Provides a list of terms or elements[HighlighterUiModel::0::36::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+	HighlighterUiModel::0::36::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[79, 445, 151, 17]=
+(
+	TextContentSegmentUiModel::c, cref, see, seealso[HighlighterUiModel::0::21::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+	HighlighterUiModel::0::21::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[249, 234, 475, 17]=
+(
+	TextContentSegmentUiModel::This should provide a one sentence summary of the class or member.[HighlighterUiModel::0::66::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+	HighlighterUiModel::0::66::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[332, 437, 310, 34]=
+(
+	TextContentSegmentUiModel::These provide code style and links to other
+documentation elements[HighlighterUiModel::0::66::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+)
+Rectangle[73, 517, 346, 17]=
+(
+	HighlighterUiModel::0::137::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[73, 517, 634, 68]=
+(
+	TextContentSegmentUiModel::The list above uses the "table" style. You could
+also use the "bullet" or "number" style. Neither
+would typically use the "term" element. Note: paragraphs are double spaced. Use the *br*
+tag for single spaced lines.[HighlighterUiModel::0::137::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null,HighlighterUiModel::138::215::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+	ParagraphUiModel: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::The list above uses the "table" style. You could
+also use the "bullet" or "number" style. Neither
+would typically use the "term" element. Note: paragraphs are double spaced. Use the *br*
+tag for single spaced lines.[HighlighterUiModel::0::137::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null,HighlighterUiModel::138::215::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
 
-Rectangle[137, 69, 238, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, com.intelligentcomments.ui.comments.model.content.text.TextContentSegmentUiModel, )
-Rectangle[0, 92, 175, 105]=(com.intelligentcomments.ui.comments.model.content.code.CodeSegmentUiModel, com.intelligentcomments.ui.comments.model.content.example.ExampleSegmentUiModel, )
-Rectangle[445, 235, 371, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[92, 69, 35, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[92, 69, 298, 15]=(com.intelligentcomments.ui.comments.model.content.params.ParameterUiModel, )
-Rectangle[0, 273, 119, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[92, 205, 119, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[221, 220, 105, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[70, 122, 14, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[0, 0, 804, 341]=(com.intelligentcomments.ui.comments.model.DocCommentUiModel, )
-Rectangle[0, 288, 189, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[0, 0, 287, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, com.intelligentcomments.ui.comments.model.content.text.TextContentSegmentUiModel, com.intelligentcomments.ui.comments.model.content.summary.GroupedSummaryUiModel, )
-Rectangle[92, 326, 35, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[92, 205, 739, 60]=(com.intelligentcomments.ui.comments.model.content.exceptions.ExceptionUiModel, )
-Rectangle[0, 205, 804, 60]=(com.intelligentcomments.ui.comments.model.content.exceptions.GroupedExceptionUiModel, )
-Rectangle[137, 46, 231, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, com.intelligentcomments.ui.comments.model.content.text.TextContentSegmentUiModel, )
-Rectangle[92, 46, 28, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[0, 46, 447, 38]=(com.intelligentcomments.ui.comments.model.content.params.GroupedParamsUiModel, )
-Rectangle[0, 273, 189, 30]=(com.intelligentcomments.ui.comments.model.content.text.TextContentSegmentUiModel, )
-Rectangle[14, 107, 21, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[133, 107, 7, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[154, 107, 7, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[0, 23, 275, 15]=(com.intelligentcomments.ui.comments.model.content.return.GroupedReturnUiModel, )
-Rectangle[487, 205, 112, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[0, 23, 56, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[0, 311, 198, 30]=(com.intelligentcomments.ui.comments.model.content.seeAlso.GroupedSeeAlsoUiModel, )
-Rectangle[14, 122, 14, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[221, 235, 217, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[221, 205, 196, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[0, 46, 77, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[0, 205, 77, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[221, 205, 595, 60]=(com.intelligentcomments.ui.comments.model.content.text.TextContentSegmentUiModel, )
-Rectangle[92, 23, 168, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, com.intelligentcomments.ui.comments.model.content.text.TextContentSegmentUiModel, )
-Rectangle[424, 205, 56, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[92, 46, 291, 15]=(com.intelligentcomments.ui.comments.model.content.params.ParameterUiModel, )
-Rectangle[92, 311, 91, 30]=(com.intelligentcomments.ui.comments.model.content.text.TextContentSegmentUiModel, )
-Rectangle[0, 311, 63, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[221, 250, 196, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[92, 311, 84, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
+}
+}
+)
+Rectangle[73, 169, 338, 17]=
+(
+	HighlighterUiModel::0::224::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[321, 408, 331, 17]=
+(
+	TextContentSegmentUiModel::Used to describe exceptions that may be thrown[HighlighterUiModel::0::46::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+	HighlighterUiModel::0::46::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[104, 350, 101, 17]=
+(
+	TextContentSegmentUiModel::returns, param[HighlighterUiModel::0::14::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+	HighlighterUiModel::0::14::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[282, 292, 410, 17]=
+(
+	TextContentSegmentUiModel::The para tag separates a section into multiple paragraphs[HighlighterUiModel::0::57::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+	HighlighterUiModel::0::57::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[73, 76, 22, 17]=
+(
+	HighlighterUiModel::0::102::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[129, 263, 50, 17]=
+(
+	TextContentSegmentUiModel::Remarks[HighlighterUiModel::0::7::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+	HighlighterUiModel::0::7::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[140, 292, 29, 17]=
+(
+	TextContentSegmentUiModel::para[HighlighterUiModel::0::4::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+	HighlighterUiModel::0::4::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[73, 42, 331, 17]=
+(
+	HighlighterUiModel::0::102::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[73, 110, 331, 17]=
+(
+	HighlighterUiModel::116::233::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[361, 551, 346, 17]=
+(
+	HighlighterUiModel::138::215::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[140, 321, 29, 17]=
+(
+	TextContentSegmentUiModel::list[HighlighterUiModel::0::4::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+	HighlighterUiModel::0::4::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[0, 42, 58, 17]=
+(
+	HighlighterUiModel::0::8::1.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[122, 408, 65, 17]=
+(
+	TextContentSegmentUiModel::exception[HighlighterUiModel::0::9::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+	HighlighterUiModel::0::9::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[332, 437, 310, 17]=
+(
+	HighlighterUiModel::0::66::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[73, 228, 665, 281]=
+(
+	TableContentSegmentUiModel::null: 
+{
+TableRowSegmentUiModel: 
+{
+TableCellUiModel::CENTER::CENTER::false: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::Summary[HighlighterUiModel::0::7::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
 
-Rectangle[92, 83, 343, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[92, 121, 63, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[92, 121, 487, 15]=(com.intelligentcomments.ui.comments.model.content.params.ParameterUiModel, )
-Rectangle[0, 23, 471, 90]=(com.intelligentcomments.ui.comments.model.content.remarks.GroupedRemarksUiModel, )
-Rectangle[165, 121, 399, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, com.intelligentcomments.ui.comments.model.content.text.TextContentSegmentUiModel, )
-Rectangle[92, 53, 343, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[0, 0, 294, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, com.intelligentcomments.ui.comments.model.content.text.TextContentSegmentUiModel, com.intelligentcomments.ui.comments.model.content.summary.GroupedSummaryUiModel, )
-Rectangle[0, 23, 56, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[0, 121, 77, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[0, 121, 608, 38]=(com.intelligentcomments.ui.comments.model.content.params.GroupedParamsUiModel, )
-Rectangle[92, 23, 364, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[92, 144, 487, 15]=(com.intelligentcomments.ui.comments.model.content.params.ParameterUiModel, )
-Rectangle[165, 144, 399, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, com.intelligentcomments.ui.comments.model.content.text.TextContentSegmentUiModel, )
-Rectangle[92, 38, 343, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[92, 68, 329, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[92, 98, 140, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[92, 144, 56, 15]=(com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel, )
-Rectangle[0, 0, 608, 159]=(com.intelligentcomments.ui.comments.model.DocCommentUiModel, )
-Rectangle[92, 23, 364, 90]=(com.intelligentcomments.ui.comments.model.content.text.TextContentSegmentUiModel, )
+}
+}
+TableCellUiModel::CENTER::CENTER::false: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::This should provide a one sentence summary of the class or member.[HighlighterUiModel::0::66::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+}
+TableRowSegmentUiModel: 
+{
+TableCellUiModel::CENTER::CENTER::false: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::Remarks[HighlighterUiModel::0::7::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+TableCellUiModel::CENTER::CENTER::false: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::This is typically a more detailed description of the class or member[HighlighterUiModel::0::68::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+}
+TableRowSegmentUiModel: 
+{
+TableCellUiModel::CENTER::CENTER::false: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::para[HighlighterUiModel::0::4::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+TableCellUiModel::CENTER::CENTER::false: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::The para tag separates a section into multiple paragraphs[HighlighterUiModel::0::57::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+}
+TableRowSegmentUiModel: 
+{
+TableCellUiModel::CENTER::CENTER::false: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::list[HighlighterUiModel::0::4::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+TableCellUiModel::CENTER::CENTER::false: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::Provides a list of terms or elements[HighlighterUiModel::0::36::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+}
+TableRowSegmentUiModel: 
+{
+TableCellUiModel::CENTER::CENTER::false: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::returns, param[HighlighterUiModel::0::14::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+TableCellUiModel::CENTER::CENTER::false: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::Used to describe parameters and return values[HighlighterUiModel::0::45::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+}
+TableRowSegmentUiModel: 
+{
+TableCellUiModel::CENTER::CENTER::false: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::value[HighlighterUiModel::0::5::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+TableCellUiModel::CENTER::CENTER::false: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::Used to describe properties[HighlighterUiModel::0::27::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+}
+TableRowSegmentUiModel: 
+{
+TableCellUiModel::CENTER::CENTER::false: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::exception[HighlighterUiModel::0::9::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+TableCellUiModel::CENTER::CENTER::false: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::Used to describe exceptions that may be thrown[HighlighterUiModel::0::46::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+}
+TableRowSegmentUiModel: 
+{
+TableCellUiModel::CENTER::CENTER::false: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::c, cref, see, seealso[HighlighterUiModel::0::21::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+TableCellUiModel::CENTER::CENTER::false: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::These provide code style and links to other
+documentation elements[HighlighterUiModel::0::66::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+}
+TableRowSegmentUiModel: 
+{
+TableCellUiModel::CENTER::CENTER::false: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::example, code[HighlighterUiModel::0::13::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+TableCellUiModel::CENTER::CENTER::false: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::These are used for code examples[HighlighterUiModel::0::32::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+}
+}
+)
+Rectangle[73, 42, 367, 85]=
+(
+	TextContentSegmentUiModel::You can expand on that one sentence summary to
+provide more information for readers. In this case,
+the ExampleClass provides different C#
+elements to show how you would add documentation
+comments for most elements in a typical class.[HighlighterUiModel::0::102::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null,HighlighterUiModel::103::115::400.0::2::java.awt.Color[r=173,g=216,b=230]::null::false::null,HighlighterUiModel::116::233::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+)
+Rectangle[129, 234, 50, 17]=
+(
+	TextContentSegmentUiModel::Summary[HighlighterUiModel::0::7::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+	HighlighterUiModel::0::7::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[73, 534, 346, 17]=
+(
+	HighlighterUiModel::0::137::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[0, 42, 755, 543]=
+(
+	GroupedRemarksUiModel::ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::You can expand on that one sentence summary to
+provide more information for readers. In this case,
+the ExampleClass provides different C#
+elements to show how you would add documentation
+comments for most elements in a typical class.[HighlighterUiModel::0::102::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null,HighlighterUiModel::103::115::400.0::2::java.awt.Color[r=173,g=216,b=230]::null::false::null,HighlighterUiModel::116::233::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+ParagraphUiModel: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::The remarks can add multiple paragraphs, so you can
+write detailed information for developers that use
+your work. You should add everything needed for
+readers to be successful. This class contains
+examples for the following:[HighlighterUiModel::0::224::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+TableContentSegmentUiModel::null: 
+{
+TableRowSegmentUiModel: 
+{
+TableCellUiModel::CENTER::CENTER::false: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::Summary[HighlighterUiModel::0::7::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+TableCellUiModel::CENTER::CENTER::false: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::This should provide a one sentence summary of the class or member.[HighlighterUiModel::0::66::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+}
+TableRowSegmentUiModel: 
+{
+TableCellUiModel::CENTER::CENTER::false: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::Remarks[HighlighterUiModel::0::7::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+TableCellUiModel::CENTER::CENTER::false: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::This is typically a more detailed description of the class or member[HighlighterUiModel::0::68::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+}
+TableRowSegmentUiModel: 
+{
+TableCellUiModel::CENTER::CENTER::false: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::para[HighlighterUiModel::0::4::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+TableCellUiModel::CENTER::CENTER::false: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::The para tag separates a section into multiple paragraphs[HighlighterUiModel::0::57::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+}
+TableRowSegmentUiModel: 
+{
+TableCellUiModel::CENTER::CENTER::false: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::list[HighlighterUiModel::0::4::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+TableCellUiModel::CENTER::CENTER::false: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::Provides a list of terms or elements[HighlighterUiModel::0::36::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+}
+TableRowSegmentUiModel: 
+{
+TableCellUiModel::CENTER::CENTER::false: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::returns, param[HighlighterUiModel::0::14::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+TableCellUiModel::CENTER::CENTER::false: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::Used to describe parameters and return values[HighlighterUiModel::0::45::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+}
+TableRowSegmentUiModel: 
+{
+TableCellUiModel::CENTER::CENTER::false: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::value[HighlighterUiModel::0::5::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+TableCellUiModel::CENTER::CENTER::false: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::Used to describe properties[HighlighterUiModel::0::27::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+}
+TableRowSegmentUiModel: 
+{
+TableCellUiModel::CENTER::CENTER::false: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::exception[HighlighterUiModel::0::9::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+TableCellUiModel::CENTER::CENTER::false: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::Used to describe exceptions that may be thrown[HighlighterUiModel::0::46::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+}
+TableRowSegmentUiModel: 
+{
+TableCellUiModel::CENTER::CENTER::false: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::c, cref, see, seealso[HighlighterUiModel::0::21::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+TableCellUiModel::CENTER::CENTER::false: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::These provide code style and links to other
+documentation elements[HighlighterUiModel::0::66::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+}
+TableRowSegmentUiModel: 
+{
+TableCellUiModel::CENTER::CENTER::false: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::example, code[HighlighterUiModel::0::13::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+TableCellUiModel::CENTER::CENTER::false: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::These are used for code examples[HighlighterUiModel::0::32::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+}
+}
+ParagraphUiModel: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::The list above uses the "table" style. You could
+also use the "bullet" or "number" style. Neither
+would typically use the "term" element. Note: paragraphs are double spaced. Use the *br*
+tag for single spaced lines.[HighlighterUiModel::0::137::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null,HighlighterUiModel::138::215::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+
+}
+)
+Rectangle[332, 454, 158, 17]=
+(
+	HighlighterUiModel::0::66::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[73, 93, 346, 17]=
+(
+	HighlighterUiModel::116::233::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[0, 0, 755, 585]=
+(
+	DocCommentUiModel::SectionUiModel::GroupedSummaryUiModel::ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::Every class and member should have a one sentence
+summary describing its purpose.[HighlighterUiModel::0::81::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+GroupedRemarksUiModel::ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::You can expand on that one sentence summary to
+provide more information for readers. In this case,
+the ExampleClass provides different C#
+elements to show how you would add documentation
+comments for most elements in a typical class.[HighlighterUiModel::0::102::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null,HighlighterUiModel::103::115::400.0::2::java.awt.Color[r=173,g=216,b=230]::null::false::null,HighlighterUiModel::116::233::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+ParagraphUiModel: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::The remarks can add multiple paragraphs, so you can
+write detailed information for developers that use
+your work. You should add everything needed for
+readers to be successful. This class contains
+examples for the following:[HighlighterUiModel::0::224::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+TableContentSegmentUiModel::null: 
+{
+TableRowSegmentUiModel: 
+{
+TableCellUiModel::CENTER::CENTER::false: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::Summary[HighlighterUiModel::0::7::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+TableCellUiModel::CENTER::CENTER::false: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::This should provide a one sentence summary of the class or member.[HighlighterUiModel::0::66::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+}
+TableRowSegmentUiModel: 
+{
+TableCellUiModel::CENTER::CENTER::false: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::Remarks[HighlighterUiModel::0::7::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+TableCellUiModel::CENTER::CENTER::false: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::This is typically a more detailed description of the class or member[HighlighterUiModel::0::68::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+}
+TableRowSegmentUiModel: 
+{
+TableCellUiModel::CENTER::CENTER::false: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::para[HighlighterUiModel::0::4::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+TableCellUiModel::CENTER::CENTER::false: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::The para tag separates a section into multiple paragraphs[HighlighterUiModel::0::57::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+}
+TableRowSegmentUiModel: 
+{
+TableCellUiModel::CENTER::CENTER::false: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::list[HighlighterUiModel::0::4::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+TableCellUiModel::CENTER::CENTER::false: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::Provides a list of terms or elements[HighlighterUiModel::0::36::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+}
+TableRowSegmentUiModel: 
+{
+TableCellUiModel::CENTER::CENTER::false: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::returns, param[HighlighterUiModel::0::14::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+TableCellUiModel::CENTER::CENTER::false: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::Used to describe parameters and return values[HighlighterUiModel::0::45::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+}
+TableRowSegmentUiModel: 
+{
+TableCellUiModel::CENTER::CENTER::false: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::value[HighlighterUiModel::0::5::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+TableCellUiModel::CENTER::CENTER::false: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::Used to describe properties[HighlighterUiModel::0::27::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+}
+TableRowSegmentUiModel: 
+{
+TableCellUiModel::CENTER::CENTER::false: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::exception[HighlighterUiModel::0::9::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+TableCellUiModel::CENTER::CENTER::false: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::Used to describe exceptions that may be thrown[HighlighterUiModel::0::46::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+}
+TableRowSegmentUiModel: 
+{
+TableCellUiModel::CENTER::CENTER::false: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::c, cref, see, seealso[HighlighterUiModel::0::21::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+TableCellUiModel::CENTER::CENTER::false: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::These provide code style and links to other
+documentation elements[HighlighterUiModel::0::66::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+}
+TableRowSegmentUiModel: 
+{
+TableCellUiModel::CENTER::CENTER::false: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::example, code[HighlighterUiModel::0::13::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+TableCellUiModel::CENTER::CENTER::false: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::These are used for code examples[HighlighterUiModel::0::32::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+}
+}
+ParagraphUiModel: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::The list above uses the "table" style. You could
+also use the "bullet" or "number" style. Neither
+would typically use the "term" element. Note: paragraphs are double spaced. Use the *br*
+tag for single spaced lines.[HighlighterUiModel::0::137::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null,HighlighterUiModel::138::215::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+
+}
+
+)
+Rectangle[0, 17, 223, 17]=
+(
+	HighlighterUiModel::0::81::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[242, 263, 490, 17]=
+(
+	TextContentSegmentUiModel::This is typically a more detailed description of the class or member[HighlighterUiModel::0::68::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+	HighlighterUiModel::0::68::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[73, 135, 367, 85]=
+(
+	TextContentSegmentUiModel::The remarks can add multiple paragraphs, so you can
+write detailed information for developers that use
+your work. You should add everything needed for
+readers to be successful. This class contains
+examples for the following:[HighlighterUiModel::0::224::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+	ParagraphUiModel: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::The remarks can add multiple paragraphs, so you can
+write detailed information for developers that use
+your work. You should add everything needed for
+readers to be successful. This class contains
+examples for the following:[HighlighterUiModel::0::224::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+)
+Rectangle[102, 76, 86, 17]=
+(
+	HighlighterUiModel::103::115::400.0::2::java.awt.Color[r=173,g=216,b=230]::null::false::null
+)
+Rectangle[372, 483, 230, 17]=
+(
+	TextContentSegmentUiModel::These are used for code examples[HighlighterUiModel::0::32::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+	HighlighterUiModel::0::32::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[73, 59, 367, 17]=
+(
+	HighlighterUiModel::0::102::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[73, 568, 202, 17]=
+(
+	HighlighterUiModel::138::215::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+
+Rectangle[73, 84, 360, 17]=
+(
+	HighlighterUiModel::0::94::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[0, 0, 450, 118]=
+(
+	DocCommentUiModel::SectionUiModel::ValueUiModel: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::The Label property represents a label
+for this instance.[HighlighterUiModel::0::3::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null,HighlighterUiModel::4::9::400.0::2::java.awt.Color[r=173,g=216,b=230]::null::false::null,HighlighterUiModel::10::56::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+GroupedRemarksUiModel::ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::The Label is a string
+that you use for a label.[HighlighterUiModel::0::3::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null,HighlighterUiModel::4::9::400.0::2::java.awt.Color[r=145,g=20,b=174]::null::false::null,HighlighterUiModel::10::14::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null,HighlighterUiModel::15::21::400.0::2::java.awt.Color[r=0,g=0,b=182]::null::false::null,HighlighterUiModel::22::47::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+ParagraphUiModel: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::Note that there isn't a way to provide a "cref" to
+each accessor, only to the property itself.[HighlighterUiModel::0::94::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+
+}
+
+)
+Rectangle[0, 42, 58, 17]=
+(
+	HighlighterUiModel::0::8::1.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[102, 42, 36, 17]=
+(
+	HighlighterUiModel::4::9::400.0::2::java.awt.Color[r=145,g=20,b=174]::null::false::null
+)
+Rectangle[181, 42, 43, 17]=
+(
+	HighlighterUiModel::15::21::400.0::2::java.awt.Color[r=0,g=0,b=182]::null::false::null
+)
+Rectangle[0, 42, 450, 76]=
+(
+	GroupedRemarksUiModel::ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::The Label is a string
+that you use for a label.[HighlighterUiModel::0::3::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null,HighlighterUiModel::4::9::400.0::2::java.awt.Color[r=145,g=20,b=174]::null::false::null,HighlighterUiModel::10::14::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null,HighlighterUiModel::15::21::400.0::2::java.awt.Color[r=0,g=0,b=182]::null::false::null,HighlighterUiModel::22::47::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+ParagraphUiModel: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::Note that there isn't a way to provide a "cref" to
+each accessor, only to the property itself.[HighlighterUiModel::0::94::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+
+}
+)
+Rectangle[0, 0, 22, 17]=
+(
+	HighlighterUiModel::0::3::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[73, 42, 180, 34]=
+(
+	TextContentSegmentUiModel::The Label is a string
+that you use for a label.[HighlighterUiModel::0::3::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null,HighlighterUiModel::4::9::400.0::2::java.awt.Color[r=145,g=20,b=174]::null::false::null,HighlighterUiModel::10::14::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null,HighlighterUiModel::15::21::400.0::2::java.awt.Color[r=0,g=0,b=182]::null::false::null,HighlighterUiModel::22::47::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+)
+Rectangle[73, 84, 360, 34]=
+(
+	TextContentSegmentUiModel::Note that there isn't a way to provide a "cref" to
+each accessor, only to the property itself.[HighlighterUiModel::0::94::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+	ParagraphUiModel: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::Note that there isn't a way to provide a "cref" to
+each accessor, only to the property itself.[HighlighterUiModel::0::94::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+)
+Rectangle[29, 0, 36, 17]=
+(
+	HighlighterUiModel::4::9::400.0::2::java.awt.Color[r=173,g=216,b=230]::null::false::null
+)
+Rectangle[72, 0, 194, 17]=
+(
+	HighlighterUiModel::10::56::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[73, 101, 310, 17]=
+(
+	HighlighterUiModel::0::94::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[0, 0, 266, 34]=
+(
+	TextContentSegmentUiModel::The Label property represents a label
+for this instance.[HighlighterUiModel::0::3::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null,HighlighterUiModel::4::9::400.0::2::java.awt.Color[r=173,g=216,b=230]::null::false::null,HighlighterUiModel::10::56::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+	ValueUiModel: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::The Label property represents a label
+for this instance.[HighlighterUiModel::0::3::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null,HighlighterUiModel::4::9::400.0::2::java.awt.Color[r=173,g=216,b=230]::null::false::null,HighlighterUiModel::10::56::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+)
+Rectangle[145, 42, 29, 17]=
+(
+	HighlighterUiModel::10::14::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[73, 42, 22, 17]=
+(
+	HighlighterUiModel::0::3::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[73, 59, 180, 17]=
+(
+	HighlighterUiModel::22::47::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[0, 17, 130, 17]=
+(
+	HighlighterUiModel::10::56::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+
+Rectangle[277, 278, 202, 17]=
+(
+	HighlighterUiModel::157::185::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[277, 227, 612, 68]=
+(
+	TextContentSegmentUiModel::Thrown when one parameter is MaxValue and the other is
+greater than 0.
+Note that here you can also use //docs.microsoft.com/dotnet/api/system.int32.maxvalue
+to point a web page instead.[HighlighterUiModel::0::28::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null,HighlighterUiModel::29::37::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null,HighlighterUiModel::38::102::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null,HighlighterUiModel::103::156::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::true::null,HighlighterUiModel::157::185::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+)
+Rectangle[0, 320, 194, 17]=
+(
+	HighlighterUiModel::0::45::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[277, 227, 202, 17]=
+(
+	HighlighterUiModel::0::28::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[14, 134, 14, 17]=
+(
+	HighlighterUiModel::30::32::400.0::2::java.awt.Color[r=0,g=0,b=182]::null::false::null
+)
+Rectangle[0, 100, 180, 119]=
+(
+	CodeSegmentUiModel::{
+  int c = Math.Add(4, 5);
+  if (c > 10)
+  {
+    Console.WriteLine(c);
+  }
+}[HighlighterUiModel::4::7::400.0::2::java.awt.Color[r=0,g=0,b=182]::null::false::null,HighlighterUiModel::21::22::400.0::2::java.awt.Color[r=0,g=0,b=255]::null::false::null,HighlighterUiModel::24::25::400.0::2::java.awt.Color[r=0,g=0,b=255]::null::false::null,HighlighterUiModel::30::32::400.0::2::java.awt.Color[r=0,g=0,b=182]::null::false::null,HighlighterUiModel::38::40::400.0::2::java.awt.Color[r=0,g=0,b=255]::null::false::null]
+	ExampleSegmentUiModel: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::CodeSegmentUiModel::{
+  int c = Math.Add(4, 5);
+  if (c > 10)
+  {
+    Console.WriteLine(c);
+  }
+}[HighlighterUiModel::4::7::400.0::2::java.awt.Color[r=0,g=0,b=182]::null::false::null,HighlighterUiModel::21::22::400.0::2::java.awt.Color[r=0,g=0,b=255]::null::false::null,HighlighterUiModel::24::25::400.0::2::java.awt.Color[r=0,g=0,b=255]::null::false::null,HighlighterUiModel::30::32::400.0::2::java.awt.Color[r=0,g=0,b=182]::null::false::null,HighlighterUiModel::38::40::400.0::2::java.awt.Color[r=0,g=0,b=255]::null::false::null]
+
+}
+}
+)
+Rectangle[277, 261, 223, 17]=
+(
+	HighlighterUiModel::38::102::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[137, 117, 7, 17]=
+(
+	HighlighterUiModel::21::22::400.0::2::java.awt.Color[r=0,g=0,b=255]::null::false::null
+)
+Rectangle[0, 303, 194, 34]=
+(
+	TextContentSegmentUiModel::for a list of all
+the tags in these examples.[HighlighterUiModel::0::45::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+)
+Rectangle[158, 117, 7, 17]=
+(
+	HighlighterUiModel::24::25::400.0::2::java.awt.Color[r=0,g=0,b=255]::null::false::null
+)
+Rectangle[94, 362, 36, 17]=
+(
+	HighlighterUiModel::14::19::400.0::2::java.awt.Color[r=145,g=20,b=174]::null::false::null
+)
+Rectangle[94, 227, 173, 17]=
+(
+	HighlighterUiModel::0::24::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null
+)
+Rectangle[486, 227, 58, 17]=
+(
+	HighlighterUiModel::29::37::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null
+)
+Rectangle[0, 25, 284, 17]=
+(
+	GroupedReturnUiModel::ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::The sum of two integers.[HighlighterUiModel::0::24::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+)
+Rectangle[140, 50, 238, 17]=
+(
+	HighlighterUiModel::0::33::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+	TextContentSegmentUiModel::The left operand of the addition.[HighlighterUiModel::0::33::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+)
+Rectangle[507, 261, 382, 17]=
+(
+	HighlighterUiModel::103::156::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::true::null
+)
+Rectangle[0, 50, 79, 17]=
+(
+	HighlighterUiModel::0::11::1.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[94, 50, 29, 17]=
+(
+	HighlighterUiModel::0::4::1.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[94, 75, 36, 17]=
+(
+	HighlighterUiModel::0::5::1.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[0, 0, 829, 379]=
+(
+	DocCommentUiModel::SectionUiModel::GroupedSummaryUiModel::ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::Adds two integers and returns the result.[HighlighterUiModel::0::41::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+GroupedReturnUiModel::ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::The sum of two integers.[HighlighterUiModel::0::24::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+GroupedParamsUiModel::ContentSegmentsUiModel: 
+{
+SectionUiModel::ParameterUiModel::left[HighlighterUiModel::0::4::1.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::The left operand of the addition.[HighlighterUiModel::0::33::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+ParameterUiModel::right[HighlighterUiModel::0::5::1.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::The right operand of the addition.[HighlighterUiModel::0::34::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+
+}
+ExampleSegmentUiModel: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::CodeSegmentUiModel::{
+  int c = Math.Add(4, 5);
+  if (c > 10)
+  {
+    Console.WriteLine(c);
+  }
+}[HighlighterUiModel::4::7::400.0::2::java.awt.Color[r=0,g=0,b=182]::null::false::null,HighlighterUiModel::21::22::400.0::2::java.awt.Color[r=0,g=0,b=255]::null::false::null,HighlighterUiModel::24::25::400.0::2::java.awt.Color[r=0,g=0,b=255]::null::false::null,HighlighterUiModel::30::32::400.0::2::java.awt.Color[r=0,g=0,b=182]::null::false::null,HighlighterUiModel::38::40::400.0::2::java.awt.Color[r=0,g=0,b=255]::null::false::null]
+
+}
+}
+GroupedExceptionUiModel::ContentSegmentsUiModel: 
+{
+SectionUiModel::ExceptionUiModel::System.OverflowException[HighlighterUiModel::0::24::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null]: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::Thrown when one parameter is MaxValue and the other is
+greater than 0.
+Note that here you can also use //docs.microsoft.com/dotnet/api/system.int32.maxvalue
+to point a web page instead.[HighlighterUiModel::0::28::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null,HighlighterUiModel::29::37::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null,HighlighterUiModel::38::102::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null,HighlighterUiModel::103::156::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::true::null,HighlighterUiModel::157::185::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+
+}
+TextContentSegmentUiModel::for a list of all
+the tags in these examples.[HighlighterUiModel::0::45::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+GroupedSeeAlsoUiModel::TextContentSegmentUiModel::ExampleClass 
+Label [HighlighterUiModel::0::12::400.0::2::java.awt.Color[r=3,g=3,b=3]::null::false::null,HighlighterUiModel::14::19::400.0::2::java.awt.Color[r=145,g=20,b=174]::null::false::null]
+
+)
+Rectangle[94, 25, 173, 17]=
+(
+	HighlighterUiModel::0::24::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+	TextContentSegmentUiModel::The sum of two integers.[HighlighterUiModel::0::24::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+)
+Rectangle[94, 75, 308, 17]=
+(
+	ParameterUiModel::right[HighlighterUiModel::0::5::1.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::The right operand of the addition.[HighlighterUiModel::0::34::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+)
+Rectangle[0, 345, 205, 34]=
+(
+	GroupedSeeAlsoUiModel::TextContentSegmentUiModel::ExampleClass 
+Label [HighlighterUiModel::0::12::400.0::2::java.awt.Color[r=3,g=3,b=3]::null::false::null,HighlighterUiModel::14::19::400.0::2::java.awt.Color[r=145,g=20,b=174]::null::false::null]
+)
+Rectangle[0, 25, 58, 17]=
+(
+	HighlighterUiModel::0::8::1.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[140, 75, 245, 17]=
+(
+	HighlighterUiModel::0::34::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+	TextContentSegmentUiModel::The right operand of the addition.[HighlighterUiModel::0::34::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+)
+Rectangle[94, 50, 301, 17]=
+(
+	ParameterUiModel::left[HighlighterUiModel::0::4::1.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::The left operand of the addition.[HighlighterUiModel::0::33::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+)
+Rectangle[71, 134, 14, 17]=
+(
+	HighlighterUiModel::38::40::400.0::2::java.awt.Color[r=0,g=0,b=255]::null::false::null
+)
+Rectangle[94, 345, 86, 17]=
+(
+	HighlighterUiModel::0::12::400.0::2::java.awt.Color[r=3,g=3,b=3]::null::false::null
+)
+Rectangle[0, 50, 462, 42]=
+(
+	GroupedParamsUiModel::ContentSegmentsUiModel: 
+{
+SectionUiModel::ParameterUiModel::left[HighlighterUiModel::0::4::1.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::The left operand of the addition.[HighlighterUiModel::0::33::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+ParameterUiModel::right[HighlighterUiModel::0::5::1.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::The right operand of the addition.[HighlighterUiModel::0::34::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+
+}
+)
+Rectangle[277, 244, 108, 17]=
+(
+	HighlighterUiModel::38::102::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[0, 227, 829, 68]=
+(
+	GroupedExceptionUiModel::ContentSegmentsUiModel: 
+{
+SectionUiModel::ExceptionUiModel::System.OverflowException[HighlighterUiModel::0::24::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null]: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::Thrown when one parameter is MaxValue and the other is
+greater than 0.
+Note that here you can also use //docs.microsoft.com/dotnet/api/system.int32.maxvalue
+to point a web page instead.[HighlighterUiModel::0::28::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null,HighlighterUiModel::29::37::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null,HighlighterUiModel::38::102::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null,HighlighterUiModel::103::156::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::true::null,HighlighterUiModel::157::185::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+
+}
+)
+Rectangle[94, 227, 812, 68]=
+(
+	ExceptionUiModel::System.OverflowException[HighlighterUiModel::0::24::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null]: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::Thrown when one parameter is MaxValue and the other is
+greater than 0.
+Note that here you can also use //docs.microsoft.com/dotnet/api/system.int32.maxvalue
+to point a web page instead.[HighlighterUiModel::0::28::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null,HighlighterUiModel::29::37::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null,HighlighterUiModel::38::102::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null,HighlighterUiModel::103::156::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::true::null,HighlighterUiModel::157::185::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+)
+Rectangle[94, 345, 94, 34]=
+(
+	TextContentSegmentUiModel::ExampleClass 
+Label [HighlighterUiModel::0::12::400.0::2::java.awt.Color[r=3,g=3,b=3]::null::false::null,HighlighterUiModel::14::19::400.0::2::java.awt.Color[r=145,g=20,b=174]::null::false::null]
+)
+Rectangle[0, 0, 295, 17]=
+(
+	HighlighterUiModel::0::41::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+	TextContentSegmentUiModel::Adds two integers and returns the result.[HighlighterUiModel::0::41::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+	GroupedSummaryUiModel::ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::Adds two integers and returns the result.[HighlighterUiModel::0::41::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+)
+Rectangle[14, 117, 22, 17]=
+(
+	HighlighterUiModel::4::7::400.0::2::java.awt.Color[r=0,g=0,b=182]::null::false::null
+)
+Rectangle[0, 345, 65, 17]=
+(
+	HighlighterUiModel::0::9::1.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[0, 227, 79, 17]=
+(
+	HighlighterUiModel::0::11::1.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[0, 303, 122, 17]=
+(
+	HighlighterUiModel::0::45::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[551, 227, 115, 17]=
+(
+	HighlighterUiModel::38::102::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+
+Rectangle[94, 25, 374, 17]=
+(
+	HighlighterUiModel::0::271::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[94, 76, 338, 17]=
+(
+	HighlighterUiModel::0::271::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[0, 25, 485, 102]=
+(
+	GroupedRemarksUiModel::ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::There isn't a way to add XML comments for properties
+created for positional records, yet. The language
+design team is still considering what tags should
+be supported, and where. Currently, you can use
+the "param" tag to describe the parameters to the
+primary constructor.[HighlighterUiModel::0::271::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+)
+Rectangle[94, 42, 353, 17]=
+(
+	HighlighterUiModel::0::271::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[0, 135, 627, 42]=
+(
+	GroupedParamsUiModel::ContentSegmentsUiModel: 
+{
+SectionUiModel::ParameterUiModel::FirstName[HighlighterUiModel::0::9::1.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::This tag will apply to the primary constructor parameter.[HighlighterUiModel::0::57::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+ParameterUiModel::LastName[HighlighterUiModel::0::8::1.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::This tag will apply to the primary constructor parameter.[HighlighterUiModel::0::57::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+
+}
+)
+Rectangle[94, 110, 144, 17]=
+(
+	HighlighterUiModel::0::271::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[169, 160, 410, 17]=
+(
+	HighlighterUiModel::0::57::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+	TextContentSegmentUiModel::This tag will apply to the primary constructor parameter.[HighlighterUiModel::0::57::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+)
+Rectangle[94, 93, 353, 17]=
+(
+	HighlighterUiModel::0::271::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[0, 0, 302, 17]=
+(
+	HighlighterUiModel::0::42::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+	TextContentSegmentUiModel::This is an example of a positional record.[HighlighterUiModel::0::42::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+	GroupedSummaryUiModel::ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::This is an example of a positional record.[HighlighterUiModel::0::42::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+)
+Rectangle[0, 25, 58, 17]=
+(
+	HighlighterUiModel::0::8::1.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[94, 160, 502, 17]=
+(
+	ParameterUiModel::LastName[HighlighterUiModel::0::8::1.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::This tag will apply to the primary constructor parameter.[HighlighterUiModel::0::57::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+)
+Rectangle[94, 25, 374, 102]=
+(
+	TextContentSegmentUiModel::There isn't a way to add XML comments for properties
+created for positional records, yet. The language
+design team is still considering what tags should
+be supported, and where. Currently, you can use
+the "param" tag to describe the parameters to the
+primary constructor.[HighlighterUiModel::0::271::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+)
+Rectangle[0, 135, 79, 17]=
+(
+	HighlighterUiModel::0::11::1.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[94, 135, 65, 17]=
+(
+	HighlighterUiModel::0::9::1.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[169, 135, 410, 17]=
+(
+	HighlighterUiModel::0::57::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+	TextContentSegmentUiModel::This tag will apply to the primary constructor parameter.[HighlighterUiModel::0::57::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+)
+Rectangle[94, 160, 58, 17]=
+(
+	HighlighterUiModel::0::8::1.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[0, 0, 627, 177]=
+(
+	DocCommentUiModel::SectionUiModel::GroupedSummaryUiModel::ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::This is an example of a positional record.[HighlighterUiModel::0::42::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+GroupedRemarksUiModel::ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::There isn't a way to add XML comments for properties
+created for positional records, yet. The language
+design team is still considering what tags should
+be supported, and where. Currently, you can use
+the "param" tag to describe the parameters to the
+primary constructor.[HighlighterUiModel::0::271::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+GroupedParamsUiModel::ContentSegmentsUiModel: 
+{
+SectionUiModel::ParameterUiModel::FirstName[HighlighterUiModel::0::9::1.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::This tag will apply to the primary constructor parameter.[HighlighterUiModel::0::57::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+ParameterUiModel::LastName[HighlighterUiModel::0::8::1.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::This tag will apply to the primary constructor parameter.[HighlighterUiModel::0::57::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+
+}
+
+)
+Rectangle[94, 135, 502, 17]=
+(
+	ParameterUiModel::FirstName[HighlighterUiModel::0::9::1.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::This tag will apply to the primary constructor parameter.[HighlighterUiModel::0::57::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+)
+Rectangle[94, 59, 353, 17]=
+(
+	HighlighterUiModel::0::271::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
 
