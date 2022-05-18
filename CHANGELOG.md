@@ -8,6 +8,7 @@ Fixed:
 - Some exceptions
 - Forgotten unimplemented settings
 - Incorrect color in table's borders and list's numbers/bullet
+- Fixed not processing inheritdocs on class
 
 1.0.0-EAP3
 
