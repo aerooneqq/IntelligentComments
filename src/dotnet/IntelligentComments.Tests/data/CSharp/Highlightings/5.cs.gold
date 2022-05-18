@@ -104,7 +104,7 @@ IntelligentCommentContent:
             TextContentSegment:
               HighlightedText:
               Text: asdkajsdaskdlasd
-              Highlighters: Highlighter: [todo.text.color, 0, 16, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
+              Highlighters: Highlighter: [ReSharper.TODO_ITEM_NORMAL, 0, 16, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
             TicketContentSegment: 
                 EntityWithContentSegments:
                   ContentSegments:
@@ -144,7 +144,7 @@ IntelligentCommentContent:
             TextContentSegment:
               HighlightedText:
               Text: asdkajsdaskdlasd
-              Highlighters: Highlighter: [todo.text.color, 0, 16, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
+              Highlighters: Highlighter: [ReSharper.TODO_ITEM_NORMAL, 0, 16, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
             TicketContentSegment: 
                 EntityWithContentSegments:
                   ContentSegments:

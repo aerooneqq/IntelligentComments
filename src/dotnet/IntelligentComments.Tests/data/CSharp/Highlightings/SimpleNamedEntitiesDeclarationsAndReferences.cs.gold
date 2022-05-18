@@ -95,7 +95,7 @@ IntelligentCommentContent:
             TextContentSegment:
               HighlightedText:
               Text: asdasdasdasd
-              Highlighters: Highlighter: [todo.text.color, 0, 12, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
+              Highlighters: Highlighter: [ReSharper.TODO_ITEM_NORMAL, 0, 12, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
     Reference: 
         HighlightedText:
         Text: hello
@@ -155,7 +155,7 @@ IntelligentCommentContent:
             TextContentSegment:
               HighlightedText:
               Text: asdasdasdasd
-              Highlighters: Highlighter: [todo.text.color, 0, 12, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
+              Highlighters: Highlighter: [ReSharper.TODO_ITEM_NORMAL, 0, 12, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
     Reference: 
         HighlightedText:
         Text: hello1

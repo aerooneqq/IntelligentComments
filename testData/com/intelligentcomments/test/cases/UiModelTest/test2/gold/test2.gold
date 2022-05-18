@@ -11,7 +11,18 @@ general information about the derived class.[HighlighterUiModel::0::144::400.0::
 
 }
 
-DocCommentUiModel::SectionUiModel::
+DocCommentUiModel::SectionUiModel::GroupedSummaryUiModel::ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::A summary about this class.[HighlighterUiModel::0::27::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+GroupedRemarksUiModel::ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::These remarks would explain more about this class.
+In this example, these comments also explain the
+general information about the derived class.[HighlighterUiModel::0::144::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
 
 DocCommentUiModel::SectionUiModel::GroupedSummaryUiModel::ContentSegmentsUiModel: 
 {

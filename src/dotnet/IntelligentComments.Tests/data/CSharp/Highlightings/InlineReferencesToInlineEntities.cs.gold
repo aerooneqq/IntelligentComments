@@ -168,7 +168,7 @@ IntelligentCommentContent:
           Text: TODO
           Highlighters: HighlightedText:
           Text: asl;dkasl;dkasd;lasd
-          Highlighters: Highlighter: [todo.text.color, 0, 20, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
+          Highlighters: Highlighter: [ReSharper.TODO_ITEM_NORMAL, 0, 20, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
 
 (7): IntelligentCommentsDocCommentFolding: (DocumentRange (870 - 949) on InlineReferencesToInlineEntities.cs)
 InlineReference: 

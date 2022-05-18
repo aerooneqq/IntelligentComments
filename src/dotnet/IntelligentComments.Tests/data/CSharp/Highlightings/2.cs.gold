@@ -108,6 +108,20 @@ IntelligentCommentContent:
 (1): IntelligentCommentsDocCommentFolding: (DocumentRange (370 - 386) on 2.cs)
 IntelligentCommentContent:
   ContentSegments:
+      SummaryContentSegment:
+        ContentSegments:
+          TextContentSegment:
+            HighlightedText:
+            Text: A summary about this class.
+            Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 27, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
+      RemarksContentSegment:
+        ContentSegments:
+          TextContentSegment:
+            HighlightedText:
+            Text: These remarks would explain more about this class.
+              In this example, these comments also explain the
+              general information about the derived class.
+            Highlighters: Highlighter: [ReSharper.CSHARP_DOC_COMMENT, 0, 144, TextHighlighterAttributes { FontStyle = Regular, Underline = False, FontWeight = 400 }, References: ]
 
 (2): IntelligentCommentsDocCommentFolding: (DocumentRange (435 - 726) on 2.cs)
 IntelligentCommentContent:
