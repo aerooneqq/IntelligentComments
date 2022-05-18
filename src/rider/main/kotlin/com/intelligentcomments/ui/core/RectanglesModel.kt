@@ -32,6 +32,8 @@ class RectanglesModel {
     }
   }
 
+  fun getAllModels() = elementsToRectangles.keys
+
   fun getRectanglesFor(model: UiInteractionModelBase): Collection<Rectangle>? {
     return elementsToRectangles[model]
   }

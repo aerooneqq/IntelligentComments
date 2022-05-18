@@ -183,23 +183,4 @@ abstract class RendererWithRectangleModel(
     val renderer = baseModel.contentSection.createRenderer()
     renderer.accept(context)
   }
-
-  fun dumpRectangleModel(editor: Editor): String {
-    val sb = StringBuilder()
-    val comma = ", "
-    revalidateRectanglesModel(editor)
-    for (rectangle in rectanglesModel!!.allRectangles) {
-      sb.append("Rectangle[")
-        .append("]")
-        .append("=\n(")
-
-      for (model in rectanglesModel!!.getModelsFor(rectangle)!!.sortedBy { it.calculateStateHash() }) {
-        sb.append("\n\t").append(model.dumpModel())
-      }
-
-      sb.append("\n)\n")
-    }
-
-    return sb.toString()
-  }
 }

@@ -10,7 +10,7 @@ import org.testng.annotations.Test
 import kotlin.test.assertTrue
 import kotlin.test.fail
 
-class RectanglesModelTest : BaseTestWithSolution() {
+class UiModelTest : BaseTestWithSolution() {
   override val waitForCaches: Boolean = true
   override fun getSolutionDirectoryName() = "RectanglesModelTest"
 
@@ -45,8 +45,7 @@ class RectanglesModelTest : BaseTestWithSolution() {
       waitForDaemon()
       executeWithGold(testGoldFile) {
         for (comment in project.getComponent(RiderCommentsController::class.java).getAllCommentsFor(this)) {
-          val renderer = comment.uiModel.renderer
-          it.println(renderer.dumpRectangleModel(this))
+          it.println(comment.uiModel.dumpModel())
         }
       }
     }

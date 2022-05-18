@@ -54,5 +54,7 @@ class ListItemUiModel(
     return hash
   }
 
+  override fun dumpModel() = "${super.dumpModel()}: \n\t{\n${header?.dumpModel()}\n}\n\t{\n${description?.dumpModel()}\n}"
+
   override fun createRenderer(): Renderer = throw NotSupportedForRenderingError()
 }
