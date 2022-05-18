@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml;
@@ -11,11 +12,13 @@ using JetBrains.Diagnostics;
 using JetBrains.ReSharper.Feature.Services.Daemon.Attributes;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp;
+using JetBrains.ReSharper.Psi.CSharp.Tree;
 using JetBrains.ReSharper.Psi.ExtensionsAPI;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.ReSharper.Psi.Util;
 using JetBrains.ReSharper.Psi.Xml.Tree;
 using JetBrains.Util;
+using Org.BouncyCastle.Utilities.Collections;
 
 namespace IntelligentComments.Comments.Calculations.Core.DocComments.Utils;
 
@@ -154,14 +157,29 @@ public static partial class DocCommentsBuilderUtil
     if (commentOwner is not IDeclaration { DeclaredElement: { } declaredElement }) return null;
     element = declaredElement;
 
-    if (element is not IOverridableMember overridableMember) return commentBlock;
-
-    foreach (var superMember in overridableMember.GetImmediateSuperMembers())
+    if (element is IOverridableMember overridableMember)
     {
-      var member = superMember.Member;
-      if (TryGetDocCommentBlockFor(member) is { } docCommentBlock)
+      foreach (var superMember in overridableMember.GetImmediateSuperMembers())
       {
-        return docCommentBlock;
+        var member = superMember.Member;
+        if (TryGetDocCommentBlockFor(member) is { } docCommentBlock)
+        {
+          return docCommentBlock;
+        }
+      }
+    }
+    
+    if (element is IClass @class)
+    {
+      var superType = @class.GetSuperClass();
+      while (superType is { })
+      {
+        if (TryGetDocCommentBlockFor(superType) is { } docCommentBlock)
+        {
+          return docCommentBlock;
+        }
+        
+        superType = superType.GetSuperClass();
       }
     }
 
