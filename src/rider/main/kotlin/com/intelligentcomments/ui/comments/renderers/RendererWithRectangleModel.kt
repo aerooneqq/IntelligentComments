@@ -190,17 +190,10 @@ abstract class RendererWithRectangleModel(
     revalidateRectanglesModel(editor)
     for (rectangle in rectanglesModel!!.allRectangles) {
       sb.append("Rectangle[")
-        .append(rectangle.x)
-        .append(comma)
-        .append(rectangle.y)
-        .append(comma)
-        .append(rectangle.width)
-        .append(comma)
-        .append(rectangle.height)
         .append("]")
         .append("=\n(")
 
-      for (model in rectanglesModel!!.getModelsFor(rectangle)!!) {
+      for (model in rectanglesModel!!.getModelsFor(rectangle)!!.sortedBy { it.calculateStateHash() }) {
         sb.append("\n\t").append(model.dumpModel())
       }
 
