@@ -51,6 +51,10 @@ class EditorCommentsWithFoldingsStorage : EditorCommentsStorage() {
     foldings[editor]?.remove(commentIdentifier)
   }
 
+  fun removeAllEditorsFoldings(editor: Editor) {
+    foldings.remove(editor)
+  }
+
   fun getAllFoldingsFor(editor: Editor): Collection<FoldRegion> {
     invalidate(editor)
     return foldings[editor]?.values ?: emptyList()

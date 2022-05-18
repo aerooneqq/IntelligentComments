@@ -35,10 +35,10 @@ class DocCommentsFoldingAggregator(
   }
 }
 
+val commentKey = Key<CommentBase>("HighlightersComment")
+
 class DocCommentsFoldingAdapter(private val editor: EditorImpl) : FrontendMarkupAdapterListener {
   companion object {
-    private val commentKey = Key<CommentBase>("HighlightersComment")
-
     private fun executeOverDocHighlighters(
       highlighters: List<RangeHighlighterEx>,
       action: (RangeHighlighterEx, RdCommentFoldingModel) -> Unit

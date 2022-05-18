@@ -19,6 +19,12 @@ interface RiderIntelligentCommentsSettingsProvider {
 
 
   val commentsDisplayKind: Property<CommentsDisplayKind>
+
+  val renderDocComments: Property<Boolean>
+  val renderMultilineComments: Property<Boolean>
+  val renderGroupOfSingleLineComments: Property<Boolean>
+  val renderSingleLineComments: Property<Boolean>
+
   val groupingDelimiter: Property<String>
   val groupSeeAlso: Property<Boolean>
   val groupReturns: Property<Boolean>
@@ -45,6 +51,12 @@ interface RiderIntelligentCommentsSettingsProvider {
 
 class RiderIntelligentCommentsSettingsProviderImpl : LifetimedService(), RiderIntelligentCommentsSettingsProvider {
   override val commentsDisplayKind: Property<CommentsDisplayKind> = Property(CommentsDisplayKind.Render)
+
+  override val renderDocComments: Property<Boolean> = Property(true)
+  override val renderGroupOfSingleLineComments: Property<Boolean> = Property(true)
+  override val renderMultilineComments: Property<Boolean> = Property(true)
+  override val renderSingleLineComments: Property<Boolean> = Property(true)
+
   override val groupingDelimiter: Property<String> = Property("\n")
   override val groupSeeAlso: Property<Boolean> = Property(true)
   override val groupReturns: Property<Boolean> = Property(true)

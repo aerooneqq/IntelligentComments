@@ -43,18 +43,24 @@ class GroupedInvariantsUiModel(
 private fun extractTextFromInvariant(segment: ContentSegment): HighlightedText {
   val name = (segment as TextInvariantSegment).name
   if (name != null) {
-    return createStartTextOfNamedEntity(NameKind.Invariant, name, segment).mergeWith(segment.description)
+    return createStartTextOfNamedEntity(NameKind.Invariant, name, segment, segment.description.text != "")
+      .mergeWith(segment.description)
   }
 
   return segment.description
 }
 
-fun createStartTextOfNamedEntity(kind: NameKind, name: HighlightedText, parentSegment: ContentSegment): HighlightedText {
+fun createStartTextOfNamedEntity(
+  kind: NameKind,
+  name: HighlightedText,
+  parentSegment: ContentSegment,
+  nonEmptyDescription: Boolean
+): HighlightedText {
   val kindText = "$kind ("
   val kindHighlighter = CommonsHighlightersFactory.tryCreateCommentHighlighter(parentSegment, kindText.length)
   val kindHighlightedText = HighlightedTextImpl(kindText, null, kindHighlighter)
 
-  val endText = "): "
+  val endText = if (nonEmptyDescription) "): " else ")"
   val endTextHighlighter = CommonsHighlightersFactory.tryCreateCommentHighlighter(parentSegment, endText.length)
   val endHighlightedText = HighlightedTextImpl(endText, null, endTextHighlighter)
 

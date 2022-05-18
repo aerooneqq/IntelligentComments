@@ -3,7 +3,7 @@ using IntelligentComments.Comments.Caches.Names;
 using IntelligentComments.Comments.Calculations.Core;
 using IntelligentComments.Comments.Calculations.Core.DocComments.Utils;
 using IntelligentComments.Comments.Calculations.Core.InlineReferenceComments;
-using IntelligentComments.Comments.Completion.CSharp.DocComments;
+using IntelligentComments.Comments.Completion;
 using IntelligentComments.Comments.Domain.Impl.References;
 using JetBrains.Annotations;
 using JetBrains.Application.DataContext;

@@ -5,7 +5,7 @@ using System.Xml;
 using IntelligentComments.Comments.Calculations.Core;
 using IntelligentComments.Comments.Calculations.Core.DocComments;
 using IntelligentComments.Comments.Calculations.Core.DocComments.Utils;
-using IntelligentComments.Comments.Completion.CSharp.DocComments;
+using IntelligentComments.Comments.Completion;
 using IntelligentComments.Comments.Domain.Core;
 using IntelligentComments.Comments.Domain.Core.Content;
 using IntelligentComments.Comments.Domain.Core.References;

@@ -21,6 +21,10 @@ open class EditorCommentsStorage {
     }
   }
 
+  fun removeAllEditorsComments(editor: Editor) {
+    comments.remove(editor)
+  }
+
   fun findNearestCommentTo(editor: Editor, offset: Int): CommentBase? {
     synchronized(syncObject) {
       val editorComments = comments[editor] ?: return null
@@ -39,6 +43,19 @@ open class EditorCommentsStorage {
     }
   }
 
+  fun recreateComments(comments: Collection<CommentBase>, editor: Editor) {
+    synchronized(syncObject) {
+      val storage = this.comments[editor] ?: return
+      for (comment in comments) {
+        if (storage.get(comment.identifier) != null) {
+          val newComment = comment.recreate(editor)
+          storage.remove(comment.identifier)
+          storage.add(comment.identifier, newComment)
+        }
+      }
+    }
+  }
+
   fun getAllComments(editor: Editor): Collection<CommentBase> {
     synchronized(syncObject) {
       return comments[editor]?.getAllKeysAndValues()?.map { it.second } ?: emptyList()
@@ -50,8 +67,8 @@ open class EditorCommentsStorage {
       val editorComments = comments[editor]
       val comment = editorComments?.getWithAdditionalSearch(commentIdentifier)
 
-      if (comment == null){
-        logger.error("Comment for given ID $commentIdentifier does not exist")
+      if (comment == null) {
+        logger.warn("Comment for given ID $commentIdentifier does not exist")
       }
 
       return comment

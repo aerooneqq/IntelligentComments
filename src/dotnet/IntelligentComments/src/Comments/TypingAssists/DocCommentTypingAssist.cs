@@ -1,5 +1,5 @@
 using System.Text;
-using IntelligentComments.Comments.Completion.CSharp.DocComments;
+using IntelligentComments.Comments.Completion;
 using JetBrains.Annotations;
 using JetBrains.Application.CommandProcessing;
 using JetBrains.Application.Settings;

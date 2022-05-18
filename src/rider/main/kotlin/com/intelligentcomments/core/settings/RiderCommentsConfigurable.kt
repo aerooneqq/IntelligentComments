@@ -64,22 +64,20 @@ class RiderCommentsConfigurable : BoundConfigurable("Intelligent comments", null
         }
 
         indent {
-          buttonGroup {
-            row {
-              checkBox("Render doc comments").enabledIf(renderComments!!.selected).bindSelected(viewModel::renderDocComments)
-            }
+          row {
+            checkBox("Render doc comments").enabledIf(renderComments!!.selected).associateWith(viewModel::renderDocComments)
+          }
 
-            row {
-              checkBox("Render multi-line comments").enabledIf(renderComments!!.selected).bindSelected(viewModel::renderMultilineComments)
-            }
+          row {
+            checkBox("Render multi-line comments").enabledIf(renderComments!!.selected).associateWith(viewModel::renderMultilineComments)
+          }
 
-            row {
-              checkBox("Render group of single-line comments").enabledIf(renderComments!!.selected).bindSelected(viewModel::renderGroupOfSingleLineComments)
-            }
+          row {
+            checkBox("Render group of single-line comments").enabledIf(renderComments!!.selected).associateWith(viewModel::renderGroupOfSingleLineComments)
+          }
 
-            row {
-              checkBox("Render single-line comments").enabledIf(renderComments!!.selected).bindSelected(viewModel::renderSingleLineComments)
-            }
+          row {
+            checkBox("Render single-line comments").enabledIf(renderComments!!.selected).associateWith(viewModel::renderSingleLineComments)
           }
         }
 
@@ -93,6 +91,10 @@ class RiderCommentsConfigurable : BoundConfigurable("Intelligent comments", null
 
         row {
           checkBox("Use experimental features").associateWith(viewModel::useExperimentalFeatures)
+        }
+
+        row {
+          checkBox("Render comments only for decompiled sources").associateWith(viewModel::renderCommentsOnlyInDecompiledSources)
         }
       }
     }
@@ -159,10 +161,6 @@ class RiderCommentsConfigurable : BoundConfigurable("Intelligent comments", null
 
         row {
           checkBox("Show only summary").associateWith(viewModel::showOnlySummary)
-        }
-
-        row {
-          checkBox("Render comments only for decompiled sources").associateWith(viewModel::renderCommentsOnlyInDecompiledSources)
         }
       }
     }
