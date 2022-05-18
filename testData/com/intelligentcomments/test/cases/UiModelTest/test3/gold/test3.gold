@@ -1,0 +1,35 @@
+DocCommentUiModel::SectionUiModel::GroupedSummaryUiModel::ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::This is a generic class.[HighlighterUiModel::0::24::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+GroupedRemarksUiModel::ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::This example shows how to specify the GenericClass<T>
+type as a cref attribute.
+In generic classes and methods, you'll often want to reference the
+generic type, or the type parameter.[HighlighterUiModel::0::37::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null,HighlighterUiModel::38::53::400.0::2::java.awt.Color[r=3,g=3,b=3]::null::false::null,HighlighterUiModel::54::183::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+
+CommentWithOneTextSegmentUiModel::SectionUiModel::TextContentSegmentUiModel::Fields and members.[HighlighterUiModel::0::19::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+DocCommentUiModel::SectionUiModel::GroupedSummaryUiModel::ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::This shows examples of typeparamref and typeparam tags[HighlighterUiModel::0::54::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+
+DocCommentUiModel::SectionUiModel::GroupedSummaryUiModel::ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::The GetGenericValue method.[HighlighterUiModel::0::27::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+GroupedRemarksUiModel::ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::This sample shows how to specify the GetGenericValue<T>(T)
+method as a cref attribute.
+The parameter and return value are both of an arbitrary type, T[HighlighterUiModel::0::36::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null,HighlighterUiModel::37::58::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null,HighlighterUiModel::59::148::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null,HighlighterUiModel::149::150::400.0::2::java.awt.Color[r=3,g=3,b=3]::null::false::null]
+
+}
+

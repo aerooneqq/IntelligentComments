@@ -1,0 +1,580 @@
+CommentWithOneTextSegmentUiModel::SectionUiModel::TextContentSegmentUiModel::The main Math class
+Contains all methods for performing basic math functions[HighlighterUiModel::0::76::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+DocCommentUiModel::SectionUiModel::GroupedSummaryUiModel::ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::The main Math class.
+Contains all methods for performing basic math functions.[HighlighterUiModel::0::8::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null,HighlighterUiModel::9::13::400.0::2::java.awt.Color[r=173,g=216,b=230]::null::false::null,HighlighterUiModel::14::78::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+ListContentSegmentUiModel::null::Bullet: 
+{
+ListItemUiModel: 
+	{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::Add[HighlighterUiModel::0::3::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+	{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::Addition Operation[HighlighterUiModel::0::18::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+ListItemUiModel: 
+	{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::Subtract[HighlighterUiModel::0::8::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+	{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::Subtraction Operation[HighlighterUiModel::0::21::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+ListItemUiModel: 
+	{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::Multiply[HighlighterUiModel::0::8::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+	{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::Multiplication Operation[HighlighterUiModel::0::24::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+ListItemUiModel: 
+	{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::Divide[HighlighterUiModel::0::6::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+	{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::Division Operation[HighlighterUiModel::0::18::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+}
+
+}
+GroupedRemarksUiModel::ContentSegmentsUiModel: 
+{
+SectionUiModel::ParagraphUiModel: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::This class can add, subtract, multiply and divide.[HighlighterUiModel::0::50::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+ParagraphUiModel: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::These operations can be performed on both
+integers and doubles.[HighlighterUiModel::0::63::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+
+}
+
+CommentWithOneTextSegmentUiModel::SectionUiModel::TextContentSegmentUiModel::Adds two integers and returns the result[HighlighterUiModel::0::40::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+DocCommentUiModel::SectionUiModel::GroupedSummaryUiModel::ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::Adds two integers a and b
+and returns the result.[HighlighterUiModel::0::17::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null,HighlighterUiModel::18::19::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null,HighlighterUiModel::20::23::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null,HighlighterUiModel::24::25::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null,HighlighterUiModel::26::49::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+GroupedReturnUiModel::ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::The sum of two integers.[HighlighterUiModel::0::24::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+ExampleSegmentUiModel: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::CodeSegmentUiModel::{
+  int c = Math.Add(4, 5);
+  if (c > 10)
+  {
+    Console.WriteLine(c);
+  }
+}[HighlighterUiModel::4::7::400.0::2::java.awt.Color[r=0,g=0,b=182]::null::false::null,HighlighterUiModel::21::22::400.0::2::java.awt.Color[r=0,g=0,b=255]::null::false::null,HighlighterUiModel::24::25::400.0::2::java.awt.Color[r=0,g=0,b=255]::null::false::null,HighlighterUiModel::30::32::400.0::2::java.awt.Color[r=0,g=0,b=182]::null::false::null,HighlighterUiModel::38::40::400.0::2::java.awt.Color[r=0,g=0,b=255]::null::false::null]
+
+}
+}
+GroupedExceptionUiModel::ContentSegmentsUiModel: 
+{
+SectionUiModel::ExceptionUiModel::OverflowException[HighlighterUiModel::0::17::400.0::2::java.awt.Color[r=3,g=3,b=3]::null::false::null]: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::Thrown when one parameter is Int32.MaxValue and the other
+is greater than 0.[HighlighterUiModel::0::28::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null,HighlighterUiModel::29::43::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null,HighlighterUiModel::44::76::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+
+}
+TextContentSegmentUiModel::See[HighlighterUiModel::0::3::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+TextContentSegmentUiModel::to add doubles.[HighlighterUiModel::0::15::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+GroupedSeeAlsoUiModel::TextContentSegmentUiModel::Add(double, double) 
+Subtract(int, int) 
+Multiply(int, int) 
+Divide(int, int) [HighlighterUiModel::0::19::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null,HighlighterUiModel::21::39::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null,HighlighterUiModel::41::59::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null,HighlighterUiModel::61::77::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null]
+GroupedParamsUiModel::ContentSegmentsUiModel: 
+{
+SectionUiModel::ParameterUiModel::a[HighlighterUiModel::0::1::1.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::An integer.[HighlighterUiModel::0::11::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+ParameterUiModel::b[HighlighterUiModel::0::1::1.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::An integer.[HighlighterUiModel::0::11::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+
+}
+
+CommentWithOneTextSegmentUiModel::SectionUiModel::TextContentSegmentUiModel::If any parameter is equal to the max value of an integer
+and the other is greater than zero[HighlighterUiModel::0::91::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+CommentWithOneTextSegmentUiModel::SectionUiModel::TextContentSegmentUiModel::Adds two doubles and returns the result[HighlighterUiModel::0::39::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+DocCommentUiModel::SectionUiModel::GroupedSummaryUiModel::ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::Adds two doubles a and b
+and returns the result.[HighlighterUiModel::0::16::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null,HighlighterUiModel::17::18::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null,HighlighterUiModel::19::22::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null,HighlighterUiModel::23::24::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null,HighlighterUiModel::25::48::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+GroupedReturnUiModel::ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::The sum of two doubles.[HighlighterUiModel::0::23::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+ExampleSegmentUiModel: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::CodeSegmentUiModel::{
+  double c = Math.Add(4.5, 5.4);
+  if (c > 10)
+  {
+    Console.WriteLine(c);
+  }
+}[HighlighterUiModel::4::10::400.0::2::java.awt.Color[r=0,g=0,b=182]::null::false::null,HighlighterUiModel::24::27::400.0::2::java.awt.Color[r=0,g=0,b=255]::null::false::null,HighlighterUiModel::29::32::400.0::2::java.awt.Color[r=0,g=0,b=255]::null::false::null,HighlighterUiModel::37::39::400.0::2::java.awt.Color[r=0,g=0,b=182]::null::false::null,HighlighterUiModel::45::47::400.0::2::java.awt.Color[r=0,g=0,b=255]::null::false::null]
+
+}
+}
+GroupedExceptionUiModel::ContentSegmentsUiModel: 
+{
+SectionUiModel::ExceptionUiModel::OverflowException[HighlighterUiModel::0::17::400.0::2::java.awt.Color[r=3,g=3,b=3]::null::false::null]: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::Thrown when one parameter is max and the other
+is greater than 0.[HighlighterUiModel::0::65::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+
+}
+TextContentSegmentUiModel::See[HighlighterUiModel::0::3::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+TextContentSegmentUiModel::to add integers.[HighlighterUiModel::0::16::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+GroupedSeeAlsoUiModel::TextContentSegmentUiModel::Add(int, int) 
+Subtract(double, double) 
+Multiply(double, double) 
+Divide(double, double) [HighlighterUiModel::0::13::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null,HighlighterUiModel::15::39::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null,HighlighterUiModel::41::65::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null,HighlighterUiModel::67::89::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null]
+GroupedParamsUiModel::ContentSegmentsUiModel: 
+{
+SectionUiModel::ParameterUiModel::a[HighlighterUiModel::0::1::1.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::A double precision number.[HighlighterUiModel::0::26::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+ParameterUiModel::b[HighlighterUiModel::0::1::1.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::A double precision number.[HighlighterUiModel::0::26::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+
+}
+
+CommentWithOneTextSegmentUiModel::SectionUiModel::TextContentSegmentUiModel::If any parameter is equal to the max value of an integer
+and the other is greater than zero[HighlighterUiModel::0::91::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+CommentWithOneTextSegmentUiModel::SectionUiModel::TextContentSegmentUiModel::Subtracts an integer from another and returns the result[HighlighterUiModel::0::56::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+DocCommentUiModel::SectionUiModel::GroupedSummaryUiModel::ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::Subtracts b from a
+and returns the result.[HighlighterUiModel::0::9::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null,HighlighterUiModel::10::11::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null,HighlighterUiModel::12::16::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null,HighlighterUiModel::17::18::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null,HighlighterUiModel::19::42::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+GroupedReturnUiModel::ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::The difference between two integers.[HighlighterUiModel::0::36::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+ExampleSegmentUiModel: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::CodeSegmentUiModel::{
+  int c = Math.Subtract(4, 5);
+  if (c > 1)
+  {
+    Console.WriteLine(c);
+  }
+}[HighlighterUiModel::4::7::400.0::2::java.awt.Color[r=0,g=0,b=182]::null::false::null,HighlighterUiModel::26::27::400.0::2::java.awt.Color[r=0,g=0,b=255]::null::false::null,HighlighterUiModel::29::30::400.0::2::java.awt.Color[r=0,g=0,b=255]::null::false::null,HighlighterUiModel::35::37::400.0::2::java.awt.Color[r=0,g=0,b=182]::null::false::null,HighlighterUiModel::43::44::400.0::2::java.awt.Color[r=0,g=0,b=255]::null::false::null]
+
+}
+}
+TextContentSegmentUiModel::See[HighlighterUiModel::0::3::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+TextContentSegmentUiModel::to subtract doubles.[HighlighterUiModel::0::20::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+GroupedSeeAlsoUiModel::TextContentSegmentUiModel::Subtract(double, double) 
+Add(int, int) 
+Multiply(int, int) 
+Divide(int, int) [HighlighterUiModel::0::24::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null,HighlighterUiModel::26::39::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null,HighlighterUiModel::41::59::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null,HighlighterUiModel::61::77::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null]
+GroupedParamsUiModel::ContentSegmentsUiModel: 
+{
+SectionUiModel::ParameterUiModel::a[HighlighterUiModel::0::1::1.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::An integer.[HighlighterUiModel::0::11::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+ParameterUiModel::b[HighlighterUiModel::0::1::1.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::An integer.[HighlighterUiModel::0::11::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+
+}
+
+CommentWithOneTextSegmentUiModel::SectionUiModel::TextContentSegmentUiModel::Subtracts a double from another and returns the result[HighlighterUiModel::0::54::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+DocCommentUiModel::SectionUiModel::GroupedSummaryUiModel::ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::Subtracts a double b from another
+double a and returns the result.[HighlighterUiModel::0::18::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null,HighlighterUiModel::19::20::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null,HighlighterUiModel::21::40::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null,HighlighterUiModel::41::42::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null,HighlighterUiModel::43::66::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+GroupedReturnUiModel::ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::The difference between two doubles.[HighlighterUiModel::0::35::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+ExampleSegmentUiModel: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::CodeSegmentUiModel::{
+  double c = Math.Subtract(4.5, 5.4);
+  if (c > 1)
+  {
+    Console.WriteLine(c);
+  }
+}[HighlighterUiModel::4::10::400.0::2::java.awt.Color[r=0,g=0,b=182]::null::false::null,HighlighterUiModel::29::32::400.0::2::java.awt.Color[r=0,g=0,b=255]::null::false::null,HighlighterUiModel::34::37::400.0::2::java.awt.Color[r=0,g=0,b=255]::null::false::null,HighlighterUiModel::42::44::400.0::2::java.awt.Color[r=0,g=0,b=182]::null::false::null,HighlighterUiModel::50::51::400.0::2::java.awt.Color[r=0,g=0,b=255]::null::false::null]
+
+}
+}
+TextContentSegmentUiModel::See[HighlighterUiModel::0::3::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+TextContentSegmentUiModel::to subtract integers.[HighlighterUiModel::0::21::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+GroupedSeeAlsoUiModel::TextContentSegmentUiModel::Subtract(int, int) 
+Add(double, double) 
+Multiply(double, double) 
+Divide(double, double) [HighlighterUiModel::0::18::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null,HighlighterUiModel::20::39::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null,HighlighterUiModel::41::65::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null,HighlighterUiModel::67::89::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null]
+GroupedParamsUiModel::ContentSegmentsUiModel: 
+{
+SectionUiModel::ParameterUiModel::a[HighlighterUiModel::0::1::1.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::A double precision number.[HighlighterUiModel::0::26::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+ParameterUiModel::b[HighlighterUiModel::0::1::1.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::A double precision number.[HighlighterUiModel::0::26::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+
+}
+
+CommentWithOneTextSegmentUiModel::SectionUiModel::TextContentSegmentUiModel::Multiplies two integers and returns the result[HighlighterUiModel::0::46::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+DocCommentUiModel::SectionUiModel::GroupedSummaryUiModel::ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::Multiplies two integers a
+and b and returns the result.[HighlighterUiModel::0::23::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null,HighlighterUiModel::24::25::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null,HighlighterUiModel::26::29::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null,HighlighterUiModel::30::31::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null,HighlighterUiModel::32::55::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+GroupedReturnUiModel::ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::The product of two integers.[HighlighterUiModel::0::28::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+ExampleSegmentUiModel: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::CodeSegmentUiModel::{
+  int c = Math.Multiply(4, 5);
+  if (c > 100)
+  {
+    Console.WriteLine(c);
+  }
+}[HighlighterUiModel::4::7::400.0::2::java.awt.Color[r=0,g=0,b=182]::null::false::null,HighlighterUiModel::26::27::400.0::2::java.awt.Color[r=0,g=0,b=255]::null::false::null,HighlighterUiModel::29::30::400.0::2::java.awt.Color[r=0,g=0,b=255]::null::false::null,HighlighterUiModel::35::37::400.0::2::java.awt.Color[r=0,g=0,b=182]::null::false::null,HighlighterUiModel::43::46::400.0::2::java.awt.Color[r=0,g=0,b=255]::null::false::null]
+
+}
+}
+TextContentSegmentUiModel::See[HighlighterUiModel::0::3::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+TextContentSegmentUiModel::to multiply doubles.[HighlighterUiModel::0::20::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+GroupedSeeAlsoUiModel::TextContentSegmentUiModel::Multiply(double, double) 
+Add(int, int) 
+Subtract(int, int) 
+Divide(int, int) [HighlighterUiModel::0::24::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null,HighlighterUiModel::26::39::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null,HighlighterUiModel::41::59::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null,HighlighterUiModel::61::77::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null]
+GroupedParamsUiModel::ContentSegmentsUiModel: 
+{
+SectionUiModel::ParameterUiModel::a[HighlighterUiModel::0::1::1.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::An integer.[HighlighterUiModel::0::11::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+ParameterUiModel::b[HighlighterUiModel::0::1::1.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::An integer.[HighlighterUiModel::0::11::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+
+}
+
+CommentWithOneTextSegmentUiModel::SectionUiModel::TextContentSegmentUiModel::Multiplies two doubles and returns the result[HighlighterUiModel::0::45::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+DocCommentUiModel::SectionUiModel::GroupedSummaryUiModel::ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::Multiplies two doubles a and b and returns the result.[HighlighterUiModel::0::22::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null,HighlighterUiModel::23::24::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null,HighlighterUiModel::25::28::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null,HighlighterUiModel::29::30::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null,HighlighterUiModel::31::54::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+GroupedReturnUiModel::ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::The product of two doubles.[HighlighterUiModel::0::27::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+ExampleSegmentUiModel: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::CodeSegmentUiModel::{
+  double c = Math.Multiply(4.5, 5.4);
+  if (c > 100.0)
+  {
+    Console.WriteLine(c);
+  }
+}[HighlighterUiModel::4::10::400.0::2::java.awt.Color[r=0,g=0,b=182]::null::false::null,HighlighterUiModel::29::32::400.0::2::java.awt.Color[r=0,g=0,b=255]::null::false::null,HighlighterUiModel::34::37::400.0::2::java.awt.Color[r=0,g=0,b=255]::null::false::null,HighlighterUiModel::42::44::400.0::2::java.awt.Color[r=0,g=0,b=182]::null::false::null,HighlighterUiModel::50::55::400.0::2::java.awt.Color[r=0,g=0,b=255]::null::false::null]
+
+}
+}
+TextContentSegmentUiModel::See[HighlighterUiModel::0::3::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+TextContentSegmentUiModel::to multiply integers.[HighlighterUiModel::0::21::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+GroupedSeeAlsoUiModel::TextContentSegmentUiModel::Multiply(int, int) 
+Add(double, double) 
+Subtract(double, double) 
+Divide(double, double) [HighlighterUiModel::0::18::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null,HighlighterUiModel::20::39::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null,HighlighterUiModel::41::65::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null,HighlighterUiModel::67::89::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null]
+GroupedParamsUiModel::ContentSegmentsUiModel: 
+{
+SectionUiModel::ParameterUiModel::a[HighlighterUiModel::0::1::1.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::A double precision number.[HighlighterUiModel::0::26::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+ParameterUiModel::b[HighlighterUiModel::0::1::1.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::A double precision number.[HighlighterUiModel::0::26::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+
+}
+
+CommentWithOneTextSegmentUiModel::SectionUiModel::TextContentSegmentUiModel::Divides an integer by another and returns the result[HighlighterUiModel::0::52::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+DocCommentUiModel::SectionUiModel::GroupedSummaryUiModel::ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::Divides an integer a by another
+integer b and returns the result.[HighlighterUiModel::0::18::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null,HighlighterUiModel::19::20::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null,HighlighterUiModel::21::39::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null,HighlighterUiModel::40::41::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null,HighlighterUiModel::42::65::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+GroupedReturnUiModel::ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::The quotient of two integers.[HighlighterUiModel::0::29::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+ExampleSegmentUiModel: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::CodeSegmentUiModel::{
+  int c = Math.Divide(4, 5);
+  if (c > 1)
+  {
+    Console.WriteLine(c);
+  }
+}[HighlighterUiModel::4::7::400.0::2::java.awt.Color[r=0,g=0,b=182]::null::false::null,HighlighterUiModel::24::25::400.0::2::java.awt.Color[r=0,g=0,b=255]::null::false::null,HighlighterUiModel::27::28::400.0::2::java.awt.Color[r=0,g=0,b=255]::null::false::null,HighlighterUiModel::33::35::400.0::2::java.awt.Color[r=0,g=0,b=182]::null::false::null,HighlighterUiModel::41::42::400.0::2::java.awt.Color[r=0,g=0,b=255]::null::false::null]
+
+}
+}
+GroupedExceptionUiModel::ContentSegmentsUiModel: 
+{
+SectionUiModel::ExceptionUiModel::DivideByZeroException[HighlighterUiModel::0::21::400.0::2::java.awt.Color[r=3,g=3,b=3]::null::false::null]: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::Thrown when b is equal to 0.[HighlighterUiModel::0::11::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null,HighlighterUiModel::12::13::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null,HighlighterUiModel::14::28::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+
+}
+TextContentSegmentUiModel::See[HighlighterUiModel::0::3::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+TextContentSegmentUiModel::to divide doubles.[HighlighterUiModel::0::18::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+GroupedSeeAlsoUiModel::TextContentSegmentUiModel::Divide(double, double) 
+Add(int, int) 
+Subtract(int, int) 
+Multiply(int, int) [HighlighterUiModel::0::22::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null,HighlighterUiModel::24::37::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null,HighlighterUiModel::39::57::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null,HighlighterUiModel::59::77::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null]
+GroupedParamsUiModel::ContentSegmentsUiModel: 
+{
+SectionUiModel::ParameterUiModel::a[HighlighterUiModel::0::1::1.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::An integer dividend.[HighlighterUiModel::0::20::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+ParameterUiModel::b[HighlighterUiModel::0::1::1.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::An integer divisor.[HighlighterUiModel::0::19::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+
+}
+
+CommentWithOneTextSegmentUiModel::SectionUiModel::TextContentSegmentUiModel::Divides a double by another and returns the result[HighlighterUiModel::0::50::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+DocCommentUiModel::SectionUiModel::GroupedSummaryUiModel::ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::Divides a double a by another double b and returns the result.[HighlighterUiModel::0::16::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null,HighlighterUiModel::17::18::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null,HighlighterUiModel::19::36::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null,HighlighterUiModel::37::38::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null,HighlighterUiModel::39::62::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+GroupedReturnUiModel::ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::The quotient of two doubles.[HighlighterUiModel::0::28::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+ExampleSegmentUiModel: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::CodeSegmentUiModel::{
+  double c = Math.Divide(4.5, 5.4);
+  if (c > 1.0)
+  {
+    Console.WriteLine(c);
+  }
+}[HighlighterUiModel::4::10::400.0::2::java.awt.Color[r=0,g=0,b=182]::null::false::null,HighlighterUiModel::27::30::400.0::2::java.awt.Color[r=0,g=0,b=255]::null::false::null,HighlighterUiModel::32::35::400.0::2::java.awt.Color[r=0,g=0,b=255]::null::false::null,HighlighterUiModel::40::42::400.0::2::java.awt.Color[r=0,g=0,b=182]::null::false::null,HighlighterUiModel::48::51::400.0::2::java.awt.Color[r=0,g=0,b=255]::null::false::null]
+
+}
+}
+GroupedExceptionUiModel::ContentSegmentsUiModel: 
+{
+SectionUiModel::ExceptionUiModel::DivideByZeroException[HighlighterUiModel::0::21::400.0::2::java.awt.Color[r=3,g=3,b=3]::null::false::null]: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::Thrown when b is equal to 0.[HighlighterUiModel::0::11::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null,HighlighterUiModel::12::13::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null,HighlighterUiModel::14::28::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+
+}
+TextContentSegmentUiModel::See[HighlighterUiModel::0::3::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+TextContentSegmentUiModel::to divide integers.[HighlighterUiModel::0::19::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+GroupedSeeAlsoUiModel::TextContentSegmentUiModel::Divide(int, int) 
+Add(double, double) 
+Subtract(double, double) 
+Multiply(double, double) [HighlighterUiModel::0::16::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null,HighlighterUiModel::18::37::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null,HighlighterUiModel::39::63::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null,HighlighterUiModel::65::89::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null]
+GroupedParamsUiModel::ContentSegmentsUiModel: 
+{
+SectionUiModel::ParameterUiModel::a[HighlighterUiModel::0::1::1.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::A double precision dividend.[HighlighterUiModel::0::28::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+ParameterUiModel::b[HighlighterUiModel::0::1::1.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::A double precision divisor.[HighlighterUiModel::0::27::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+
+}
+
