@@ -36,7 +36,7 @@ class RectanglesModel {
     return elementsToRectangles[model]
   }
 
-  fun getModelsFor(rect: Rectangle) = rectanglesToElements[rect]
+  fun getModelsFor(rect: Rectangle) = rectanglesToElements[rect] ?: emptyList()
 
   fun addElement(model: UiInteractionModelBase, rect: Rectangle) {
     application.assertIsDispatchThread()

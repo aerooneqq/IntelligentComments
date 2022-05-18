@@ -25,9 +25,18 @@ class RectanglesModelTest : BaseTestWithSolution() {
   }
 
   @Test
-  fun test1() {
-    executeTestWithRectangleModel("SimpleTest1.cs")
-  }
+  fun test1() = executeTestWithRectangleModel("SimpleTest1.cs")
+
+  @Test
+  fun test2() = executeTestWithRectangleModel("Test2.cs")
+
+  @Test
+  fun test3() = executeTestWithRectangleModel("Test3.cs")
+
+  @Test
+  fun test4() = executeTestWithRectangleModel("Test4.cs")
+
+
 
   private fun executeTestWithRectangleModel(fileName: String) {
     withOpenedEditor(fileName) {
