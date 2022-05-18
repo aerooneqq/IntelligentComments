@@ -967,24 +967,17 @@ Rectangle[0, 17, 130, 17]=
 	HighlighterUiModel::10::56::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
 )
 
-Rectangle[277, 278, 202, 17]=
+Rectangle[226, 227, 202, 17]=
 (
-	HighlighterUiModel::157::185::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+	HighlighterUiModel::0::28::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
 )
-Rectangle[277, 227, 612, 68]=
+Rectangle[226, 261, 223, 17]=
 (
-	TextContentSegmentUiModel::Thrown when one parameter is MaxValue and the other is
-greater than 0.
-Note that here you can also use //docs.microsoft.com/dotnet/api/system.int32.maxvalue
-to point a web page instead.[HighlighterUiModel::0::28::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null,HighlighterUiModel::29::37::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null,HighlighterUiModel::38::102::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null,HighlighterUiModel::103::156::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::true::null,HighlighterUiModel::157::185::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+	HighlighterUiModel::38::102::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
 )
 Rectangle[0, 320, 194, 17]=
 (
 	HighlighterUiModel::0::45::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
-)
-Rectangle[277, 227, 202, 17]=
-(
-	HighlighterUiModel::0::28::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
 )
 Rectangle[14, 134, 14, 17]=
 (
@@ -1014,10 +1007,6 @@ SectionUiModel::CodeSegmentUiModel::{
 }
 }
 )
-Rectangle[277, 261, 223, 17]=
-(
-	HighlighterUiModel::38::102::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
-)
 Rectangle[137, 117, 7, 17]=
 (
 	HighlighterUiModel::21::22::400.0::2::java.awt.Color[r=0,g=0,b=255]::null::false::null
@@ -1035,11 +1024,7 @@ Rectangle[94, 362, 36, 17]=
 (
 	HighlighterUiModel::14::19::400.0::2::java.awt.Color[r=145,g=20,b=174]::null::false::null
 )
-Rectangle[94, 227, 173, 17]=
-(
-	HighlighterUiModel::0::24::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null
-)
-Rectangle[486, 227, 58, 17]=
+Rectangle[435, 227, 58, 17]=
 (
 	HighlighterUiModel::29::37::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null
 )
@@ -1051,18 +1036,22 @@ SectionUiModel::TextContentSegmentUiModel::The sum of two integers.[HighlighterU
 
 }
 )
+Rectangle[456, 261, 382, 17]=
+(
+	HighlighterUiModel::103::156::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::true::null
+)
 Rectangle[140, 50, 238, 17]=
 (
 	HighlighterUiModel::0::33::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
 	TextContentSegmentUiModel::The left operand of the addition.[HighlighterUiModel::0::33::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
 )
-Rectangle[507, 261, 382, 17]=
-(
-	HighlighterUiModel::103::156::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::true::null
-)
 Rectangle[0, 50, 79, 17]=
 (
 	HighlighterUiModel::0::11::1.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[94, 227, 122, 17]=
+(
+	HighlighterUiModel::0::17::400.0::2::java.awt.Color[r=3,g=3,b=3]::null::false::null
 )
 Rectangle[94, 50, 29, 17]=
 (
@@ -1120,7 +1109,7 @@ SectionUiModel::CodeSegmentUiModel::{
 }
 GroupedExceptionUiModel::ContentSegmentsUiModel: 
 {
-SectionUiModel::ExceptionUiModel::System.OverflowException[HighlighterUiModel::0::24::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null]: 
+SectionUiModel::ExceptionUiModel::OverflowException[HighlighterUiModel::0::17::400.0::2::java.awt.Color[r=3,g=3,b=3]::null::false::null]: 
 {
 ContentSegmentsUiModel: 
 {
@@ -1180,6 +1169,24 @@ SectionUiModel::TextContentSegmentUiModel::The left operand of the addition.[Hig
 }
 }
 )
+Rectangle[226, 244, 108, 17]=
+(
+	HighlighterUiModel::38::102::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[94, 227, 761, 68]=
+(
+	ExceptionUiModel::OverflowException[HighlighterUiModel::0::17::400.0::2::java.awt.Color[r=3,g=3,b=3]::null::false::null]: 
+{
+ContentSegmentsUiModel: 
+{
+SectionUiModel::TextContentSegmentUiModel::Thrown when one parameter is MaxValue and the other is
+greater than 0.
+Note that here you can also use //docs.microsoft.com/dotnet/api/system.int32.maxvalue
+to point a web page instead.[HighlighterUiModel::0::28::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null,HighlighterUiModel::29::37::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null,HighlighterUiModel::38::102::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null,HighlighterUiModel::103::156::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::true::null,HighlighterUiModel::157::185::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+
+}
+}
+)
 Rectangle[71, 134, 14, 17]=
 (
 	HighlighterUiModel::38::40::400.0::2::java.awt.Color[r=0,g=0,b=255]::null::false::null
@@ -1211,15 +1218,11 @@ SectionUiModel::TextContentSegmentUiModel::The right operand of the addition.[Hi
 
 }
 )
-Rectangle[277, 244, 108, 17]=
-(
-	HighlighterUiModel::38::102::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
-)
 Rectangle[0, 227, 829, 68]=
 (
 	GroupedExceptionUiModel::ContentSegmentsUiModel: 
 {
-SectionUiModel::ExceptionUiModel::System.OverflowException[HighlighterUiModel::0::24::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null]: 
+SectionUiModel::ExceptionUiModel::OverflowException[HighlighterUiModel::0::17::400.0::2::java.awt.Color[r=3,g=3,b=3]::null::false::null]: 
 {
 ContentSegmentsUiModel: 
 {
@@ -1231,20 +1234,6 @@ to point a web page instead.[HighlighterUiModel::0::28::400.0::2::java.awt.Color
 }
 }
 
-}
-)
-Rectangle[94, 227, 812, 68]=
-(
-	ExceptionUiModel::System.OverflowException[HighlighterUiModel::0::24::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null]: 
-{
-ContentSegmentsUiModel: 
-{
-SectionUiModel::TextContentSegmentUiModel::Thrown when one parameter is MaxValue and the other is
-greater than 0.
-Note that here you can also use //docs.microsoft.com/dotnet/api/system.int32.maxvalue
-to point a web page instead.[HighlighterUiModel::0::28::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null,HighlighterUiModel::29::37::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null,HighlighterUiModel::38::102::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null,HighlighterUiModel::103::156::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::true::null,HighlighterUiModel::157::185::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
-
-}
 }
 )
 Rectangle[94, 345, 94, 34]=
@@ -1274,11 +1263,22 @@ Rectangle[0, 227, 79, 17]=
 (
 	HighlighterUiModel::0::11::1.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
 )
+Rectangle[226, 278, 202, 17]=
+(
+	HighlighterUiModel::157::185::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
+)
+Rectangle[226, 227, 612, 68]=
+(
+	TextContentSegmentUiModel::Thrown when one parameter is MaxValue and the other is
+greater than 0.
+Note that here you can also use //docs.microsoft.com/dotnet/api/system.int32.maxvalue
+to point a web page instead.[HighlighterUiModel::0::28::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null,HighlighterUiModel::29::37::400.0::2::java.awt.Color[r=255,g=175,b=175]::null::false::null,HighlighterUiModel::38::102::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null,HighlighterUiModel::103::156::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::true::null,HighlighterUiModel::157::185::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null]
+)
 Rectangle[0, 303, 122, 17]=
 (
 	HighlighterUiModel::0::45::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
 )
-Rectangle[551, 227, 115, 17]=
+Rectangle[500, 227, 115, 17]=
 (
 	HighlighterUiModel::38::102::400.0::2::java.awt.Color[r=182,g=182,b=182]::null::false::null
 )
