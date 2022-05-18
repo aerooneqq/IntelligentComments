@@ -16,9 +16,7 @@ class TableNameUiModel(
   val highlightedTextUiWrapper = HighlightedTextUiWrapper(project, this, header)
 
 
-  override fun calculateStateHash(): Int {
-    return HashUtil.hashCode(highlightedTextUiWrapper.calculateStateHash())
-  }
-
+  override fun dumpModel() = "${super.dumpModel()}::${highlightedTextUiWrapper}"
+  override fun calculateStateHash() = HashUtil.hashCode(highlightedTextUiWrapper.calculateStateHash())
   override fun createRenderer(): Renderer = throw NotSupportedForRenderingError()
 }

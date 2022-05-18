@@ -32,9 +32,10 @@ class ListContentSegmentUiModel(
     return HashUtil.hashCode(headerHash, HashUtil.calculateHashFor(items) { it.calculateStateHash() }, isExpanded.hashCode())
   }
 
-  override fun createRenderer(): Renderer {
-    return ListSegmentRenderer(this)
+  override fun dumpModel(): String {
+    return "${super.dumpModel()}::${headerUiModel?.dumpModel()}::${listKind}: \n{\n${items.joinToString("\n") { it.dumpModel() }}\n}"
   }
+  override fun createRenderer(): Renderer = ListSegmentRenderer(this)
 }
 
 class ListItemUiModel(

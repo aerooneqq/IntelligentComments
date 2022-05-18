@@ -20,6 +20,9 @@ class DocCommentUiModel(
     contentSection = SectionUiModel(project, this, segments)
   }
 
+  override fun dumpModel(): String {
+    return "${super.dumpModel()}::${contentSection.dumpModel()}"
+  }
 
   override fun calculateStateHash(): Int {
     return contentSection.calculateStateHash()

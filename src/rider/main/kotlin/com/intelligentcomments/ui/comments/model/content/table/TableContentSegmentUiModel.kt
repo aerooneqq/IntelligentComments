@@ -23,7 +23,6 @@ class TableContentSegmentUiModel(
     return HashUtil.hashCode(headerUiModel?.calculateStateHash() ?: 1, HashUtil.calculateHashFor(rows) { it.calculateStateHash() })
   }
 
-  override fun createRenderer(): Renderer {
-    return TableSegmentRenderer(this)
-  }
+  override fun dumpModel() = "${super.dumpModel()}::${headerUiModel?.dumpModel()}: \n{\n${rows.joinToString("\n") { it.dumpModel() }}\n}"
+  override fun createRenderer() = TableSegmentRenderer(this)
 }

@@ -17,11 +17,7 @@ class RemarksUiModel(
   val content = ContentSegmentsUiModel(project, this, remarksSegment.content)
 
 
-  override fun calculateStateHash(): Int {
-    return HashUtil.hashCode(content.calculateStateHash())
-  }
-
-  override fun createRenderer(): Renderer {
-    return ContentSegmentsRenderer(content)
-  }
+  override fun dumpModel(): String = "${super.dumpModel()}: \n{\n${content.dumpModel()}\n}"
+  override fun calculateStateHash() = HashUtil.hashCode(content.calculateStateHash())
+  override fun createRenderer() = ContentSegmentsRenderer(content)
 }

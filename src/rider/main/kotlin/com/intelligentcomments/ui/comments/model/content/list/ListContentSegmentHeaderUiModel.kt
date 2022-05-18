@@ -23,9 +23,7 @@ class ListContentSegmentHeaderUiModel(
   }
 
 
-  override fun calculateStateHash(): Int {
-    return HashUtil.hashCode(textWrapper.calculateStateHash())
-  }
-
+  override fun dumpModel() = "${super.dumpModel()}::${textWrapper.dumpModel()}"
+  override fun calculateStateHash() = HashUtil.hashCode(textWrapper.calculateStateHash())
   override fun createRenderer(): Renderer = throw NotSupportedForRenderingError()
 }

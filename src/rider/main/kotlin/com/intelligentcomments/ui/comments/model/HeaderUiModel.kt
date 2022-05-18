@@ -23,6 +23,8 @@ class HeaderUiModel(
   }
 
 
+  override fun dumpModel(): String = "${super.dumpModel()}::$text::${backgroundColorKey}::${hoveredBackgroundColorKey}"
+
   override fun calculateStateHash(): Int {
     return text.hashCode()
   }

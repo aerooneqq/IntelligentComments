@@ -12,12 +12,9 @@ open class SectionUiModel(
   parent: UiInteractionModelBase?,
   val content: Collection<ContentSegmentUiModel>
 ) : UiInteractionModelBase(project, parent) {
+  override fun dumpModel(): String = "${super.dumpModel()}::${content.joinToString("\n") { it.dumpModel() }}\n"
 
-  override fun calculateStateHash(): Int {
-    return HashUtil.calculateHashFor(content) { it.calculateStateHash() }
-  }
+  override fun calculateStateHash(): Int = HashUtil.calculateHashFor(content) { it.calculateStateHash() }
 
-  override fun createRenderer(): Renderer {
-    return DefaultSegmentsRenderer(this)
-  }
+  override fun createRenderer(): Renderer = DefaultSegmentsRenderer(this)
 }

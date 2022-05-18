@@ -27,9 +27,7 @@ class TextInvariantUiModel(
     override val parent = null
   })
 
-  override fun calculateStateHash(): Int {
-    return HashUtil.hashCode(name.calculateStateHash(), content.calculateStateHash())
-  }
-
+  override fun dumpModel() = "${super.dumpModel()}::${name.dumpModel()}: \n{\n${content.dumpModel()}\n}"
+  override fun calculateStateHash() = HashUtil.hashCode(name.calculateStateHash(), content.calculateStateHash())
   override fun createRenderer(): Renderer = TextRendererBase(name)
 }

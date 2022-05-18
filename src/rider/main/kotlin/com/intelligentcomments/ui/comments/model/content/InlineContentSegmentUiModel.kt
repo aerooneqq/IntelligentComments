@@ -36,11 +36,9 @@ class InlineContentSegmentUiModel(
     return HighlightedTextImpl(finalText, segment, highlighter)
   }
 
-  override fun createRenderer(): Renderer {
-    return LeftTextHeaderAndRightContentRenderer(header, content)
-  }
+  override fun dumpModel(): String = "${super.dumpModel()}::${content.dumpModel()}::${header.dumpModel()}"
 
-  override fun calculateStateHash(): Int {
-    return HashUtil.hashCode(content.calculateStateHash(), header.calculateStateHash())
-  }
+  override fun createRenderer(): Renderer = LeftTextHeaderAndRightContentRenderer(header, content)
+
+  override fun calculateStateHash(): Int = HashUtil.hashCode(content.calculateStateHash(), header.calculateStateHash())
 }

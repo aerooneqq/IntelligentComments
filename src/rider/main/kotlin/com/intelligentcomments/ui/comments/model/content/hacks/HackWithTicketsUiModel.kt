@@ -16,9 +16,7 @@ class HackWithTicketsUiModel(
 ) : ContentSegmentUiModel(project, parent), ModelWithContentSegments {
   override val content = generateContentSegmentsUiModelForNamedEntity(NameKind.Hack, segment, project, this)
 
-  override fun calculateStateHash(): Int {
-    return content.calculateStateHash()
-  }
-
+  override fun dumpModel() = "${super.dumpModel()}: \n{\n${content.dumpModel()}\n}"
+  override fun calculateStateHash() = content.calculateStateHash()
   override fun createRenderer(): Renderer = ContentSegmentsRenderer(content)
 }

@@ -19,7 +19,6 @@ abstract class AbstractParameterUiModel(
   val description = ContentSegmentsUiModel(project, this, parameter.content)
 
 
-  override fun calculateStateHash(): Int {
-    return HashUtil.hashCode(name.calculateStateHash(), description.calculateStateHash())
-  }
+  override fun dumpModel() = "${super.dumpModel()}::${name.dumpModel()}: \n{\n${description.dumpModel()}\n}"
+  override fun calculateStateHash() = HashUtil.hashCode(name.calculateStateHash(), description.calculateStateHash())
 }

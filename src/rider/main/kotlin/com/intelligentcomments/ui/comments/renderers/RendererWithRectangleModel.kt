@@ -198,13 +198,13 @@ abstract class RendererWithRectangleModel(
         .append(comma)
         .append(rectangle.height)
         .append("]")
-        .append("=(")
+        .append("=\n(")
 
       for (model in rectanglesModel!!.getModelsFor(rectangle)!!) {
-        sb.append(model.javaClass.name).append(", ")
+        sb.append("\n\t").append(model.dumpModel())
       }
 
-      sb.append(")\n")
+      sb.append("\n)\n")
     }
 
     return sb.toString()

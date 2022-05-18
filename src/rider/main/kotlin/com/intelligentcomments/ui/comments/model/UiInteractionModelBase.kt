@@ -25,6 +25,7 @@ abstract class UiInteractionModelBase(
   protected open val backgroundColorKey: ColorName = Colors.EmptyColor
   protected open val hoveredBackgroundColorKey: ColorName = Colors.EmptyColor
 
+  open fun dumpModel(): String = javaClass.simpleName
   abstract fun createRenderer(): Renderer
   abstract fun calculateStateHash(): Int
 

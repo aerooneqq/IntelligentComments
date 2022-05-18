@@ -14,15 +14,10 @@ class ExampleSegmentUiModel(
   parent: UiInteractionModelBase?,
   exampleSegment: ExampleContentSegment
 ) : ContentSegmentUiModel(project, parent) {
-
   val content = ContentSegmentsUiModel(project, this, exampleSegment.content)
 
 
-  override fun calculateStateHash(): Int {
-    return HashUtil.hashCode(content.calculateStateHash())
-  }
-
-  override fun createRenderer(): Renderer {
-    return ContentSegmentsRenderer(content.contentSection.content)
-  }
+  override fun dumpModel() = "${super.dumpModel()}: \n{\n${content.dumpModel()}\n}"
+  override fun calculateStateHash() = HashUtil.hashCode(content.calculateStateHash())
+  override fun createRenderer() = ContentSegmentsRenderer(content.contentSection.content)
 }

@@ -49,9 +49,8 @@ abstract class GroupedContentWithTextUiModel(
   }
 
 
-  override fun calculateStateHash(): Int {
-    return HashUtil.hashCode(description.hashCode(), header.hashCode())
-  }
+  final override fun dumpModel(): String = "${super.dumpModel()}::${description.dumpModel()}"
+  override fun calculateStateHash(): Int = HashUtil.hashCode(description.hashCode(), header.hashCode())
 }
 
 abstract class GroupedContentUiModel(
@@ -63,9 +62,9 @@ abstract class GroupedContentUiModel(
 ) : GroupedUiModel(project, parent, groupedModel, header) {
   val content = ContentSegmentsUiModel(project, this, segments.map { it.segments }.flatten())
 
-  override fun calculateStateHash(): Int {
-    return HashUtil.hashCode(header.calculateStateHash(), content.calculateStateHash())
-  }
+  override fun calculateStateHash(): Int = HashUtil.hashCode(header.calculateStateHash(), content.calculateStateHash())
+
+  final override fun dumpModel(): String = "${super.dumpModel()}::${content.dumpModel()}"
 }
 
 fun getSecondLevelHeader(project: Project, text: String, parent: Parentable): HighlightedText {

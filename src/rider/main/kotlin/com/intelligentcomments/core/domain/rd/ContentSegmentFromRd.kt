@@ -232,6 +232,10 @@ class TableCellPropertiesFromRd(properties: RdTableCellProperties) : TableCellPr
   override val verticalAlignment: VerticalAlignment = properties.verticalAlignment.toAlignment()
   override val horizontalAlignment: HorizontalAlignment = properties.horizontalAlignment.toAlignment()
   override val isHeader: Boolean = properties.isHeader
+
+  override fun toString(): String {
+    return "$verticalAlignment::$horizontalAlignment::$isHeader"
+  }
 }
 
 fun RdVerticalAlignment.toAlignment(): VerticalAlignment = when (this) {

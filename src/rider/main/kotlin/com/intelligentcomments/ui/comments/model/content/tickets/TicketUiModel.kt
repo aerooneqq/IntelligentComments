@@ -26,10 +26,8 @@ class TicketUiModel(
   }
 
 
-  override fun calculateStateHash(): Int {
-    return HashUtil.hashCode(description.calculateStateHash())
-  }
-
+  override fun dumpModel() = "${super.dumpModel()}::${displayName.dumpModel()}: \n{\n${description.dumpModel()}\n}"
+  override fun calculateStateHash(): Int = HashUtil.hashCode(description.calculateStateHash())
   override fun createRenderer(): Renderer = LeftTextHeaderAndRightContentRenderer(displayName, description)
 }
 

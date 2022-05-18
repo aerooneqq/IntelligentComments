@@ -16,11 +16,7 @@ class SummaryUiModel(
 ) : ContentSegmentUiModel(project, parent) {
   val content = ContentSegmentsUiModel(project, this, summary.content)
 
-  override fun calculateStateHash(): Int {
-    return HashUtil.hashCode(content.calculateStateHash())
-  }
-
-  override fun createRenderer(): Renderer {
-    return ContentSegmentsRenderer(content)
-  }
+  override fun dumpModel() = "${super.dumpModel()}: \n{\n${content.dumpModel()}\n}"
+  override fun calculateStateHash(): Int = HashUtil.hashCode(content.calculateStateHash())
+  override fun createRenderer(): Renderer = ContentSegmentsRenderer(content)
 }

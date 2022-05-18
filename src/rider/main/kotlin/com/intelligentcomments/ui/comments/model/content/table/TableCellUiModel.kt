@@ -22,9 +22,7 @@ class TableCellUiModel(
     get() = if (properties.isHeader) Colors.TableHeaderCellBackgroundColor else Colors.EmptyColor
 
 
-  override fun calculateStateHash(): Int {
-    return HashUtil.hashCode(contentSegments.calculateStateHash(), properties.hashCode())
-  }
-
+  override fun dumpModel(): String = "${super.dumpModel()}::${properties}: \n{\n${contentSegments.dumpModel()}\n}"
+  override fun calculateStateHash() = HashUtil.hashCode(contentSegments.calculateStateHash(), properties.hashCode())
   override fun createRenderer(): Renderer = throw NotSupportedForRenderingError()
 }

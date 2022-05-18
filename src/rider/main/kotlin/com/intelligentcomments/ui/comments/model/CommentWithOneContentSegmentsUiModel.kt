@@ -22,6 +22,8 @@ class CommentWithOneContentSegmentsUiModel(
   }
 
 
+  override fun dumpModel(): String = "${super.dumpModel()}::${contentSection.dumpModel()}"
+
   override fun calculateStateHash(): Int {
     return contentSection.calculateStateHash()
   }

@@ -17,11 +17,7 @@ class ParagraphUiModel(
   val content = ContentSegmentsUiModel(project, this, paragraph.content)
 
 
-  override fun calculateStateHash(): Int {
-    return HashUtil.hashCode(content.calculateStateHash())
-  }
-
-  override fun createRenderer(): Renderer {
-    return ParagraphRenderer(this)
-  }
+  override fun dumpModel() = "${super.dumpModel()}: \n{\n${content.dumpModel()}\n}"
+  override fun calculateStateHash() = HashUtil.hashCode(content.calculateStateHash())
+  override fun createRenderer() = ParagraphRenderer(this)
 }

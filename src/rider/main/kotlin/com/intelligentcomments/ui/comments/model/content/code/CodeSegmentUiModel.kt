@@ -30,11 +30,8 @@ class CodeSegmentUiModel(
       return cachedText!!
     }
 
-  override fun calculateStateHash(): Int {
-    return HashUtil.hashCode(code.calculateStateHash())
-  }
 
-  override fun createRenderer(): Renderer {
-    return TextRendererBase(code)
-  }
+  override fun dumpModel() = "${super.dumpModel()}::${code.dumpModel()}"
+  override fun calculateStateHash() = HashUtil.hashCode(code.calculateStateHash())
+  override fun createRenderer() = TextRendererBase(code)
 }

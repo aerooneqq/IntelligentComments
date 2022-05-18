@@ -18,9 +18,8 @@ class ReferenceUiModel(
   val name = HighlightedTextUiWrapper(project, parent, reference.name)
   val content = ContentSegmentsUiModel(project, this, reference.description.content)
 
-  override fun calculateStateHash(): Int {
-    return HashUtil.hashCode(name.calculateStateHash(), content.calculateStateHash())
-  }
 
+  override fun dumpModel(): String = "${super.dumpModel()}::${name.dumpModel()}: \n{\n${content.dumpModel()}\n}"
+  override fun calculateStateHash() = HashUtil.hashCode(name.calculateStateHash(), content.calculateStateHash())
   override fun createRenderer(): Renderer = TextRendererBase(name)
 }

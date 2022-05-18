@@ -32,7 +32,6 @@ class CollapsedCommentUiModel(
   }
 
   private val hoverDocsManager = project.service<CommentsHoverDocManager>()
-  private val highlighterUiModel: HighlighterUiModel?
 
   override val contentSection: SectionUiModel
 
@@ -44,10 +43,11 @@ class CollapsedCommentUiModel(
       override val parent: Parentable = comment
     })
 
-    highlighterUiModel = textSegmentUiModel.highlightedTextWrapper.highlighters.firstOrNull()
     contentSection = SectionUiModel(project, this, listOf(textSegmentUiModel))
   }
 
+
+  override fun dumpModel(): String = "${super.dumpModel()}::${contentSection.dumpModel()}"
 
   override val renderer: RendererWithRectangleModel = CollapsedCommentRenderer(this)
 

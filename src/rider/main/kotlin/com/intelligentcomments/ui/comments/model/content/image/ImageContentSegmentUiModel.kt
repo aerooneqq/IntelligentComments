@@ -12,7 +12,7 @@ import com.intellij.openapi.project.Project
 class ImageContentSegmentUiModel(
   project: Project,
   parent: UiInteractionModelBase?,
-  imageSegment: ImageContentSegment
+  private val imageSegment: ImageContentSegment
 ) : ContentSegmentUiModel(project, parent) {
   val description: HighlightedTextUiWrapper?
   val imageHolder = ImageHolder(imageSegment)
@@ -28,11 +28,7 @@ class ImageContentSegmentUiModel(
   }
 
 
-  override fun calculateStateHash(): Int {
-    return HashUtil.hashCode(description?.calculateStateHash() ?: 1, imageHolder.hashCode())
-  }
-
-  override fun createRenderer(): Renderer {
-    return ImageSegmentRenderer(this)
-  }
+  override fun dumpModel() = "${super.dumpModel()}::${description?.dumpModel()}::${imageSegment.sourceReference.rawValue}"
+  override fun calculateStateHash() = HashUtil.hashCode(description?.calculateStateHash() ?: 1, imageHolder.hashCode())
+  override fun createRenderer() = ImageSegmentRenderer(this)
 }

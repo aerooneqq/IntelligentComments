@@ -17,9 +17,8 @@ class ToDoWithTicketsUiModel(
 ) : ContentSegmentUiModel(project, parent), ModelWithContentSegments {
   override val content = generateContentSegmentsUiModelForNamedEntity(NameKind.Todo, segment, project, this)
 
-  override fun calculateStateHash(): Int {
-    return content.calculateStateHash()
-  }
 
+  override fun dumpModel(): String = "${super.dumpModel()}: \n{\n${content.dumpModel()}\n}"
+  override fun calculateStateHash(): Int = content.calculateStateHash()
   override fun createRenderer(): Renderer = ContentSegmentsRenderer(content)
 }

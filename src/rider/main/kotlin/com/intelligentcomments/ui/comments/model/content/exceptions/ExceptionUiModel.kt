@@ -19,11 +19,7 @@ class ExceptionUiModel(
   val content = ContentSegmentsUiModel(project, this, exceptionSegment.content)
 
 
-  override fun calculateStateHash(): Int {
-    return HashUtil.hashCode(name.calculateStateHash(), content.calculateStateHash())
-  }
-
-  override fun createRenderer(): Renderer {
-    return LeftTextHeaderAndRightContentRenderer(name, content.contentSection.content)
-  }
+  override fun dumpModel() = "${super.dumpModel()}::${name.dumpModel()}: \n{\n${content.dumpModel()}\n}"
+  override fun calculateStateHash() = HashUtil.hashCode(name.calculateStateHash(), content.calculateStateHash())
+  override fun createRenderer() = LeftTextHeaderAndRightContentRenderer(name, content.contentSection.content)
 }

@@ -27,7 +27,5 @@ class GroupedToDoUiModel(
     segment
   )
 ) {
-  override fun createRenderer(): Renderer {
-    return LeftTextHeaderAndRightContentRenderer(header, content)
-  }
+  override fun createRenderer(): Renderer = LeftTextHeaderAndRightContentRenderer(header, content)
 }

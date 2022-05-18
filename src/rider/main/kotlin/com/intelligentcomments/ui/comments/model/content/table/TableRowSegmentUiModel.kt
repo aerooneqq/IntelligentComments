@@ -15,9 +15,7 @@ class TableRowSegmentUiModel(
   val cells = row.cells.map { TableCellUiModel(it, this, project) }
 
 
-  override fun calculateStateHash(): Int {
-    return HashUtil.calculateHashFor(cells) { it.calculateStateHash() }
-  }
-
+  override fun dumpModel() = "${super.dumpModel()}: \n{\n${cells.joinToString("\n") { it.dumpModel() }}\n}"
+  override fun calculateStateHash() = HashUtil.calculateHashFor(cells) { it.calculateStateHash() }
   override fun createRenderer(): Renderer = throw NotSupportedForRenderingError()
 }

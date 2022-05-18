@@ -27,13 +27,9 @@ class ReturnUiModel(
   val headerText = HighlightedTextUiWrapper(project, this, highlightedHeader)
 
 
-  override fun calculateStateHash(): Int {
-    return HashUtil.hashCode(content.calculateStateHash())
-  }
-
-  override fun createRenderer(): Renderer {
-    return LeftTextHeaderAndRightContentRenderer(headerText, content)
-  }
+  override fun dumpModel() = "${super.dumpModel()}::${headerText.dumpModel()}: \n{\n${content.dumpModel()}\n}"
+  override fun calculateStateHash() = HashUtil.hashCode(content.calculateStateHash())
+  override fun createRenderer() = LeftTextHeaderAndRightContentRenderer(headerText, content)
 }
 
 const val returnSectionName = "Returns"

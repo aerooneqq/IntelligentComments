@@ -39,13 +39,9 @@ open class SeeAlsoUiModel(
     seeAlso
   ))
 
-  override fun calculateStateHash(): Int {
-    return HashUtil.hashCode(description.calculateStateHash(), header.calculateStateHash())
-  }
-
-  override fun createRenderer(): Renderer {
-    return LeftTextHeaderAndRightContentRenderer(header, listOf(description))
-  }
+  override fun dumpModel() = "${super.dumpModel()}::${description.dumpModel()}::${header.dumpModel()}"
+  override fun calculateStateHash() = HashUtil.hashCode(description.calculateStateHash(), header.calculateStateHash())
+  override fun createRenderer() = LeftTextHeaderAndRightContentRenderer(header, listOf(description))
 }
 
 const val seeAlsoText = "See also"

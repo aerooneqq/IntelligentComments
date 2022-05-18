@@ -21,11 +21,9 @@ class SectionWithHeaderUiModel(
   val headerUiModel = SectionHeaderUiModel(project, this, icon, headerText)
 
 
-  override fun calculateStateHash(): Int {
-    return HashUtil.hashCode(isExpanded.hashCode(), super.hashCode())
-  }
+  override fun dumpModel(): String = "${super.dumpModel()}::${headerUiModel.dumpModel()}"
 
-  override fun createRenderer(): Renderer {
-    return SegmentsRendererWithHeader(this)
-  }
+  override fun calculateStateHash(): Int = HashUtil.hashCode(isExpanded.hashCode(), super.hashCode())
+
+  override fun createRenderer(): Renderer = SegmentsRendererWithHeader(this)
 }

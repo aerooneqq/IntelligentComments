@@ -48,15 +48,15 @@ class SectionHeaderUiModel(
     )
   }
 
+  override fun dumpModel(): String = "${super.dumpModel()}::${expandedHeaderText.dumpModel()}::${collapsedHeaderText.dumpModel()}"
+
   override fun handleClick(e: EditorMouseEvent): Boolean {
     parent as ExpandableUiModel
     parent.isExpanded = !parent.isExpanded
     return true
   }
 
-  override fun calculateStateHash(): Int {
-    return headerText.calculateStateHash()
-  }
+  override fun calculateStateHash(): Int = headerText.calculateStateHash()
 
   override fun createRenderer(): Renderer = throw NotSupportedForRenderingError()
 }

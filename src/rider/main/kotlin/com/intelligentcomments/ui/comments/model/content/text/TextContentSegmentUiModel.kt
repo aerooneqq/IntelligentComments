@@ -20,11 +20,7 @@ class TextContentSegmentUiModel(
   })
 
 
-  override fun calculateStateHash(): Int {
-    return HashUtil.hashCode(highlightedTextWrapper.calculateStateHash())
-  }
-
-  override fun createRenderer(): Renderer {
-    return TextSegmentRenderer(this)
-  }
+  override fun dumpModel(): String = "${super.dumpModel()}::${highlightedTextWrapper.dumpModel()}"
+  override fun calculateStateHash(): Int = HashUtil.hashCode(highlightedTextWrapper.calculateStateHash())
+  override fun createRenderer(): Renderer = TextSegmentRenderer(this)
 }

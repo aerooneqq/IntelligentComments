@@ -11,7 +11,5 @@ class TypeParamUiModel(
   parent: UiInteractionModelBase?,
   typeParam: TypeParamSegment
 ) : AbstractParameterUiModel(project, parent, typeParam) {
-  override fun createRenderer(): Renderer {
-    return LeftTextHeaderAndRightContentRenderer(name, description)
-  }
+  override fun createRenderer() = LeftTextHeaderAndRightContentRenderer(name, description)
 }

@@ -32,9 +32,7 @@ class ContentSegmentsUiModel : ContentSegmentUiModel, ModelWithContent {
   }
 
 
-  override fun calculateStateHash(): Int {
-    return contentSection.calculateStateHash()
-  }
-
+  override fun dumpModel(): String = "${super.dumpModel()}: \n{\n${contentSection.dumpModel()}\n}"
+  override fun calculateStateHash(): Int = contentSection.calculateStateHash()
   override fun createRenderer(): Renderer = DefaultSegmentsRenderer(contentSection)
 }

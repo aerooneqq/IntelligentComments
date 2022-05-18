@@ -16,6 +16,8 @@ class HighlightedTextUiWrapper(
   val highlighters = highlightedText.highlighters.map { HighlighterUiModel.getFor(project, this, it) }
 
 
+  override fun dumpModel(): String = "${text}[${highlighters.joinToString(",") { it.dumpModel() }}]"
+
   override fun calculateStateHash(): Int {
     var textHashCode = text.hashCode()
     if (textHashCode == 0) {
