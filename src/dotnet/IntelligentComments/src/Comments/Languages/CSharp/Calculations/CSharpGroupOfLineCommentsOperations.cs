@@ -112,7 +112,7 @@ public class CSharpGroupOfLineCommentsOperations : GroupOfLineCommentsOperations
       if (currentNode is ICSharpCommentNode { CommentType: CommentType.END_OF_LINE_COMMENT } commentNode)
       {
         var shouldAddCurrentNodeToGroup = true;
-        //reference to invariant: CollectOperationsMustOrderOperations
+        //reference to invariant: CollectSpecialOperationsMustOrderOperations
         foreach (var operations in CommentOperationsUtil.CollectSpecialOperations(currentNode))
         {
           if (operations.CanBeStartOfSpecialGroupOfLineComments(commentNode))

@@ -88,7 +88,7 @@ public static class NamesResolveUtil
 
     IContentSegment segment = null;
     
-    //reference to invariant: CollectOperationsMustOrderOperations
+    //reference to invariant: CollectSpecialOperationsMustOrderOperations
     foreach (var operation in CommentOperationsUtil.CollectSpecialOperations(token))
     {
       if (operation.TryCreate(commentNode) is { Comment: IInlineComment { Content: { } content } })
