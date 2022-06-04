@@ -85,7 +85,7 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
   private fun assertThatInBatchFoldingUpdate(editor: Editor) {
     application.assertIsDispatchThread()
     val model = editor.foldingModel as FoldingModelImpl
-    if (model.isInBatchFoldingOperation) {
+    if (!model.isInBatchFoldingOperation) {
       logger.logAssertion("Calling addComment without BatchFoldingOperation")
     }
   }
@@ -131,7 +131,7 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
     val comment = getComment(commentIdentifier, editor) ?: return
     val commentState = commentsStateManager.getExistingCommentState(editor, comment.identifier)
     if (commentState == null) {
-      logger.logAssertion("Trying to change render mode for a not registered comment ${comment.identifier}")
+      logger.logAssertion("Trying to change render mode for a not registered comment ${comment.identifier.rangeMarker}")
       return
     }
 
@@ -368,7 +368,7 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
     val folding = foldingModel.addCustomLinesFolding(foldStartLine, foldEndLine, renderer)
 
     if (folding == null) {
-      logger.error("Failed to create folding region for ${comment.id}")
+      logger.error("Failed to create folding region for comment with range ${comment.identifier.rangeMarker}")
     } else {
       commentsStorage.addFoldingToComment(comment, folding, editor)
       listenersManager.attachListenersIfNeeded(folding)
