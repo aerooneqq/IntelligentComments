@@ -1,4 +1,11 @@
-1.0.0-EAP4
+# 222.1.1
+
+Fixed:
+
+- Not processing comments with "p" tag
+- Disable experimental features by default
+
+# 1.0.0-EAP4
 
 Fixed:
 
@@ -10,7 +17,7 @@ Fixed:
 - Incorrect color in table's borders and list's numbers/bullet
 - Fixed not processing inheritdocs on class
 
-1.0.0-EAP3
+# 1.0.0-EAP3
 
 Fixed:
 
@@ -21,7 +28,7 @@ Fixed:
 - Fixed incorrect processing of multiple editors for single document
 - Fixed not correct place of some settings
 
-1.0.0-EAP2
+# 1.0.0-EAP2
 
 Added:
 
@@ -34,7 +41,7 @@ Fixed:
 - Not correctly handling href reference
 - Not that good UX when switching comment to edit mode
 
-1.0.0-EAP1
+# 1.0.0-EAP1
 
 Added:
 
