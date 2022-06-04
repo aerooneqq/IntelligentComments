@@ -174,26 +174,6 @@ tasks {
         }
     }
 
-    val packDlls by registering(com.ullink.NuGetPack::class) {
-        val nuspecFile = file("$rootDir/intelligentcomments.nuspec")
-        var text = nuspecFile.readText()
-        text = Regex("<id>[\\s\\S]*</id>").replace(text, "<id>$backendPluginId</id>")
-        text = Regex("<version>[\\s\\S]*</version>").replace(text, "<version>$pluginVersion</version>")
-        text = Regex("<authors>[\\s\\S]*</authors>").replace(text, "<authors>$vendor</authors>")
-
-        val sb = StringBuilder()
-        for (dll in getAllDlls()) {
-            sb.append("<file src=\"${dll.replace("\\", "/")}\" target=\"lib/net472\" />\n")
-        }
-
-        text = Regex("<files>[\\s\\S]*</files>").replace(text, "<files>\n$sb</files>")
-        nuspecFile.writeText(text)
-
-        nugetExePath = file("${rootDir.canonicalPath}/tools/nuget.exe").canonicalPath
-        setNuspecFile(nuspecFile.canonicalPath)
-        setDestinationDir(file("$rootDir/output").canonicalPath)
-    }
-
     compileKotlin {
         dependsOn(rdgen)
         kotlinOptions {

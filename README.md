@@ -1,5 +1,7 @@
 # IntelligentComments for Rider
 
+Intelligent Comments can be [downloaded](https://plugins.jetbrains.com/plugin/19135-intelligent-comments) from the JetBrains Marketplace. 
+
 The plugin provides functionality to render comments:
 ![CancellationToken decompiled source](./screens/cancellationToken.png)
 The comments can be hidden in settings or by "Hide Or Render All Comments" action:
