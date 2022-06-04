@@ -43,7 +43,7 @@ class RiderCommentsSettings : PersistentStateComponent<Element> {
   var showOnlySummary = false
   var renderCommentsOnlyInDecompiledSources = false
 
-  var useExperimentalFeatures = true
+  var useExperimentalFeatures = false
 
   fun applyToSettings(settings: RiderIntelligentCommentsSettingsProvider) {
     settings.commentsDisplayKind.set(computeDisplayKind())

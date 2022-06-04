@@ -78,5 +78,5 @@ class RiderIntelligentCommentsSettingsProviderImpl : LifetimedService(), RiderIn
   override val showOnlySummary: Property<Boolean> = Property(false)
   override val renderCommentsOnlyInDecompiledSources: Property<Boolean> = Property(false)
 
-  override val useExperimentalFeatures: Property<Boolean> = Property(true)
+  override val useExperimentalFeatures: Property<Boolean> = Property(false)
 }
