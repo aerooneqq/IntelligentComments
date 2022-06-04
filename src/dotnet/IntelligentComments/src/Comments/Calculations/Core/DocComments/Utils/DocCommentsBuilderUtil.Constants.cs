@@ -5,6 +5,7 @@ namespace IntelligentComments.Comments.Calculations.Core.DocComments.Utils;
 
 public static partial class DocCommentsBuilderUtil
 {
+  [NotNull] internal const string PTagName = "p";
   [NotNull] internal const string ImageTagName = "image";
   [NotNull] internal const string ImageSourceAttrName = "source";
   [NotNull] internal const string ReferenceTagName = "reference";

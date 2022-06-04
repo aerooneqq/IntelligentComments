@@ -370,12 +370,25 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
     ProcessEntityWithContentSegments(exceptionSegment, element);
   }
 
+  [NotNull]
   private string Present([NotNull] IDeclaredElement element)
   {
     return DeclaredElementPresenter.Format(
       AdjustedComment.Language, XmlDocPresenterUtil.LinkedElementPresentationStyle, element).Text;
   }
-  
+
+  protected override void VisitP(XmlElement element)
+  {
+    foreach (var child in element.ChildNodes)
+    {
+      if (child is XmlText xmlText)
+      {
+        VisitText(xmlText);
+      }
+    }
+  }
+
+  [NotNull]
   private static string BeautifyCodeEntityId([NotNull] string id)
   {
     return id[(id.IndexOf(":", StringComparison.Ordinal) + 1)..];
