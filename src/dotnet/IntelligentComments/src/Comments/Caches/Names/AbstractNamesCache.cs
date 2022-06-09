@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using IntelligentComments.Comments.Caches.Names.Entities;
 using IntelligentComments.Comments.Caches.Text.Trie;
 using IntelligentComments.Comments.Calculations.Core.DocComments.Utils;
 using IntelligentComments.Comments.Settings;
@@ -19,9 +20,19 @@ namespace IntelligentComments.Comments.Caches.Names;
 
 public record struct NamedEntity([NotNull] string Name, DocumentOffset? DocumentOffset);
 
+/// <summary>
+/// The change of names in a single source file
+/// </summary>
+/// <param name="SourceFile"></param>
+/// <param name="Entities"></param>
+/// <param name="IsCacheLoaded">Indicates whether this change was fired after the cache was loaded or not</param>
 public record struct FileNamesChange(
   [NotNull] IPsiSourceFile SourceFile, [NotNull] IEnumerable<NamedEntity> Entities, bool IsCacheLoaded);
 
+/// <summary>
+/// Despite the general cache functions, name's cache also exposes the signal to subscribe for changes of names in a file,
+/// this is used to update "Hacks, Todos and Invariants" tool window content.
+/// </summary>
 public interface INamesCache : IPsiSourceFileCache
 {
   public NameKind NameKind { get; }
@@ -31,6 +42,14 @@ public interface INamesCache : IPsiSourceFileCache
   [NotNull] [ItemNotNull] IEnumerable<string> GetAllNamesFor([NotNull] string prefix);
 }
 
+/// <summary>
+/// Base class for named entities caches (there are different caches for hacks, invariants and names). The cache
+/// contains the dictionary for each file with names as keys and count of name occurence in file as value. Moreover
+/// the cache contains trie which allows finding all names for given prefix.
+/// </summary>
+/// <seealso cref="HacksNamesCache" />
+/// <seealso cref="InvariantsNamesNamesCache" />
+/// <seealso cref="ToDoNamesCache" />
 public abstract class AbstractNamesCache : SimpleICache<Dictionary<string, int>>, INamesCache
 {
   [NotNull] private static readonly IUnsafeMarshaller<Dictionary<string, int>> ourMarshaller =
@@ -93,7 +112,7 @@ public abstract class AbstractNamesCache : SimpleICache<Dictionary<string, int>>
     return nameInfos.ToDictionary(pair => pair.Key, pair => pair.Value.Count);
   }
 
-  private void QueueChanges(IPsiSourceFile sourceFile, IEnumerable<NamedEntity> entities)
+  private void QueueChanges([NotNull] IPsiSourceFile sourceFile, [NotNull] IEnumerable<NamedEntity> entities)
   {
     if (!mySettings.ExperimentalFeaturesEnabled.Value || !sourceFile.IsValid()) return;
 

@@ -9,15 +9,13 @@ using JetBrains.ReSharper.Psi.Tree;
 
 namespace IntelligentComments.Comments.Languages.CSharp.CodeHighlighting;
 
-public record CSharpCodeHighlightingContext(
-  [NotNull] IEnumerable<string> Imports,
-  [NotNull] string Namespace
-);
+public record CSharpCodeHighlightingContext([NotNull] IEnumerable<string> Imports, [NotNull] string Namespace);
 
 public abstract class CSharpBlockNodeSandBoxOperationsBase : ISandBoxTreeNodeOperations
 {
   [NotNull] private readonly string myRawText;
   [NotNull] private readonly CSharpCodeHighlightingContext myContext;
+  
   private int myCodeOffsetWithinNamespace;
 
 

@@ -10,7 +10,7 @@ using JetBrains.Util;
 
 namespace IntelligentComments.Comments.Caches;
 
-public record ReferenceInfo(IDomainReference DomainReference);
+public record ReferenceInfo([NotNull] IDomainReference DomainReference);
 
 [SolutionComponent]
 public class ReferencesCache : AbstractOpenedDocumentBasedCache<int, ReferenceInfo>

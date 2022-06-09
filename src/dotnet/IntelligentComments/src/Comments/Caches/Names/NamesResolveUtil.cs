@@ -26,7 +26,7 @@ namespace IntelligentComments.Comments.Caches.Names;
 public static class NamesResolveUtil
 {
   [NotNull]
-  public static IEnumerable<NameKind> AllNameKinds { get; } = new HashSet<NameKind>()
+  public static IEnumerable<NameKind> AllNameKinds { get; } = new HashSet<NameKind>
   {
     NameKind.Hack,
     NameKind.Invariant,
@@ -126,7 +126,7 @@ public static class NamesResolveUtil
   private static DomainResolveResult TryResolveNameInDocComment([NotNull] ITreeNode token, NameWithKind nameWithKind)
   {
     var (name, nameKind) = nameWithKind;
-    var docCommentBlock = token?.TryFindDocCommentBlock();
+    var docCommentBlock = token.TryFindDocCommentBlock();
     if (docCommentBlock is null) return null;
 
     DomainResolveResult result = null;
@@ -152,6 +152,17 @@ public static class NamesResolveUtil
     return result;
   }
 
+  /// <summary>
+  /// Creates transition between two existing XML models in ReSharper backend: the PSI one (IXamlTag) and default System
+  /// one (XmlNode) 
+  /// </summary>
+  /// <hack name = "FindXmlElementTwoXMLModels">
+  /// <description>
+  /// The are two XML models now: the default (System.Xml) should be eliminated and the PSI one should be used everywhere.
+  /// Initially I used System.Xml models to traverse the comment and build domain models, but then I needed to use PSI
+  /// models to create stages for errors detecting.
+  /// </description>
+  /// </hack>
   [CanBeNull]
   private static XmlElement FindXmlElement(IXmlTag xmlTag, XmlNode node)
   {
@@ -166,7 +177,7 @@ public static class NamesResolveUtil
       currentNode = parentTag;
     }
 
-    XmlNode element = node;
+    var element = node;
     for (var i = indices.Count - 1; i >= 0; --i)
     {
       var indexOfChild = indices[i];
@@ -239,7 +250,7 @@ public static class NamesResolveUtil
     if (node is null) return null;
     if (node.TryFindDocCommentBlock() is { } docCommentBlock) return docCommentBlock;
 
-    while (node is { } && node is not ICommentNode commentNode)
+    while (node is { } and not ICommentNode)
       node = node.Parent;
 
     return node as ICommentNode;

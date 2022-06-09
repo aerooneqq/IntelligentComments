@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using JetBrains.Application.Threading;
+using JetBrains.DataFlow;
 using JetBrains.DocumentModel;
 using JetBrains.Lifetimes;
 using JetBrains.ReSharper.TestRunner.Abstractions.Extensions;
@@ -11,6 +12,9 @@ namespace IntelligentComments.Comments.Caches;
 
 public abstract class AbstractOpenedDocumentBasedCache<TId, TValue> where TValue : class
 {
+  private readonly Lifetime myLifetime;
+  [NotNull] private readonly ITextControlManager myTextControlManager;
+  [NotNull] private readonly IThreading myThreading;
   [NotNull] private readonly object mySyncObject = new();
   [NotNull] private readonly IDictionary<IDocument, IDictionary<TId, TValue>> myCachesPerDocument;
 
@@ -20,36 +24,40 @@ public abstract class AbstractOpenedDocumentBasedCache<TId, TValue> where TValue
     [NotNull] ITextControlManager textControlManager,
     [NotNull] IThreading threading)
   {
+    myLifetime = lifetime;
+    myTextControlManager = textControlManager;
+    myThreading = threading;
     myCachesPerDocument = new Dictionary<IDocument, IDictionary<TId, TValue>>();
-    textControlManager.TextControls.AddRemove.Advise(lifetime, args =>
-    {
-      lifetime.TryExecute(() =>
-      {
-        threading.Queue(lifetime, $"{GetType().Name}::InvalidatingCache", () =>
-        {
-          if (!args.IsRemoving) return;
+    textControlManager.TextControls.AddRemove.Advise(lifetime, HandleTextControlAddRemove);
+  }
 
-          lifetime.TryExecute(() =>
-          {
-            lock (mySyncObject)
-            {
-              var allOpenedDocuments = textControlManager.TextControls.Select(editor => editor.Document).ToSet();
-              var documentsToRemove = myCachesPerDocument.Keys.ToSet().Except(allOpenedDocuments);
-              foreach (var document in documentsToRemove)
-              {
-                if (myCachesPerDocument.TryGetValue(document, out var documentEntities))
-                {
-                  BeforeRemoval(document, documentEntities.Values);
-                  myCachesPerDocument.Remove(document);
-                }
-              }
-            }
-          });
-        });
-      });
+  
+  private void HandleTextControlAddRemove([NotNull] AddRemoveEventArgs<ITextControl> args)
+  {
+    if (!args.IsRemoving || !myLifetime.IsAlive) return;
+      
+    myThreading.Queue(myLifetime, $"{GetType().Name}::InvalidatingCache", () =>
+    {
+      myLifetime.TryExecute(Invalidate);
     });
   }
 
+  private void Invalidate()
+  {
+    lock (mySyncObject)
+    {
+      var allOpenedDocuments = myTextControlManager.TextControls.Select(editor => editor.Document).ToSet();
+      var documentsToRemove = myCachesPerDocument.Keys.ToSet().Except(allOpenedDocuments);
+      foreach (var document in documentsToRemove)
+      {
+        if (myCachesPerDocument.TryGetValue(document, out var documentEntities))
+        {
+          BeforeRemoval(document, documentEntities.Values);
+          myCachesPerDocument.Remove(document);
+        }
+      }
+    }
+  }
 
   protected abstract void BeforeRemoval(IDocument document, IEnumerable<TValue> values);
 

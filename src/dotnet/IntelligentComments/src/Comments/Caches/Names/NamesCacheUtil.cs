@@ -1,7 +1,5 @@
 using System;
-using IntelligentComments.Comments.Caches.Names.Hacks;
-using IntelligentComments.Comments.Caches.Names.Invariants;
-using IntelligentComments.Comments.Caches.Names.Todos;
+using IntelligentComments.Comments.Caches.Names.Entities;
 using IntelligentComments.Comments.Calculations.Core.DocComments.Utils;
 using JetBrains.ProjectModel;
 

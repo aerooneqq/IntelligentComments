@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using JetBrains.Annotations;
 
 namespace IntelligentComments.Comments.Caches.Text.Trie;
@@ -48,11 +47,4 @@ public class Node
   }
 
   [NotNull] public IEnumerable<KeyValuePair<char, Node>> GetChildren() => myChildren;
-
-  
-  [NotNull]
-  public IEnumerable<Node> GetSubtree()
-  {
-    return Enumerable.Repeat(this, 1).Concat(myChildren.SelectMany(pair => pair.Value.GetSubtree()));
-  }
 }

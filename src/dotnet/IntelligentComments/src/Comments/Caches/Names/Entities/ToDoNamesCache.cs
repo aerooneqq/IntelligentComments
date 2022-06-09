@@ -6,23 +6,22 @@ using JetBrains.Lifetimes;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Caches;
 
-namespace IntelligentComments.Comments.Caches.Names.Invariants;
+namespace IntelligentComments.Comments.Caches.Names.Entities;
 
 [PsiComponent]
-public class InvariantsNamesNamesCache : AbstractNamesCache
+public class ToDoNamesCache : AbstractNamesCache
 {
-  public InvariantsNamesNamesCache(
+  public ToDoNamesCache(
     Lifetime lifetime,
     [NotNull] IShellLocks locks,
     [NotNull] ICommentsSettings settings,
     [NotNull] IPersistentIndexManager persistentIndexManager)
-    : base(lifetime, NameKind.Invariant, locks, settings, persistentIndexManager)
+    : base(lifetime, NameKind.Todo, locks, settings, persistentIndexManager)
   {
   }
 
-
   protected override INamesProcessor TryGetProcessor(PsiLanguageType languageType)
   {
-    return new NamesProcessor(NameKind.Invariant);
+    return new NamesProcessor(NameKind.Todo);
   }
 }

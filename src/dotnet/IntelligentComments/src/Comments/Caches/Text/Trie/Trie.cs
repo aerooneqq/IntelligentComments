@@ -8,7 +8,7 @@ using JetBrains.Util.Logging;
 
 namespace IntelligentComments.Comments.Caches.Text.Trie;
 
-public class Trie
+public sealed class Trie
 {
   [NotNull] private static readonly ILogger ourLogger = Logger.GetLogger<Trie>();
 

@@ -6,7 +6,7 @@ using JetBrains.Lifetimes;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Caches;
 
-namespace IntelligentComments.Comments.Caches.Names.Hacks;
+namespace IntelligentComments.Comments.Caches.Names.Entities;
 
 [PsiComponent]
 public class HacksNamesCache : AbstractNamesCache

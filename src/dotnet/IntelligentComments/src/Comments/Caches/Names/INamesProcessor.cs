@@ -11,6 +11,10 @@ namespace IntelligentComments.Comments.Caches.Names;
 
 public record struct NamedEntityInfo(DocumentOffset Offset);
 
+/// <summary>
+/// Names processor is responsible for processing the IFile and finding all declarations of names. The info about name
+/// contains the offset in the source file <see cref="NamedEntityInfo"/>.
+/// </summary>
 public interface INamesProcessor
 {
   void Process([NotNull] IFile file, [NotNull] Dictionary<string, List<NamedEntityInfo>> namesInfo);
@@ -39,9 +43,7 @@ public class NamesProcessor : INamesProcessor, IRecursiveElementProcessor<Dictio
     {
       foreach (var descriptor in finder.FindNames(element))
       {
-        if (descriptor.NameWithKind.NameKind != myWantedNameKind ||
-            descriptor.NameWithKind.Name.IsNullOrEmpty() ||
-            descriptor.NameWithKind.Name.IsNullOrWhitespace())
+        if (!IsDescriptorSuitable(descriptor))
         {
           continue;
         }
@@ -50,6 +52,13 @@ public class NamesProcessor : INamesProcessor, IRecursiveElementProcessor<Dictio
         infos.Add(new NamedEntityInfo(element.GetDocumentStartOffset()));
       }
     }
+  }
+
+  private bool IsDescriptorSuitable(CommonNamedEntityDescriptor descriptor)
+  {
+    return !(descriptor.NameWithKind.NameKind != myWantedNameKind ||
+           descriptor.NameWithKind.Name.IsNullOrEmpty() ||
+           descriptor.NameWithKind.Name.IsNullOrWhitespace());
   }
   
   public void ProcessAfterInterior(ITreeNode element, Dictionary<string, List<NamedEntityInfo>> context)
