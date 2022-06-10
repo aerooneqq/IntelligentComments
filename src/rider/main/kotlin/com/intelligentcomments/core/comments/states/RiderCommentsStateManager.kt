@@ -126,6 +126,10 @@ class RiderCommentsStateManager(
 
   private fun isCaretWithinComment(editor: Editor, range: RangeMarker): Boolean {
     val caretOffset = editor.caretModel.offset
+
+    //when the caret is at the start position of comment it is better not to display it in code mode
+    if (caretOffset == range.startOffset) return false
+
     val caretLine = editor.offsetToVisualLine(caretOffset, true)
     val commentStartLine = editor.offsetToVisualLine(range.startOffset, true)
     val commentEndLine = editor.offsetToVisualLine(range.endOffset, true)
