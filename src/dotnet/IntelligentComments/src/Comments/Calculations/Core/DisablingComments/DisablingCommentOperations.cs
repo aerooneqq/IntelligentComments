@@ -4,6 +4,7 @@ using IntelligentComments.Comments.Domain.Core;
 using IntelligentComments.Comments.Domain.Impl;
 using IntelligentComments.Comments.Domain.Impl.Content;
 using JetBrains.Annotations;
+using JetBrains.Application.UI.Icons.CommonThemedIcons;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Feature.Services.Daemon;
 using JetBrains.ReSharper.Feature.Services.Daemon.Attributes;
@@ -14,7 +15,7 @@ using JetBrains.Util;
 
 namespace IntelligentComments.Comments.Calculations.Core.DisablingComments;
 
-public record struct InspectionDisablingCommentDto([NotNull] IEnumerable<string> InspectionNames);
+public record struct InspectionDisablingCommentDto([NotNull] [ItemNotNull] IEnumerable<string> InspectionNames);
 
 public abstract class DisablingCommentOperations : ICommentFromNodeOperations
 {
@@ -29,16 +30,40 @@ public abstract class DisablingCommentOperations : ICommentFromNodeOperations
     {
       return null;
     }
-    
-    var highlightingSettingsManager = node.GetSolution().GetComponent<IHighlightingSettingsManager>();
-    var provider = LanguageManager.Instance.GetService<IHighlightersProvider>(node.Language);
 
-    TextHighlighter GetHighlighter(int length)
+    var text = CreateDisablingCommentStartingText(node);
+    foreach (var name in ExtractNamesFrom(inspectionDisablingComment, node))
     {
-      return provider.TryGetReSharperHighlighter(DefaultLanguageAttributeIds.DOC_COMMENT, length);
+      text.Add(name);
+      text.Add(new HighlightedText(" ", TryGetDocCommentHighlighter(1, node)));
     }
 
-    var names = inspectionDisablingComment.InspectionNames.Select(name =>
+    var segment = new TextContentSegment(text);
+    var range = node.GetDocumentRange();
+    var comment = new InspectionDisablingComment(segment, range);
+    
+    return new CommentCreationResult(comment, new [] { commentNode });
+  }
+
+  [NotNull]
+  private IHighlightedText CreateDisablingCommentStartingText(ITreeNode contextNode)
+  {
+    const string disabledInspectionsText = "Disabled inspections: ";
+    var highlighter = TryGetDocCommentHighlighter(disabledInspectionsText.Length, contextNode);
+    return new HighlightedText(disabledInspectionsText, highlighter);
+  }
+
+  [CanBeNull]
+  private static TextHighlighter TryGetDocCommentHighlighter(int length, [NotNull] ITreeNode contextNode)
+  {
+    var provider = LanguageManager.Instance.GetService<IHighlightersProvider>(contextNode.Language);
+    return provider.TryGetReSharperHighlighter(DefaultLanguageAttributeIds.DOC_COMMENT, length);
+  }
+  
+  private IEnumerable<IHighlightedText> ExtractNamesFrom(InspectionDisablingCommentDto dto, [NotNull] ITreeNode contextNode)
+  {
+    var highlightingSettingsManager = contextNode.GetSolution().GetComponent<IHighlightingSettingsManager>();
+    return dto.InspectionNames.Select(name =>
     {
       var severityItem = highlightingSettingsManager.GetSeverityItem(name);
       var text = severityItem.Succeed switch
@@ -48,7 +73,7 @@ public abstract class DisablingCommentOperations : ICommentFromNodeOperations
       };
 
       text ??= name;
-      var highlighter = GetHighlighter(text.Length);
+      var highlighter = TryGetDocCommentHighlighter(text.Length, contextNode);
       if (highlighter is { })
       {
         highlighter = highlighter with
@@ -63,20 +88,6 @@ public abstract class DisablingCommentOperations : ICommentFromNodeOperations
 
       return new HighlightedText(text, highlighter);
     });
-
-    const string disabledInspectionsText = "Disabled inspections: ";
-    var text = new HighlightedText(disabledInspectionsText, GetHighlighter(disabledInspectionsText.Length));
-    foreach (var name in names)
-    {
-      text.Add(name);
-      text.Add(new HighlightedText(" ", GetHighlighter(1)));
-    }
-
-    var segment = new TextContentSegment(text);
-    var range = node.GetDocumentRange();
-    var comment = new InspectionDisablingComment(segment, range);
-    
-    return new CommentCreationResult(comment, new [] { commentNode });
   }
 
   public IEnumerable<CommentErrorHighlighting> FindErrors(ITreeNode node) => EmptyList<CommentErrorHighlighting>.Enumerable;

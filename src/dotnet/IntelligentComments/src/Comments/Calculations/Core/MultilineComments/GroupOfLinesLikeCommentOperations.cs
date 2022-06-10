@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using IntelligentComments.Comments.Caches.Names;
 using IntelligentComments.Comments.Calculations.Core.DocComments.Utils;
+using IntelligentComments.Comments.Calculations.Core.MultilineComments.HackComments;
+using IntelligentComments.Comments.Calculations.Core.MultilineComments.Invariants;
+using IntelligentComments.Comments.Calculations.Core.MultilineComments.ToDoComments;
 using IntelligentComments.Comments.Domain.Core;
 using IntelligentComments.Comments.Domain.Core.Content;
 using IntelligentComments.Comments.Domain.Impl;
@@ -16,6 +19,11 @@ using JetBrains.Util;
 
 namespace IntelligentComments.Comments.Calculations.Core.MultilineComments;
 
+/// <summary>
+/// Group of line like comments is the group of line comments with special semantics. For example this allows to process multi-line
+/// todos. There are several special group of lines comments operations types which corresponds to named entities declarations:
+/// <see cref="InlineHackCommentOperations"/>, <see cref="InlineToDoCommentOperations"/> and <see cref="InlineInvariantCommentOperations"/>
+/// </summary>
 public abstract class GroupOfLinesLikeCommentOperations : ISpecialGroupOfLinesCommentsOperations, INamedEntitiesCommonFinder
 {
   [NotNull] private readonly ICommentsSettings mySettings;
@@ -75,14 +83,13 @@ public abstract class GroupOfLinesLikeCommentOperations : ISpecialGroupOfLinesCo
 
   public IEnumerable<CommentErrorHighlighting> FindErrors(ITreeNode node)
   {
-    if (!node.GetSolution().GetComponent<ICommentsSettings>().ExperimentalFeaturesEnabled.Value)
+    if (!node.GetSolution().GetComponent<ICommentsSettings>().ExperimentalFeaturesEnabled.Value ||
+        TryGetCommentInfoDto(node) is not var ((_, _), text, provider) ||
+        TryExtractName(text, provider) is not { } name)
+    {
       return EmptyList<CommentErrorHighlighting>.Enumerable;
+    }
     
-    if (TryGetCommentInfoDto(node) is not var ((_, _), text, provider)) 
-      return EmptyList<CommentErrorHighlighting>.Enumerable;
-    
-    if (TryExtractName(text, provider) is not { } name) return EmptyList<CommentErrorHighlighting>.Enumerable;
-
     var cache = NamesCacheUtil.GetCacheFor(node.GetSolution(), NameKind);
     if (cache.GetNameCount(name) == 1) return EmptyList<CommentErrorHighlighting>.Enumerable;
     
@@ -119,7 +126,6 @@ public abstract class GroupOfLinesLikeCommentOperations : ISpecialGroupOfLinesCo
   
   protected record struct NameExtraction(int Index, [NotNull] string Name);
   
-  [NotNull]
   protected virtual NameExtraction ExtractName([NotNull] string text)
   {
     const string name = "name:";

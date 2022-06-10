@@ -22,7 +22,8 @@ namespace IntelligentComments.Rider.Comments.Caches.Sandboxes;
 public record SandboxFileInfo(
   [NotNull] LifetimeDefinition LifetimeDefinition,
   [NotNull] SandboxPsiSourceFile SandboxPsiSourceFile,
-  [NotNull] IDictionary<int, TextRange> TextHashesToOffset);
+  [NotNull] IDictionary<int, TextRange> TextHashesToOffset
+);
 
 public record SandboxCodeFragmentInfo([NotNull] SandboxPsiSourceFile SourceFile, int StartOffset, int EndOffset);
 

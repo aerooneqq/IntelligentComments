@@ -19,7 +19,10 @@ using JetBrains.Util.Logging;
 
 namespace IntelligentComments.Comments.Calculations.Core.DocComments.Errors;
 
-public record DocCommentErrorAnalyzerContext([NotNull] IDocCommentBlock AdjustedComment, [NotNull] List<HighlightingInfo> Highlightings);
+public record DocCommentErrorAnalyzerContext(
+  [NotNull] IDocCommentBlock AdjustedComment, 
+  [NotNull] [ItemNotNull] List<HighlightingInfo> Highlightings
+);
 
 public interface IDocCommentProblemsCollector : IRecursiveElementProcessor<DocCommentErrorAnalyzerContext>
 {
@@ -50,13 +53,11 @@ public abstract class DocCommentProblemsCollectorBase : IDocCommentProblemsColle
   public ICollection<HighlightingInfo> Run(IDocCommentBlock comment)
   {
     if (DocCommentsBuilderUtil.TryGetAdjustedComment(comment) is not { } adjustedComment ||
-        !mySettings.ExperimentalFeaturesEnabled.Value)
+        !mySettings.ExperimentalFeaturesEnabled.Value ||
+        LanguageManager.Instance.TryGetCachedService<IPsiHelper>(comment.Language) is not { } psiHelper)
     {
       return EmptyList<HighlightingInfo>.Instance;
     }
-    
-    var psiHelper = LanguageManager.Instance.TryGetCachedService<IPsiHelper>(comment.Language);
-    if (psiHelper is null) return EmptyList<HighlightingInfo>.Instance;
 
     var xmlDocPsi = psiHelper.GetXmlDocPsi(adjustedComment);
     var highlightings = new List<HighlightingInfo>();
@@ -141,6 +142,17 @@ public abstract class DocCommentProblemsCollectorBase : IDocCommentProblemsColle
   {
     if (parent.IsEmptyTag) return true;
 
+    var anyError = CheckInnerTextTokens(parent, context);
+    if (possibleTagsNames is { })
+    {
+      CheckThatAllInnerTagsAreFromNames(parent, context, ref anyError, possibleTagsNames);
+    }
+
+    return !anyError;
+  }
+
+  private static bool CheckInnerTextTokens([NotNull] IXmlTag parent, [NotNull] DocCommentErrorAnalyzerContext context)
+  {
     var anyError = false;
     foreach (var textToken in parent.InnerTextTokens)
     {
@@ -150,20 +162,24 @@ public abstract class DocCommentProblemsCollectorBase : IDocCommentProblemsColle
         AddError(textToken.GetDocumentRange(), "The text is not allowed here", context);
       }
     }
-    
-    if (possibleTagsNames is { })
+
+    return anyError;
+  }
+
+  private static void CheckThatAllInnerTagsAreFromNames(
+    [NotNull] IXmlTag parent, 
+    [NotNull] DocCommentErrorAnalyzerContext context,
+    ref bool anyError,
+    IReadOnlySet<string> possibleTagsNames)
+  {
+    foreach (var tag in parent.InnerTags)
     {
-      foreach (var tag in parent.InnerTags)
+      if (!possibleTagsNames.Contains(tag.Header.Name.XmlName))
       {
-        if (!possibleTagsNames.Contains(tag.Header.Name.XmlName))
-        {
-          anyError = true;
-          AddError(tag.Header.GetDocumentRange(), "Invalid tag", context);
-        }
+        anyError = true;
+        AddError(tag.Header.GetDocumentRange(), "Invalid tag", context);
       }
     }
-
-    return !anyError;
   }
 
   private void ProcessImage([NotNull] IXmlTag imageTag, [NotNull] DocCommentErrorAnalyzerContext context)

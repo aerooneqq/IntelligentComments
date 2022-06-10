@@ -9,7 +9,6 @@ using IntelligentComments.Comments.Settings;
 using JetBrains.Annotations;
 using JetBrains.DocumentManagers;
 using JetBrains.DocumentModel;
-using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Util;
@@ -29,7 +28,7 @@ public abstract class InlineReferenceCommentOperations : ISpecialGroupOfLinesCom
 
   
   [CanBeNull]
-  public virtual CommentCreationResult? TryCreate([NotNull] ITreeNode node)
+  public virtual CommentCreationResult? TryCreate(ITreeNode node)
   {
     if (!mySettings.ExperimentalFeaturesEnabled.Value) return null;
     if (TryExtractInlineReferenceInfo(node) is not var ((name, nameKind), descriptionText, _)) return null;

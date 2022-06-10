@@ -7,7 +7,6 @@ namespace IntelligentComments.Comments.Calculations.Core.MultilineComments.Invar
 
 public interface IInlineInvariantCommentOperations : ICommentFromNodeOperations, INamedEntitiesCommonFinder
 {
-  
 }
 
 public abstract class InlineInvariantCommentOperations : GroupOfLinesLikeCommentOperations, IInlineInvariantCommentOperations

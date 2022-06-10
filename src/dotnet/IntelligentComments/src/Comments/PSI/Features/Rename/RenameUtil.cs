@@ -19,11 +19,15 @@ namespace IntelligentComments.Comments.PSI.Features.Rename;
 
 public static class RenameUtil
 {
+  [CanBeNull]
   public static IXmlValueToken FindAttributeValueToken(
     [NotNull] IDocCommentBlock docCommentBlock, DocumentRange declarationRange)
   {
-    if (LanguageManager.Instance.TryGetService<IPsiHelper>(docCommentBlock.Language) is not { } helper) return null;
-    if (helper.GetXmlDocPsi(docCommentBlock) is not { XmlFile: { } xmlFile }) return null;
+    if (LanguageManager.Instance.TryGetService<IPsiHelper>(docCommentBlock.Language) is not { } helper ||
+        helper.GetXmlDocPsi(docCommentBlock) is not { XmlFile: { } xmlFile })
+    {
+      return null;
+    }
 
     var docRange = xmlFile.Translate(declarationRange.StartOffset);
     if (xmlFile.FindTokenAt(docRange) is not IXmlValueToken { Parent: IXmlAttribute } valueToken)
@@ -84,8 +88,8 @@ public static class RenameUtil
     }
   }
 
-  public static DocumentRange? TryGetNeededRange(
-    ICommentNode commentNode,
+  private static DocumentRange? TryGetNeededRange(
+    [NotNull] ICommentNode commentNode,
     [NotNull] Func<INamedEntitiesCommonFinder, IEnumerable<CommonNamedEntityDescriptor>> descriptorsExtractor)
   {
     var finders = LanguageManager.Instance.TryGetCachedServices<INamedEntitiesCommonFinder>(commentNode.Language);

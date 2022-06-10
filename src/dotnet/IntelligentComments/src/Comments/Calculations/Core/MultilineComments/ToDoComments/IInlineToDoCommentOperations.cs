@@ -5,7 +5,6 @@ using JetBrains.Annotations;
 
 namespace IntelligentComments.Comments.Calculations.Core.MultilineComments.ToDoComments;
 
-
 public interface IInlineToDoCommentOperations : ICommentFromNodeOperations, INamedEntitiesCommonFinder
 {
 }

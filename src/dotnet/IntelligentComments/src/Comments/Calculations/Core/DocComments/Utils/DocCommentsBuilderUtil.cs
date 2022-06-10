@@ -34,6 +34,9 @@ public enum NameKind
 
 public static partial class DocCommentsBuilderUtil
 {
+  /// <todo name = "TryGetBuilderForRefactorThis">
+  /// <description>Idk why I did this, but this should be refactored</description>
+  /// </todo>
   [CanBeNull]
   internal static IDocCommentBuilder TryGetBuilderFor([NotNull] IDocCommentBlock comment)
   {

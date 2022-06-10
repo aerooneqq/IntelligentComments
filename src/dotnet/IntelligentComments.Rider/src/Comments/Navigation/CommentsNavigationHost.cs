@@ -62,7 +62,7 @@ public class CommentsNavigationHost
   }
 
   
-  private RdTask<Unit> HandleNavigationRequest(Lifetime lifetime, RdNavigationRequest request)
+  private RdTask<Unit> HandleNavigationRequest(Lifetime lifetime, [NotNull] RdNavigationRequest request)
   {
     var task = new RdTask<Unit>();
 
@@ -89,7 +89,7 @@ public class CommentsNavigationHost
     return task;
   }
 
-  private void PerformSourceFileNavigation(RdFileOffsetNavigationRequest request)
+  private void PerformSourceFileNavigation([NotNull] RdFileOffsetNavigationRequest request)
   {
     var rdSourceFileId = request.SourceFileId;
     var id = new OWORD(rdSourceFileId.LWord, rdSourceFileId.HWord);
@@ -97,7 +97,7 @@ public class CommentsNavigationHost
     psiSourceFile.Navigate(new TextRange(request.Offset), true);
   }
 
-  private void PerformReferenceNavigation(RdReferenceNavigationRequest request)
+  private void PerformReferenceNavigation([NotNull] RdReferenceNavigationRequest request)
   {
     var (rdReference, textControlId) = request.ResolveRequest;
     if (myRdReferenceConverter.TryGetReference(rdReference, textControlId) is not { } reference)

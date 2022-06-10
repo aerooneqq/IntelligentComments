@@ -28,7 +28,7 @@ public record struct NamedEntityExtraction(DocumentRange DocumentRange, NameWith
 internal static class NavigationUtil
 {
   [CanBeNull]
-  public static NamedEntityExtraction? TryExtractNameFromReference([NotNull] IDataContext dataContext)
+  private static NamedEntityExtraction? TryExtractNameFromReference([NotNull] IDataContext dataContext)
   {
     var token = TryFindTokenUnderCaret(dataContext, out var caretDocumentOffset);
     if (token is null || !caretDocumentOffset.HasValue) return null;
@@ -50,15 +50,11 @@ internal static class NavigationUtil
   private static NamedEntityExtraction? TryExtractNameFromAttribute(
     [NotNull] ITreeNode tokenUnderCaret,
     DocumentOffset caretDocumentOffset,
-    Func<IXmlAttribute, NameWithKind?> extractor)
+    [NotNull] Func<IXmlAttribute, NameWithKind?> extractor)
   {
-    if (tokenUnderCaret?.TryFindDocCommentBlock() is not { } docCommentBlock)
-      return null;
-
-    if (docCommentBlock.TryGetXmlToken(caretDocumentOffset) is not IXmlAttributeValue { Parent: { } parent })
-      return null;
-
-    if (parent is not IXmlAttribute attribute || extractor(attribute) is not { } extraction)
+    if (tokenUnderCaret?.TryFindDocCommentBlock() is not { } docCommentBlock ||
+        docCommentBlock.TryGetXmlToken(caretDocumentOffset) is not IXmlAttributeValue { Parent: { } parent } ||
+        parent is not IXmlAttribute attribute || extractor(attribute) is not { } extraction)
     {
       return null;
     }
@@ -104,22 +100,25 @@ internal static class NavigationUtil
 
   private static NamedEntityExtraction? TryExtractNameFromInlineComment([NotNull] ITreeNode token)
   {
-    if (NamesResolveUtil.TryFindNearestCommentNode(token) is not { } commentNode) return null;
-    if (NamesResolveUtil.TryFindOneNameDeclarationIn(commentNode) is not { } descriptor) return null;
+    if (NamesResolveUtil.TryFindNearestCommentNode(token) is not { } commentNode ||
+        NamesResolveUtil.TryFindOneNameDeclarationIn(commentNode) is not { } descriptor)
+    {
+      return null;
+    }
 
     return new NamedEntityExtraction(commentNode.GetDocumentRange(), descriptor.NameWithKind);
   }
 
   [CanBeNull]
-  private static NamedEntityExtraction? TryExtractNameFromInlinedReference(
-    [NotNull] ITreeNode token,
-    DocumentOffset caretOffset)
+  private static NamedEntityExtraction? TryExtractNameFromInlinedReference([NotNull] ITreeNode token, DocumentOffset caretOffset)
   {
-    if (NamesResolveUtil.TryFindAnyCommentNode(token) is not { } commentNode) return null;
-    if (LanguageManager.Instance.TryGetService<InlineReferenceCommentOperations>(token.Language) is not { } operations)
+    if (NamesResolveUtil.TryFindAnyCommentNode(token) is not { } commentNode ||
+        LanguageManager.Instance.TryGetService<InlineReferenceCommentOperations>(token.Language) is not { } operations ||
+        operations.TryExtractInlineReferenceInfo(commentNode) is not { } info)
+    {
       return null;
-
-    if (operations.TryExtractInlineReferenceInfo(commentNode) is not { } info) return null;
+    }
+    
     if (info.NameRange.Contains(caretOffset))
     {
       return new NamedEntityExtraction(info.NameRange, info.NameWithKind);
@@ -131,9 +130,12 @@ internal static class NavigationUtil
   public static void NavigateToInvariantIfFound(
     [NotNull] IDataContext context, [CanBeNull] INavigationExecutionHost host = null)
   {
-    if (TryExtractNameFromReference(context) is not { } extraction) return;
-    if (context.GetData(ProjectModelDataConstants.SOLUTION) is not { } solution) return;
-    if (context.GetData(DocumentModelDataConstants.DOCUMENT) is not { } document) return;
+    if (TryExtractNameFromReference(context) is not { } extraction ||
+        context.GetData(ProjectModelDataConstants.SOLUTION) is not { } solution ||
+        context.GetData(DocumentModelDataConstants.DOCUMENT) is not { } document)
+    {
+      return;
+    }
 
     var resolveContext = new DomainResolveContextImpl(solution, document);
     var resolveResult = NamesResolveUtil.ResolveName(extraction.NameWithKind, resolveContext);

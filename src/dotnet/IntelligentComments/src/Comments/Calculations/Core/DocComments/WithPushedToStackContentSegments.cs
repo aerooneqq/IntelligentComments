@@ -13,6 +13,9 @@ internal record struct ContentSegmentsMetadata(
   public static ContentSegmentsMetadata CreateEmpty() => new(null, Domain.Impl.Content.ContentSegments.CreateEmpty());
 }
 
+/// <summary>
+/// Temporary pushes the entity with content segments onto stack and when disposed normalizes the topmost content segments
+/// </summary>
 internal readonly struct WithPushedToStackContentSegments : IDisposable
 {
   [NotNull] private readonly Stack<ContentSegmentsMetadata> myStack;

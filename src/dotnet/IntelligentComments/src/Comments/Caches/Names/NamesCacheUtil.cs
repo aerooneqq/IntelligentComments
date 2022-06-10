@@ -7,6 +7,9 @@ namespace IntelligentComments.Comments.Caches.Names;
 
 public static class NamesCacheUtil
 {
+  /// <todo name = "GetCacheForRefactorThis">
+  /// <description>Idk why I did this, but this should be refactored</description>
+  /// </todo>
   public static INamesCache GetCacheFor(ISolution solution, NameKind nameKind) => nameKind switch
   {
     NameKind.Hack => solution.GetComponent<HacksNamesCache>(),

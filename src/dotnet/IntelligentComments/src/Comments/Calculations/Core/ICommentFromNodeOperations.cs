@@ -12,6 +12,13 @@ public record struct CommentCreationResult(
   [NotNull] [ItemNotNull] IEnumerable<ITreeNode> CommentsNodes
 );
 
+/// <summary>
+/// Interface which is used to find and create domain models of comments from ITreeNode. Moreover finds errors in the given node,
+/// if this node is a comment. There are implementations for inline references, inline declarations, disabling comments.
+/// </summary>
+/// <todo name = "ICommentFromNodeOperationsCreateImplForDocComment">
+/// <description>There is a need to integrate creation of domain models for doc comments into this infra</description>
+/// </todo>
 public interface ICommentFromNodeOperations
 {
   int Priority { get; }
@@ -20,6 +27,9 @@ public interface ICommentFromNodeOperations
   [NotNull] [ItemNotNull] IEnumerable<CommentErrorHighlighting> FindErrors([NotNull] ITreeNode node);
 }
 
+/// <summary>
+/// More specific type of operations, used for inline references and inline declarations. 
+/// </summary>
 public interface ISpecialGroupOfLinesCommentsOperations : ICommentFromNodeOperations
 {
   bool CanBeStartOfSpecialGroupOfLineComments([NotNull] ITreeNode node);
@@ -27,6 +37,7 @@ public interface ISpecialGroupOfLinesCommentsOperations : ICommentFromNodeOperat
 
 public static class CommentFromNodeOperationsPriorities
 {
+  //reference to todo: ICommentFromNodeOperationsCreateImplForDocComment
   public const int DocComment = 4000;
   public const int MultilineComment = 3000;
   public const int DisablingComment = 2000;
