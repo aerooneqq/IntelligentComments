@@ -18,6 +18,8 @@ import com.intellij.openapi.editor.markup.TextAttributes
 import com.intellij.openapi.util.use
 import com.intellij.util.application
 import com.intellij.util.text.CharArrayUtil
+import com.jetbrains.rd.util.error
+import com.jetbrains.rd.util.getLogger
 import java.awt.Graphics
 import java.awt.Graphics2D
 import java.awt.Rectangle
@@ -26,6 +28,10 @@ import java.awt.geom.Rectangle2D
 abstract class RendererWithRectangleModel(
   val baseModel: CommentUiModelBase
 ) : EditorCustomElementRenderer, CustomFoldRegionRenderer, Renderer {
+  companion object {
+    private val logger = getLogger<RendererWithRectangleModel>()
+  }
+
   private var rectModelXDelta = 0
   private var rectModelYDelta = 0
 
@@ -124,7 +130,12 @@ abstract class RendererWithRectangleModel(
     val rect = targetRegion.bounds
     UpdatedRectCookie(rect, xDelta = xDelta + rectModelXDelta, yDelta = yDelta + rectModelYDelta).use {
       UpdatedGraphicsCookie(g, defaultTextColor, TextUtil.getFont(editor)).use {
-        paintInternal(editor, g, rect, textAttributes, colorsProvider)
+        try {
+          paintInternal(editor, g, rect, textAttributes, colorsProvider)
+        }
+        catch (ex: Exception) {
+          logger.error(ex)
+        }
       }
     }
 

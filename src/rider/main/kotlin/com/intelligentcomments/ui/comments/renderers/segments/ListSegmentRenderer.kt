@@ -41,6 +41,8 @@ class ListSegmentRenderer(private val model: ListContentSegmentUiModel) : Segmen
       UpdatedRectCookie(adjustedRect, xDelta = leftIndentForListContent).use {
         for ((index, item) in model.items.withIndex()) {
           val listContent = getAllContentFrom(item)
+          if (listContent.isEmpty()) continue
+
           drawItemBullet(g, adjustedRect, editor, listContent.first(), index + 1)
           adjustedRect = ContentSegmentsUtil.renderSegments(listContent, g, adjustedRect, editor, rectanglesModel)
           adjustedRect.y += ContentSegmentsUtil.deltaBetweenSegments
