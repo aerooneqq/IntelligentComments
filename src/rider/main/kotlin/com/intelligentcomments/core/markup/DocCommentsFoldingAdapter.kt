@@ -12,6 +12,7 @@ import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.RangeMarker
 import com.intellij.openapi.editor.ex.RangeHighlighterEx
 import com.intellij.openapi.editor.impl.EditorImpl
+import com.intellij.openapi.editor.impl.RangeMarkerImpl
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
@@ -97,12 +98,14 @@ class DocCommentsFoldingAdapter(private val editor: EditorImpl) : FrontendMarkup
             val comments = mutableListOf<CommentBase>()
             for ((highlighter, model) in highlightersWithComments) {
               val marker = getRangeMarkerFor(highlighter.range, highlighter.document)
-              marker.isGreedyToRight = true
+              marker as RangeMarkerImpl
+              marker.isStickingToRight = true
 
               val comment = commentsCreator.createComment(editor, model.comment, marker, highlighter)
               comments.add(comment)
               highlighter.putUserData(commentKey, comment)
-              highlighter.isGreedyToRight = true
+              highlighter as RangeMarkerImpl
+              highlighter.isStickingToRight = true
 
               if (settings.commentsDisplayKind.value != CommentsDisplayKind.Code) {
                 highlighter.gutterIconRenderer = DocCommentSwitchRenderModeGutterMark(comment, editor, project)
