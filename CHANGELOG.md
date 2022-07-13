@@ -1,3 +1,10 @@
+# 222.1.2
+
+Fixed:
+
+- Fix exceptions and ui crashing when rendering some comments
+- Attempt to fix some typing issues
+
 # 222.1.1
 
 Fixed:
