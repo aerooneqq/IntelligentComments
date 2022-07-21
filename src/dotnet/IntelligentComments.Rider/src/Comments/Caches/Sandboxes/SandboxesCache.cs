@@ -143,6 +143,7 @@ public class SandboxesCache : AbstractOpenedDocumentBasedCache<string, SandboxFi
   {
     var documentText = request.Text;
     return new SandboxInfo(
+      "IntelligentCommentsSandbox",
       rdDocumentId,
       documentText,
       new RdTextRange(documentText.Length, documentText.Length),

@@ -25,7 +25,8 @@ val riderProjectName: String by project
 val intellijPluginId: String by project
 val pluginVersion: String by project
 val commonDll: String by project
-val sdkVersion: String by project
+val ideaSdkVersion: String by project
+val riderSdkVersion: String by project
 val riderDll: String by project
 val buildConfiguration: String by project
 val jvmVersion: String by project
@@ -38,12 +39,7 @@ fun getPluginDescription(): String {
 }
 
 fun calculateVersionForPluginProps(): String {
-    val dashIndex = sdkVersion.indexOf("-")
-    if (dashIndex != -1) {
-        return sdkVersion.substring(0, dashIndex) + ".0"
-    }
-
-    return "$sdkVersion.0"
+    return riderSdkVersion
 }
 
 fun getAllDlls(): List<String> {
@@ -139,7 +135,7 @@ configure<com.jetbrains.rd.generator.gradle.RdGenExtension> {
 
 intellij {
     type.set("RD")
-    version.set(sdkVersion)
+    version.set(ideaSdkVersion)
     downloadSources.set(false)
 }
 
