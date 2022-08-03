@@ -1,3 +1,9 @@
+# 222.2.0
+
+Added:
+
+- Support for Rider 2022.2 
+
 # 222.1.2
 
 Fixed:
