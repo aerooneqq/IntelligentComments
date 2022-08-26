@@ -12,13 +12,12 @@ using JetBrains.Diagnostics;
 using JetBrains.ReSharper.Feature.Services.Daemon.Attributes;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp;
-using JetBrains.ReSharper.Psi.CSharp.Tree;
 using JetBrains.ReSharper.Psi.ExtensionsAPI;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.ReSharper.Psi.Util;
 using JetBrains.ReSharper.Psi.Xml.Tree;
 using JetBrains.Util;
-using Org.BouncyCastle.Utilities.Collections;
+using JetBrains.Util.Utils.Extensions;
 
 namespace IntelligentComments.Comments.Calculations.Core.DocComments.Utils;
 
@@ -172,17 +171,18 @@ public static partial class DocCommentsBuilderUtil
       }
     }
     
-    if (element is IClass @class)
+    if (element is ITypeElement typeElement)
     {
-      var superType = @class.GetSuperClass();
-      while (superType is { })
+      var superTypes = new Queue<ITypeElement>(typeElement.GetSuperTypeElements());
+      while (superTypes.Count != 0)
       {
-        if (TryGetDocCommentBlockFor(superType) is { } docCommentBlock)
+        var currentTypeElement = superTypes.Dequeue();
+        if (TryGetDocCommentBlockFor(currentTypeElement) is { } docCommentBlock)
         {
           return docCommentBlock;
         }
-        
-        superType = superType.GetSuperClass();
+
+        superTypes.EnqueueRange(currentTypeElement.GetSuperTypeElements());
       }
     }
 
