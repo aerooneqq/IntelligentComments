@@ -52,7 +52,7 @@ public abstract class DocCommentProblemsCollectorBase : IDocCommentProblemsColle
   
   public ICollection<HighlightingInfo> Run(IDocCommentBlock comment)
   {
-    if (DocCommentsBuilderUtil.TryGetAdjustedComment(comment) is not { } adjustedComment ||
+    if (DocCommentsBuilderUtil.TryGetAdjustedComment(comment) is not { AdjustedComment: { } adjustedComment } ||
         !mySettings.ExperimentalFeaturesEnabled.Value ||
         LanguageManager.Instance.TryGetCachedService<IPsiHelper>(comment.Language) is not { } psiHelper)
     {

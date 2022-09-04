@@ -13,6 +13,7 @@ using JetBrains.ReSharper.Feature.Services.Daemon.Attributes;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.ReSharper.Psi.ExtensionsAPI;
+using JetBrains.ReSharper.Psi.impl.reflection2.elements.Compiled;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.ReSharper.Psi.Util;
 using JetBrains.ReSharper.Psi.Xml.Tree;
@@ -23,6 +24,7 @@ namespace IntelligentComments.Comments.Calculations.Core.DocComments.Utils;
 
 internal record struct TextProcessingResult([NotNull] string ProcessedText, int EffectiveLength);
 internal record struct TagInfo([CanBeNull] IHighlightedText NameText, [NotNull] IHighlightedText DescriptionText);
+internal record struct DocCommentInfo([CanBeNull] IDocCommentBlock AdjustedComment, [CanBeNull] XmlNode Node);
 
 public enum NameKind
 {
@@ -139,9 +141,10 @@ public static partial class DocCommentsBuilderUtil
   }
 
   [CanBeNull]
-  internal static IDocCommentBlock TryGetAdjustedComment([NotNull] IDocCommentBlock commentBlock)
+  internal static DocCommentInfo? TryGetAdjustedComment([NotNull] IDocCommentBlock commentBlock)
   {
-    if (!IsInheritDocComment(commentBlock)) return commentBlock;
+    var xmlNode = TryGetXml(commentBlock);
+    if (!IsInheritDocComment(commentBlock)) return new DocCommentInfo(commentBlock, xmlNode);
 
     if (commentBlock.GetXML(null) is not { FirstChild: XmlElement inheritDocElement }) return null;
 
@@ -164,9 +167,9 @@ public static partial class DocCommentsBuilderUtil
       foreach (var superMember in overridableMember.GetImmediateSuperMembers())
       {
         var member = superMember.Member;
-        if (TryGetDocCommentBlockFor(member) is { } docCommentBlock)
+        if (TryGetDocCommentBlockFor(member) is { } docCommentInfo)
         {
-          return docCommentBlock;
+          return docCommentInfo;
         }
       }
     }
@@ -177,31 +180,32 @@ public static partial class DocCommentsBuilderUtil
       while (superTypes.Count != 0)
       {
         var currentTypeElement = superTypes.Dequeue();
-        if (TryGetDocCommentBlockFor(currentTypeElement) is { } docCommentBlock)
+        if (TryGetDocCommentBlockFor(currentTypeElement) is { } docCommentInfo)
         {
-          return docCommentBlock;
+          return docCommentInfo;
         }
 
         superTypes.EnqueueRange(currentTypeElement.GetSuperTypeElements());
       }
     }
-
-    return commentBlock;
+    
+    return new DocCommentInfo(commentBlock, xmlNode);
   }
 
   [CanBeNull]
-  internal static IDocCommentBlock TryGetDocCommentBlockFor([NotNull] IDeclaredElement declaredElement)
+  internal static DocCommentInfo? TryGetDocCommentBlockFor([NotNull] IDeclaredElement declaredElement)
   {
     foreach (var declaration in declaredElement.GetDeclarations())
     {
       if (SharedImplUtil.GetDocCommentBlockNode(declaration) is { } docCommentBlock &&
           !IsInheritDocComment(docCommentBlock))
       {
-        return docCommentBlock;
+        return new DocCommentInfo(docCommentBlock, TryGetXml(docCommentBlock));
       }
     }
 
-    return null;
+    var xmlNode = declaredElement.GetXMLDoc(true);
+    return new DocCommentInfo(null, xmlNode);
   }
 
   private static NameKind? TryGetNameKindFromTag(string tagName)

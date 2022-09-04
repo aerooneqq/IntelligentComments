@@ -77,8 +77,8 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
 
   public IContentSegment Build(XmlElement element)
   {
-    if (DocCommentsBuilderUtil.TryGetAdjustedComment(InitialComment) is not { } commentBlock) return null;
-    AdjustedComment = commentBlock;
+    if (DocCommentsBuilderUtil.TryGetAdjustedComment(InitialComment) is not { } info) return null;
+    AdjustedComment = info.AdjustedComment ?? InitialComment;
     
     var topmostContentSegments = ContentSegmentsMetadata.CreateEmpty();
     using (new WithPushedToStackContentSegments(myContentSegmentsStack, topmostContentSegments, ourLogger))
@@ -93,10 +93,10 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
   {
     try
     {
-      if (DocCommentsBuilderUtil.TryGetAdjustedComment(InitialComment) is not { } commentBlock) return null;
+      if (DocCommentsBuilderUtil.TryGetAdjustedComment(InitialComment) is not { } info) return null;
       
-      AdjustedComment = commentBlock;
-      return ProcessAdjustedComment();
+      AdjustedComment = info.AdjustedComment ?? InitialComment;
+      return ProcessAdjustedComment(info.Node);
     }
     catch (Exception ex)
     {
@@ -104,12 +104,11 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
       return null;
     }
   }
-  
+
   [CanBeNull]
-  private DocComment ProcessAdjustedComment()
+  private DocComment ProcessAdjustedComment([CanBeNull] XmlNode xmlNode)
   {
-    if (DocCommentsBuilderUtil.TryGetXml(AdjustedComment) is not { } xmlNode) return null;
-    
+    if (xmlNode is not { }) return null;
     var topmostContentSegments = ContentSegmentsMetadata.CreateEmpty();
     using (new WithPushedToStackContentSegments(myContentSegmentsStack, topmostContentSegments, ourLogger))
     {
