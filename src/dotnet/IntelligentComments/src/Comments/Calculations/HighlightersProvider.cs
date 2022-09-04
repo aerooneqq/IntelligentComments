@@ -4,7 +4,6 @@ using IntelligentComments.Comments.Domain.Core.References;
 using JetBrains.Annotations;
 using JetBrains.ReSharper.Daemon.CSharp.Highlighting;
 using JetBrains.ReSharper.Feature.Services.Daemon.Attributes;
-using JetBrains.ReSharper.Feature.Services.Daemon.Attributes.Idea;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.TextControl.DocumentMarkup;

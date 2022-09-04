@@ -1,12 +1,9 @@
 using System;
-using System.Collections.Generic;
-using IntelligentComments.Comments.Calculations;
 using IntelligentComments.Comments.Calculations.Core;
 using JetBrains.Annotations;
 using JetBrains.ReSharper.Feature.Services.Daemon;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Files;
-using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Util;
 
 namespace IntelligentComments.Comments.Daemon;

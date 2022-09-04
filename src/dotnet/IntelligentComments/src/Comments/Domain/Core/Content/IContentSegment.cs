@@ -4,7 +4,6 @@ using IntelligentComments.Comments.Domain.Core.References;
 using JetBrains.Annotations;
 using JetBrains.Rd.Base;
 using JetBrains.Rd.Util;
-using JetBrains.Rider.Model;
 
 namespace IntelligentComments.Comments.Domain.Core.Content;
 

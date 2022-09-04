@@ -4,7 +4,6 @@ using IntelligentComments.Comments.Domain.Core;
 using IntelligentComments.Comments.Domain.Impl;
 using IntelligentComments.Comments.Domain.Impl.Content;
 using JetBrains.Annotations;
-using JetBrains.Application.UI.Icons.CommonThemedIcons;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Feature.Services.Daemon;
 using JetBrains.ReSharper.Feature.Services.Daemon.Attributes;

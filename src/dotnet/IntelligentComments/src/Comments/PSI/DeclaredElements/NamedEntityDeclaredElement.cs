@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Xml;
-using IntelligentComments.Comments.Caches.Names;
 using IntelligentComments.Comments.Calculations.Core;
 using JetBrains.Annotations;
 using JetBrains.DocumentModel;
