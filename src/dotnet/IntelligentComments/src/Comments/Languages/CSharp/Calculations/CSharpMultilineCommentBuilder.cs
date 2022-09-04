@@ -19,7 +19,8 @@ public class CSharpMultilineCommentBuilder : MultilineCommentBuilderBase
   protected override IMultilineComment TryCreateInternal(ITreeNode node)
   {
     if (node is not ICSharpCommentNode { CommentType: CommentType.MULTILINE_COMMENT } commentNode) return null;
-  
+    if (!CSharpGroupOfLineCommentsOperations.CheckNoCodeOnTheSameLineWithComment(commentNode)) return null;
+    
     var highlightersProvider = LanguageManager.Instance.GetService<IHighlightersProvider>(commentNode.Language);
     var text = DocCommentsBuilderUtil.PreprocessText(commentNode.CommentText, null);
     text = text.Split('\n').Select(line =>

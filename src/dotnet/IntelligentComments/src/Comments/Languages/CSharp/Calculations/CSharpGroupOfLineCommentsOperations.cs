@@ -27,7 +27,7 @@ public class CSharpGroupOfLineCommentsOperations : GroupOfLineCommentsOperations
   private CommentCreationResult? TryCreate(ITreeNode node, bool mergeDividedComments)
   {
     if (node is not ICSharpCommentNode startCommentNode) return null;
-    if (!CanProcessLineComment(startCommentNode)) return null;
+    if (!CheckNoCodeOnTheSameLineWithComment(startCommentNode)) return null;
     
     var groupOfLineComments = CollectLineComments(startCommentNode, mergeDividedComments);
     var highlightedText = CreateTextFrom(groupOfLineComments);
@@ -63,21 +63,27 @@ public class CSharpGroupOfLineCommentsOperations : GroupOfLineCommentsOperations
     return new GroupOfLineComments(new TextContentSegment(highlightedText), range);
   }
   
-  private bool CanProcessLineComment([NotNull] ICSharpCommentNode startCommentNode)
+  public static bool CheckNoCodeOnTheSameLineWithComment([NotNull] ITreeNode startCommentNode)
   {
     if (startCommentNode.TryFindDocCommentBlock() is { }) return false;
     
     var formatter = startCommentNode.GetCodeFormatter();
-    var current = startCommentNode.PrevSibling;
-    while (current is { })
+
+    //If the comment is on the same line with code, we don't want to render it
+    bool DoCheck(ITreeNode currentNode, bool goToPrev)
     {
-      if (!current.IsWhitespaceToken()) return false;
-      if (formatter?.IsNewLine(current) ?? current.GetText() == "\n") return true;
+      while (currentNode is { })
+      {
+        if (!currentNode.IsWhitespaceToken()) return false;
+        if (formatter?.IsNewLine(currentNode) ?? currentNode.GetText() == "\n") return true;
       
-      current = current.PrevSibling;
+        currentNode = goToPrev ? currentNode.PrevSibling : currentNode.NextSibling;
+      }
+
+      return true;
     }
 
-    return true;
+    return DoCheck(startCommentNode.PrevSibling, true) && DoCheck(startCommentNode.NextSibling, false);
   }
 
   [NotNull]
@@ -96,10 +102,11 @@ public class CSharpGroupOfLineCommentsOperations : GroupOfLineCommentsOperations
         {
           var node = currentNode.GetNextToken();
           while (node is { } && node.IsWhitespaceToken() && node.NodeType != CSharpTokenType.NEW_LINE)
+          {
             node = node.GetNextToken();
+          }
 
-          if (!mergeDividedComments &&
-              node is { } && node.NodeType == CSharpTokenType.NEW_LINE)
+          if (!mergeDividedComments && node is { } && node.NodeType == CSharpTokenType.NEW_LINE)
           {
             return comments;
           }
