@@ -14,7 +14,7 @@ plugins {
     id("java")
     id("me.filippov.gradle.jvm.wrapper") version "0.10.0"
     id("org.jetbrains.kotlin.jvm") version "1.6.21"
-    id("org.jetbrains.intellij") version "1.7.0"
+    id("org.jetbrains.intellij") version "1.9.0"
 }
 
 apply {
