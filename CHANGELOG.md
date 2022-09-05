@@ -1,3 +1,10 @@
+# 222.2.1
+
+Fixed:
+
+- Not resolving inherit-docs in external sources
+- Processing multiline comments, if the code is on the same line as comment
+
 # 222.2.0
 
 Added:
