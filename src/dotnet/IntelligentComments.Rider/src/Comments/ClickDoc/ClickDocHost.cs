@@ -11,6 +11,7 @@ using JetBrains.ProjectModel.DataContext;
 using JetBrains.Rd.Base;
 using JetBrains.Rd.Tasks;
 using JetBrains.RdBackend.Common.Features;
+using JetBrains.RdBackend.Common.Features.TextControls;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.DataContext;
 using JetBrains.Rider.Backend.Features.QuickDoc;
@@ -28,7 +29,7 @@ public class ClickDocHost
   [NotNull] private readonly ISolution mySolution;
   [NotNull] private readonly QuickDocHost myQuickDocHost;
   [NotNull] private readonly IShellLocks myShellLocks;
-  [NotNull] private readonly RiderTextControlHost myTextControlHost;
+  [NotNull] private readonly ITextControlHost myTextControlHost;
   [NotNull] private readonly DataContexts myDataContexts;
   [NotNull] private readonly RdReferenceConverter myRdReferenceConverter;
 
@@ -39,7 +40,7 @@ public class ClickDocHost
     [NotNull] ISolution solution, 
     [NotNull] QuickDocHost quickDocHost,
     [NotNull] IShellLocks shellLocks,
-    [NotNull] RiderTextControlHost textControlHost, 
+    [NotNull] ITextControlHost textControlHost, 
     [NotNull] DataContexts dataContexts,
     [NotNull] RdReferenceConverter rdReferenceConverter)
   {

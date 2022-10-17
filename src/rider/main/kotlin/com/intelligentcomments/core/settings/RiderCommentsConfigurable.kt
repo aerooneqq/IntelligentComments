@@ -56,7 +56,7 @@ class RiderCommentsConfigurable : BoundConfigurable("Intelligent comments", null
 
   private fun createDisplayKindButtonGroup(panel: Panel) {
     panel.apply {
-      buttonGroup {
+      buttonsGroup {
         var renderComments: JBRadioButton? = null
 
         row {
@@ -102,7 +102,7 @@ class RiderCommentsConfigurable : BoundConfigurable("Intelligent comments", null
 
   private fun createGroupingsButtonGroup(panel: Panel) {
     panel.apply {
-      buttonGroup("Grouping of documentation comments sections:") {
+      buttonsGroup("Grouping of documentation comments sections:") {
         row {
           checkBox("Group see also").associateWith(viewModel::groupSeeAlso)
         }
@@ -146,7 +146,7 @@ class RiderCommentsConfigurable : BoundConfigurable("Intelligent comments", null
 
   private fun createOtherDocCommentsOptions(panel: Panel) {
     panel.apply {
-      buttonGroup("Other documentation comment render options:") {
+      buttonsGroup("Other documentation comment render options:") {
         row {
           checkBox("Show empty content").associateWith(viewModel::showEmptyContent)
         }

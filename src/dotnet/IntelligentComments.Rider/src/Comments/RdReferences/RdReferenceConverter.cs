@@ -5,6 +5,7 @@ using IntelligentComments.Comments.Domain.Impl.References;
 using JetBrains.Annotations;
 using JetBrains.ProjectModel;
 using JetBrains.RdBackend.Common.Features.Documents;
+using JetBrains.RdBackend.Common.Features.TextControls;
 using JetBrains.RdBackend.Common.Features.Util.Ranges;
 using JetBrains.ReSharper.Psi;
 using JetBrains.Rider.Backend.Features.Documents;
@@ -17,21 +18,20 @@ namespace IntelligentComments.Rider.Comments.RdReferences;
 public class RdReferenceConverter
 {
   [NotNull] private readonly ISolution mySolution;
-  [NotNull] private readonly RiderTextControlHost myTextControlHost;
+  [NotNull] private readonly ITextControlHost myTextControlHost;
   [NotNull] private readonly IPsiServices myPsiServices;
   [NotNull] private readonly DocumentHostBase myDocumentHostBase;
 
 
   public RdReferenceConverter(
     [NotNull] ISolution solution,
-    [NotNull] RiderTextControlHost textControlHost,
-    [NotNull] IPsiServices psiServices,
-    [NotNull] RiderDocumentHost documentHost)
+    [NotNull] ITextControlHost textControlHost,
+    [NotNull] IPsiServices psiServices)
   {
     mySolution = solution;
     myTextControlHost = textControlHost;
     myPsiServices = psiServices;
-    myDocumentHostBase = documentHost;
+    myDocumentHostBase = DocumentHostBase.GetInstance(solution);
   }
 
 

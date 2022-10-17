@@ -45,8 +45,7 @@ public class CommentsNavigationHost
     [NotNull] IPersistentIndexManager manager,
     [NotNull] IDeclaredElementNavigationService navigationService,
     [NotNull] IShellLocks shellLocks,
-    [NotNull] RdReferenceConverter rdReferenceConverter,
-    [NotNull] RiderDocumentHost documentHost)
+    [NotNull] RdReferenceConverter rdReferenceConverter)
   {
     myLifetime = lifetime;
     myOpensUri = opensUri;
@@ -56,7 +55,7 @@ public class CommentsNavigationHost
     myNavigationService = navigationService;
     myShellLocks = shellLocks;
     myRdReferenceConverter = rdReferenceConverter;
-    myDocumentHostBase = documentHost;
+    myDocumentHostBase = DocumentHostBase.GetInstance(solution);
     
     solution.GetProtocolSolution().GetRdCommentsModel().PerformNavigation.Set(HandleNavigationRequest);
   }

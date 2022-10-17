@@ -6,14 +6,14 @@ buildscript {
     }
 
     dependencies {
-        classpath("com.jetbrains.rd:rd-gen:2022.2.1")
+        classpath("com.jetbrains.rd:rd-gen:2022.3.3")
     }
 }
 
 plugins {
     id("java")
-    id("me.filippov.gradle.jvm.wrapper") version "0.10.0"
-    id("org.jetbrains.kotlin.jvm") version "1.6.21"
+    id("me.filippov.gradle.jvm.wrapper") version "0.14.0"
+    id("org.jetbrains.kotlin.jvm") version "1.7.20"
     id("org.jetbrains.intellij") version "1.9.0"
 }
 
@@ -77,12 +77,6 @@ repositories {
     maven { setUrl("https://cache-redirector.jetbrains.com/maven-central") }
 }
 
-jvmWrapper {
-    linuxJvmUrl = "https://cache-redirector.jetbrains.com/intellij-jbr/jbrsdk-11_0_11-linux-x64-b1341.60.tar.gz"
-    macJvmUrl = "https://cache-redirector.jetbrains.com/intellij-jbr/jbrsdk-11_0_11-osx-x64-b1341.60.tar.gz"
-    windowsJvmUrl = "https://cache-redirector.jetbrains.com/intellij-jbr/jbrsdk-11_0_11-windows-x64-b1341.60.tar.gz"
-}
-
 sourceSets {
     main {
         java.srcDir("src/rider/main/kotlin")
@@ -94,8 +88,8 @@ sourceSets {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 dependencies {

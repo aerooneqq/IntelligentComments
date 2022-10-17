@@ -35,7 +35,6 @@ public class SandboxesCache : AbstractOpenedDocumentBasedCache<string, SandboxFi
   [NotNull] private readonly ISolution mySolution;
   [NotNull] private readonly IShellLocks myShellLocks;
   [NotNull] private readonly ISandboxDocumentsHelper myHelper;
-  [NotNull] private readonly RiderDocumentHost myDocumentHost;
 
 
   public SandboxesCache(
@@ -44,8 +43,7 @@ public class SandboxesCache : AbstractOpenedDocumentBasedCache<string, SandboxFi
     ISolution solution,
     [NotNull] ITextControlManager textControlManager, 
     [NotNull] IShellLocks shellLocks,
-    [NotNull] ISandboxDocumentsHelper helper,
-    [NotNull] RiderDocumentHost documentHost) 
+    [NotNull] ISandboxDocumentsHelper helper) 
     : base(lifetime, textControlManager, shellLocks)
   {
     myLifetime = lifetime;
@@ -53,7 +51,6 @@ public class SandboxesCache : AbstractOpenedDocumentBasedCache<string, SandboxFi
     mySolution = solution;
     myShellLocks = shellLocks;
     myHelper = helper;
-    myDocumentHost = documentHost;
   }
   
   
@@ -89,14 +86,12 @@ public class SandboxesCache : AbstractOpenedDocumentBasedCache<string, SandboxFi
       return null;
     }
 
-    var viewModel = new SandBoxDocumentModel(sandBoxInfo);
     myHelper.InitSandboxDocument(
       documentId,
-      viewModel,
+      new RiderTextBufferDocumentModel(sandBoxInfo, new List<DocumentExtension>(), false),
       highlightingLifetime, 
       riderDocument,
-      sandboxFile,
-      myDocumentHost);
+      sandboxFile);
 
     var sourceFile = riderDocument.GetPsiSourceFile(mySolution);
     if (sourceFile is not SandboxPsiSourceFile sandboxPsiSourceFile)

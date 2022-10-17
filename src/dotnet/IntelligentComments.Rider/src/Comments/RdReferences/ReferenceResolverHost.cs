@@ -8,6 +8,7 @@ using JetBrains.Annotations;
 using JetBrains.ProjectModel;
 using JetBrains.Rd.Tasks;
 using JetBrains.RdBackend.Common.Features;
+using JetBrains.RdBackend.Common.Features.Documents;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.Rider.Backend.Features.Documents;
@@ -21,7 +22,6 @@ public class ReferenceResolverHost
 {
   public ReferenceResolverHost(
     [NotNull] ILogger logger,
-    [NotNull] RiderDocumentHost documentHost,
     [NotNull] ISolution solution,
     [NotNull] RdReferenceConverter referenceConverter)
   {
@@ -41,7 +41,7 @@ public class ReferenceResolverHost
       }
 
       var documentId = resolveRequest.TextControlId.DocumentId;
-      if (documentHost.TryGetHostDocument(documentId) is not { } document)
+      if (DocumentHostBase.GetInstance(solution).TryGetHostDocument(documentId) is not { } document)
       {
         LogErrorAndSetInvalidResolveResult($"Failed to get document for {documentId}");
         return result;

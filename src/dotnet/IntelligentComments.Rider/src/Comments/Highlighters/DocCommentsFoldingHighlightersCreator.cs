@@ -38,15 +38,15 @@ public class DocCommentsFoldingHighlightersCreator : IRiderHighlighterModelCreat
     return highlighter.UserData is CommentFoldingHighlighting;
   }
 
-  public HighlighterModel CreateModel(long id, DocumentVersion documentVersion, IHighlighter highlighter, int shift)
+  public HighlighterModel CreateModel(long id, AbstractDocumentVersion documentVersion, IHighlighter highlighter, int shift)
   {
     try
     {
       var docCommentFoldingHighlighting = highlighter.UserData as CommentFoldingHighlighting;
-      Assertion.Assert(docCommentFoldingHighlighting is { }, "docCommentFoldingHighlighting is { }");
+      Assertion.Assert(docCommentFoldingHighlighting is { });
       
       var model = myDefaultCreator.CreateModel(id, documentVersion, highlighter, shift);
-      Assertion.Assert(model is { }, "model is { }");
+      Assertion.Assert(model is { });
 
       var commentIdentifier = highlighter.Range.GetHashCode();
       var rdComment = docCommentFoldingHighlighting.Comment.ToRdComment();

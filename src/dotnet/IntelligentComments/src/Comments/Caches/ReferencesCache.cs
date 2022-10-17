@@ -31,7 +31,7 @@ public class ReferencesCache : AbstractOpenedDocumentBasedCache<int, ReferenceIn
 
     if (TryGetValue(document, id) is { }) return id;
 
-    return Add(document, new ReferenceInfo(domainReference));
+    return Add(document, info);
   }
 
   protected override void BeforeRemoval(IDocument document, IEnumerable<ReferenceInfo> values)
