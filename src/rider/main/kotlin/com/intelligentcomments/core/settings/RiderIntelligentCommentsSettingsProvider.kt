@@ -1,6 +1,7 @@
 package com.intelligentcomments.core.settings
 
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.editor.EditorSettings
 import com.jetbrains.rd.platform.util.idea.LifetimedService
 import com.jetbrains.rd.util.reactive.Property
 
@@ -37,8 +38,8 @@ interface RiderIntelligentCommentsSettingsProvider {
   val showEmptyContent: Property<Boolean>
   val showFirstLevelHeaderWhenOneElement: Property<Boolean>
 
-  val fontSize: Property<Float>
-  val boldFontSize: Property<Float>
+  val fontSize: Property<Int>
+  val boldFontSize: Property<Int>
 
   val maxCharsInLine: Property<Int>
 
@@ -69,8 +70,8 @@ class RiderIntelligentCommentsSettingsProviderImpl : LifetimedService(), RiderIn
   override val showEmptyContent: Property<Boolean> = Property(false)
   override val showFirstLevelHeaderWhenOneElement: Property<Boolean> = Property(false)
 
-  override val fontSize: Property<Float> = Property(12f)
-  override val boldFontSize: Property<Float> = Property(14f)
+  override val fontSize: Property<Int> = Property(12)
+  override val boldFontSize: Property<Int> = Property(12)
 
   override val maxCharsInLine: Property<Int> = Property(120)
 
