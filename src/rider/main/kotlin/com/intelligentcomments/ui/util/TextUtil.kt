@@ -25,20 +25,17 @@ class TextUtil {
     private val logger = getLogger<TextUtil>()
 
     fun getFont(editor: Editor): Font {
-      val size = RiderIntelligentCommentsSettingsProvider.getInstance().fontSize.value
       editor as EditorImpl
-      return editor.getFontMetrics(Font.PLAIN).font.deriveFont(size)
+      return editor.getFontMetrics(Font.PLAIN).font
     }
 
     fun getItalicFont(editor: Editor): Font {
-      val size = RiderIntelligentCommentsSettingsProvider.getInstance().fontSize.value
       editor as EditorImpl
-      return editor.getFontMetrics(Font.ITALIC).font.deriveFont(size)
+      return editor.getFontMetrics(Font.ITALIC).font
     }
 
     fun getBoldFont(editor: Editor): Font {
-      val size = RiderIntelligentCommentsSettingsProvider.getInstance().boldFontSize.value
-      return getFont(editor).deriveFont(Font.BOLD).deriveFont(size)
+      return getFont(editor).deriveFont(Font.BOLD)
     }
 
     const val backgroundArcDimension = 3
