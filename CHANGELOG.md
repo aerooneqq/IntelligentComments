@@ -1,3 +1,9 @@
+# 222.2.2
+
+Fixed:
+
+- Not syncing comment font with editor font
+
 # 222.2.1
 
 Fixed:
