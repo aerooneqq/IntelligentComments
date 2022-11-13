@@ -39,6 +39,9 @@ class RiderCommentsSettings : PersistentStateComponent<Element> {
   var showEmptyContent: Boolean = false
   var showFirstLevelHeaderWhenOneElement: Boolean = false
 
+  var fontSize = 12
+  var boldFontSize = 12
+
   var useItalicFontForComments = true
   var showOnlySummary = false
   var renderCommentsOnlyInDecompiledSources = false
@@ -64,6 +67,9 @@ class RiderCommentsSettings : PersistentStateComponent<Element> {
 
     settings.showEmptyContent.set(showEmptyContent)
     settings.showFirstLevelHeaderWhenOneElement.set(showFirstLevelHeaderWhenOneElement)
+
+    settings.fontSize.set(fontSize)
+    settings.boldFontSize.set(boldFontSize)
 
     settings.useItalicFont.set(useItalicFontForComments)
     settings.showOnlySummary.set(showOnlySummary)
@@ -97,6 +103,8 @@ class RiderCommentsSettings : PersistentStateComponent<Element> {
       groupExceptions != settings.groupExceptions.value ||
       showEmptyContent != settings.showEmptyContent.value ||
       showFirstLevelHeaderWhenOneElement != settings.showFirstLevelHeaderWhenOneElement.value ||
+      fontSize != settings.fontSize.value ||
+      boldFontSize != settings.boldFontSize.value ||
       useItalicFontForComments != settings.useItalicFont.value ||
       showOnlySummary != settings.showOnlySummary.value ||
       renderCommentsOnlyInDecompiledSources != settings.renderCommentsOnlyInDecompiledSources.value ||
@@ -124,6 +132,9 @@ class RiderCommentsSettings : PersistentStateComponent<Element> {
 
     showEmptyContent = settings.showEmptyContent.value
     showFirstLevelHeaderWhenOneElement = settings.showFirstLevelHeaderWhenOneElement.value
+
+    fontSize = settings.fontSize.value
+    boldFontSize = settings.boldFontSize.value
 
     useItalicFontForComments = settings.useItalicFont.value
     showOnlySummary = settings.showOnlySummary.value

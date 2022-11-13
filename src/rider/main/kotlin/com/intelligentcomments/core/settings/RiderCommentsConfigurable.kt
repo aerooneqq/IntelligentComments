@@ -47,6 +47,8 @@ class RiderCommentsConfigurable : BoundConfigurable("Intelligent comments", null
       createDisplayKindButtonGroup(this)
       createGroupingsButtonGroup(this)
       createMaxLinesComponent(this)
+      createFontTextBoxComponent(this)
+      createBoldFontTextBoxComponent(this)
       createOtherDocCommentsOptions(this)
     }
 
@@ -131,15 +133,31 @@ class RiderCommentsConfigurable : BoundConfigurable("Intelligent comments", null
   }
 
   private fun createMaxLinesComponent(panel: Panel) {
+    createIntegerTextBoxComponent(panel, "Maximum line length in comment: ", IntRange(80, Int.MAX_VALUE), viewModel::maxCharsInLine)
+  }
+
+  private fun createFontTextBoxComponent(panel: Panel) {
+    createIntegerTextBoxComponent(panel, "Comments font size", IntRange(1, Int.MAX_VALUE), viewModel::fontSize)
+  }
+
+  private fun createBoldFontTextBoxComponent(panel: Panel) {
+    createIntegerTextBoxComponent(panel, "Comments bold size", IntRange(1, Int.MAX_VALUE), viewModel::boldFontSize)
+  }
+
+  private fun createIntegerTextBoxComponent(
+    panel: Panel,
+    title: String,
+    range: IntRange,
+    property: KMutableProperty0<Int>) {
     panel.apply {
       row {
-        label("Maximum line length in comment: ")
-        intTextField(IntRange(80, Int.MAX_VALUE)).apply {
+        label(title)
+        intTextField(range).apply {
           component.textProperty().advise(Lifetime.Eternal) {
             val newValue = it.toIntOrNull() ?: return@advise
-            viewModel.maxCharsInLine = newValue
+            property.set(newValue)
           }
-        }.bindIntText(viewModel::maxCharsInLine)
+        }.bindIntText(property)
       }
     }
   }
