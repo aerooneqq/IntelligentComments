@@ -15,7 +15,6 @@ using JetBrains.RdBackend.Common.Features.TextControls;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.DataContext;
 using JetBrains.Rider.Backend.Features.QuickDoc;
-using JetBrains.Rider.Backend.Features.TextControls;
 using JetBrains.Rider.Model;
 using JetBrains.Util;
 

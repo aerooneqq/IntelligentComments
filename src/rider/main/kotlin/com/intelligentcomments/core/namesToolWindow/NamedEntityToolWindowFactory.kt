@@ -1,5 +1,6 @@
 package com.intelligentcomments.core.namesToolWindow
 
+import com.intelligentcomments.core.comments.listeners.RiderFocusedEditorsListener
 import com.intelligentcomments.core.comments.navigation.CommentsNavigationHost
 import com.intelligentcomments.core.domain.core.NameKind
 import com.intelligentcomments.core.domain.core.NamedEntityReference
@@ -136,7 +137,7 @@ class NamedEntitiesComponent(project: Project, nameKind: NameKind) : OnePixelSpl
           if (clickedModel is NameTreeModel) {
             val offset = clickedModel.entity.documentOffset
             if (offset == null) {
-              val editor = textControlHost.tryGetLastFocusedEditor() ?: return@handleDoubleClick
+              val editor = project.getComponent(RiderFocusedEditorsListener::class.java).lastFocusedEditor ?: return@handleDoubleClick
               val name = clickedModel.entity.name
               val reference = object : UniqueEntityImpl(), NamedEntityReference {
                 override val nameKind: NameKind = kind

@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using IntelligentComments.Comments.Caches;
 using IntelligentComments.Comments.Calculations.CodeHighlighting;
-using IntelligentComments.Rider.Comments.CodeFragmentsHighlighting;
 using JetBrains.Annotations;
 using JetBrains.Application.Threading;
 using JetBrains.DocumentManagers;
@@ -12,7 +11,6 @@ using JetBrains.RdBackend.Common.Features.Documents;
 using JetBrains.RdBackend.Common.Features.Languages;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Files.SandboxFiles;
-using JetBrains.Rider.Backend.Features.Documents;
 using JetBrains.Rider.Model;
 using JetBrains.TextControl;
 using JetBrains.Util;
@@ -62,13 +60,10 @@ public class SandboxesCache : AbstractOpenedDocumentBasedCache<string, SandboxFi
   public SandboxCodeFragmentInfo GetOrCreateSandboxFileForHighlighting([NotNull] CodeHighlightingRequest request)
   {
     myShellLocks.AssertMainThread();
+    
     var lifetimeDef = myLifetime.CreateNested();
     var highlightingLifetime = lifetimeDef.Lifetime;
-    if (request.Document.GetData(DocumentHostBase.DocumentIdKey) is not { } documentId)
-    {
-      myLogger.Error($"Failed to get documentId for {request.Document.Moniker}");
-      return null;
-    }
+    var documentId = request.Document.GetProtocolSynchronizer().DocumentId;
     
     var sandBoxInfo = CreateSandboxInfo(request, documentId);
     var sandboxFile = myHelper.GetOrCreateSandboxProjectFile(documentId, sandBoxInfo, highlightingLifetime);

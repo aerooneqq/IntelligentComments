@@ -7,7 +7,6 @@ import com.intelligentcomments.ui.core.RectanglesModel
 import com.intelligentcomments.ui.util.RenderAdditionalInfo
 import com.intelligentcomments.ui.util.TextUtil
 import com.intellij.openapi.editor.Editor
-import com.jetbrains.rd.platform.diagnostics.logAssertion
 import com.jetbrains.rd.platform.util.getLogger
 import java.awt.Graphics
 import java.awt.Rectangle
@@ -37,7 +36,7 @@ open class TextRendererBase(private val textUiWrapper: HighlightedTextUiWrapper)
     for (i in cachedLines.indices) {
       val lineHighlighters = cachedLinesHighlighters[i]
       if (lineHighlighters == null) {
-        logger.logAssertion("cachedLinesHighlighters[i] == null")
+        logger.error("cachedLinesHighlighters[i] == null")
         continue
       }
 

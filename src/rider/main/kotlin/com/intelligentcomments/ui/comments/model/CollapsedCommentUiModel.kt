@@ -17,7 +17,6 @@ import com.intellij.openapi.editor.event.EditorMouseEvent
 import com.intellij.openapi.editor.impl.EditorImpl
 import com.intellij.openapi.project.Project
 import com.intellij.util.application
-import com.jetbrains.rd.platform.diagnostics.logAssertion
 import com.jetbrains.rd.platform.util.getLogger
 
 
@@ -71,7 +70,7 @@ class CollapsedCommentUiModel(
   override fun handleClick(e: EditorMouseEvent): Boolean {
     val currentState = commentsStateManager.getExistingCommentState(editor, comment.identifier)
     if (currentState == null) {
-      logger.logAssertion("Failed to get comment's state for ${comment.identifier}")
+      logger.error("Failed to get comment's state for ${comment.identifier}")
       return false
     }
 

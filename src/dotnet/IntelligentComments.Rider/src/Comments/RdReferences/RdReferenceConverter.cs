@@ -8,8 +8,6 @@ using JetBrains.RdBackend.Common.Features.Documents;
 using JetBrains.RdBackend.Common.Features.TextControls;
 using JetBrains.RdBackend.Common.Features.Util.Ranges;
 using JetBrains.ReSharper.Psi;
-using JetBrains.Rider.Backend.Features.Documents;
-using JetBrains.Rider.Backend.Features.TextControls;
 using JetBrains.Rider.Model;
 
 namespace IntelligentComments.Rider.Comments.RdReferences;
@@ -20,18 +18,19 @@ public class RdReferenceConverter
   [NotNull] private readonly ISolution mySolution;
   [NotNull] private readonly ITextControlHost myTextControlHost;
   [NotNull] private readonly IPsiServices myPsiServices;
-  [NotNull] private readonly DocumentHostBase myDocumentHostBase;
+  [NotNull] private readonly IDocumentHost myDocumentHostBase;
 
 
   public RdReferenceConverter(
     [NotNull] ISolution solution,
     [NotNull] ITextControlHost textControlHost,
-    [NotNull] IPsiServices psiServices)
+    [NotNull] IPsiServices psiServices,
+    [NotNull] IDocumentHost documentHost)
   {
     mySolution = solution;
     myTextControlHost = textControlHost;
     myPsiServices = psiServices;
-    myDocumentHostBase = DocumentHostBase.GetInstance(solution);
+    myDocumentHostBase = documentHost;
   }
 
 
@@ -85,9 +84,7 @@ public class RdReferenceConverter
   private ISandBoxCodeEntityDomainReference TryGetSandboxReference([NotNull] RdSandboxCodeEntityReference reference)
   {
     if (reference.OriginalDocumentId is null) return null;
-    
-    var document = myDocumentHostBase.TryGetHostDocument(reference.OriginalDocumentId);
-    if (document is null) return null;
+    if (myDocumentHostBase.TryGetDocument(reference.OriginalDocumentId) is not { } document) return null;
 
     return new SandBoxCodeEntityDomainReference(
       reference.RawValue, reference.SandboxFileId, document, reference.Range.ToTextRange());

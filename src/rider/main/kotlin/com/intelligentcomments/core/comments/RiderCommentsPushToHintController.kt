@@ -1,5 +1,6 @@
 package com.intelligentcomments.core.comments
 
+import com.intelligentcomments.core.comments.listeners.RiderFocusedEditorsListener
 import com.intelligentcomments.core.domain.core.CommentBase
 import com.intellij.ide.IdeEventQueue
 import com.intellij.openapi.editor.impl.EditorImpl
@@ -8,7 +9,6 @@ import com.intellij.openapi.rd.createNestedDisposable
 import com.jetbrains.rd.util.lifetime.SequentialLifetimes
 import com.jetbrains.rd.util.reactive.Property
 import com.jetbrains.rd.util.reactive.and
-import com.jetbrains.rdclient.editors.FrontendTextControlHost
 import com.jetbrains.rdclient.util.idea.LifetimedProjectComponent
 import java.awt.AWTEvent
 import java.awt.event.KeyEvent
@@ -19,7 +19,7 @@ class RiderCommentsPushToHintController(project: Project) : LifetimedProjectComp
     val cPressed = Property(false)
     val bothKeysPressed = ctrlPressed.and(cPressed)
     val controller = project.getComponent(RiderCommentsController::class.java)
-    val textControlHost = FrontendTextControlHost.getInstance(project)
+    val focusedEditorListener = project.getComponent(RiderFocusedEditorsListener::class.java)
 
     val lifetimes = SequentialLifetimes(componentLifetime)
     bothKeysPressed.change.advise(componentLifetime) { pressed ->
@@ -29,8 +29,7 @@ class RiderCommentsPushToHintController(project: Project) : LifetimedProjectComp
       }
 
       val lifetime = lifetimes.next()
-      val lastFocusedTextControlId = textControlHost.lastFocusedTextControl ?: return@advise
-      val currentEditor = textControlHost.tryGetEditor(lastFocusedTextControlId) as? EditorImpl ?: return@advise
+      val currentEditor = focusedEditorListener.lastFocusedEditor as? EditorImpl ?: return@advise
       val comment = findNearestComment(currentEditor) ?: return@advise
       controller.displayInRenderMode(comment, currentEditor, lifetime)
     }

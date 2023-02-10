@@ -19,7 +19,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
 import com.intellij.psi.impl.source.tree.injected.changesHandler.range
 import com.intellij.util.application
-import com.jetbrains.rd.platform.diagnostics.logAssertion
 import com.jetbrains.rd.platform.util.getLogger
 import com.jetbrains.rd.platform.util.lifetime
 import com.jetbrains.rd.util.lifetime.Lifetime
@@ -86,7 +85,7 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
     application.assertIsDispatchThread()
     val model = editor.foldingModel as FoldingModelImpl
     if (!model.isInBatchFoldingOperation) {
-      logger.logAssertion("Calling addComment without BatchFoldingOperation")
+      logger.error("Calling addComment without BatchFoldingOperation")
     }
   }
 
@@ -131,7 +130,7 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
     val comment = getComment(commentIdentifier, editor) ?: return
     val commentState = commentsStateManager.getExistingCommentState(editor, comment.identifier)
     if (commentState == null) {
-      logger.logAssertion("Trying to change render mode for a not registered comment ${comment.identifier.rangeMarker}")
+      logger.error("Trying to change render mode for a not registered comment ${comment.identifier.rangeMarker}")
       return
     }
 
@@ -189,7 +188,7 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
   private fun doUpdateCommentToMathState(commentIdentifier: CommentIdentifier, editor: Editor, state: CommentState) {
     val comment = getComment(commentIdentifier, editor)
     if (comment == null) {
-      logger.logAssertion("comment == null")
+      logger.error("comment == null")
       return
     }
 

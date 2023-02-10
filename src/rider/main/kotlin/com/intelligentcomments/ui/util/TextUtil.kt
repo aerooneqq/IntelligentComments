@@ -1,7 +1,6 @@
 package com.intelligentcomments.ui.util
 
 import com.intelligentcomments.core.domain.core.SquigglesKind
-import com.intelligentcomments.core.settings.RiderIntelligentCommentsSettingsProvider
 import com.intelligentcomments.ui.colors.ColorName
 import com.intelligentcomments.ui.colors.ColorsProvider
 import com.intelligentcomments.ui.comments.model.highlighters.HighlightedTextUiWrapper
@@ -13,7 +12,6 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.impl.EditorImpl
 import com.intellij.openapi.util.use
 import com.intellij.util.Range
-import com.jetbrains.rd.platform.diagnostics.logAssertion
 import com.jetbrains.rd.platform.util.getLogger
 import java.awt.*
 import javax.swing.Icon
@@ -87,7 +85,7 @@ class TextUtil {
 
       val lineHighlighters = getLinesHighlighters(listOf(line), highlighters)[0]
       if (lineHighlighters == null) {
-        logger.logAssertion("lineHighlighters == null")
+        logger.error("lineHighlighters == null")
         return 0
       }
 
@@ -206,7 +204,7 @@ class TextUtil {
       for (i in lines.indices) {
         val currentHighlighters = linesHighlighters[i]
         if (currentHighlighters == null) {
-          logger.logAssertion("currentHighlighters == null")
+          logger.error("currentHighlighters == null")
           return rect
         }
 
@@ -245,7 +243,7 @@ class TextUtil {
     ): Rectangle {
       val rangesWithHighlighters = getLinesHighlighters(listOf(line), highlighters)[0]
       if (rangesWithHighlighters == null) {
-        logger.logAssertion("rangesWithHighlighters == null")
+        logger.error("rangesWithHighlighters == null")
         return rect
       }
 
@@ -312,7 +310,7 @@ class TextUtil {
           charIndex = line.size
         } else {
           if (charIndex > highlighterModel.range.from) {
-            logger.logAssertion("charIndex > highlighterModel.range.from")
+            logger.error("charIndex > highlighterModel.range.from")
             return
           }
 
@@ -500,7 +498,7 @@ class TextUtil {
       for ((_, highlightersWithRange) in lineHighlightersWithRanges) {
         for (i in 1 until highlightersWithRange.size) {
           if (highlightersWithRange[i - 1].range.to > highlightersWithRange[i].range.from) {
-            logger.logAssertion("highlightersWithRange[i - 1].range.to > highlightersWithRange[i].range.from")
+            logger.error("highlightersWithRange[i - 1].range.to > highlightersWithRange[i].range.from")
           }
         }
       }
@@ -532,7 +530,7 @@ class TextUtil {
       val project = editor.project
 
       if (project == null) {
-        logger.logAssertion("editor.project == null")
+        logger.error("editor.project == null")
         return
       }
 
@@ -540,7 +538,7 @@ class TextUtil {
         val chars = lines[i].toCharArray()
         val lineHighlighters = linesHighlighters[i]
         if (lineHighlighters == null) {
-          logger.logAssertion("linesHighlighters[i] == null")
+          logger.error("linesHighlighters[i] == null")
           return
         }
 

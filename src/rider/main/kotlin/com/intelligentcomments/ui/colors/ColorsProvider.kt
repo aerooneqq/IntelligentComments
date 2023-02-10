@@ -2,7 +2,6 @@ package com.intelligentcomments.ui.colors
 
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
-import com.jetbrains.rd.platform.diagnostics.logAssertion
 import java.awt.Color
 import java.util.*
 
@@ -71,7 +70,7 @@ class ColorsProviderImpl(project: Project) : ColorsProvider {
     loadColorsIfNeeded()
     val hexString = properties.getProperty(colorName.name)
     if (hexString == null) {
-      logger.logAssertion("Color hex string was null for $colorName")
+      logger.error("Color hex string was null for $colorName")
       return fallbackColor
     }
 

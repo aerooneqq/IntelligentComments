@@ -8,7 +8,6 @@ import com.intelligentcomments.core.settings.RiderIntelligentCommentsSettingsPro
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.jetbrains.rd.ide.model.*
-import com.jetbrains.rd.platform.diagnostics.logAssertion
 import com.jetbrains.rd.platform.util.getLogger
 import com.jetbrains.rd.util.reactive.Property
 import com.jetbrains.rd.util.string.printToString
@@ -347,7 +346,7 @@ class CodeSegmentFromRd(
       if (it.text == previousCodeText) {
         code.set(it)
       } else {
-        logger.logAssertion("Expected the code text to be the same: $previousCodeText VS ${it.text}")
+        logger.error("Expected the code text to be the same: $previousCodeText VS ${it.text}")
       }
     }
   }

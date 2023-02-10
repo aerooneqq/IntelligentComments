@@ -16,7 +16,6 @@ using JetBrains.ReSharper.Feature.Services.Navigation;
 using JetBrains.ReSharper.Feature.Services.Navigation.NavigationExtensions;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Caches;
-using JetBrains.Rider.Backend.Features.Documents;
 using JetBrains.Rider.Model;
 using JetBrains.Util;
 using JetBrains.Util.Maths;
@@ -34,7 +33,7 @@ public class CommentsNavigationHost
   [NotNull] private readonly IDeclaredElementNavigationService myNavigationService;
   [NotNull] private readonly IShellLocks myShellLocks;
   [NotNull] private readonly RdReferenceConverter myRdReferenceConverter;
-  [NotNull] private readonly DocumentHostBase myDocumentHostBase;
+  [NotNull] private readonly IDocumentHost myDocumentHostBase;
 
 
   public CommentsNavigationHost(
@@ -45,7 +44,8 @@ public class CommentsNavigationHost
     [NotNull] IPersistentIndexManager manager,
     [NotNull] IDeclaredElementNavigationService navigationService,
     [NotNull] IShellLocks shellLocks,
-    [NotNull] RdReferenceConverter rdReferenceConverter)
+    [NotNull] RdReferenceConverter rdReferenceConverter,
+    [NotNull] IDocumentHost documentHost)
   {
     myLifetime = lifetime;
     myOpensUri = opensUri;
@@ -55,7 +55,7 @@ public class CommentsNavigationHost
     myNavigationService = navigationService;
     myShellLocks = shellLocks;
     myRdReferenceConverter = rdReferenceConverter;
-    myDocumentHostBase = DocumentHostBase.GetInstance(solution);
+    myDocumentHostBase = documentHost;
     
     solution.GetProtocolSolution().GetRdCommentsModel().PerformNavigation.Set(HandleNavigationRequest);
   }
@@ -105,7 +105,7 @@ public class CommentsNavigationHost
       return;
     }
 
-    if (myDocumentHostBase.TryGetHostDocument(textControlId.DocumentId) is not { } document)
+    if (myDocumentHostBase.TryGetDocument(textControlId.DocumentId) is not { } document)
     {
       myLogger.Warn($"Failed to get document for {textControlId}");
       return;

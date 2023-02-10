@@ -29,7 +29,6 @@
     <projectService serviceImplementation="com.intelligentcomments.core.comments.resolver.FrontendReferenceResolverHost" />
 
     <rdclient.highlighterModelSupport implementation="com.intelligentcomments.core.markup.DocCommentsFoldingHighlightersSupport" />
-
     <editorFactoryListener implementation="com.intelligentcomments.core.comments.listeners.RiderEditorsListener" />
   </extensions>
 
@@ -54,7 +53,7 @@
 
   <project-components>
     <component>
-      <implementation-class>com.intelligentcomments.core.comments.listeners.FocusedEditorsListener</implementation-class>
+      <implementation-class>com.intelligentcomments.core.comments.listeners.RiderFocusedEditorsListener</implementation-class>
     </component>
     <component>
       <implementation-class>com.intelligentcomments.core.namesToolWindow.NamedEntityToolWindowFactory</implementation-class>
@@ -82,6 +81,9 @@
     </component>
     <component>
       <implementation-class>com.intelligentcomments.core.comments.listeners.RiderEditorsListener</implementation-class>
+    </component>
+    <component>
+      <implementation-class>com.intelligentcomments.core.comments.listeners.RiderFocusedEditorsListener</implementation-class>
     </component>
     <component>
       <implementation-class>

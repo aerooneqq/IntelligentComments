@@ -341,7 +341,7 @@ public static class CommentsDomainUtil
       IXmlDocCodeEntityDomainReference reference => new RdXmlDocCodeEntityReference(reference.RawValue),
       ISandBoxCodeEntityDomainReference reference => new RdSandboxCodeEntityReference(
         reference.SandboxDocumentId,
-        reference.OriginalDocument.GetData(DocumentHostBase.DocumentIdKey),
+        reference.OriginalDocument.GetProtocolSynchronizer().DocumentId,
         reference.Range.ToRdTextRange(),
         reference.RawValue
       ),

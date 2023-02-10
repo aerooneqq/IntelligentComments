@@ -1,6 +1,5 @@
 package com.intelligentcomments.core.problemsView.tree
 
-import com.jetbrains.rd.platform.diagnostics.logAssertion
 import com.jetbrains.rd.platform.util.getLogger
 
 internal class VisibilityBasedItemsStorage<TId, TValue> {
@@ -92,7 +91,7 @@ internal class VisibilityBasedItemsStorage<TId, TValue> {
   private fun assertThreading() {
     val currentThread = Thread.currentThread()
     if (currentThread != thread) {
-      logger.logAssertion("Incorrect thread (${currentThread.name}) was used to access, must be ${thread.name}")
+      logger.error("Incorrect thread (${currentThread.name}) was used to access, must be ${thread.name}")
     }
   }
 

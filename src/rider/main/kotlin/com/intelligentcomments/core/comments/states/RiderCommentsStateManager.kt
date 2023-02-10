@@ -21,7 +21,6 @@ import com.intellij.util.application
 import com.intellij.util.xmlb.annotations.Attribute
 import com.intellij.util.xmlb.annotations.Tag
 import com.intellij.util.xmlb.annotations.XCollection
-import com.jetbrains.rd.platform.diagnostics.logAssertion
 import com.jetbrains.rd.platform.util.getLogger
 import com.jetbrains.rd.util.getOrCreate
 import com.jetbrains.rdclient.document.textControlId
@@ -172,7 +171,7 @@ class RiderCommentsStateManager(
   ): CommentState? {
     val existingState = tryGetCommentState(editor, commentIdentifier)
     if (existingState == null) {
-      logger.logAssertion("Trying to change render mode of a comment with not registered state ${editor.getEditorId()} $commentIdentifier")
+      logger.error("Trying to change render mode of a comment with not registered state ${editor.getEditorId()} $commentIdentifier")
       return null
     }
 
@@ -210,7 +209,7 @@ class RiderCommentsStateManager(
   fun isInRenderMode(editor: Editor, commentIdentifier: CommentIdentifier): Boolean? {
     val state = tryGetCommentState(editor, commentIdentifier)
     if (state == null) {
-      logger.logAssertion("Failed to get state for ${editor.getEditorId()} $commentIdentifier")
+      logger.error("Failed to get state for ${editor.getEditorId()} $commentIdentifier")
       return null
     }
 
@@ -293,7 +292,7 @@ fun Editor.getEditorId(): EditorId? {
 
   val id = textControlId
   if (psiFile == null || id == null) {
-    getLogger<RiderCommentsStateManager>().logAssertion("Psi file was null for $this")
+    getLogger<RiderCommentsStateManager>().error("Psi file was null for $this")
     return null
   }
 
