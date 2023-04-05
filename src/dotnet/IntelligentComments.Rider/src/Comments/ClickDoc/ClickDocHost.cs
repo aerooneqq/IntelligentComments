@@ -14,6 +14,7 @@ using JetBrains.RdBackend.Common.Features;
 using JetBrains.RdBackend.Common.Features.TextControls;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.DataContext;
+using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Rider.Backend.Features.QuickDoc;
 using JetBrains.Rider.Model;
 using JetBrains.Util;
@@ -92,7 +93,9 @@ public class ClickDocHost
       var dataRules = DataRules
         .AddRule(name, ProjectModelDataConstants.SOLUTION, declaredElement.GetSolution())
         .AddRule(name, PsiDataConstants.DECLARED_ELEMENTS, declaredElement.ToDeclaredElementsDataConstant())
-        .AddRule(name, DocumentModelDataConstants.DOCUMENT, textControl.Document);
+        .AddRule(name, DocumentModelDataConstants.DOCUMENT, textControl.Document)
+        .AddRule(name, PsiDataConstants.SOURCE_FILE, textControl.Document.GetPsiSourceFile(mySolution)!)
+        .AddRule(name, PsiDataConstants.SELECTED_TREE_NODES, EmptyList<ITreeNode>.Enumerable);
 
       var dataContext = myDataContexts.CreateWithDataRules(myLifetime, dataRules);
       
