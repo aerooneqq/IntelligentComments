@@ -6,15 +6,14 @@ buildscript {
     }
 
     dependencies {
-        classpath("com.jetbrains.rd:rd-gen:2022.3.2")
+        classpath("com.jetbrains.rd:rd-gen:2022.3.1")
     }
 }
 
 plugins {
-    id("java")
     id("me.filippov.gradle.jvm.wrapper") version "0.14.0"
     id("org.jetbrains.kotlin.jvm") version "1.7.20"
-    id("org.jetbrains.intellij") version "1.10.1"
+    id("org.jetbrains.intellij") version "1.13.0"
 }
 
 apply {
@@ -79,11 +78,11 @@ repositories {
 
 sourceSets {
     main {
-        java.srcDir("src/rider/main/kotlin")
+        kotlin.srcDir("src/rider/main/kotlin")
         resources.srcDir("src/rider/main/resources")
     }
     test {
-        java.srcDir("test/kotlin")
+        kotlin.srcDir("test/kotlin")
     }
 }
 
