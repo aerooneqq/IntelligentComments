@@ -149,10 +149,10 @@ public abstract class DocCommentBuilderBase : XmlDocVisitorWitCustomElements, ID
     var solution = myDomainResolveContext.Solution;
     IDomainReference CreateInvariantNameReference([NotNull] string name) => new NamedEntityDomainReference(name, NameKind.Invariant);
     bool CheckReferenceValidity(IDomainReference reference) => CheckNamedEntityReferenceIsValid(reference, solution, NameKind.Invariant);
-    const string attrName = DocCommentsBuilderUtil.InvariantNameAttrName;
+    const string AttrName = DocCommentsBuilderUtil.InvariantNameAttrName;
     
     var tagInfo = DocCommentsBuilderUtil.TryExtractTagInfoFromInvariant(
-      element, attrName, myHighlightersProvider, CreateInvariantNameReference, CheckReferenceValidity);
+      element, AttrName, myHighlightersProvider, CreateInvariantNameReference, CheckReferenceValidity);
 
     if (BuildInvariantContentSegmentFrom(tagInfo) is not { } invariant) return;
     AddToTopmostContentSegments(invariant);

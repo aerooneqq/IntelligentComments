@@ -87,7 +87,7 @@ public abstract class AbstractNamesCache : SimpleICache<Dictionary<string, int>>
     mySettings = settings;
     NameKind = nameKind;
     Trie = new Trie();
-    Change = new JetBrains.DataFlow.Signal<FileNamesChange>(lifetime, $"{GetType().Name}::{nameof(Change)}");
+    Change = new JetBrains.DataFlow.Signal<FileNamesChange>($"{GetType().Name}::{nameof(Change)}");
   }
   
   

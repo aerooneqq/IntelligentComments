@@ -40,7 +40,7 @@ public class ReferencesAndNamesInDocCommentFinder : INamedEntitiesCommonFinder
     return references.ResultingList();
   }
 
-  public IEnumerable<CommonNamedEntityDescriptor> FindAllReferences([NotNull] ITreeNode node)
+  public IEnumerable<CommonNamedEntityDescriptor> FindAllReferences(ITreeNode node)
   {
     return FindReferencesToNamedEntityOrAll(node, null);
   }

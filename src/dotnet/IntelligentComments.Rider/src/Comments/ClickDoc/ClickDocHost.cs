@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using IntelligentComments.Comments.Domain.Core.References;
 using IntelligentComments.Comments.Domain.Impl.References;
 using IntelligentComments.Rider.Comments.RdReferences;
@@ -53,12 +54,11 @@ public class ClickDocHost
     myDataContexts = dataContexts;
     myRdReferenceConverter = rdReferenceConverter;
 
-    solution.GetProtocolSolution().GetRdCommentsModel().RequestClickDoc.Set(HandleClickDocRequest);
+    solution.GetProtocolSolution().GetRdCommentsModel().RequestClickDoc.SetAsync(HandleClickDocRequest);
   }
-  
-  
+
   [NotNull]
-  private RdTask<int?> HandleClickDocRequest(Lifetime lifetime, RdCommentClickDocRequest request)
+  private Task<int?> HandleClickDocRequest(Lifetime lifetime, RdCommentClickDocRequest request)
   {
     var task = new RdTask<int?>();
     void LogErrorAndSetNull([NotNull] string error)
@@ -89,13 +89,13 @@ public class ClickDocHost
         return;
       }
 
-      const string name = $"{nameof(ClickDocHost)}::DataRule";
+      const string Name = $"{nameof(ClickDocHost)}::DataRule";
       var dataRules = DataRules
-        .AddRule(name, ProjectModelDataConstants.SOLUTION, declaredElement.GetSolution())
-        .AddRule(name, PsiDataConstants.DECLARED_ELEMENTS, declaredElement.ToDeclaredElementsDataConstant())
-        .AddRule(name, DocumentModelDataConstants.DOCUMENT, textControl.Document)
-        .AddRule(name, PsiDataConstants.SOURCE_FILE, textControl.Document.GetPsiSourceFile(mySolution)!)
-        .AddRule(name, PsiDataConstants.SELECTED_TREE_NODES, EmptyList<ITreeNode>.Enumerable);
+        .AddRule(Name, ProjectModelDataConstants.SOLUTION, declaredElement.GetSolution())
+        .AddRule(Name, PsiDataConstants.DECLARED_ELEMENTS, declaredElement.ToDeclaredElementsDataConstant())
+        .AddRule(Name, DocumentModelDataConstants.DOCUMENT, textControl.Document)
+        .AddRule(Name, PsiDataConstants.SOURCE_FILE, textControl.Document.GetPsiSourceFile(mySolution)!)
+        .AddRule(Name, PsiDataConstants.SELECTED_TREE_NODES, EmptyList<ITreeNode>.Enumerable);
 
       var dataContext = myDataContexts.CreateWithDataRules(myLifetime, dataRules);
       

@@ -15,7 +15,6 @@ using JetBrains.ReSharper.Psi.Pointers;
 using JetBrains.ReSharper.Psi.Search;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Util;
-using JetBrains.Util.Logging;
 
 namespace IntelligentComments.Comments.PSI.Features.Rename;
 
@@ -45,9 +44,6 @@ public class NamedEntityAtomicRenameFactory : AtomicRenamesFactory
 
 public class NamedEntityAtomicRename : AtomicRenameBase
 {
-  [NotNull] private static readonly ILogger ourLogger = Logger.GetLogger<NamedEntityAtomicRename>();
-  
-    
   [NotNull] private readonly ISolution mySolution;
   [NotNull] private readonly IDeclaredElementPointer<NamedEntityDeclaredElement> myOldElementPointer;
   [CanBeNull] private IDeclaredElementPointer<NamedEntityDeclaredElement> myNewElementPointer;
@@ -55,7 +51,7 @@ public class NamedEntityAtomicRename : AtomicRenameBase
   
   public override string NewName { get; }
   public override string OldName { get; }
-  public override IDeclaredElement NewDeclaredElement => myNewElementPointer.FindDeclaredElement();
+  public override IDeclaredElement NewDeclaredElement => myNewElementPointer!.FindDeclaredElement();
   public override IDeclaredElement PrimaryDeclaredElement => myOldElementPointer.FindDeclaredElement();
   public override IList<IDeclaredElement> SecondaryDeclaredElements => EmptyList<IDeclaredElement>.Instance;
   

@@ -20,7 +20,7 @@ public class CommentErrorHighlighting : IHighlighting
   [NotNull]
   public static CommentErrorHighlighting Create([NotNull] string message, DocumentRange range)
   {
-    Assertion.Assert(range.IsValid(), "range.IsValid()");
+    Assertion.Assert(range.IsValid());
     var adjustedMessage = $"{ErrorPrefixWithColonAndSpace}{message}";
     return new CommentErrorHighlighting(range, adjustedMessage);
   }

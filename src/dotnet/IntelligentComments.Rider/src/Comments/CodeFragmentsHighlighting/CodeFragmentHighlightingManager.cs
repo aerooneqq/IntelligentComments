@@ -50,7 +50,7 @@ public class CodeFragmentHighlightingManager : ICodeFragmentHighlightingManager
     myRequests = new Dictionary<int, CodeHighlightingRequest>();
     
     var rdCommentsModel = solution.GetSolution().GetProtocolSolution().GetRdCommentsModel();
-    rdCommentsModel.HighlightCode.Set((lt, request) =>
+    rdCommentsModel.HighlightCode.SetAsync((lt, request) =>
     {
       var task = new RdTask<RdHighlightedText>();
       solutionLoadStateMonitor.SolutionLoadedAndProjectModelCachesReady.WhenTrueOnce(lt, () =>

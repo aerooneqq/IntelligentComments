@@ -47,9 +47,9 @@ public abstract class DisablingCommentOperations : ICommentFromNodeOperations
   [NotNull]
   private IHighlightedText CreateDisablingCommentStartingText(ITreeNode contextNode)
   {
-    const string disabledInspectionsText = "Disabled inspections: ";
-    var highlighter = TryGetDocCommentHighlighter(disabledInspectionsText.Length, contextNode);
-    return new HighlightedText(disabledInspectionsText, highlighter);
+    const string DisabledInspectionsText = "Disabled inspections: ";
+    var highlighter = TryGetDocCommentHighlighter(DisabledInspectionsText.Length, contextNode);
+    return new HighlightedText(DisabledInspectionsText, highlighter);
   }
 
   [CanBeNull]

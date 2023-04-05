@@ -40,7 +40,7 @@ public class InlineReferenceCommentsCompletionContextProvider : ICodeCompletionC
   public ISpecificCodeCompletionContext GetCompletionContext(CodeCompletionContext context)
   {
     var inlineReferenceContext = TryGetContext(context);
-    Assertion.AssertNotNull(inlineReferenceContext, "inlineReferenceContext != null");
+    Assertion.AssertNotNull(inlineReferenceContext);
 
     return inlineReferenceContext;
   }

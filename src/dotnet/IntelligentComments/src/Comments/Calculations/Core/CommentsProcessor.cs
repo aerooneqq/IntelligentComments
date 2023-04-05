@@ -24,9 +24,9 @@ public record CommentProcessingResult(
   {
     var provider = LanguageManager.Instance.GetService<IHighlightersProvider>(languageType);
 
-    const string invalidCommentText = "Invalid comment: ";
-    var highlighter = provider.TryGetReSharperHighlighter(DefaultLanguageAttributeIds.DOC_COMMENT, invalidCommentText.Length);
-    var text = new HighlightedText(invalidCommentText, highlighter);
+    const string InvalidCommentText = "Invalid comment: ";
+    var highlighter = provider.TryGetReSharperHighlighter(DefaultLanguageAttributeIds.DOC_COMMENT, InvalidCommentText.Length);
+    var text = new HighlightedText(InvalidCommentText, highlighter);
 
     var errorText = errors.FirstOrDefault()?.Highlighting.ToolTip ?? string.Empty;
     if (errorText.Length > 0)

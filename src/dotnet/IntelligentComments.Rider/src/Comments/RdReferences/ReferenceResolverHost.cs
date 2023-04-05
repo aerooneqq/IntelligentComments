@@ -25,7 +25,7 @@ public class ReferenceResolverHost
     [NotNull] RdReferenceConverter referenceConverter,
     [NotNull] IDocumentHost documentHost)
   {
-    solution.GetProtocolSolution().GetRdCommentsModel().ResolveReference.Set((_, resolveRequest) =>
+    solution.GetProtocolSolution().GetRdCommentsModel().ResolveReference.SetAsync((_, resolveRequest) =>
     {
       var result = new RdTask<RdResolveResult>();
       void LogErrorAndSetInvalidResolveResult([NotNull] string message)

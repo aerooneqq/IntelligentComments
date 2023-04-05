@@ -31,7 +31,7 @@ public class DocCommentCompletionContextProvider : ICodeCompletionContextProvide
   public ISpecificCodeCompletionContext GetCompletionContext(CodeCompletionContext context)
   {
     var docCommentBlock = context.GetData(ourDocCommentKey);
-    Assertion.AssertNotNull(docCommentBlock, "docCommentBlock != null");
+    Assertion.AssertNotNull(docCommentBlock);
 
     if (docCommentBlock.TryGetXmlToken(context.CaretDocumentOffset) is not { } contextDocCommentNode) return null;
     

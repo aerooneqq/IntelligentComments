@@ -331,7 +331,7 @@ public static partial class DocCommentsBuilderUtil
 
   internal static string GetInvariantName(IXmlAttribute attribute)
   {
-    Assertion.Assert(attribute.AttributeName == InvariantNameAttrName, "attribute.AttributeName == InvariantNameAttrName");
+    Assertion.Assert(attribute.AttributeName == InvariantNameAttrName);
     return PreprocessText(attribute.UnquotedValue, null);
   }
 

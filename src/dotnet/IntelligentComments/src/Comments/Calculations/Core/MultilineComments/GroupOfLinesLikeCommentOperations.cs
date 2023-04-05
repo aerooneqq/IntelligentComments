@@ -47,7 +47,7 @@ public abstract class GroupOfLinesLikeCommentOperations : ISpecialGroupOfLinesCo
   {
     if (TryGetCommentInfoDto(node) is not var ((buildResult, groupOfLineComments), text, provider)) return null;
     
-    if (mySettings.ExperimentalFeaturesEnabled.Value && TryExtractName(text, provider) is { } name)
+    if (mySettings.ExperimentalFeaturesEnabled.Value && TryExtractName(text) is { } name)
     {
       text = text[(text.IndexOf("):", StringComparison.Ordinal) + 3)..];
       return buildResult with { Comment = CreateComment(groupOfLineComments, provider, text, name) };
@@ -73,7 +73,7 @@ public abstract class GroupOfLinesLikeCommentOperations : ISpecialGroupOfLinesCo
   }
   
   [CanBeNull]
-  private string TryExtractName([NotNull] string text, [NotNull] IHighlightersProvider provider)
+  private string TryExtractName([NotNull] string text)
   {
     if (!CheckMatches(Regex.Matches(text, PatternWithName))) return null;
     
@@ -84,8 +84,8 @@ public abstract class GroupOfLinesLikeCommentOperations : ISpecialGroupOfLinesCo
   public IEnumerable<CommentErrorHighlighting> FindErrors(ITreeNode node)
   {
     if (!node.GetSolution().GetComponent<ICommentsSettings>().ExperimentalFeaturesEnabled.Value ||
-        TryGetCommentInfoDto(node) is not var ((_, _), text, provider) ||
-        TryExtractName(text, provider) is not { } name)
+        TryGetCommentInfoDto(node) is not var ((_, _), text, _) ||
+        TryExtractName(text) is not { } name)
     {
       return EmptyList<CommentErrorHighlighting>.Enumerable;
     }
@@ -128,8 +128,8 @@ public abstract class GroupOfLinesLikeCommentOperations : ISpecialGroupOfLinesCo
   
   protected virtual NameExtraction ExtractName([NotNull] string text)
   {
-    const string name = "name:";
-    var index = text.IndexOf(name, StringComparison.Ordinal) + name.Length + 1;
+    const string Name = "name:";
+    var index = text.IndexOf(Name, StringComparison.Ordinal) + Name.Length + 1;
     text = text[index..text.IndexOf(")", StringComparison.Ordinal)];
     return new NameExtraction(index, text);
   }

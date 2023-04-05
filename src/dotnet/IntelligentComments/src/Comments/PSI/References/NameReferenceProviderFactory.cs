@@ -1,7 +1,6 @@
 using IntelligentComments.Comments.Settings;
 using JetBrains.Annotations;
 using JetBrains.DataFlow;
-using JetBrains.Lifetimes;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Caches;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
@@ -19,10 +18,10 @@ public class NameReferenceProviderFactory : IReferenceProviderFactory
   public ISignal<IReferenceProviderFactory> Changed { get; }
 
   
-  public NameReferenceProviderFactory(Lifetime lifetime, [NotNull] ICommentsSettings settings)
+  public NameReferenceProviderFactory([NotNull] ICommentsSettings settings)
   {
     mySettings = settings;
-    Changed = new Signal<IReferenceProviderFactory>(lifetime, $"{GetType().Name}::{nameof(Changed)}");
+    Changed = new Signal<IReferenceProviderFactory>($"{GetType().Name}::{nameof(Changed)}");
   }
   
   

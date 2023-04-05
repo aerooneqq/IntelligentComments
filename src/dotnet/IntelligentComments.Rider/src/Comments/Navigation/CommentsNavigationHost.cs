@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using IntelligentComments.Comments.Domain.Core.References;
 using IntelligentComments.Comments.Domain.Impl.References;
 using IntelligentComments.Rider.Comments.RdReferences;
@@ -57,11 +58,11 @@ public class CommentsNavigationHost
     myRdReferenceConverter = rdReferenceConverter;
     myDocumentHostBase = documentHost;
     
-    solution.GetProtocolSolution().GetRdCommentsModel().PerformNavigation.Set(HandleNavigationRequest);
+    solution.GetProtocolSolution().GetRdCommentsModel().PerformNavigation.SetAsync(HandleNavigationRequest);
   }
 
   
-  private RdTask<Unit> HandleNavigationRequest(Lifetime lifetime, [NotNull] RdNavigationRequest request)
+  private Task<Unit> HandleNavigationRequest(Lifetime lifetime, [NotNull] RdNavigationRequest request)
   {
     var task = new RdTask<Unit>();
 
