@@ -83,9 +83,6 @@
       <implementation-class>com.intelligentcomments.core.comments.listeners.RiderEditorsListener</implementation-class>
     </component>
     <component>
-      <implementation-class>com.intelligentcomments.core.comments.listeners.RiderFocusedEditorsListener</implementation-class>
-    </component>
-    <component>
       <implementation-class>
           com.intelligentcomments.core.problemsView.IntelligentCommentsExtensionsRegistrar
       </implementation-class>
