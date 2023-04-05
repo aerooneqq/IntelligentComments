@@ -6,7 +6,7 @@ buildscript {
     }
 
     dependencies {
-        classpath("com.jetbrains.rd:rd-gen:2022.3.1")
+        classpath("com.jetbrains.rd:rd-gen:2023.1.0")
     }
 }
 
