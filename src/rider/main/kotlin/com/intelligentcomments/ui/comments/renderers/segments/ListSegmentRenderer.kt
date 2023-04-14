@@ -15,7 +15,6 @@ import com.intelligentcomments.ui.util.*
 import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.util.use
-import java.awt.FontMetrics
 import java.awt.Graphics
 import java.awt.Rectangle
 import java.lang.Integer.max
@@ -101,7 +100,7 @@ class ListSegmentRenderer(private val model: ListContentSegmentUiModel) : Segmen
       is ListContentSegmentUiModel,
       is TextContentSegmentUiModel -> {
         if (model.listKind == ListSegmentKind.Bullet) {
-          drawBullet(g, editor, rect, fontMetrics)
+          drawBullet(g, editor, rect)
         } else if (model.listKind == ListSegmentKind.Number) {
           drawNumber(g, rect, editor, index)
         }
@@ -112,15 +111,14 @@ class ListSegmentRenderer(private val model: ListContentSegmentUiModel) : Segmen
   private fun drawBullet(
     g: Graphics,
     editor: Editor,
-    rect: Rectangle,
-    fontMetrics: FontMetrics
+    rect: Rectangle
   ) {
     val docCommentColor = CommonsHighlightersFactory.tryCreateCommentHighlighter(null, 1)?.textColor
     val bulletColor = docCommentColor ?: model.project.service<ColorsProvider>().getColorFor(Colors.ListItemBulletBackgroundColor)
     val textHeight = TextUtil.getTextHeight(editor, null)
     val bulletRadius = textHeight / 2
     UpdatedGraphicsCookie(g, color = bulletColor).use {
-      g.fillOval(rect.x - 5 * bulletRadius / 3 , rect.y + bulletRadius / 2 + fontMetrics.descent / 2 - 1, bulletRadius, bulletRadius)
+      g.fillOval(rect.x - 5 * bulletRadius / 3 , rect.y + bulletRadius / 2, bulletRadius, bulletRadius)
     }
   }
 
