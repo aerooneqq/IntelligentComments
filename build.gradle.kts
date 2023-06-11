@@ -6,14 +6,14 @@ buildscript {
     }
 
     dependencies {
-        classpath("com.jetbrains.rd:rd-gen:2023.1.0")
+        classpath("com.jetbrains.rd:rd-gen:2023.2.1")
     }
 }
 
 plugins {
     id("me.filippov.gradle.jvm.wrapper") version "0.14.0"
-    id("org.jetbrains.kotlin.jvm") version "1.7.20"
-    id("org.jetbrains.intellij") version "1.13.0"
+    id("org.jetbrains.kotlin.jvm") version "1.8.10"
+    id("org.jetbrains.intellij") version "1.13.3"
 }
 
 apply {

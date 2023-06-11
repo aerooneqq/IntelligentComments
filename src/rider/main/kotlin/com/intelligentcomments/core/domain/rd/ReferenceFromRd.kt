@@ -1,11 +1,11 @@
 package com.intelligentcomments.core.domain.rd
 
 import com.intelligentcomments.core.domain.core.*
+import com.intelligentcomments.hacks.FrontendDocumentHostHacks
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
 import com.jetbrains.rd.ide.model.*
-import com.jetbrains.rdclient.document.FrontendDocumentHost
 import com.jetbrains.rdclient.document.getFirstDocumentId
 import com.jetbrains.rdclient.util.idea.toIdeaRange
 import com.jetbrains.rdclient.util.idea.toRdTextRange
@@ -40,7 +40,7 @@ open class SandboxCodeEntityReferenceFromRd(
 ) : ReferenceFromRd(reference), SandboxCodeEntityReference {
   override val originalDocument: Document?
     get() {
-      return FrontendDocumentHost.getInstance(project).openedDocuments[reference.originalDocumentId]
+      return project.getComponent(FrontendDocumentHostHacks::class.java).getOpenedDocuments()[reference.originalDocumentId]
     }
 
   override val sandboxFileId: String = reference.sandboxFileId

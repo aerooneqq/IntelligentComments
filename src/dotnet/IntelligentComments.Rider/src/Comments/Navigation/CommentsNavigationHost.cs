@@ -15,6 +15,7 @@ using JetBrains.RdBackend.Common.Features.Documents;
 using JetBrains.RdBackend.Common.Features.Services;
 using JetBrains.ReSharper.Feature.Services.Navigation;
 using JetBrains.ReSharper.Feature.Services.Navigation.NavigationExtensions;
+using JetBrains.ReSharper.Feature.Services.Protocol;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Caches;
 using JetBrains.Rider.Model;

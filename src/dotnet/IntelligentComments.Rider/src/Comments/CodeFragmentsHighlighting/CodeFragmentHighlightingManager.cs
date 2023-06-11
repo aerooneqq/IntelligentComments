@@ -12,6 +12,7 @@ using JetBrains.ProjectModel;
 using JetBrains.Rd.Tasks;
 using JetBrains.RdBackend.Common.Features;
 using JetBrains.RdBackend.Common.Features.ProjectModel;
+using JetBrains.ReSharper.Feature.Services.Protocol;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Files;
 using JetBrains.ReSharper.Resources.Shell;

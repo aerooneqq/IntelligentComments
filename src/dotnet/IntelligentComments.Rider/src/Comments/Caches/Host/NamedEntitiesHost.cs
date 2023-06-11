@@ -13,6 +13,7 @@ using JetBrains.Collections.Viewable;
 using JetBrains.Lifetimes;
 using JetBrains.ProjectModel;
 using JetBrains.RdBackend.Common.Features;
+using JetBrains.ReSharper.Feature.Services.Protocol;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Caches;
 using JetBrains.Rider.Model;

@@ -7,6 +7,7 @@ import com.intelligentcomments.core.comments.storages.EditorCommentsWithFoldings
 import com.intelligentcomments.core.domain.core.*
 import com.intelligentcomments.core.settings.CommentsDisplayKind
 import com.intelligentcomments.core.settings.RiderIntelligentCommentsSettingsProvider
+import com.intelligentcomments.hacks.FrontendTextControlHostHacks
 import com.intelligentcomments.ui.comments.model.CollapsedCommentUiModel
 import com.intelligentcomments.ui.comments.renderers.CollapsedCommentRenderer
 import com.intelligentcomments.ui.comments.renderers.RendererWithRectangleModel
@@ -22,10 +23,8 @@ import com.intellij.util.application
 import com.jetbrains.rd.platform.util.getLogger
 import com.jetbrains.rd.platform.util.lifetime
 import com.jetbrains.rd.util.lifetime.Lifetime
-import com.jetbrains.rd.util.lifetime.onTermination
 import com.jetbrains.rd.util.reactive.AddRemove
 import com.jetbrains.rdclient.daemon.highlighters.foldings.markAsDocComment
-import com.jetbrains.rdclient.editors.FrontendTextControlHost
 import com.jetbrains.rdclient.util.idea.LifetimedProjectComponent
 import com.jetbrains.rider.document.RiderDocumentHost
 
@@ -40,7 +39,8 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
 
 
   init {
-    FrontendTextControlHost.getInstance(project).openedEditors.adviseAddRemove(project.lifetime) { addRemove, _, editor ->
+    val host = project.getComponent(FrontendTextControlHostHacks::class.java)
+    host.getOpenedEditors().adviseAddRemove(project.lifetime) { addRemove, _, editor ->
       if (addRemove == AddRemove.Remove) {
         commentsStorage.removeAllEditorsFoldings(editor)
         commentsStorage.removeAllEditorsComments(editor)

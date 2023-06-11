@@ -83,7 +83,7 @@ public class SandboxesCache : AbstractOpenedDocumentBasedCache<string, SandboxFi
 
     myHelper.InitSandboxDocument(
       documentId,
-      new RiderTextBufferDocumentModel(sandBoxInfo, new List<DocumentExtension>(), false),
+      new RiderTextBufferDocumentModel(sandBoxInfo, new List<DocumentExtension>(), CreationSide.Backend),
       highlightingLifetime, 
       riderDocument,
       sandboxFile);
