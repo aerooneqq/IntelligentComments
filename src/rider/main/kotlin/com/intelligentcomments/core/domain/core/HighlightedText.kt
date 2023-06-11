@@ -7,4 +7,5 @@ interface HighlightedText : Parentable {
   fun mergeWith(other: HighlightedText): HighlightedText
   fun mergeWith(rawText: String): HighlightedText
   fun ensureThatAllLinesAreNoLongerThan(maxLineLength: Int)
+  fun addHighlightersFrom(other: HighlightedText): HighlightedText
 }

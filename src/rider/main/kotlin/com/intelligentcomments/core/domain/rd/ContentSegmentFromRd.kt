@@ -344,6 +344,7 @@ class CodeSegmentFromRd(
     highlightingHost.requestFullHighlighting(this, rdCodeSegment.highlightingRequestId) {
       val previousCodeText = code.value.text
       if (it.text == previousCodeText) {
+        it.addHighlightersFrom(code.value)
         code.set(it)
       } else {
         logger.error("Expected the code text to be the same: $previousCodeText VS ${it.text}")

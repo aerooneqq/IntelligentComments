@@ -20,6 +20,8 @@ interface TextHighlighter : UniqueEntity, Parentable {
 
   fun shiftInplace(delta: Int)
   fun extendEnd(delta: Int)
+
+  fun copy(): TextHighlighter
 }
 
 class TextHighlighterImpl(
@@ -64,6 +66,20 @@ class TextHighlighterImpl(
   override fun shiftInplace(delta: Int) {
     startOffset += delta
     endOffset += delta
+  }
+
+  override fun copy(): TextHighlighter {
+    return TextHighlighterImpl(
+      parent,
+      startOffset,
+      endOffset,
+      textColor,
+      references,
+      attributes,
+      backgroundStyle,
+      mouseInOutAnimation,
+      errorSquiggles
+    )
   }
 }
 

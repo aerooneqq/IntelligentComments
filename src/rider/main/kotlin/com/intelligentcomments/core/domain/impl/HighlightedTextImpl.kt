@@ -4,9 +4,14 @@ import com.intelligentcomments.core.domain.core.HighlightedText
 import com.intelligentcomments.core.domain.core.Parentable
 import com.intelligentcomments.core.domain.core.TextHighlighter
 import com.intelligentcomments.core.domain.core.TextHighlighterImpl
+import com.intelligentcomments.ui.util.TextUtil
+import com.jetbrains.rd.platform.util.getLogger
+import com.jetbrains.rd.util.error
 
 class HighlightedTextImpl : HighlightedText {
   companion object {
+    private val logger = getLogger<HighlightedTextImpl>()
+
     fun createEmpty(parent: Parentable?) = HighlightedTextImpl("", parent)
   }
 
@@ -68,6 +73,27 @@ class HighlightedTextImpl : HighlightedText {
     attachHighlighters(other.highlighters)
     myHighlighters.addAll(other.highlighters.map { it.shift(length) })
     return this
+  }
+
+  override fun addHighlightersFrom(other: HighlightedText): HighlightedText {
+    assert(other.text == text)
+    for (otherHighlighter in other.highlighters) {
+      val otherHighlighterCopy = otherHighlighter.copy()
+      attachHighlighter(otherHighlighterCopy)
+      myHighlighters.add(otherHighlighterCopy)
+    }
+
+    myHighlighters.sortBy { it.startOffset }
+    assertState()
+    return this
+  }
+
+  private fun assertState() {
+    for (i in 1 until myHighlighters.size) {
+      if (myHighlighters[i - 1].endOffset > myHighlighters[i].startOffset) {
+        logger.error("myHighlighters[i - 1].endOffset > myHighlighters[i].startOffset")
+      }
+    }
   }
 
   override fun mergeWith(rawText: String): HighlightedText {
