@@ -1,6 +1,7 @@
 using IntelligentComments.Comments.Domain.Impl;
 using JetBrains.Annotations;
 using JetBrains.ReSharper.Daemon.Syntax;
+using JetBrains.ReSharper.Daemon.SyntaxHighlighting;
 using JetBrains.ReSharper.Psi.CSharp.Parsing;
 using JetBrains.ReSharper.Psi.Tree;
 
@@ -9,12 +10,12 @@ namespace IntelligentComments.Comments.Calculations.CodeHighlighting;
 public abstract class CodeHighlighterBase
 {
   [NotNull] protected readonly IHighlightersProvider HighlightersProvider;
-  [NotNull] protected readonly SyntaxHighlightingProcessor SyntaxHighlightingProcessor;
+  [NotNull] protected readonly DefaultSyntaxHighlighting SyntaxHighlightingProcessor;
   
 
   protected CodeHighlighterBase(
     [NotNull] IHighlightersProvider highlightersProvider, 
-    [NotNull] SyntaxHighlightingProcessor syntaxHighlightingProcessor)
+    [NotNull] DefaultSyntaxHighlighting syntaxHighlightingProcessor)
   {
     HighlightersProvider = highlightersProvider;
     SyntaxHighlightingProcessor = syntaxHighlightingProcessor;

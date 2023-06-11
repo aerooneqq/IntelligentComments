@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text;
 using IntelligentComments.Comments.Calculations.CodeHighlighting;
 using JetBrains.Annotations;
+using JetBrains.Diagnostics;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
 using JetBrains.ReSharper.Psi.Tree;
@@ -76,7 +77,10 @@ public class CSharpBlockNodeSandBoxOperations : CSharpBlockNodeSandBoxOperations
 
   public override ITreeNode TryFind(IFile file, TreeTextRange range)
   {
-    return file.FindNodeAt(range).Descendants<IBlock>().Collect().LastOrDefault();
+    var blocks = file.FindNodeAt(range).Descendants<IBlock>().Collect();
+    //by construction
+    Assertion.Assert(blocks.Count > 2);
+    return blocks[1];
   }
 }
 

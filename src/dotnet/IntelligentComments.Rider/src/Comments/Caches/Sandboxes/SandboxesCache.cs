@@ -9,6 +9,7 @@ using JetBrains.Lifetimes;
 using JetBrains.ProjectModel;
 using JetBrains.RdBackend.Common.Features.Documents;
 using JetBrains.RdBackend.Common.Features.Languages;
+using JetBrains.ReSharper.Feature.Services.Refactorings;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Files.SandboxFiles;
 using JetBrains.Rider.Model;
@@ -19,11 +20,11 @@ namespace IntelligentComments.Rider.Comments.Caches.Sandboxes;
 
 public record SandboxFileInfo(
   [NotNull] LifetimeDefinition LifetimeDefinition,
-  [NotNull] SandboxPsiSourceFile SandboxPsiSourceFile,
+  [NotNull] IPsiSourceFile SandboxPsiSourceFile,
   [NotNull] IDictionary<int, TextRange> TextHashesToOffset
 );
 
-public record SandboxCodeFragmentInfo([NotNull] SandboxPsiSourceFile SourceFile, int StartOffset, int EndOffset);
+public record SandboxCodeFragmentInfo([NotNull] IPsiSourceFile SourceFile, int StartOffset, int EndOffset);
 
 [SolutionComponent]
 public class SandboxesCache : AbstractOpenedDocumentBasedCache<string, SandboxFileInfo>, ISandboxesCache
@@ -52,7 +53,7 @@ public class SandboxesCache : AbstractOpenedDocumentBasedCache<string, SandboxFi
   }
   
   
-  public SandboxPsiSourceFile TryGetSandboxPsiSourceFile(IDocument originalDocument, string fileName)
+  public IPsiSourceFile TryGetSandboxPsiSourceFile(IDocument originalDocument, string fileName)
   {
     return TryGetValue(originalDocument, fileName)?.SandboxPsiSourceFile;
   }
@@ -81,15 +82,17 @@ public class SandboxesCache : AbstractOpenedDocumentBasedCache<string, SandboxFi
       return null;
     }
 
+    var model = new RiderTextBufferDocumentModel(sandBoxInfo, new List<DocumentExtension>(), CreationSide.Backend);
+    model.BindToLocalProtocol(highlightingLifetime);
     myHelper.InitSandboxDocument(
       documentId,
-      new RiderTextBufferDocumentModel(sandBoxInfo, new List<DocumentExtension>(), CreationSide.Backend),
+      model,
       highlightingLifetime, 
       riderDocument,
       sandboxFile);
 
     var sourceFile = riderDocument.GetPsiSourceFile(mySolution);
-    if (sourceFile is not SandboxPsiSourceFile sandboxPsiSourceFile)
+    if (sourceFile is not { })
     {
       myLogger.LogAssertion($"Got unexpected sourceFile for {sandboxFile}: {sourceFile}");
       return null;
@@ -101,9 +104,9 @@ public class SandboxesCache : AbstractOpenedDocumentBasedCache<string, SandboxFi
       [request.CalculateTextHash()] = new(0, endOffset)
     };
     
-    Add(originalDocument, new SandboxFileInfo(lifetimeDef, sandboxPsiSourceFile, idToOffsets));
+    Add(originalDocument, new SandboxFileInfo(lifetimeDef, sourceFile, idToOffsets));
 
-    return new SandboxCodeFragmentInfo(sandboxPsiSourceFile, 0, endOffset);
+    return new SandboxCodeFragmentInfo(sourceFile, 0, endOffset);
   }
   
   [NotNull]
@@ -149,7 +152,7 @@ public class SandboxesCache : AbstractOpenedDocumentBasedCache<string, SandboxFi
         CompletionItemType.TemplateItem
       },
       request.Language.ToRdLanguage(),
-      true,
+      false,
       null,
       true,
       new List<char>()

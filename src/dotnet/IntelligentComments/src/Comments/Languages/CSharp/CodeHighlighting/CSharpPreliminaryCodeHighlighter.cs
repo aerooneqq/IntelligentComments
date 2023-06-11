@@ -3,6 +3,7 @@ using IntelligentComments.Comments.Calculations.CodeHighlighting;
 using IntelligentComments.Comments.Domain.Impl;
 using JetBrains.Annotations;
 using JetBrains.ReSharper.Daemon.CSharp.Syntax;
+using JetBrains.ReSharper.Daemon.SyntaxHighlighting;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.ReSharper.Psi.Tree;
@@ -13,7 +14,7 @@ namespace IntelligentComments.Comments.Languages.CSharp.CodeHighlighting;
 public class CSharpPreliminaryCodeHighlighter : CodeHighlighterBase, IPreliminaryCodeHighlighter
 {
   public CSharpPreliminaryCodeHighlighter([NotNull] IHighlightersProvider highlightersProvider)
-    : base(highlightersProvider, new CSharpFullSyntaxHighlightingProcessor())
+    : base(highlightersProvider, new DefaultSyntaxHighlighting())
   {
   }
   
