@@ -1,7 +1,7 @@
 package com.intelligentcomments.core.domain.rd
 
+import com.intelligentcomments.core.comments.RiderOpenedEditorsAndDocuments
 import com.intelligentcomments.core.domain.core.*
-import com.intelligentcomments.hacks.FrontendDocumentHostHacks
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
@@ -40,7 +40,7 @@ open class SandboxCodeEntityReferenceFromRd(
 ) : ReferenceFromRd(reference), SandboxCodeEntityReference {
   override val originalDocument: Document?
     get() {
-      return project.getComponent(FrontendDocumentHostHacks::class.java).getOpenedDocuments()[reference.originalDocumentId]
+      return project.getComponent(RiderOpenedEditorsAndDocuments::class.java).openedDocuments[reference.originalDocumentId]
     }
 
   override val sandboxFileId: String = reference.sandboxFileId

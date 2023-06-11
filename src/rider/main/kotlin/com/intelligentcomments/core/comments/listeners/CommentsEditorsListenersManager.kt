@@ -1,6 +1,6 @@
 package com.intelligentcomments.core.comments.listeners
 
-import com.intelligentcomments.hacks.FrontendTextControlHostHacks
+import com.intelligentcomments.core.comments.RiderOpenedEditorsAndDocuments
 import com.intellij.openapi.editor.CustomFoldRegion
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.FoldRegion
@@ -17,8 +17,8 @@ class CommentsEditorsListenersManager(private val project: Project) {
 
 
   init {
-    val host = project.getComponent(FrontendTextControlHostHacks::class.java)
-    host.getOpenedEditors().adviseAddRemove(project.lifetime) { addRemove, _, editor ->
+    val openedEditorsAndDocuments = project.getComponent(RiderOpenedEditorsAndDocuments::class.java)
+    openedEditorsAndDocuments.openedEditors.adviseAddRemove(project.lifetime) { addRemove, _, editor ->
       if (addRemove == AddRemove.Remove) {
         processedEditors.remove(editor)
         val regionsToRemove = mutableSetOf<FoldRegion>()

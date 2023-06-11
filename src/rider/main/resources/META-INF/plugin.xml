@@ -56,10 +56,7 @@
       <implementation-class>com.intelligentcomments.core.comments.listeners.RiderEditorsTracker</implementation-class>
     </component>
     <component>
-      <implementation-class>com.intelligentcomments.hacks.FrontendTextControlHostHacks</implementation-class>
-    </component>
-    <component>
-      <implementation-class>com.intelligentcomments.hacks.FrontendDocumentHostHacks</implementation-class>
+      <implementation-class>com.intelligentcomments.core.comments.RiderOpenedEditorsAndDocuments</implementation-class>
     </component>
     <component>
       <implementation-class>com.intelligentcomments.core.comments.listeners.RiderFocusedEditorsListener</implementation-class>

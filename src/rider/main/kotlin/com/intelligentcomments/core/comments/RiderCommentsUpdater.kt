@@ -2,7 +2,6 @@ package com.intelligentcomments.core.comments
 
 import com.intelligentcomments.core.changes.*
 import com.intelligentcomments.core.comments.listeners.RiderEditorsTracker
-import com.intelligentcomments.hacks.FrontendTextControlHostHacks
 import com.intelligentcomments.ui.comments.renderers.RendererWithRectangleModel
 import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.CustomFoldRegion
@@ -25,8 +24,8 @@ class RiderCommentsUpdater(project: Project) : LifetimedProjectComponent(project
   init {
     ChangeManager.getInstance().addListener(componentLifetime, this)
 
-    val host = project.getComponent(FrontendTextControlHostHacks::class.java)
-    host.getOpenedEditors().adviseAddRemove(componentLifetime) { addRemove, _, editor ->
+    val openedEditorsAndDocuments = project.getComponent(RiderOpenedEditorsAndDocuments::class.java)
+    openedEditorsAndDocuments.openedEditors.adviseAddRemove(componentLifetime) { addRemove, _, editor ->
       if (addRemove == AddRemove.Remove) {
         openedEditorsStamps.remove(editor)
       } else if (addRemove == AddRemove.Add) {

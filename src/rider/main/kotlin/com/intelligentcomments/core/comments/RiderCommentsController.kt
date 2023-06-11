@@ -7,7 +7,6 @@ import com.intelligentcomments.core.comments.storages.EditorCommentsWithFoldings
 import com.intelligentcomments.core.domain.core.*
 import com.intelligentcomments.core.settings.CommentsDisplayKind
 import com.intelligentcomments.core.settings.RiderIntelligentCommentsSettingsProvider
-import com.intelligentcomments.hacks.FrontendTextControlHostHacks
 import com.intelligentcomments.ui.comments.model.CollapsedCommentUiModel
 import com.intelligentcomments.ui.comments.renderers.CollapsedCommentRenderer
 import com.intelligentcomments.ui.comments.renderers.RendererWithRectangleModel
@@ -39,8 +38,8 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
 
 
   init {
-    val host = project.getComponent(FrontendTextControlHostHacks::class.java)
-    host.getOpenedEditors().adviseAddRemove(project.lifetime) { addRemove, _, editor ->
+    val openedEditorsAndDocuments = project.getComponent(RiderOpenedEditorsAndDocuments::class.java)
+    openedEditorsAndDocuments.openedEditors.adviseAddRemove(project.lifetime) { addRemove, _, editor ->
       if (addRemove == AddRemove.Remove) {
         commentsStorage.removeAllEditorsFoldings(editor)
         commentsStorage.removeAllEditorsComments(editor)
