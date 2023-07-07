@@ -142,7 +142,7 @@ internal static class NavigationUtil
     if (resolveResult is not NamedEntityDomainResolveResult invariantResolveResult)
     {
       host ??= solution.GetComponent<INavigationExecutionHost>();
-      host.ShowToolip(context, "Failed to resolve name for this reference");
+      host.ShowTooltip(context, "Failed to resolve name for this reference");
       return;
     }
 
