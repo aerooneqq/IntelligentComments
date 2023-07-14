@@ -1,6 +1,6 @@
 ﻿<Project>
   <PropertyGroup>
-    <SdkVersion>2023.2.0-eap07</SdkVersion>
+    <SdkVersion>2023.2.0-eap09</SdkVersion>
 
     <Title>IntelligentComments</Title>
     <Description>The plugin renders comments and provides some features to store implicit dependencies between entities in the code-base</Description>
