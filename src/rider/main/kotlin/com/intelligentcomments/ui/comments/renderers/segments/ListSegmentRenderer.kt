@@ -134,7 +134,7 @@ class ListSegmentRenderer(private val model: ListContentSegmentUiModel) : Segmen
       x -= 14
     }
 
-    val numberString = "$index."
+    val numberString = "$index"
     TextUtil.renderText(g, rectForNumber, editor, numberString, 0)
   }
 
