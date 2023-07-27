@@ -3,6 +3,8 @@
 Intelligent Comments can be [downloaded](https://plugins.jetbrains.com/plugin/19135-intelligent-comments) from the JetBrains Marketplace. 
 
 The plugin provides functionality to render comments:
+![EF1](./screens/screen1.png)
+![EF2](./screens/screen2.png)
 ![CancellationToken decompiled source](./screens/cancellationToken.png)
 The comments can be hidden in settings or by "Hide Or Render All Comments" action:
 ![CancellationToken decompiled source hidden comments](./screens/cancellationTokenHiddenComments.png)
