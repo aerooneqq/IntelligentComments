@@ -2,7 +2,6 @@ package com.intelligentcomments.core.comments
 
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.Editor
-import com.intellij.openapi.project.Project
 import com.intellij.util.application
 import com.jetbrains.rd.ide.model.RdDocumentId
 import com.jetbrains.rd.ide.model.TextControlId
@@ -10,11 +9,12 @@ import com.jetbrains.rd.platform.util.getLogger
 import com.jetbrains.rd.util.reactive.ViewableMap
 import com.jetbrains.rdclient.editors.FrontendTextControlHost
 
-class RiderOpenedEditorsAndDocuments(private val project: Project) {
+class RiderOpenedEditorsAndDocuments {
     companion object {
         private val logger = getLogger<RiderOpenedEditorsAndDocuments>()
     }
 
+    private val editorsToTextControlIds = mutableMapOf<Editor, TextControlId>()
     private val openedDocumentsCounts = mutableMapOf<RdDocumentId, Int>()
 
     val openedEditors = ViewableMap<TextControlId, Editor>()
@@ -25,6 +25,7 @@ class RiderOpenedEditorsAndDocuments(private val project: Project) {
         application.assertIsDispatchThread()
 
         val editorId = tryGetEditorId(editor) ?: return
+        editorsToTextControlIds[editor] = editorId;
 
         if (!openedEditors.containsKey(editorId)) {
             openedEditors[editorId] = editor
@@ -51,7 +52,9 @@ class RiderOpenedEditorsAndDocuments(private val project: Project) {
     fun handleEditorClosed(editor: Editor) {
         application.assertIsDispatchThread()
 
-        val editorId = tryGetEditorId(editor) ?: return
+        //can not obtain text control id directly from editor here, it is null for some reason :(
+        val editorId = editorsToTextControlIds[editor] ?: return
+        editorsToTextControlIds.remove(editor)
 
         assert(openedEditors.containsKey(editorId))
         openedEditors.remove(editorId)
