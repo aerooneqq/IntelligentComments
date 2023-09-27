@@ -8,18 +8,13 @@ using IntelligentComments.Rider.Comments.Domain;
 using JetBrains.Annotations;
 using JetBrains.Application.Threading;
 using JetBrains.Collections.Viewable;
-using JetBrains.DataFlow;
 using JetBrains.ProjectModel;
 using JetBrains.Rd.Tasks;
-using JetBrains.RdBackend.Common.Features;
-using JetBrains.RdBackend.Common.Features.ProjectModel;
 using JetBrains.ReSharper.Feature.Services.Project;
 using JetBrains.ReSharper.Feature.Services.Protocol;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Files;
 using JetBrains.ReSharper.Resources.Shell;
-using JetBrains.Rider.Backend.Features.Preview.WPF;
-using JetBrains.Rider.Backend.Features.ProjectModel;
 using JetBrains.Rider.Model;
 using JetBrains.Util;
 

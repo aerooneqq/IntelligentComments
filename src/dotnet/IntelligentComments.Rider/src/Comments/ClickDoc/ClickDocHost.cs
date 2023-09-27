@@ -11,7 +11,6 @@ using JetBrains.ProjectModel;
 using JetBrains.ProjectModel.DataContext;
 using JetBrains.Rd.Base;
 using JetBrains.Rd.Tasks;
-using JetBrains.RdBackend.Common.Features;
 using JetBrains.RdBackend.Common.Features.TextControls;
 using JetBrains.ReSharper.Feature.Services.Protocol;
 using JetBrains.ReSharper.Psi;

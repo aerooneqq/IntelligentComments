@@ -10,7 +10,6 @@ using JetBrains.Core;
 using JetBrains.Lifetimes;
 using JetBrains.ProjectModel;
 using JetBrains.Rd.Tasks;
-using JetBrains.RdBackend.Common.Features;
 using JetBrains.RdBackend.Common.Features.Documents;
 using JetBrains.RdBackend.Common.Features.Services;
 using JetBrains.ReSharper.Feature.Services.Navigation;

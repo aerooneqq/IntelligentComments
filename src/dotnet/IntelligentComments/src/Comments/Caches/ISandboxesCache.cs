@@ -1,7 +1,6 @@
 using JetBrains.Annotations;
 using JetBrains.DocumentModel;
 using JetBrains.ReSharper.Psi;
-using JetBrains.ReSharper.Psi.Files.SandboxFiles;
 
 namespace IntelligentComments.Comments.Caches;
 

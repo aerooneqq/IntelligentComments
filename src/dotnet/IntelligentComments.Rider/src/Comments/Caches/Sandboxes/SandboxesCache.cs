@@ -11,7 +11,6 @@ using JetBrains.RdBackend.Common.Features.Documents;
 using JetBrains.RdBackend.Common.Features.Languages;
 using JetBrains.ReSharper.Feature.Services.Refactorings;
 using JetBrains.ReSharper.Psi;
-using JetBrains.ReSharper.Psi.Files.SandboxFiles;
 using JetBrains.Rider.Model;
 using JetBrains.TextControl;
 using JetBrains.Util;

@@ -2,7 +2,6 @@ using IntelligentComments.Comments.Calculations;
 using IntelligentComments.Comments.Calculations.CodeHighlighting;
 using IntelligentComments.Comments.Domain.Impl;
 using JetBrains.Annotations;
-using JetBrains.ReSharper.Daemon.CSharp.Syntax;
 using JetBrains.ReSharper.Daemon.SyntaxHighlighting;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp;

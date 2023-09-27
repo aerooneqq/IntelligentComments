@@ -7,7 +7,6 @@ using IntelligentComments.Rider.Comments.Domain;
 using JetBrains.Annotations;
 using JetBrains.ProjectModel;
 using JetBrains.Rd.Tasks;
-using JetBrains.RdBackend.Common.Features;
 using JetBrains.RdBackend.Common.Features.Documents;
 using JetBrains.ReSharper.Feature.Services.Protocol;
 using JetBrains.ReSharper.Psi;
