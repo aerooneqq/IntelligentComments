@@ -17,7 +17,7 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.impl.FoldingModelImpl
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
-import com.intellij.psi.impl.source.tree.injected.changesHandler.range
+import com.intellij.refactoring.suggested.range
 import com.intellij.util.application
 import com.jetbrains.rd.platform.util.getLogger
 import com.jetbrains.rd.platform.util.lifetime
@@ -304,7 +304,7 @@ class RiderCommentsController(project: Project) : LifetimedProjectComponent(proj
   private fun cacheCaretOffset(comment: CommentBase, state: CommentState, editor: Editor) {
     val caretOffset = editor.caretModel.offset
     val rangeMarker = comment.identifier.rangeMarker
-    state.lastRelativeCaretOffsetWithinComment = if (rangeMarker.range.contains(caretOffset)) {
+    state.lastRelativeCaretOffsetWithinComment = if (rangeMarker.range?.contains(caretOffset) == true) {
       caretOffset - rangeMarker.startOffset
     } else {
       0

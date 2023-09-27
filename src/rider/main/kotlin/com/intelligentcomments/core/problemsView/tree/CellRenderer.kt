@@ -1,15 +1,18 @@
 package com.intelligentcomments.core.problemsView.tree
 
 import com.intellij.icons.AllIcons
+import com.intellij.openapi.components.service
+import com.intellij.openapi.extensions.AreaInstance
 import com.intellij.openapi.project.Project
 import com.intellij.ui.ColoredTreeCellRenderer
-import com.jetbrains.rider.icons.IconHost
+import com.jetbrains.rd.ui.icons.ProtocolIconConverter
+import com.jetbrains.rd.ui.icons.ProtocolIconRegistry
+import com.jetbrains.rider.icons.RiderCompositeIconConverter
 import icons.ReSharperIcons
 import javax.swing.JTree
 
 class CellRenderer(private val project: Project) : ColoredTreeCellRenderer() {
-  private val iconHost = IconHost.getInstance(project)
-
+  private val iconsRegistry = project.service<ProtocolIconRegistry>();
 
   override fun customizeCellRenderer(
     tree: JTree,
@@ -28,7 +31,18 @@ class CellRenderer(private val project: Project) : ColoredTreeCellRenderer() {
 
       is FileTreeModel -> {
         val rdIcon = value.icon
-        icon = if (rdIcon != null) iconHost.toIdeaIcon(value.icon) else AllIcons.FileTypes.Any_type
+        if (rdIcon != null) {
+          for (converter in ProtocolIconConverter.EP_NAME.getExtensions(null)) {
+            val createdIcon = converter.createIcon(value.icon, iconsRegistry);
+            if (createdIcon != null) {
+              icon = createdIcon
+              break;
+            }
+          }
+        } else {
+          icon = AllIcons.FileTypes.Any_type
+        }
+
         append(value.fileName)
       }
 

@@ -7,15 +7,19 @@ using IntelligentComments.Rider.Comments.Caches.Sandboxes;
 using IntelligentComments.Rider.Comments.Domain;
 using JetBrains.Annotations;
 using JetBrains.Application.Threading;
+using JetBrains.Collections.Viewable;
 using JetBrains.DataFlow;
 using JetBrains.ProjectModel;
 using JetBrains.Rd.Tasks;
 using JetBrains.RdBackend.Common.Features;
 using JetBrains.RdBackend.Common.Features.ProjectModel;
+using JetBrains.ReSharper.Feature.Services.Project;
 using JetBrains.ReSharper.Feature.Services.Protocol;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Files;
 using JetBrains.ReSharper.Resources.Shell;
+using JetBrains.Rider.Backend.Features.Preview.WPF;
+using JetBrains.Rider.Backend.Features.ProjectModel;
 using JetBrains.Rider.Model;
 using JetBrains.Util;
 
@@ -42,7 +46,7 @@ public class CodeFragmentHighlightingManager : ICodeFragmentHighlightingManager
     [NotNull] SandboxesCache sandboxesCache,
     [NotNull] IShellLocks shellLocks,
     [NotNull] IPsiServices psiServices,
-    [NotNull] RiderSolutionLoadStateMonitor solutionLoadStateMonitor)
+    [NotNull] FeaturesStartupMonitor solutionLoadStateMonitor)
   {
     myLogger = logger;
     mySandboxesCache = sandboxesCache;
@@ -54,7 +58,7 @@ public class CodeFragmentHighlightingManager : ICodeFragmentHighlightingManager
     rdCommentsModel.HighlightCode.SetAsync((lt, request) =>
     {
       var task = new RdTask<RdHighlightedText>();
-      solutionLoadStateMonitor.SolutionLoadedAndProjectModelCachesReady.WhenTrueOnce(lt, () =>
+      solutionLoadStateMonitor.FullStartupFinished.WhenTrue(lt, _ =>
       {
         myShellLocks.QueueReadLock(lt, $"{nameof(CodeFragmentHighlightingManager)}::ServingRequest", () =>
         {

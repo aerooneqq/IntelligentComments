@@ -82,11 +82,12 @@ public class SandboxesCache : AbstractOpenedDocumentBasedCache<string, SandboxFi
       return null;
     }
 
-    var model = new RiderTextBufferDocumentModel(sandBoxInfo, new List<DocumentExtension>(), CreationSide.Backend);
+    var model = new RiderTextBufferDocumentModel(new List<DocumentExtension>(), CreationSide.Backend);
     model.BindToLocalProtocol(highlightingLifetime);
     myHelper.InitSandboxDocument(
       documentId,
       model,
+      sandBoxInfo,
       highlightingLifetime, 
       riderDocument,
       sandboxFile);

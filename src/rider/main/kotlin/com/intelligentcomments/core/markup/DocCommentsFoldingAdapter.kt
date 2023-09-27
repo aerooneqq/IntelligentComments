@@ -16,7 +16,7 @@ import com.intellij.openapi.editor.impl.RangeMarkerImpl
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.TextRange
-import com.intellij.psi.impl.source.tree.injected.changesHandler.range
+import com.intellij.refactoring.suggested.range
 import com.intellij.util.application
 import com.jetbrains.rd.ide.model.RdCommentFoldingModel
 import com.jetbrains.rd.util.lifetime.Lifetime
@@ -97,7 +97,7 @@ class DocCommentsFoldingAdapter(private val editor: EditorImpl) : FrontendMarkup
 
             val comments = mutableListOf<CommentBase>()
             for ((highlighter, model) in highlightersWithComments) {
-              val marker = getRangeMarkerFor(highlighter.range, highlighter.document)
+              val marker = getRangeMarkerFor(highlighter.range!!, highlighter.document)
               marker as RangeMarkerImpl
               marker.isStickingToRight = true
 

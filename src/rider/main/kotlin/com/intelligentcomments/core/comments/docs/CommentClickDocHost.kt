@@ -20,8 +20,8 @@ import com.jetbrains.rd.ide.model.*
 import com.jetbrains.rd.platform.util.getLogger
 import com.jetbrains.rd.platform.util.idea.LifetimedService
 import com.jetbrains.rdclient.document.textControlId
-import com.jetbrains.rdclient.quickDoc.FrontendQuickDocHost
-import com.jetbrains.rdclient.quickDoc.QuickDocElementWithInfo
+import com.jetbrains.rider.quickDoc.FrontendQuickDocHost
+import com.jetbrains.rider.quickDoc.QuickDocElementWithInfo
 import com.jetbrains.rider.projectView.solution
 import java.awt.Point
 
