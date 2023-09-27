@@ -7,7 +7,6 @@ import com.intelligentcomments.ui.comments.model.content.ContentSegmentsUiModel
 import com.intelligentcomments.ui.comments.model.content.getFirstLevelHeader
 import com.intelligentcomments.ui.comments.model.highlighters.HighlightedTextUiWrapper
 import com.intelligentcomments.ui.comments.renderers.segments.LeftTextHeaderAndRightContentRenderer
-import com.intelligentcomments.ui.core.Renderer
 import com.intelligentcomments.ui.util.HashUtil
 import com.intellij.openapi.project.Project
 

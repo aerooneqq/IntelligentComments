@@ -7,7 +7,6 @@ import com.intelligentcomments.core.domain.impl.emptyCommentPlaceholder
 import com.intelligentcomments.core.settings.CommentsDisplayKind
 import com.intelligentcomments.core.settings.RiderIntelligentCommentsSettingsProvider
 import com.intelligentcomments.ui.comments.model.content.text.TextContentSegmentUiModel
-import com.intelligentcomments.ui.comments.model.highlighters.HighlighterUiModel
 import com.intelligentcomments.ui.comments.model.sections.SectionUiModel
 import com.intelligentcomments.ui.comments.renderers.CollapsedCommentRenderer
 import com.intelligentcomments.ui.comments.renderers.RendererWithRectangleModel

@@ -4,7 +4,6 @@ import com.intelligentcomments.core.domain.core.TableContentSegment
 import com.intelligentcomments.ui.comments.model.UiInteractionModelBase
 import com.intelligentcomments.ui.comments.model.content.ContentSegmentUiModel
 import com.intelligentcomments.ui.comments.renderers.segments.TableSegmentRenderer
-import com.intelligentcomments.ui.core.Renderer
 import com.intelligentcomments.ui.util.HashUtil
 import com.intellij.openapi.project.Project
 

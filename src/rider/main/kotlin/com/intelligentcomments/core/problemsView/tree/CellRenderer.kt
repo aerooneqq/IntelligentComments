@@ -2,12 +2,10 @@ package com.intelligentcomments.core.problemsView.tree
 
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.components.service
-import com.intellij.openapi.extensions.AreaInstance
 import com.intellij.openapi.project.Project
 import com.intellij.ui.ColoredTreeCellRenderer
 import com.jetbrains.rd.ui.icons.ProtocolIconConverter
 import com.jetbrains.rd.ui.icons.ProtocolIconRegistry
-import com.jetbrains.rider.icons.RiderCompositeIconConverter
 import icons.ReSharperIcons
 import javax.swing.JTree
 

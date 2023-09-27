@@ -4,9 +4,7 @@ import com.intelligentcomments.core.domain.core.HighlightedText
 import com.intelligentcomments.core.domain.core.Parentable
 import com.intelligentcomments.core.domain.core.TextHighlighter
 import com.intelligentcomments.core.domain.core.TextHighlighterImpl
-import com.intelligentcomments.ui.util.TextUtil
 import com.jetbrains.rd.platform.util.getLogger
-import com.jetbrains.rd.util.error
 
 class HighlightedTextImpl : HighlightedText {
   companion object {

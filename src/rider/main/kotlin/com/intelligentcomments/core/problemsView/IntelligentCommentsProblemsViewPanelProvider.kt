@@ -10,9 +10,6 @@ import com.jetbrains.rd.platform.util.lifetime
 import com.jetbrains.rd.util.lifetime.SequentialLifetimes
 import com.jetbrains.rider.model.solutionAnalysisModel
 import com.jetbrains.rider.projectView.solution
-import java.awt.event.MouseEvent
-import javax.swing.JTree
-import javax.swing.tree.TreePath
 
 
 class IntelligentCommentsExtensionsRegistrar(project: Project) {
