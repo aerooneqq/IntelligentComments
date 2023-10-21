@@ -12,19 +12,23 @@ import com.jetbrains.rdclient.daemon.highlighters.MarkupListenerManager
 class DocCommentsFoldingHighlightersSupport(private val project: Project) : IProtocolHighlighterModelSupport {
   override fun createHandler(
     lifetime: Lifetime,
-    markupModel: RdMarkupModel,
-    document: Document
-  ): IProtocolHighlighterModelHandler {
-    val manager = MarkupListenerManager.getInstance(project)
-    manager.attachAggregator(lifetime, DocCommentsFoldingAggregator(project, document))
-    return DocCommentsFoldingHandler()
-  }
-
-  override fun createHandler(
-    lifetime: Lifetime,
+    project: Project?,
     markupModel: RdMarkupModel,
     editor: Editor
   ): IProtocolHighlighterModelHandler? {
     return null
+  }
+
+  override fun createHandler(
+    lifetime: Lifetime,
+    project: Project?,
+    markupModel: RdMarkupModel,
+    document: Document
+  ): IProtocolHighlighterModelHandler? {
+    if (project == null) return null
+
+    val manager = MarkupListenerManager.getInstance()
+    manager.attachAggregator(lifetime, DocCommentsFoldingAggregator(project, document))
+    return DocCommentsFoldingHandler()
   }
 }
