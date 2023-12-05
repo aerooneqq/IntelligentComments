@@ -2,17 +2,16 @@ using System.Text;
 using IntelligentComments.Comments.Completion;
 using JetBrains.Annotations;
 using JetBrains.Application.CommandProcessing;
-using JetBrains.Application.Settings;
+using JetBrains.Application.Components;
 using JetBrains.DocumentModel;
+using JetBrains.DocumentModel.Transactions;
 using JetBrains.Lifetimes;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Feature.Services.CodeCompletion;
 using JetBrains.ReSharper.Feature.Services.CSharp.TypingAssist;
-using JetBrains.ReSharper.Feature.Services.StructuralRemove;
 using JetBrains.ReSharper.Feature.Services.TypingAssist;
 using JetBrains.ReSharper.Features.ReSpeller.Analyzers;
 using JetBrains.ReSharper.Psi;
-using JetBrains.ReSharper.Psi.CachingLexers;
 using JetBrains.ReSharper.Psi.CSharp.Parsing;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
 using JetBrains.ReSharper.Psi.Parsing;
@@ -36,21 +35,13 @@ public class DocCommentTypingAssist : CSharpTypingAssistBase, ITypingHandler
 
   public DocCommentTypingAssist(
     Lifetime lifetime, 
-    [NotNull] ISolution solution, 
-    [NotNull] ICommandProcessor commandProcessor, 
-    [NotNull] SkippingTypingAssist skippingTypingAssist, 
-    [NotNull] CachingLexerService cachingLexerService, 
-    [NotNull] ISettingsStore settingsStore, 
-    [NotNull] ITypingAssistManager typingAssistManager, 
-    [NotNull] IPsiServices psiServices, 
-    [NotNull] IExternalIntellisenseHost externalIntellisenseHost, 
-    [NotNull] LastTypingAction lastTypingAction, 
-    [NotNull] StructuralRemoveManager structuralRemoveManager) 
-    : base(lifetime, solution, commandProcessor, skippingTypingAssist, cachingLexerService, settingsStore, 
-      typingAssistManager, psiServices, externalIntellisenseHost, lastTypingAction, structuralRemoveManager)
+    TypingAssistDependencies dependencies,
+    DocumentTransactionManager transactionManager,
+    [NotNull] IOptional<ICodeCompletionSessionManager> sessionManager) 
+    : base(lifetime, dependencies, transactionManager, sessionManager)
   {
-    typingAssistManager.AddTypingHandler(lifetime, '"', this, HandleQuoteInDocComment);
-    typingAssistManager.AddActionHandler(lifetime, "TextControl.Enter", this, HandleEnterInDocComment);
+    dependencies.TypingAssistManager.AddTypingHandler(lifetime, '"', this, HandleQuoteInDocComment);
+    dependencies.TypingAssistManager.AddActionHandler(lifetime, "TextControl.Enter", this, HandleEnterInDocComment);
   }
 
   
