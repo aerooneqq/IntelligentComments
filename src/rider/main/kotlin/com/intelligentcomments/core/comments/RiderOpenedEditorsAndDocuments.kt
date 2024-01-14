@@ -43,7 +43,7 @@ class RiderOpenedEditorsAndDocuments {
     private fun tryGetEditorId(editor: Editor): TextControlId? {
         val editorId = editor.getUserData(FrontendTextControlHost.textControlIdKey)
         if (editorId == null) {
-            logger.error("Failed to get textControlId for $editor")
+            logger.warn("Failed to get textControlId for $editor")
         }
 
         return editorId
