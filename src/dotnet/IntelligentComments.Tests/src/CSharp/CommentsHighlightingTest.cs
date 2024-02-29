@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using System;
 using IntelligentComments.Comments.Calculations.Core;
 using IntelligentComments.Comments.Daemon;
 using JetBrains.Application.Settings;
@@ -14,14 +14,8 @@ namespace IntelligentComments.Tests.CSharp;
 public class CommentsHighlightingTest : CSharpHighlightingTestBase
 {
   protected override string RelativeTestDataPath => @"CSharp\Highlightings";
-  
-  protected override IReadOnlyCollection<IDaemonStage> GetActiveStages(ISolution solution)
-  {
-    return new IDaemonStage[]
-    {
-      new CommentsCollectionStage()
-    };
-  }
+
+  protected override Func<IDaemonStage, bool> GetActiveStagesFilter(ISolution solution) => stage => stage is CommentsCollectionStage;
 
   protected override bool HighlightingPredicate(
     IHighlighting highlighting, IPsiSourceFile sourceFile, IContextBoundSettingsStore settingsStore)
