@@ -187,7 +187,7 @@ tasks {
         version.set(pluginVersion)
         pluginId.set(intellijPluginId)
         pluginDescription.set(getPluginDescription())
-        sinceBuild.set("233.11799.261")
+        sinceBuild.set("241.14494.307")
     }
 
     runIde {
