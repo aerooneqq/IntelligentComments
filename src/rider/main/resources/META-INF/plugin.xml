@@ -28,6 +28,7 @@
     <projectService serviceImplementation="com.intelligentcomments.core.comments.popups.IntelligentCommentPopupManager" />
     <projectService serviceImplementation="com.intelligentcomments.core.comments.resolver.FrontendReferenceResolverHost" />
 
+    <documentationProvider implementation="com.jetbrains.rider.quickDoc.RiderDocumentationProvider"/>
     <rdclient.highlighterModelSupport implementation="com.intelligentcomments.core.markup.DocCommentsFoldingHighlightersSupport" />
     <editorFactoryListener implementation="com.intelligentcomments.core.comments.listeners.RiderEditorsListener" />
   </extensions>
