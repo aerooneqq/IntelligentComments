@@ -6,7 +6,7 @@ import com.intellij.openapi.editor.Document
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
 import com.jetbrains.rd.ide.model.*
-import com.jetbrains.rdclient.document.getFirstDocumentId
+import com.jetbrains.rdclient.document.getDocumentId
 import com.jetbrains.rdclient.util.idea.toIdeaRange
 import com.jetbrains.rdclient.util.idea.toRdTextRange
 import java.io.File
@@ -64,7 +64,7 @@ fun Reference.toRdReference(project: Project): RdReference {
     is XmlDocCodeEntityReference -> RdXmlDocCodeEntityReference(rawValue)
     is SandboxCodeEntityReference -> RdSandboxCodeEntityReference(
       sandboxFileId,
-      originalDocument?.getFirstDocumentId(project),
+      originalDocument?.getDocumentId(project),
       range.toRdTextRange(),
       rawValue
     )

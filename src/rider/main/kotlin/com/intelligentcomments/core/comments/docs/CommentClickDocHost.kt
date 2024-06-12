@@ -81,7 +81,7 @@ class CommentClickDocHost(private val project: Project) : LifetimedService() {
       })
 
       this.reference = reference
-      documentationManager.showJavaDocInfo(editor, contextElement, null, true) {
+      documentationManager.showJavaDocInfo(contextElement, null, true) {
         val sessions = quickDocModel.quickDocSessions
         if (sessions.containsKey(sessionId)) {
           sessions.remove(sessionId)

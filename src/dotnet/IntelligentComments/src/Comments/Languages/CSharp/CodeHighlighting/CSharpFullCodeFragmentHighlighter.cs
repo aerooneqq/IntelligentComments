@@ -37,7 +37,7 @@ public class CSharpFullCodeFragmentHighlighter : CodeHighlighterBase, IFullCodeH
     : base(highlightersProvider, new CSharpFullSyntaxHighlightingProcessor())
   {
     myLogger = Logger.GetLogger<CSharpFullCodeFragmentHighlighter>();
-    myCSharpIdentifierHighlighter = new CSharpIdentifierHighlighter(attributeIdProvider);
+    myCSharpIdentifierHighlighter = new CSharpIdentifierHighlighter(attributeIdProvider, false);
   }
 
 
@@ -133,5 +133,7 @@ public class CSharpFullCodeFragmentHighlighter : CodeHighlighterBase, IFullCodeH
     {
       myHighlightingInfos.Add(highlightingInfo);
     }
+
+    public IReadOnlyList<HighlightingInfo> CollectHighlightings() => myHighlightingInfos;
   }
 }
