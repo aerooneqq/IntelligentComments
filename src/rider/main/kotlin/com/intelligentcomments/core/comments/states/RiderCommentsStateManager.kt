@@ -17,6 +17,7 @@ import com.intellij.openapi.editor.RangeMarker
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFileManager
 import com.intellij.psi.PsiDocumentManager
+import com.intellij.psi.search.ProjectScope
 import com.intellij.util.application
 import com.intellij.util.xmlb.annotations.Attribute
 import com.intellij.util.xmlb.annotations.Tag
@@ -26,7 +27,6 @@ import com.jetbrains.rd.util.getOrCreate
 import com.jetbrains.rdclient.document.textControlId
 import com.jetbrains.rdclient.editors.getPsiFile
 import com.jetbrains.rdclient.util.idea.LifetimedProjectComponent
-import com.jetbrains.rider.ideaInterop.find.scopes.RiderSolutionScope
 import kotlin.io.path.Path
 
 @State(
@@ -274,17 +274,16 @@ fun canChangeFromCodeToRender(editor: Editor): Boolean {
 
 fun isDecompiledEditor(editor: Editor): Boolean {
   val project = editor.project ?: return false
-  val scope = RiderSolutionScope(project, true)
   val document = editor.document
   val psiFile = PsiDocumentManager.getInstance(project).getPsiFile(document) ?: return false
   val virtualFile = psiFile.virtualFile
 
-  return !scope.contains(virtualFile)
+  return !ProjectScope.getProjectScope(project).contains(virtualFile)
 }
 
 fun isDecompiledEditor(project: Project, editorId: EditorId): Boolean {
   val file = VirtualFileManager.getInstance().findFileByNioPath(Path(editorId.moniker)) ?: return false
-  return !RiderSolutionScope(project, true).contains(file)
+  return !ProjectScope.getProjectScope(project).contains(file)
 }
 
 fun Editor.getEditorId(): EditorId? {
