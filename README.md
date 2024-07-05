@@ -1,5 +1,7 @@
 # IntelligentComments for Rider
 
+Turn off Rider reader mode in order for this plugin to work properly (Settings -> Editor -> Reader Mode -> Enable Reader mode)
+
 Intelligent Comments can be [downloaded](https://plugins.jetbrains.com/plugin/19135-intelligent-comments) from the JetBrains Marketplace. 
 
 The plugin provides functionality to render comments:
