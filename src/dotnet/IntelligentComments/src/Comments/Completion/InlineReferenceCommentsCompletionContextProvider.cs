@@ -2,13 +2,14 @@ using IntelligentComments.Comments.Caches.Names;
 using IntelligentComments.Comments.Calculations.Core.InlineReferenceComments;
 using IntelligentComments.Comments.Settings;
 using JetBrains.Annotations;
+using JetBrains.Application.Parts;
 using JetBrains.Diagnostics;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Feature.Services.CodeCompletion.Infrastructure;
 
 namespace IntelligentComments.Comments.Completion;
 
-[IntellisensePart]
+[IntellisensePart(Instantiation.DemandAnyThreadSafe)]
 public class InlineReferenceCommentsCompletionContextProvider : ICodeCompletionContextProvider
 {
   public bool IsApplicable(CodeCompletionContext context)

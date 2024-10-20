@@ -1,10 +1,11 @@
 using IntelligentComments.Comments.Domain.Core.References;
 using IntelligentComments.Comments.Domain.Impl.References;
+using JetBrains.Application.Parts;
 using JetBrains.ProjectModel;
 
 namespace IntelligentComments.Comments.Calculations.Core.DocComments.Tickets;
 
-[SolutionComponent]
+[SolutionComponent(Instantiation.DemandAnyThreadSafe)]
 public class YoutrackTicketSourceParser : ITicketSourceParser
 {
   //e.g: https://youtrack.jetbrains.com/issue/RIDER-68551

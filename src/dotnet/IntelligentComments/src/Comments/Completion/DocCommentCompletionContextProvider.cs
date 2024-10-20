@@ -1,4 +1,5 @@
 using JetBrains.Annotations;
+using JetBrains.Application.Parts;
 using JetBrains.Diagnostics;
 using JetBrains.ReSharper.Feature.Services.CodeCompletion.Infrastructure;
 using JetBrains.ReSharper.Psi.Tree;
@@ -6,7 +7,7 @@ using JetBrains.Util;
 
 namespace IntelligentComments.Comments.Completion;
 
-[IntellisensePart]
+[IntellisensePart(Instantiation.DemandAnyThreadSafe)]
 public class DocCommentCompletionContextProvider : ICodeCompletionContextProvider
 {
   [NotNull] private static readonly Key<IDocCommentBlock> ourDocCommentKey = new(nameof(ourDocCommentKey)); 

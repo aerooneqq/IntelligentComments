@@ -3,6 +3,7 @@ using IntelligentComments.Comments.Daemon;
 using IntelligentComments.Rider.Comments.Domain;
 using IntelligentComments.Rider.Protocol;
 using JetBrains.Annotations;
+using JetBrains.Application.Parts;
 using JetBrains.Diagnostics;
 using JetBrains.ProjectModel;
 using JetBrains.RdBackend.Common.Features.Daemon;
@@ -13,7 +14,7 @@ using JetBrains.Util;
 
 namespace IntelligentComments.Rider.Comments.Highlighters;
 
-[SolutionComponent]
+[SolutionComponent(Instantiation.DemandAnyThreadSafe)]
 public class DocCommentsFoldingHighlightersCreator : IRiderHighlighterModelCreator
 {
   private readonly ILogger myLogger;

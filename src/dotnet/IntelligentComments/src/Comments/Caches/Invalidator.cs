@@ -7,6 +7,7 @@ using IntelligentComments.Comments.Calculations.Core.DocComments.Utils;
 using IntelligentComments.Comments.Daemon;
 using IntelligentComments.Comments.Settings;
 using JetBrains.Annotations;
+using JetBrains.Application.Parts;
 using JetBrains.Collections;
 using JetBrains.Lifetimes;
 using JetBrains.ProjectModel;
@@ -27,7 +28,7 @@ namespace IntelligentComments.Comments.Caches;
 /// to invalidate other files, where changed names were used and force rehighlight of opened files where changed name
 /// contains. Moreover when user changes "Use experimental features setting" we need to perform invalidation.
 /// </summary>
-[SolutionComponent]
+[SolutionComponent(Instantiation.DemandAnyThreadSafe)]
 public class Invalidator
 {
   [NotNull] private readonly SourcesTrigramIndex myTrigramIndex;

@@ -1,11 +1,12 @@
 using JetBrains.Annotations;
+using JetBrains.Application.Parts;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Feature.Services.Protocol;
 using JetBrains.Rider.Model;
 
 namespace IntelligentComments.Rider.Protocol;
 
-[SolutionComponent]
+[SolutionComponent(Instantiation.DemandAnyThreadSafe)]
 public class ProtocolModelRegistrar
 {
   public ProtocolModelRegistrar([NotNull] ISolution solution)

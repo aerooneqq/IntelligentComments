@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using IntelligentComments.Comments.Domain.Core.References;
 using JetBrains.Annotations;
+using JetBrains.Application.Parts;
 using JetBrains.Application.Threading;
 using JetBrains.DocumentModel;
 using JetBrains.Lifetimes;
@@ -12,7 +13,7 @@ namespace IntelligentComments.Comments.Caches;
 
 public record ReferenceInfo([NotNull] IDomainReference DomainReference);
 
-[SolutionComponent]
+[SolutionComponent(Instantiation.DemandAnyThreadSafe)]
 public class ReferencesCache : AbstractOpenedDocumentBasedCache<int, ReferenceInfo>
 {
   public ReferencesCache(

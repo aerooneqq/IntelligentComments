@@ -4,6 +4,7 @@ using IntelligentComments.Comments.Domain.Impl.References;
 using IntelligentComments.Rider.Comments.RdReferences;
 using JetBrains.Annotations;
 using JetBrains.Application.DataContext;
+using JetBrains.Application.Parts;
 using JetBrains.Application.Threading;
 using JetBrains.DocumentModel.DataContext;
 using JetBrains.Lifetimes;
@@ -22,7 +23,7 @@ using JetBrains.Util;
 
 namespace IntelligentComments.Rider.Comments.ClickDoc;
 
-[SolutionComponent]
+[SolutionComponent(Instantiation.DemandAnyThreadSafe)]
 public class ClickDocHost
 {
   private readonly Lifetime myLifetime;

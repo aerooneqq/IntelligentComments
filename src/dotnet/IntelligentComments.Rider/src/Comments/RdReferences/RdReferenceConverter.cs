@@ -3,6 +3,7 @@ using IntelligentComments.Comments.Calculations.Core.DocComments.Utils;
 using IntelligentComments.Comments.Domain.Core.References;
 using IntelligentComments.Comments.Domain.Impl.References;
 using JetBrains.Annotations;
+using JetBrains.Application.Parts;
 using JetBrains.ProjectModel;
 using JetBrains.RdBackend.Common.Features.Documents;
 using JetBrains.RdBackend.Common.Features.TextControls;
@@ -12,7 +13,7 @@ using JetBrains.Rider.Model;
 
 namespace IntelligentComments.Rider.Comments.RdReferences;
 
-[SolutionComponent]
+[SolutionComponent(Instantiation.DemandAnyThreadSafe)]
 public class RdReferenceConverter
 {
   [NotNull] private readonly ISolution mySolution;

@@ -2,6 +2,7 @@ using IntelligentComments.Comments.Caches.Names;
 using IntelligentComments.Comments.Calculations.Core.InlineReferenceComments;
 using IntelligentComments.Comments.Languages.CSharp.Completion;
 using JetBrains.Annotations;
+using JetBrains.Application.Parts;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Feature.Services.CodeCompletion;
 using JetBrains.ReSharper.Psi;
@@ -10,7 +11,7 @@ using JetBrains.TextControl;
 
 namespace IntelligentComments.Comments.Completion;
 
-[SolutionComponent]
+[SolutionComponent(Instantiation.DemandAnyThreadSafe)]
 public class InlineReferencesAutoPopupStrategy : CSharpAutoPopupStrategyBase
 {
   [NotNull] private readonly InlineReferenceCommentOperations myOperations;

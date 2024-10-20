@@ -1,3 +1,4 @@
+using JetBrains.Application.Parts;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Feature.Services.Occurrences;
 using JetBrains.ReSharper.Feature.Services.Occurrences.OccurrenceInformation;
@@ -7,7 +8,7 @@ using JetBrains.Util;
 
 namespace IntelligentComments.Comments.PSI.Features.Navigation;
 
-[SolutionFeaturePart]
+[SolutionFeaturePart(Instantiation.DemandAnyThreadSafe)]
 public class NamedEntityOccurenceInfoProvider : IOccurrenceInformationProvider
 {
   public ProjectModelElementEnvoy GetProjectModelElementEnvoy(IOccurrence occurrence) => null;

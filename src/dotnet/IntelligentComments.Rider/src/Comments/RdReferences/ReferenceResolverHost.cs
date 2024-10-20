@@ -5,6 +5,7 @@ using IntelligentComments.Comments.Domain.Impl;
 using IntelligentComments.Comments.Domain.Impl.References;
 using IntelligentComments.Rider.Comments.Domain;
 using JetBrains.Annotations;
+using JetBrains.Application.Parts;
 using JetBrains.ProjectModel;
 using JetBrains.Rd.Tasks;
 using JetBrains.RdBackend.Common.Features.Documents;
@@ -16,7 +17,7 @@ using JetBrains.Util;
 
 namespace IntelligentComments.Rider.Comments.RdReferences;
 
-[SolutionComponent]
+[SolutionComponent(Instantiation.DemandAnyThreadSafe)]
 public class ReferenceResolverHost
 {
   public ReferenceResolverHost(

@@ -1,3 +1,4 @@
+using JetBrains.Application.Parts;
 using JetBrains.ProjectModel;
 using JetBrains.RdBackend.Common.Features.Daemon;
 using JetBrains.ReSharper.Daemon.CodeFolding;
@@ -5,7 +6,7 @@ using JetBrains.TextControl.DocumentMarkup;
 
 namespace IntelligentComments.Rider.Comments.Highlighters;
 
-[SolutionComponent]
+[SolutionComponent(Instantiation.DemandAnyThreadSafe)]
 public class RiderDocFoldingHighlightersSuppressor : IRiderHighlighterSuppressor
 {
   public bool IsSuppressed(IHighlighter highlighter)

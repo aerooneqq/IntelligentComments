@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using IntelligentComments.Comments.Caches;
 using IntelligentComments.Comments.Calculations.CodeHighlighting;
 using JetBrains.Annotations;
+using JetBrains.Application.Parts;
 using JetBrains.Application.Threading;
 using JetBrains.DocumentManagers;
 using JetBrains.DocumentModel;
@@ -25,7 +26,7 @@ public record SandboxFileInfo(
 
 public record SandboxCodeFragmentInfo([NotNull] IPsiSourceFile SourceFile, int StartOffset, int EndOffset);
 
-[SolutionComponent]
+[SolutionComponent(Instantiation.DemandAnyThreadSafe)]
 public class SandboxesCache : AbstractOpenedDocumentBasedCache<string, SandboxFileInfo>, ISandboxesCache
 {
   private readonly Lifetime myLifetime;

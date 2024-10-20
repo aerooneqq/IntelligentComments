@@ -1,11 +1,12 @@
 using IntelligentComments.Comments.Domain.Core.References;
 using IntelligentComments.Comments.Domain.Impl.References;
 using JetBrains.Annotations;
+using JetBrains.Application.Parts;
 using JetBrains.ProjectModel;
 
 namespace IntelligentComments.Comments.Calculations.Core.DocComments.Tickets;
 
-[SolutionComponent]
+[SolutionComponent(Instantiation.DemandAnyThreadSafe)]
 public class GithubTicketSourceParser : ITicketSourceParser
 {
   //e.g. https://github.com/dotnet/core/issues/7341

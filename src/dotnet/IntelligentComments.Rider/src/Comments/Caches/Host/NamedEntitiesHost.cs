@@ -7,6 +7,7 @@ using IntelligentComments.Comments.Calculations.Core.DocComments.Utils;
 using IntelligentComments.Comments.Settings;
 using IntelligentComments.Rider.Comments.Domain;
 using JetBrains.Annotations;
+using JetBrains.Application.Parts;
 using JetBrains.Application.Threading;
 using JetBrains.Collections;
 using JetBrains.Collections.Viewable;
@@ -21,7 +22,7 @@ using JetBrains.Util;
 
 namespace IntelligentComments.Rider.Comments.Caches.Host;
 
-[SolutionComponent]
+[SolutionComponent(Instantiation.DemandAnyThreadSafe)]
 public class NamedEntitiesHost
 {
   private readonly Lifetime myLifetime;

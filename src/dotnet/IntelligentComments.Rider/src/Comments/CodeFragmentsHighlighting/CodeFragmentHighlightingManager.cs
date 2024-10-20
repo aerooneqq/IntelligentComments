@@ -6,6 +6,7 @@ using IntelligentComments.Comments.Domain.Impl;
 using IntelligentComments.Rider.Comments.Caches.Sandboxes;
 using IntelligentComments.Rider.Comments.Domain;
 using JetBrains.Annotations;
+using JetBrains.Application.Parts;
 using JetBrains.Application.Threading;
 using JetBrains.Collections.Viewable;
 using JetBrains.ProjectModel;
@@ -20,7 +21,7 @@ using JetBrains.Util;
 
 namespace IntelligentComments.Rider.Comments.CodeFragmentsHighlighting;
 
-[SolutionComponent]
+[SolutionComponent(Instantiation.DemandAnyThreadSafe)]
 public class CodeFragmentHighlightingManager : ICodeFragmentHighlightingManager
 {
   [NotNull] private readonly object mySyncObject = new();

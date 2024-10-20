@@ -3,6 +3,7 @@ using IntelligentComments.Comments.Completion;
 using JetBrains.Annotations;
 using JetBrains.Application.CommandProcessing;
 using JetBrains.Application.Components;
+using JetBrains.Application.Parts;
 using JetBrains.DocumentModel;
 using JetBrains.DocumentModel.Transactions;
 using JetBrains.Lifetimes;
@@ -23,7 +24,7 @@ using JetBrains.Util;
 namespace IntelligentComments.Comments.TypingAssists;
 
 
-[SolutionComponent]
+[SolutionComponent(Instantiation.DemandAnyThreadSafe)]
 public class DocCommentTypingAssist : CSharpTypingAssistBase, ITypingHandler
 {
   private record Context(

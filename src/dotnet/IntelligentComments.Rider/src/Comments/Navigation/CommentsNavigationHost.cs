@@ -4,6 +4,7 @@ using IntelligentComments.Comments.Domain.Core.References;
 using IntelligentComments.Comments.Domain.Impl.References;
 using IntelligentComments.Rider.Comments.RdReferences;
 using JetBrains.Annotations;
+using JetBrains.Application.Parts;
 using JetBrains.Application.StdApplicationUI;
 using JetBrains.Application.Threading;
 using JetBrains.Core;
@@ -23,7 +24,7 @@ using JetBrains.Util.Maths;
 
 namespace IntelligentComments.Rider.Comments.Navigation;
 
-[SolutionComponent]
+[SolutionComponent(Instantiation.DemandAnyThreadSafe)]
 public class CommentsNavigationHost
 {
   private readonly Lifetime myLifetime;

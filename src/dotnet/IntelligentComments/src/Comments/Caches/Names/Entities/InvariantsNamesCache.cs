@@ -1,6 +1,7 @@
 using IntelligentComments.Comments.Calculations.Core.DocComments.Utils;
 using IntelligentComments.Comments.Settings;
 using JetBrains.Annotations;
+using JetBrains.Application.Parts;
 using JetBrains.Application.Threading;
 using JetBrains.Lifetimes;
 using JetBrains.ReSharper.Psi;
@@ -8,7 +9,7 @@ using JetBrains.ReSharper.Psi.Caches;
 
 namespace IntelligentComments.Comments.Caches.Names.Entities;
 
-[PsiComponent]
+[PsiComponent(Instantiation.DemandAnyThreadSafe)]
 public class InvariantsNamesNamesCache : AbstractNamesCache
 {
   public InvariantsNamesNamesCache(
