@@ -26,7 +26,7 @@ public record SandboxFileInfo(
 
 public record SandboxCodeFragmentInfo([NotNull] IPsiSourceFile SourceFile, int StartOffset, int EndOffset);
 
-[SolutionComponent(Instantiation.DemandAnyThreadSafe)]
+[SolutionComponent(Instantiation.ContainerAsyncPrimaryThread)]
 public class SandboxesCache : AbstractOpenedDocumentBasedCache<string, SandboxFileInfo>, ISandboxesCache
 {
   private readonly Lifetime myLifetime;

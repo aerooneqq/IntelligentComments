@@ -30,100 +30,101 @@ class RdCommentsModel private constructor(
     companion object : ISerializersOwner {
         
         override fun registerSerializersCore(serializers: ISerializers)  {
-            serializers.register(RdCommentFoldingModel)
-            serializers.register(RdDocumentComments)
-            serializers.register(RdInlineReferenceComment)
-            serializers.register(RdDisableInspectionComment)
-            serializers.register(RdInlineToDoComment)
-            serializers.register(RdInlineHackComment)
-            serializers.register(RdInlineInvariantComment)
-            serializers.register(RdInvalidComment)
-            serializers.register(RdGroupOfLineComments)
-            serializers.register(RdDocComment)
-            serializers.register(RdMultilineComment)
-            serializers.register(RdDefaultSegmentWithContent)
-            serializers.register(RdIntelligentCommentContent)
-            serializers.register(RdContentSegments)
-            serializers.register(RdParam)
-            serializers.register(RdTypeParam)
-            serializers.register(RdSummarySegment)
-            serializers.register(RdRemarksSegment)
-            serializers.register(RdParagraphSegment)
-            serializers.register(RdReturnSegment)
-            serializers.register(RdExampleSegment)
-            serializers.register(RdValueSegment)
-            serializers.register(RdCodeContentSegment)
-            serializers.register(RdSeeAlsoMemberContentSegment)
-            serializers.register(RdSeeAlsoLinkContentSegment)
-            serializers.register(RdExceptionsSegment)
-            serializers.register(RdTextSegment)
-            serializers.register(RdImageSegment)
-            serializers.register(RdListKind.marshaller)
-            serializers.register(RdListSegment)
-            serializers.register(RdListItem)
-            serializers.register(RdTableSegment)
-            serializers.register(RdTableRow)
-            serializers.register(RdTableCell)
-            serializers.register(RdTableCellProperties)
-            serializers.register(RdHorizontalAlignment.marshaller)
-            serializers.register(RdVerticalAlignment.marshaller)
-            serializers.register(RdTextInvariant)
-            serializers.register(RdNamedEntityReference)
-            serializers.register(RdProxyReference)
-            serializers.register(RdHttpLinkReference)
-            serializers.register(RdFileReference)
-            serializers.register(RdXmlDocCodeEntityReference)
-            serializers.register(RdSandboxCodeEntityReference)
-            serializers.register(RdLangWordReference)
-            serializers.register(RdReferenceContentSegment)
-            serializers.register(RdInlineReferenceContentSegment)
-            serializers.register(RdHighlightedText)
-            serializers.register(RdTextHighlighter)
-            serializers.register(RdSquiggles)
-            serializers.register(RdSquigglesKind.marshaller)
-            serializers.register(RdTextAttributes)
-            serializers.register(RdBackgroundStyle)
-            serializers.register(RdColor)
-            serializers.register(RdUnderlineTextAnimation)
-            serializers.register(RdForegroundColorAnimation)
-            serializers.register(RdPredefinedForegroundColorAnimation)
-            serializers.register(RdFontStyle.marshaller)
-            serializers.register(RdToDoContentSegment)
-            serializers.register(RdTicketContentSegment)
-            serializers.register(RdInlineContentSegment)
-            serializers.register(RdHackContentSegment)
-            serializers.register(RdCodeHighlightingRequest)
-            serializers.register(RdCommentClickDocRequest)
-            serializers.register(RdReferenceResolveRequest)
-            serializers.register(RdReferenceNavigationRequest)
-            serializers.register(RdSourceFileId)
-            serializers.register(RdFileOffsetNavigationRequest)
-            serializers.register(RdNameKind.marshaller)
-            serializers.register(RdInvalidResolveResult)
-            serializers.register(RdNamedEntityResolveResult)
-            serializers.register(RdWebResourceResolveResult)
-            serializers.register(RdFileInfo)
-            serializers.register(RdHackItem)
-            serializers.register(RdTodoItem)
-            serializers.register(RdInvariantItem)
-            serializers.register(RdFileNames)
-            serializers.register(RdComment_Unknown)
-            serializers.register(RdCommentWithOneTextSegment_Unknown)
-            serializers.register(RdCommentWithOneContentSegments_Unknown)
-            serializers.register(RdInlineComment_Unknown)
-            serializers.register(RdContentSegment_Unknown)
-            serializers.register(RdSegmentWithContent_Unknown)
-            serializers.register(RdParam_Unknown)
-            serializers.register(RdSeeAlsoContentSegment_Unknown)
-            serializers.register(RdContentSegmentWithOptionalName_Unknown)
-            serializers.register(RdInvariant_Unknown)
-            serializers.register(RdReference_Unknown)
-            serializers.register(RdExternalReference_Unknown)
-            serializers.register(RdCodeEntityReference_Unknown)
-            serializers.register(RdTextAnimation_Unknown)
-            serializers.register(RdNavigationRequest_Unknown)
-            serializers.register(RdResolveResult_Unknown)
-            serializers.register(RdNamedEntityItem_Unknown)
+            val classLoader = javaClass.classLoader
+            serializers.register(LazyCompanionMarshaller(RdId(-8207265683787466366), classLoader, "com.jetbrains.rd.ide.model.RdCommentFoldingModel"))
+            serializers.register(LazyCompanionMarshaller(RdId(1319504375338791924), classLoader, "com.jetbrains.rd.ide.model.RdDocumentComments"))
+            serializers.register(LazyCompanionMarshaller(RdId(-781402828385540782), classLoader, "com.jetbrains.rd.ide.model.RdInlineReferenceComment"))
+            serializers.register(LazyCompanionMarshaller(RdId(-6887137429206888696), classLoader, "com.jetbrains.rd.ide.model.RdDisableInspectionComment"))
+            serializers.register(LazyCompanionMarshaller(RdId(1084508553935121307), classLoader, "com.jetbrains.rd.ide.model.RdInlineToDoComment"))
+            serializers.register(LazyCompanionMarshaller(RdId(1074329189352806528), classLoader, "com.jetbrains.rd.ide.model.RdInlineHackComment"))
+            serializers.register(LazyCompanionMarshaller(RdId(-4014911146653317315), classLoader, "com.jetbrains.rd.ide.model.RdInlineInvariantComment"))
+            serializers.register(LazyCompanionMarshaller(RdId(7325031269463529837), classLoader, "com.jetbrains.rd.ide.model.RdInvalidComment"))
+            serializers.register(LazyCompanionMarshaller(RdId(-6450029839509614599), classLoader, "com.jetbrains.rd.ide.model.RdGroupOfLineComments"))
+            serializers.register(LazyCompanionMarshaller(RdId(-1313797895818357364), classLoader, "com.jetbrains.rd.ide.model.RdDocComment"))
+            serializers.register(LazyCompanionMarshaller(RdId(-6817607650811427657), classLoader, "com.jetbrains.rd.ide.model.RdMultilineComment"))
+            serializers.register(LazyCompanionMarshaller(RdId(-4773721578990923364), classLoader, "com.jetbrains.rd.ide.model.RdDefaultSegmentWithContent"))
+            serializers.register(LazyCompanionMarshaller(RdId(923286815535105356), classLoader, "com.jetbrains.rd.ide.model.RdIntelligentCommentContent"))
+            serializers.register(LazyCompanionMarshaller(RdId(2097141168598916820), classLoader, "com.jetbrains.rd.ide.model.RdContentSegments"))
+            serializers.register(LazyCompanionMarshaller(RdId(598454769128), classLoader, "com.jetbrains.rd.ide.model.RdParam"))
+            serializers.register(LazyCompanionMarshaller(RdId(552689617022477646), classLoader, "com.jetbrains.rd.ide.model.RdTypeParam"))
+            serializers.register(LazyCompanionMarshaller(RdId(-1459406622275100238), classLoader, "com.jetbrains.rd.ide.model.RdSummarySegment"))
+            serializers.register(LazyCompanionMarshaller(RdId(-1595461514097820731), classLoader, "com.jetbrains.rd.ide.model.RdRemarksSegment"))
+            serializers.register(LazyCompanionMarshaller(RdId(4457530185113747882), classLoader, "com.jetbrains.rd.ide.model.RdParagraphSegment"))
+            serializers.register(LazyCompanionMarshaller(RdId(-3020481557558839746), classLoader, "com.jetbrains.rd.ide.model.RdReturnSegment"))
+            serializers.register(LazyCompanionMarshaller(RdId(-9205183904391072914), classLoader, "com.jetbrains.rd.ide.model.RdExampleSegment"))
+            serializers.register(LazyCompanionMarshaller(RdId(-7735022778351506745), classLoader, "com.jetbrains.rd.ide.model.RdValueSegment"))
+            serializers.register(LazyCompanionMarshaller(RdId(-3620428685884481972), classLoader, "com.jetbrains.rd.ide.model.RdCodeContentSegment"))
+            serializers.register(LazyCompanionMarshaller(RdId(9191204285298200233), classLoader, "com.jetbrains.rd.ide.model.RdSeeAlsoMemberContentSegment"))
+            serializers.register(LazyCompanionMarshaller(RdId(-3975048984254397111), classLoader, "com.jetbrains.rd.ide.model.RdSeeAlsoLinkContentSegment"))
+            serializers.register(LazyCompanionMarshaller(RdId(6699669501223976298), classLoader, "com.jetbrains.rd.ide.model.RdExceptionsSegment"))
+            serializers.register(LazyCompanionMarshaller(RdId(-3821377732834459039), classLoader, "com.jetbrains.rd.ide.model.RdTextSegment"))
+            serializers.register(LazyCompanionMarshaller(RdId(-8055800214879291491), classLoader, "com.jetbrains.rd.ide.model.RdImageSegment"))
+            serializers.register(LazyCompanionMarshaller(RdId(17828463121932823), classLoader, "com.jetbrains.rd.ide.model.RdListKind"))
+            serializers.register(LazyCompanionMarshaller(RdId(-3827833265096849968), classLoader, "com.jetbrains.rd.ide.model.RdListSegment"))
+            serializers.register(LazyCompanionMarshaller(RdId(17828463121883542), classLoader, "com.jetbrains.rd.ide.model.RdListItem"))
+            serializers.register(LazyCompanionMarshaller(RdId(-7786111804385260086), classLoader, "com.jetbrains.rd.ide.model.RdTableSegment"))
+            serializers.register(LazyCompanionMarshaller(RdId(17828675629485041), classLoader, "com.jetbrains.rd.ide.model.RdTableRow"))
+            serializers.register(LazyCompanionMarshaller(RdId(552688944513579563), classLoader, "com.jetbrains.rd.ide.model.RdTableCell"))
+            serializers.register(LazyCompanionMarshaller(RdId(-190661288488244802), classLoader, "com.jetbrains.rd.ide.model.RdTableCellProperties"))
+            serializers.register(LazyCompanionMarshaller(RdId(-260065118375337926), classLoader, "com.jetbrains.rd.ide.model.RdHorizontalAlignment"))
+            serializers.register(LazyCompanionMarshaller(RdId(771596670621854696), classLoader, "com.jetbrains.rd.ide.model.RdVerticalAlignment"))
+            serializers.register(LazyCompanionMarshaller(RdId(-1441938854030364818), classLoader, "com.jetbrains.rd.ide.model.RdTextInvariant"))
+            serializers.register(LazyCompanionMarshaller(RdId(-3858616557352529036), classLoader, "com.jetbrains.rd.ide.model.RdNamedEntityReference"))
+            serializers.register(LazyCompanionMarshaller(RdId(-3227617981149197950), classLoader, "com.jetbrains.rd.ide.model.RdProxyReference"))
+            serializers.register(LazyCompanionMarshaller(RdId(-3846386911808775772), classLoader, "com.jetbrains.rd.ide.model.RdHttpLinkReference"))
+            serializers.register(LazyCompanionMarshaller(RdId(6068935434769090442), classLoader, "com.jetbrains.rd.ide.model.RdFileReference"))
+            serializers.register(LazyCompanionMarshaller(RdId(-7086709064984492171), classLoader, "com.jetbrains.rd.ide.model.RdXmlDocCodeEntityReference"))
+            serializers.register(LazyCompanionMarshaller(RdId(6800939843989562425), classLoader, "com.jetbrains.rd.ide.model.RdSandboxCodeEntityReference"))
+            serializers.register(LazyCompanionMarshaller(RdId(-2497914375630987026), classLoader, "com.jetbrains.rd.ide.model.RdLangWordReference"))
+            serializers.register(LazyCompanionMarshaller(RdId(-2355623127777271488), classLoader, "com.jetbrains.rd.ide.model.RdReferenceContentSegment"))
+            serializers.register(LazyCompanionMarshaller(RdId(8250246013056735783), classLoader, "com.jetbrains.rd.ide.model.RdInlineReferenceContentSegment"))
+            serializers.register(LazyCompanionMarshaller(RdId(490010461177830331), classLoader, "com.jetbrains.rd.ide.model.RdHighlightedText"))
+            serializers.register(LazyCompanionMarshaller(RdId(-2198397627458922353), classLoader, "com.jetbrains.rd.ide.model.RdTextHighlighter"))
+            serializers.register(LazyCompanionMarshaller(RdId(552688548603976419), classLoader, "com.jetbrains.rd.ide.model.RdSquiggles"))
+            serializers.register(LazyCompanionMarshaller(RdId(-1927424250384424681), classLoader, "com.jetbrains.rd.ide.model.RdSquigglesKind"))
+            serializers.register(LazyCompanionMarshaller(RdId(-7806822767354458263), classLoader, "com.jetbrains.rd.ide.model.RdTextAttributes"))
+            serializers.register(LazyCompanionMarshaller(RdId(1220976986317794494), classLoader, "com.jetbrains.rd.ide.model.RdBackgroundStyle"))
+            serializers.register(LazyCompanionMarshaller(RdId(598443175102), classLoader, "com.jetbrains.rd.ide.model.RdColor"))
+            serializers.register(LazyCompanionMarshaller(RdId(-596006020905479824), classLoader, "com.jetbrains.rd.ide.model.RdUnderlineTextAnimation"))
+            serializers.register(LazyCompanionMarshaller(RdId(6258081631003674185), classLoader, "com.jetbrains.rd.ide.model.RdForegroundColorAnimation"))
+            serializers.register(LazyCompanionMarshaller(RdId(-6491458908407200721), classLoader, "com.jetbrains.rd.ide.model.RdPredefinedForegroundColorAnimation"))
+            serializers.register(LazyCompanionMarshaller(RdId(552677400079585917), classLoader, "com.jetbrains.rd.ide.model.RdFontStyle"))
+            serializers.register(LazyCompanionMarshaller(RdId(2949914372744350981), classLoader, "com.jetbrains.rd.ide.model.RdToDoContentSegment"))
+            serializers.register(LazyCompanionMarshaller(RdId(8517099761902021611), classLoader, "com.jetbrains.rd.ide.model.RdTicketContentSegment"))
+            serializers.register(LazyCompanionMarshaller(RdId(147692215671351480), classLoader, "com.jetbrains.rd.ide.model.RdInlineContentSegment"))
+            serializers.register(LazyCompanionMarshaller(RdId(-4754472621010418560), classLoader, "com.jetbrains.rd.ide.model.RdHackContentSegment"))
+            serializers.register(LazyCompanionMarshaller(RdId(8070530998373570927), classLoader, "com.jetbrains.rd.ide.model.RdCodeHighlightingRequest"))
+            serializers.register(LazyCompanionMarshaller(RdId(5204903480974569861), classLoader, "com.jetbrains.rd.ide.model.RdCommentClickDocRequest"))
+            serializers.register(LazyCompanionMarshaller(RdId(5665941825494691785), classLoader, "com.jetbrains.rd.ide.model.RdReferenceResolveRequest"))
+            serializers.register(LazyCompanionMarshaller(RdId(5531984778765032277), classLoader, "com.jetbrains.rd.ide.model.RdReferenceNavigationRequest"))
+            serializers.register(LazyCompanionMarshaller(RdId(-7799538055032505865), classLoader, "com.jetbrains.rd.ide.model.RdSourceFileId"))
+            serializers.register(LazyCompanionMarshaller(RdId(6643410530906612615), classLoader, "com.jetbrains.rd.ide.model.RdFileOffsetNavigationRequest"))
+            serializers.register(LazyCompanionMarshaller(RdId(17828510861503876), classLoader, "com.jetbrains.rd.ide.model.RdNameKind"))
+            serializers.register(LazyCompanionMarshaller(RdId(-4196143515295892041), classLoader, "com.jetbrains.rd.ide.model.RdInvalidResolveResult"))
+            serializers.register(LazyCompanionMarshaller(RdId(-8284076795355894574), classLoader, "com.jetbrains.rd.ide.model.RdNamedEntityResolveResult"))
+            serializers.register(LazyCompanionMarshaller(RdId(-4569880760018616436), classLoader, "com.jetbrains.rd.ide.model.RdWebResourceResolveResult"))
+            serializers.register(LazyCompanionMarshaller(RdId(17828297831936271), classLoader, "com.jetbrains.rd.ide.model.RdFileInfo"))
+            serializers.register(LazyCompanionMarshaller(RdId(17828345505019545), classLoader, "com.jetbrains.rd.ide.model.RdHackItem"))
+            serializers.register(LazyCompanionMarshaller(RdId(17828688113763646), classLoader, "com.jetbrains.rd.ide.model.RdTodoItem"))
+            serializers.register(LazyCompanionMarshaller(RdId(8567084093382746446), classLoader, "com.jetbrains.rd.ide.model.RdInvariantItem"))
+            serializers.register(LazyCompanionMarshaller(RdId(552677232794261255), classLoader, "com.jetbrains.rd.ide.model.RdFileNames"))
+            serializers.register(LazyCompanionMarshaller(RdId(1131619362685669861), classLoader, "com.jetbrains.rd.ide.model.RdComment_Unknown"))
+            serializers.register(LazyCompanionMarshaller(RdId(978579737578445547), classLoader, "com.jetbrains.rd.ide.model.RdCommentWithOneTextSegment_Unknown"))
+            serializers.register(LazyCompanionMarshaller(RdId(-1042455041471632162), classLoader, "com.jetbrains.rd.ide.model.RdCommentWithOneContentSegments_Unknown"))
+            serializers.register(LazyCompanionMarshaller(RdId(3612936879898649036), classLoader, "com.jetbrains.rd.ide.model.RdInlineComment_Unknown"))
+            serializers.register(LazyCompanionMarshaller(RdId(2098311076713237866), classLoader, "com.jetbrains.rd.ide.model.RdContentSegment_Unknown"))
+            serializers.register(LazyCompanionMarshaller(RdId(5018355162919809040), classLoader, "com.jetbrains.rd.ide.model.RdSegmentWithContent_Unknown"))
+            serializers.register(LazyCompanionMarshaller(RdId(-4699613756846729005), classLoader, "com.jetbrains.rd.ide.model.RdParam_Unknown"))
+            serializers.register(LazyCompanionMarshaller(RdId(-2701248144867134182), classLoader, "com.jetbrains.rd.ide.model.RdSeeAlsoContentSegment_Unknown"))
+            serializers.register(LazyCompanionMarshaller(RdId(-927924843896772485), classLoader, "com.jetbrains.rd.ide.model.RdContentSegmentWithOptionalName_Unknown"))
+            serializers.register(LazyCompanionMarshaller(RdId(-251184816121653370), classLoader, "com.jetbrains.rd.ide.model.RdInvariant_Unknown"))
+            serializers.register(LazyCompanionMarshaller(RdId(7753852681631661073), classLoader, "com.jetbrains.rd.ide.model.RdReference_Unknown"))
+            serializers.register(LazyCompanionMarshaller(RdId(6884457037320158342), classLoader, "com.jetbrains.rd.ide.model.RdExternalReference_Unknown"))
+            serializers.register(LazyCompanionMarshaller(RdId(-5046244445847784447), classLoader, "com.jetbrains.rd.ide.model.RdCodeEntityReference_Unknown"))
+            serializers.register(LazyCompanionMarshaller(RdId(7860142282618143773), classLoader, "com.jetbrains.rd.ide.model.RdTextAnimation_Unknown"))
+            serializers.register(LazyCompanionMarshaller(RdId(-2715836314359995487), classLoader, "com.jetbrains.rd.ide.model.RdNavigationRequest_Unknown"))
+            serializers.register(LazyCompanionMarshaller(RdId(-3342705849227104657), classLoader, "com.jetbrains.rd.ide.model.RdResolveResult_Unknown"))
+            serializers.register(LazyCompanionMarshaller(RdId(7846805247544406581), classLoader, "com.jetbrains.rd.ide.model.RdNamedEntityItem_Unknown"))
         }
         
         
@@ -189,6 +190,8 @@ class RdCommentsModel private constructor(
         )
     }
     //contexts
+    //threading
+    override val extThreading: ExtThreadingKind get() = ExtThreadingKind.Default
 }
 val Solution.rdCommentsModel get() = getOrCreateExtension("rdCommentsModel", ::RdCommentsModel)
 
@@ -206,6 +209,7 @@ data class RdBackgroundStyle (
     
     companion object : IMarshaller<RdBackgroundStyle> {
         override val _type: KClass<RdBackgroundStyle> = RdBackgroundStyle::class
+        override val id: RdId get() = RdId(1220976986317794494)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdBackgroundStyle  {
@@ -260,6 +264,7 @@ data class RdBackgroundStyle (
     }
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -275,6 +280,7 @@ class RdCodeContentSegment (
     
     companion object : IMarshaller<RdCodeContentSegment> {
         override val _type: KClass<RdCodeContentSegment> = RdCodeContentSegment::class
+        override val id: RdId get() = RdId(-3620428685884481972)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdCodeContentSegment  {
@@ -326,6 +332,7 @@ class RdCodeContentSegment (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -359,6 +366,7 @@ abstract class RdCodeEntityReference (
     //pretty print
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -373,6 +381,7 @@ class RdCodeEntityReference_Unknown (
     
     companion object : IMarshaller<RdCodeEntityReference_Unknown> {
         override val _type: KClass<RdCodeEntityReference_Unknown> = RdCodeEntityReference_Unknown::class
+        override val id: RdId get() = RdId(-5046244445847784447)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdCodeEntityReference_Unknown  {
@@ -419,6 +428,7 @@ class RdCodeEntityReference_Unknown (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -432,6 +442,7 @@ data class RdCodeHighlightingRequest (
     
     companion object : IMarshaller<RdCodeHighlightingRequest> {
         override val _type: KClass<RdCodeHighlightingRequest> = RdCodeHighlightingRequest::class
+        override val id: RdId get() = RdId(8070530998373570927)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdCodeHighlightingRequest  {
@@ -476,6 +487,7 @@ data class RdCodeHighlightingRequest (
     }
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -489,6 +501,7 @@ data class RdColor (
     
     companion object : IMarshaller<RdColor> {
         override val _type: KClass<RdColor> = RdColor::class
+        override val id: RdId get() = RdId(598443175102)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdColor  {
@@ -533,6 +546,7 @@ data class RdColor (
     }
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -564,6 +578,7 @@ abstract class RdComment (
     //pretty print
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -577,6 +592,7 @@ data class RdCommentClickDocRequest (
     
     companion object : IMarshaller<RdCommentClickDocRequest> {
         override val _type: KClass<RdCommentClickDocRequest> = RdCommentClickDocRequest::class
+        override val id: RdId get() = RdId(5204903480974569861)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdCommentClickDocRequest  {
@@ -621,6 +637,7 @@ data class RdCommentClickDocRequest (
     }
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -660,6 +677,7 @@ class RdCommentFoldingModel (
     
     companion object : IMarshaller<RdCommentFoldingModel> {
         override val _type: KClass<RdCommentFoldingModel> = RdCommentFoldingModel::class
+        override val id: RdId get() = RdId(-8207265683787466366)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdCommentFoldingModel  {
@@ -771,6 +789,7 @@ class RdCommentFoldingModel (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -806,6 +825,7 @@ abstract class RdCommentWithOneContentSegments (
     //pretty print
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -822,6 +842,7 @@ class RdCommentWithOneContentSegments_Unknown (
     
     companion object : IMarshaller<RdCommentWithOneContentSegments_Unknown> {
         override val _type: KClass<RdCommentWithOneContentSegments_Unknown> = RdCommentWithOneContentSegments_Unknown::class
+        override val id: RdId get() = RdId(-1042455041471632162)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdCommentWithOneContentSegments_Unknown  {
@@ -872,6 +893,7 @@ class RdCommentWithOneContentSegments_Unknown (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -907,6 +929,7 @@ abstract class RdCommentWithOneTextSegment (
     //pretty print
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -923,6 +946,7 @@ class RdCommentWithOneTextSegment_Unknown (
     
     companion object : IMarshaller<RdCommentWithOneTextSegment_Unknown> {
         override val _type: KClass<RdCommentWithOneTextSegment_Unknown> = RdCommentWithOneTextSegment_Unknown::class
+        override val id: RdId get() = RdId(978579737578445547)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdCommentWithOneTextSegment_Unknown  {
@@ -973,6 +997,7 @@ class RdCommentWithOneTextSegment_Unknown (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -987,6 +1012,7 @@ class RdComment_Unknown (
     
     companion object : IMarshaller<RdComment_Unknown> {
         override val _type: KClass<RdComment_Unknown> = RdComment_Unknown::class
+        override val id: RdId get() = RdId(1131619362685669861)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdComment_Unknown  {
@@ -1033,6 +1059,7 @@ class RdComment_Unknown (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -1062,6 +1089,7 @@ abstract class RdContentSegment (
     //pretty print
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -1094,6 +1122,7 @@ abstract class RdContentSegmentWithOptionalName (
     //pretty print
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -1108,6 +1137,7 @@ class RdContentSegmentWithOptionalName_Unknown (
     
     companion object : IMarshaller<RdContentSegmentWithOptionalName_Unknown> {
         override val _type: KClass<RdContentSegmentWithOptionalName_Unknown> = RdContentSegmentWithOptionalName_Unknown::class
+        override val id: RdId get() = RdId(-927924843896772485)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdContentSegmentWithOptionalName_Unknown  {
@@ -1154,6 +1184,7 @@ class RdContentSegmentWithOptionalName_Unknown (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -1166,6 +1197,7 @@ class RdContentSegment_Unknown (
     
     companion object : IMarshaller<RdContentSegment_Unknown> {
         override val _type: KClass<RdContentSegment_Unknown> = RdContentSegment_Unknown::class
+        override val id: RdId get() = RdId(2098311076713237866)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdContentSegment_Unknown  {
@@ -1206,6 +1238,7 @@ class RdContentSegment_Unknown (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -1219,6 +1252,7 @@ data class RdContentSegments (
     
     companion object : IMarshaller<RdContentSegments> {
         override val _type: KClass<RdContentSegments> = RdContentSegments::class
+        override val id: RdId get() = RdId(2097141168598916820)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdContentSegments  {
@@ -1263,6 +1297,7 @@ data class RdContentSegments (
     }
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -1278,6 +1313,7 @@ class RdDefaultSegmentWithContent (
     
     companion object : IMarshaller<RdDefaultSegmentWithContent> {
         override val _type: KClass<RdDefaultSegmentWithContent> = RdDefaultSegmentWithContent::class
+        override val id: RdId get() = RdId(-4773721578990923364)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdDefaultSegmentWithContent  {
@@ -1324,6 +1360,7 @@ class RdDefaultSegmentWithContent (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -1341,6 +1378,7 @@ class RdDisableInspectionComment (
     
     companion object : IMarshaller<RdDisableInspectionComment> {
         override val _type: KClass<RdDisableInspectionComment> = RdDisableInspectionComment::class
+        override val id: RdId get() = RdId(-6887137429206888696)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdDisableInspectionComment  {
@@ -1392,6 +1430,7 @@ class RdDisableInspectionComment (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -1408,6 +1447,7 @@ class RdDocComment (
     
     companion object : IMarshaller<RdDocComment> {
         override val _type: KClass<RdDocComment> = RdDocComment::class
+        override val id: RdId get() = RdId(-1313797895818357364)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdDocComment  {
@@ -1459,6 +1499,7 @@ class RdDocComment (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -1472,6 +1513,7 @@ data class RdDocumentComments (
     
     companion object : IMarshaller<RdDocumentComments> {
         override val _type: KClass<RdDocumentComments> = RdDocumentComments::class
+        override val id: RdId get() = RdId(1319504375338791924)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdDocumentComments  {
@@ -1516,6 +1558,7 @@ data class RdDocumentComments (
     }
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -1531,6 +1574,7 @@ class RdExampleSegment (
     
     companion object : IMarshaller<RdExampleSegment> {
         override val _type: KClass<RdExampleSegment> = RdExampleSegment::class
+        override val id: RdId get() = RdId(-9205183904391072914)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdExampleSegment  {
@@ -1577,6 +1621,7 @@ class RdExampleSegment (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -1594,6 +1639,7 @@ class RdExceptionsSegment (
     
     companion object : IMarshaller<RdExceptionsSegment> {
         override val _type: KClass<RdExceptionsSegment> = RdExceptionsSegment::class
+        override val id: RdId get() = RdId(6699669501223976298)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdExceptionsSegment  {
@@ -1650,6 +1696,7 @@ class RdExceptionsSegment (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -1683,6 +1730,7 @@ abstract class RdExternalReference (
     //pretty print
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -1697,6 +1745,7 @@ class RdExternalReference_Unknown (
     
     companion object : IMarshaller<RdExternalReference_Unknown> {
         override val _type: KClass<RdExternalReference_Unknown> = RdExternalReference_Unknown::class
+        override val id: RdId get() = RdId(6884457037320158342)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdExternalReference_Unknown  {
@@ -1743,6 +1792,7 @@ class RdExternalReference_Unknown (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -1758,6 +1808,7 @@ data class RdFileInfo (
     
     companion object : IMarshaller<RdFileInfo> {
         override val _type: KClass<RdFileInfo> = RdFileInfo::class
+        override val id: RdId get() = RdId(17828297831936271)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdFileInfo  {
@@ -1812,6 +1863,7 @@ data class RdFileInfo (
     }
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -1827,6 +1879,7 @@ data class RdFileNames (
     
     companion object : IMarshaller<RdFileNames> {
         override val _type: KClass<RdFileNames> = RdFileNames::class
+        override val id: RdId get() = RdId(552677232794261255)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdFileNames  {
@@ -1881,6 +1934,7 @@ data class RdFileNames (
     }
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -1896,6 +1950,7 @@ class RdFileOffsetNavigationRequest (
     
     companion object : IMarshaller<RdFileOffsetNavigationRequest> {
         override val _type: KClass<RdFileOffsetNavigationRequest> = RdFileOffsetNavigationRequest::class
+        override val id: RdId get() = RdId(6643410530906612615)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdFileOffsetNavigationRequest  {
@@ -1947,6 +2002,7 @@ class RdFileOffsetNavigationRequest (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -1963,6 +2019,7 @@ class RdFileReference (
     
     companion object : IMarshaller<RdFileReference> {
         override val _type: KClass<RdFileReference> = RdFileReference::class
+        override val id: RdId get() = RdId(6068935434769090442)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdFileReference  {
@@ -2014,6 +2071,7 @@ class RdFileReference (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -2025,9 +2083,20 @@ enum class RdFontStyle {
     Bold, 
     Italic;
     
-    companion object {
+    companion object : IMarshaller<RdFontStyle> {
         val marshaller = FrameworkMarshallers.enum<RdFontStyle>()
         
+        
+        override val _type: KClass<RdFontStyle> = RdFontStyle::class
+        override val id: RdId get() = RdId(552677400079585917)
+        
+        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdFontStyle {
+            return marshaller.read(ctx, buffer)
+        }
+        
+        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: RdFontStyle)  {
+            marshaller.write(ctx, buffer, value)
+        }
     }
 }
 
@@ -2043,6 +2112,7 @@ class RdForegroundColorAnimation (
     
     companion object : IMarshaller<RdForegroundColorAnimation> {
         override val _type: KClass<RdForegroundColorAnimation> = RdForegroundColorAnimation::class
+        override val id: RdId get() = RdId(6258081631003674185)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdForegroundColorAnimation  {
@@ -2089,6 +2159,7 @@ class RdForegroundColorAnimation (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -2106,6 +2177,7 @@ class RdGroupOfLineComments (
     
     companion object : IMarshaller<RdGroupOfLineComments> {
         override val _type: KClass<RdGroupOfLineComments> = RdGroupOfLineComments::class
+        override val id: RdId get() = RdId(-6450029839509614599)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdGroupOfLineComments  {
@@ -2157,6 +2229,7 @@ class RdGroupOfLineComments (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -2173,6 +2246,7 @@ class RdHackContentSegment (
     
     companion object : IMarshaller<RdHackContentSegment> {
         override val _type: KClass<RdHackContentSegment> = RdHackContentSegment::class
+        override val id: RdId get() = RdId(-4754472621010418560)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdHackContentSegment  {
@@ -2224,6 +2298,7 @@ class RdHackContentSegment (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -2243,6 +2318,7 @@ class RdHackItem (
     
     companion object : IMarshaller<RdHackItem> {
         override val _type: KClass<RdHackItem> = RdHackItem::class
+        override val id: RdId get() = RdId(17828345505019545)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdHackItem  {
@@ -2299,6 +2375,7 @@ class RdHackItem (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -2313,6 +2390,7 @@ data class RdHighlightedText (
     
     companion object : IMarshaller<RdHighlightedText> {
         override val _type: KClass<RdHighlightedText> = RdHighlightedText::class
+        override val id: RdId get() = RdId(490010461177830331)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdHighlightedText  {
@@ -2362,6 +2440,7 @@ data class RdHighlightedText (
     }
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -2373,9 +2452,20 @@ enum class RdHorizontalAlignment {
     Left, 
     Right;
     
-    companion object {
+    companion object : IMarshaller<RdHorizontalAlignment> {
         val marshaller = FrameworkMarshallers.enum<RdHorizontalAlignment>()
         
+        
+        override val _type: KClass<RdHorizontalAlignment> = RdHorizontalAlignment::class
+        override val id: RdId get() = RdId(-260065118375337926)
+        
+        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdHorizontalAlignment {
+            return marshaller.read(ctx, buffer)
+        }
+        
+        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: RdHorizontalAlignment)  {
+            marshaller.write(ctx, buffer, value)
+        }
     }
 }
 
@@ -2393,6 +2483,7 @@ class RdHttpLinkReference (
     
     companion object : IMarshaller<RdHttpLinkReference> {
         override val _type: KClass<RdHttpLinkReference> = RdHttpLinkReference::class
+        override val id: RdId get() = RdId(-3846386911808775772)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdHttpLinkReference  {
@@ -2444,6 +2535,7 @@ class RdHttpLinkReference (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -2459,6 +2551,7 @@ class RdImageSegment (
     
     companion object : IMarshaller<RdImageSegment> {
         override val _type: KClass<RdImageSegment> = RdImageSegment::class
+        override val id: RdId get() = RdId(-8055800214879291491)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdImageSegment  {
@@ -2510,6 +2603,7 @@ class RdImageSegment (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -2546,6 +2640,7 @@ abstract class RdInlineComment (
     //pretty print
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -2562,6 +2657,7 @@ class RdInlineComment_Unknown (
     
     companion object : IMarshaller<RdInlineComment_Unknown> {
         override val _type: KClass<RdInlineComment_Unknown> = RdInlineComment_Unknown::class
+        override val id: RdId get() = RdId(3612936879898649036)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdInlineComment_Unknown  {
@@ -2612,6 +2708,7 @@ class RdInlineComment_Unknown (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -2628,6 +2725,7 @@ class RdInlineContentSegment (
     
     companion object : IMarshaller<RdInlineContentSegment> {
         override val _type: KClass<RdInlineContentSegment> = RdInlineContentSegment::class
+        override val id: RdId get() = RdId(147692215671351480)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdInlineContentSegment  {
@@ -2684,6 +2782,7 @@ class RdInlineContentSegment (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -2701,6 +2800,7 @@ class RdInlineHackComment (
     
     companion object : IMarshaller<RdInlineHackComment> {
         override val _type: KClass<RdInlineHackComment> = RdInlineHackComment::class
+        override val id: RdId get() = RdId(1074329189352806528)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdInlineHackComment  {
@@ -2752,6 +2852,7 @@ class RdInlineHackComment (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -2769,6 +2870,7 @@ class RdInlineInvariantComment (
     
     companion object : IMarshaller<RdInlineInvariantComment> {
         override val _type: KClass<RdInlineInvariantComment> = RdInlineInvariantComment::class
+        override val id: RdId get() = RdId(-4014911146653317315)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdInlineInvariantComment  {
@@ -2820,6 +2922,7 @@ class RdInlineInvariantComment (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -2836,6 +2939,7 @@ class RdInlineReferenceComment (
     
     companion object : IMarshaller<RdInlineReferenceComment> {
         override val _type: KClass<RdInlineReferenceComment> = RdInlineReferenceComment::class
+        override val id: RdId get() = RdId(-781402828385540782)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdInlineReferenceComment  {
@@ -2887,6 +2991,7 @@ class RdInlineReferenceComment (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -2902,6 +3007,7 @@ class RdInlineReferenceContentSegment (
     
     companion object : IMarshaller<RdInlineReferenceContentSegment> {
         override val _type: KClass<RdInlineReferenceContentSegment> = RdInlineReferenceContentSegment::class
+        override val id: RdId get() = RdId(8250246013056735783)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdInlineReferenceContentSegment  {
@@ -2953,6 +3059,7 @@ class RdInlineReferenceContentSegment (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -2970,6 +3077,7 @@ class RdInlineToDoComment (
     
     companion object : IMarshaller<RdInlineToDoComment> {
         override val _type: KClass<RdInlineToDoComment> = RdInlineToDoComment::class
+        override val id: RdId get() = RdId(1084508553935121307)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdInlineToDoComment  {
@@ -3021,6 +3129,7 @@ class RdInlineToDoComment (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -3036,6 +3145,7 @@ class RdIntelligentCommentContent (
     
     companion object : IMarshaller<RdIntelligentCommentContent> {
         override val _type: KClass<RdIntelligentCommentContent> = RdIntelligentCommentContent::class
+        override val id: RdId get() = RdId(923286815535105356)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdIntelligentCommentContent  {
@@ -3082,6 +3192,7 @@ class RdIntelligentCommentContent (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -3099,6 +3210,7 @@ class RdInvalidComment (
     
     companion object : IMarshaller<RdInvalidComment> {
         override val _type: KClass<RdInvalidComment> = RdInvalidComment::class
+        override val id: RdId get() = RdId(7325031269463529837)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdInvalidComment  {
@@ -3150,6 +3262,7 @@ class RdInvalidComment (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -3164,6 +3277,7 @@ class RdInvalidResolveResult (
     
     companion object : IMarshaller<RdInvalidResolveResult> {
         override val _type: KClass<RdInvalidResolveResult> = RdInvalidResolveResult::class
+        override val id: RdId get() = RdId(-4196143515295892041)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdInvalidResolveResult  {
@@ -3210,6 +3324,7 @@ class RdInvalidResolveResult (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -3243,6 +3358,7 @@ abstract class RdInvariant (
     //pretty print
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -3262,6 +3378,7 @@ class RdInvariantItem (
     
     companion object : IMarshaller<RdInvariantItem> {
         override val _type: KClass<RdInvariantItem> = RdInvariantItem::class
+        override val id: RdId get() = RdId(8567084093382746446)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdInvariantItem  {
@@ -3318,6 +3435,7 @@ class RdInvariantItem (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -3332,6 +3450,7 @@ class RdInvariant_Unknown (
     
     companion object : IMarshaller<RdInvariant_Unknown> {
         override val _type: KClass<RdInvariant_Unknown> = RdInvariant_Unknown::class
+        override val id: RdId get() = RdId(-251184816121653370)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdInvariant_Unknown  {
@@ -3378,6 +3497,7 @@ class RdInvariant_Unknown (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -3393,6 +3513,7 @@ class RdLangWordReference (
     
     companion object : IMarshaller<RdLangWordReference> {
         override val _type: KClass<RdLangWordReference> = RdLangWordReference::class
+        override val id: RdId get() = RdId(-2497914375630987026)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdLangWordReference  {
@@ -3439,6 +3560,7 @@ class RdLangWordReference (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -3453,6 +3575,7 @@ data class RdListItem (
     
     companion object : IMarshaller<RdListItem> {
         override val _type: KClass<RdListItem> = RdListItem::class
+        override val id: RdId get() = RdId(17828463121883542)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdListItem  {
@@ -3502,6 +3625,7 @@ data class RdListItem (
     }
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -3512,9 +3636,20 @@ enum class RdListKind {
     Bullet, 
     Number;
     
-    companion object {
+    companion object : IMarshaller<RdListKind> {
         val marshaller = FrameworkMarshallers.enum<RdListKind>()
         
+        
+        override val _type: KClass<RdListKind> = RdListKind::class
+        override val id: RdId get() = RdId(17828463121932823)
+        
+        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdListKind {
+            return marshaller.read(ctx, buffer)
+        }
+        
+        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: RdListKind)  {
+            marshaller.write(ctx, buffer, value)
+        }
     }
 }
 
@@ -3532,6 +3667,7 @@ class RdListSegment (
     
     companion object : IMarshaller<RdListSegment> {
         override val _type: KClass<RdListSegment> = RdListSegment::class
+        override val id: RdId get() = RdId(-3827833265096849968)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdListSegment  {
@@ -3588,6 +3724,7 @@ class RdListSegment (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -3605,6 +3742,7 @@ class RdMultilineComment (
     
     companion object : IMarshaller<RdMultilineComment> {
         override val _type: KClass<RdMultilineComment> = RdMultilineComment::class
+        override val id: RdId get() = RdId(-6817607650811427657)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdMultilineComment  {
@@ -3656,6 +3794,7 @@ class RdMultilineComment (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -3667,9 +3806,20 @@ enum class RdNameKind {
     Hack, 
     Todo;
     
-    companion object {
+    companion object : IMarshaller<RdNameKind> {
         val marshaller = FrameworkMarshallers.enum<RdNameKind>()
         
+        
+        override val _type: KClass<RdNameKind> = RdNameKind::class
+        override val id: RdId get() = RdId(17828510861503876)
+        
+        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdNameKind {
+            return marshaller.read(ctx, buffer)
+        }
+        
+        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: RdNameKind)  {
+            marshaller.write(ctx, buffer, value)
+        }
     }
 }
 
@@ -3706,6 +3856,7 @@ abstract class RdNamedEntityItem (
     //pretty print
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -3724,6 +3875,7 @@ class RdNamedEntityItem_Unknown (
     
     companion object : IMarshaller<RdNamedEntityItem_Unknown> {
         override val _type: KClass<RdNamedEntityItem_Unknown> = RdNamedEntityItem_Unknown::class
+        override val id: RdId get() = RdId(7846805247544406581)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdNamedEntityItem_Unknown  {
@@ -3778,6 +3930,7 @@ class RdNamedEntityItem_Unknown (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -3795,6 +3948,7 @@ class RdNamedEntityReference (
     
     companion object : IMarshaller<RdNamedEntityReference> {
         override val _type: KClass<RdNamedEntityReference> = RdNamedEntityReference::class
+        override val id: RdId get() = RdId(-3858616557352529036)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdNamedEntityReference  {
@@ -3851,6 +4005,7 @@ class RdNamedEntityReference (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -3866,6 +4021,7 @@ class RdNamedEntityResolveResult (
     
     companion object : IMarshaller<RdNamedEntityResolveResult> {
         override val _type: KClass<RdNamedEntityResolveResult> = RdNamedEntityResolveResult::class
+        override val id: RdId get() = RdId(-8284076795355894574)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdNamedEntityResolveResult  {
@@ -3917,6 +4073,7 @@ class RdNamedEntityResolveResult (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -3946,6 +4103,7 @@ abstract class RdNavigationRequest (
     //pretty print
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -3958,6 +4116,7 @@ class RdNavigationRequest_Unknown (
     
     companion object : IMarshaller<RdNavigationRequest_Unknown> {
         override val _type: KClass<RdNavigationRequest_Unknown> = RdNavigationRequest_Unknown::class
+        override val id: RdId get() = RdId(-2715836314359995487)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdNavigationRequest_Unknown  {
@@ -3998,6 +4157,7 @@ class RdNavigationRequest_Unknown (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -4013,6 +4173,7 @@ class RdParagraphSegment (
     
     companion object : IMarshaller<RdParagraphSegment> {
         override val _type: KClass<RdParagraphSegment> = RdParagraphSegment::class
+        override val id: RdId get() = RdId(4457530185113747882)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdParagraphSegment  {
@@ -4059,6 +4220,7 @@ class RdParagraphSegment (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -4075,6 +4237,7 @@ open class RdParam (
     
     companion object : IMarshaller<RdParam>, IAbstractDeclaration<RdParam> {
         override val _type: KClass<RdParam> = RdParam::class
+        override val id: RdId get() = RdId(598454769128)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdParam  {
@@ -4133,6 +4296,7 @@ open class RdParam (
     }
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -4149,6 +4313,7 @@ class RdParam_Unknown (
     
     companion object : IMarshaller<RdParam_Unknown> {
         override val _type: KClass<RdParam_Unknown> = RdParam_Unknown::class
+        override val id: RdId get() = RdId(-4699613756846729005)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdParam_Unknown  {
@@ -4199,6 +4364,7 @@ class RdParam_Unknown (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -4213,6 +4379,7 @@ class RdPredefinedForegroundColorAnimation (
     
     companion object : IMarshaller<RdPredefinedForegroundColorAnimation> {
         override val _type: KClass<RdPredefinedForegroundColorAnimation> = RdPredefinedForegroundColorAnimation::class
+        override val id: RdId get() = RdId(-6491458908407200721)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdPredefinedForegroundColorAnimation  {
@@ -4259,6 +4426,7 @@ class RdPredefinedForegroundColorAnimation (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -4275,6 +4443,7 @@ class RdProxyReference (
     
     companion object : IMarshaller<RdProxyReference> {
         override val _type: KClass<RdProxyReference> = RdProxyReference::class
+        override val id: RdId get() = RdId(-3227617981149197950)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdProxyReference  {
@@ -4326,6 +4495,7 @@ class RdProxyReference (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -4357,6 +4527,7 @@ abstract class RdReference (
     //pretty print
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -4373,6 +4544,7 @@ class RdReferenceContentSegment (
     
     companion object : IMarshaller<RdReferenceContentSegment> {
         override val _type: KClass<RdReferenceContentSegment> = RdReferenceContentSegment::class
+        override val id: RdId get() = RdId(-2355623127777271488)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdReferenceContentSegment  {
@@ -4429,6 +4601,7 @@ class RdReferenceContentSegment (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -4443,6 +4616,7 @@ class RdReferenceNavigationRequest (
     
     companion object : IMarshaller<RdReferenceNavigationRequest> {
         override val _type: KClass<RdReferenceNavigationRequest> = RdReferenceNavigationRequest::class
+        override val id: RdId get() = RdId(5531984778765032277)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdReferenceNavigationRequest  {
@@ -4489,6 +4663,7 @@ class RdReferenceNavigationRequest (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -4503,17 +4678,18 @@ data class RdReferenceResolveRequest (
     
     companion object : IMarshaller<RdReferenceResolveRequest> {
         override val _type: KClass<RdReferenceResolveRequest> = RdReferenceResolveRequest::class
+        override val id: RdId get() = RdId(5665941825494691785)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdReferenceResolveRequest  {
             val reference = ctx.serializers.readPolymorphic<RdReference>(ctx, buffer, RdReference)
-            val textControlId = TextControlId.read(ctx, buffer)
+            val textControlId = ctx.serializers.readPolymorphic<TextControlId>(ctx, buffer, TextControlId)
             return RdReferenceResolveRequest(reference, textControlId)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: RdReferenceResolveRequest)  {
             ctx.serializers.writePolymorphic(ctx, buffer, value.reference)
-            TextControlId.write(ctx, buffer, value.textControlId)
+            ctx.serializers.writePolymorphic(ctx, buffer, value.textControlId)
         }
         
         
@@ -4552,6 +4728,7 @@ data class RdReferenceResolveRequest (
     }
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -4566,6 +4743,7 @@ class RdReference_Unknown (
     
     companion object : IMarshaller<RdReference_Unknown> {
         override val _type: KClass<RdReference_Unknown> = RdReference_Unknown::class
+        override val id: RdId get() = RdId(7753852681631661073)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdReference_Unknown  {
@@ -4612,6 +4790,7 @@ class RdReference_Unknown (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -4627,6 +4806,7 @@ class RdRemarksSegment (
     
     companion object : IMarshaller<RdRemarksSegment> {
         override val _type: KClass<RdRemarksSegment> = RdRemarksSegment::class
+        override val id: RdId get() = RdId(-1595461514097820731)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdRemarksSegment  {
@@ -4673,6 +4853,7 @@ class RdRemarksSegment (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -4702,6 +4883,7 @@ abstract class RdResolveResult (
     //pretty print
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -4714,6 +4896,7 @@ class RdResolveResult_Unknown (
     
     companion object : IMarshaller<RdResolveResult_Unknown> {
         override val _type: KClass<RdResolveResult_Unknown> = RdResolveResult_Unknown::class
+        override val id: RdId get() = RdId(-3342705849227104657)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdResolveResult_Unknown  {
@@ -4754,6 +4937,7 @@ class RdResolveResult_Unknown (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -4769,6 +4953,7 @@ class RdReturnSegment (
     
     companion object : IMarshaller<RdReturnSegment> {
         override val _type: KClass<RdReturnSegment> = RdReturnSegment::class
+        override val id: RdId get() = RdId(-3020481557558839746)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdReturnSegment  {
@@ -4815,6 +5000,7 @@ class RdReturnSegment (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -4833,6 +5019,7 @@ class RdSandboxCodeEntityReference (
     
     companion object : IMarshaller<RdSandboxCodeEntityReference> {
         override val _type: KClass<RdSandboxCodeEntityReference> = RdSandboxCodeEntityReference::class
+        override val id: RdId get() = RdId(6800939843989562425)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdSandboxCodeEntityReference  {
@@ -4894,6 +5081,7 @@ class RdSandboxCodeEntityReference (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -4926,6 +5114,7 @@ abstract class RdSeeAlsoContentSegment (
     //pretty print
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -4940,6 +5129,7 @@ class RdSeeAlsoContentSegment_Unknown (
     
     companion object : IMarshaller<RdSeeAlsoContentSegment_Unknown> {
         override val _type: KClass<RdSeeAlsoContentSegment_Unknown> = RdSeeAlsoContentSegment_Unknown::class
+        override val id: RdId get() = RdId(-2701248144867134182)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdSeeAlsoContentSegment_Unknown  {
@@ -4986,6 +5176,7 @@ class RdSeeAlsoContentSegment_Unknown (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -5002,6 +5193,7 @@ class RdSeeAlsoLinkContentSegment (
     
     companion object : IMarshaller<RdSeeAlsoLinkContentSegment> {
         override val _type: KClass<RdSeeAlsoLinkContentSegment> = RdSeeAlsoLinkContentSegment::class
+        override val id: RdId get() = RdId(-3975048984254397111)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdSeeAlsoLinkContentSegment  {
@@ -5053,6 +5245,7 @@ class RdSeeAlsoLinkContentSegment (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -5069,6 +5262,7 @@ class RdSeeAlsoMemberContentSegment (
     
     companion object : IMarshaller<RdSeeAlsoMemberContentSegment> {
         override val _type: KClass<RdSeeAlsoMemberContentSegment> = RdSeeAlsoMemberContentSegment::class
+        override val id: RdId get() = RdId(9191204285298200233)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdSeeAlsoMemberContentSegment  {
@@ -5120,6 +5314,7 @@ class RdSeeAlsoMemberContentSegment (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -5152,6 +5347,7 @@ abstract class RdSegmentWithContent (
     //pretty print
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -5166,6 +5362,7 @@ class RdSegmentWithContent_Unknown (
     
     companion object : IMarshaller<RdSegmentWithContent_Unknown> {
         override val _type: KClass<RdSegmentWithContent_Unknown> = RdSegmentWithContent_Unknown::class
+        override val id: RdId get() = RdId(5018355162919809040)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdSegmentWithContent_Unknown  {
@@ -5212,6 +5409,7 @@ class RdSegmentWithContent_Unknown (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -5226,6 +5424,7 @@ data class RdSourceFileId (
     
     companion object : IMarshaller<RdSourceFileId> {
         override val _type: KClass<RdSourceFileId> = RdSourceFileId::class
+        override val id: RdId get() = RdId(-7799538055032505865)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdSourceFileId  {
@@ -5275,6 +5474,7 @@ data class RdSourceFileId (
     }
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -5289,6 +5489,7 @@ data class RdSquiggles (
     
     companion object : IMarshaller<RdSquiggles> {
         override val _type: KClass<RdSquiggles> = RdSquiggles::class
+        override val id: RdId get() = RdId(552688548603976419)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdSquiggles  {
@@ -5338,6 +5539,7 @@ data class RdSquiggles (
     }
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -5348,9 +5550,20 @@ enum class RdSquigglesKind {
     Wave, 
     Dotted;
     
-    companion object {
+    companion object : IMarshaller<RdSquigglesKind> {
         val marshaller = FrameworkMarshallers.enum<RdSquigglesKind>()
         
+        
+        override val _type: KClass<RdSquigglesKind> = RdSquigglesKind::class
+        override val id: RdId get() = RdId(-1927424250384424681)
+        
+        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdSquigglesKind {
+            return marshaller.read(ctx, buffer)
+        }
+        
+        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: RdSquigglesKind)  {
+            marshaller.write(ctx, buffer, value)
+        }
     }
 }
 
@@ -5367,6 +5580,7 @@ class RdSummarySegment (
     
     companion object : IMarshaller<RdSummarySegment> {
         override val _type: KClass<RdSummarySegment> = RdSummarySegment::class
+        override val id: RdId get() = RdId(-1459406622275100238)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdSummarySegment  {
@@ -5413,6 +5627,7 @@ class RdSummarySegment (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -5427,6 +5642,7 @@ data class RdTableCell (
     
     companion object : IMarshaller<RdTableCell> {
         override val _type: KClass<RdTableCell> = RdTableCell::class
+        override val id: RdId get() = RdId(552688944513579563)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdTableCell  {
@@ -5476,6 +5692,7 @@ data class RdTableCell (
     }
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -5491,6 +5708,7 @@ data class RdTableCellProperties (
     
     companion object : IMarshaller<RdTableCellProperties> {
         override val _type: KClass<RdTableCellProperties> = RdTableCellProperties::class
+        override val id: RdId get() = RdId(-190661288488244802)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdTableCellProperties  {
@@ -5545,6 +5763,7 @@ data class RdTableCellProperties (
     }
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -5558,6 +5777,7 @@ data class RdTableRow (
     
     companion object : IMarshaller<RdTableRow> {
         override val _type: KClass<RdTableRow> = RdTableRow::class
+        override val id: RdId get() = RdId(17828675629485041)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdTableRow  {
@@ -5602,6 +5822,7 @@ data class RdTableRow (
     }
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -5617,6 +5838,7 @@ class RdTableSegment (
     
     companion object : IMarshaller<RdTableSegment> {
         override val _type: KClass<RdTableSegment> = RdTableSegment::class
+        override val id: RdId get() = RdId(-7786111804385260086)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdTableSegment  {
@@ -5668,6 +5890,7 @@ class RdTableSegment (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -5697,6 +5920,7 @@ abstract class RdTextAnimation (
     //pretty print
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -5709,6 +5933,7 @@ class RdTextAnimation_Unknown (
     
     companion object : IMarshaller<RdTextAnimation_Unknown> {
         override val _type: KClass<RdTextAnimation_Unknown> = RdTextAnimation_Unknown::class
+        override val id: RdId get() = RdId(7860142282618143773)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdTextAnimation_Unknown  {
@@ -5749,6 +5974,7 @@ class RdTextAnimation_Unknown (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -5764,6 +5990,7 @@ data class RdTextAttributes (
     
     companion object : IMarshaller<RdTextAttributes> {
         override val _type: KClass<RdTextAttributes> = RdTextAttributes::class
+        override val id: RdId get() = RdId(-7806822767354458263)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdTextAttributes  {
@@ -5818,6 +6045,7 @@ data class RdTextAttributes (
     }
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -5839,6 +6067,7 @@ data class RdTextHighlighter (
     
     companion object : IMarshaller<RdTextHighlighter> {
         override val _type: KClass<RdTextHighlighter> = RdTextHighlighter::class
+        override val id: RdId get() = RdId(-2198397627458922353)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdTextHighlighter  {
@@ -5923,6 +6152,7 @@ data class RdTextHighlighter (
     }
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -5939,6 +6169,7 @@ class RdTextInvariant (
     
     companion object : IMarshaller<RdTextInvariant> {
         override val _type: KClass<RdTextInvariant> = RdTextInvariant::class
+        override val id: RdId get() = RdId(-1441938854030364818)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdTextInvariant  {
@@ -5990,6 +6221,7 @@ class RdTextInvariant (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -6004,6 +6236,7 @@ class RdTextSegment (
     
     companion object : IMarshaller<RdTextSegment> {
         override val _type: KClass<RdTextSegment> = RdTextSegment::class
+        override val id: RdId get() = RdId(-3821377732834459039)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdTextSegment  {
@@ -6050,6 +6283,7 @@ class RdTextSegment (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -6065,6 +6299,7 @@ class RdTicketContentSegment (
     
     companion object : IMarshaller<RdTicketContentSegment> {
         override val _type: KClass<RdTicketContentSegment> = RdTicketContentSegment::class
+        override val id: RdId get() = RdId(8517099761902021611)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdTicketContentSegment  {
@@ -6116,6 +6351,7 @@ class RdTicketContentSegment (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -6132,6 +6368,7 @@ class RdToDoContentSegment (
     
     companion object : IMarshaller<RdToDoContentSegment> {
         override val _type: KClass<RdToDoContentSegment> = RdToDoContentSegment::class
+        override val id: RdId get() = RdId(2949914372744350981)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdToDoContentSegment  {
@@ -6183,6 +6420,7 @@ class RdToDoContentSegment (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -6202,6 +6440,7 @@ class RdTodoItem (
     
     companion object : IMarshaller<RdTodoItem> {
         override val _type: KClass<RdTodoItem> = RdTodoItem::class
+        override val id: RdId get() = RdId(17828688113763646)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdTodoItem  {
@@ -6258,6 +6497,7 @@ class RdTodoItem (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -6275,6 +6515,7 @@ class RdTypeParam (
     
     companion object : IMarshaller<RdTypeParam> {
         override val _type: KClass<RdTypeParam> = RdTypeParam::class
+        override val id: RdId get() = RdId(552689617022477646)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdTypeParam  {
@@ -6326,6 +6567,7 @@ class RdTypeParam (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -6339,6 +6581,7 @@ class RdUnderlineTextAnimation (
     
     companion object : IMarshaller<RdUnderlineTextAnimation> {
         override val _type: KClass<RdUnderlineTextAnimation> = RdUnderlineTextAnimation::class
+        override val id: RdId get() = RdId(-596006020905479824)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdUnderlineTextAnimation  {
@@ -6378,6 +6621,7 @@ class RdUnderlineTextAnimation (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -6393,6 +6637,7 @@ class RdValueSegment (
     
     companion object : IMarshaller<RdValueSegment> {
         override val _type: KClass<RdValueSegment> = RdValueSegment::class
+        override val id: RdId get() = RdId(-7735022778351506745)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdValueSegment  {
@@ -6439,6 +6684,7 @@ class RdValueSegment (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -6450,9 +6696,20 @@ enum class RdVerticalAlignment {
     Top, 
     Bottom;
     
-    companion object {
+    companion object : IMarshaller<RdVerticalAlignment> {
         val marshaller = FrameworkMarshallers.enum<RdVerticalAlignment>()
         
+        
+        override val _type: KClass<RdVerticalAlignment> = RdVerticalAlignment::class
+        override val id: RdId get() = RdId(771596670621854696)
+        
+        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdVerticalAlignment {
+            return marshaller.read(ctx, buffer)
+        }
+        
+        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: RdVerticalAlignment)  {
+            marshaller.write(ctx, buffer, value)
+        }
     }
 }
 
@@ -6468,6 +6725,7 @@ class RdWebResourceResolveResult (
     
     companion object : IMarshaller<RdWebResourceResolveResult> {
         override val _type: KClass<RdWebResourceResolveResult> = RdWebResourceResolveResult::class
+        override val id: RdId get() = RdId(-4569880760018616436)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdWebResourceResolveResult  {
@@ -6514,6 +6772,7 @@ class RdWebResourceResolveResult (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }
 
 
@@ -6529,6 +6788,7 @@ class RdXmlDocCodeEntityReference (
     
     companion object : IMarshaller<RdXmlDocCodeEntityReference> {
         override val _type: KClass<RdXmlDocCodeEntityReference> = RdXmlDocCodeEntityReference::class
+        override val id: RdId get() = RdId(-7086709064984492171)
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdXmlDocCodeEntityReference  {
@@ -6575,4 +6835,5 @@ class RdXmlDocCodeEntityReference (
     override fun toString() = PrettyPrinter().singleLine().also { print(it) }.toString()
     //deepClone
     //contexts
+    //threading
 }

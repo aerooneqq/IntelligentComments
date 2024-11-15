@@ -17,7 +17,7 @@ using JetBrains.Util;
 
 namespace IntelligentComments.Rider.Comments.RdReferences;
 
-[SolutionComponent(Instantiation.DemandAnyThreadSafe)]
+[SolutionComponent(Instantiation.ContainerAsyncPrimaryThread)]
 public class ReferenceResolverHost
 {
   public ReferenceResolverHost(

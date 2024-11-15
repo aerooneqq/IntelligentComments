@@ -5,7 +5,7 @@ using JetBrains.ProjectModel;
 
 namespace IntelligentComments.Comments.Calculations.Core.DocComments.Tickets;
 
-[SolutionComponent(Instantiation.DemandAnyThreadSafe)]
+[SolutionComponent(Instantiation.ContainerAsyncPrimaryThread)]
 public class YoutrackTicketSourceParser : ITicketSourceParser
 {
   //e.g: https://youtrack.jetbrains.com/issue/RIDER-68551

@@ -23,7 +23,7 @@ using JetBrains.Util;
 
 namespace IntelligentComments.Rider.Comments.ClickDoc;
 
-[SolutionComponent(Instantiation.DemandAnyThreadSafe)]
+[SolutionComponent(Instantiation.ContainerAsyncPrimaryThread)]
 public class ClickDocHost
 {
   private readonly Lifetime myLifetime;

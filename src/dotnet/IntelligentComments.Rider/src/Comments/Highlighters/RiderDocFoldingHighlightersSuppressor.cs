@@ -6,7 +6,7 @@ using JetBrains.TextControl.DocumentMarkup;
 
 namespace IntelligentComments.Rider.Comments.Highlighters;
 
-[SolutionComponent(Instantiation.DemandAnyThreadSafe)]
+[SolutionComponent(Instantiation.ContainerAsyncPrimaryThread)]
 public class RiderDocFoldingHighlightersSuppressor : IRiderHighlighterSuppressor
 {
   public bool IsSuppressed(IHighlighter highlighter)

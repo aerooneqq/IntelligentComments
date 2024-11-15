@@ -9,11 +9,12 @@ using JetBrains.RdBackend.Common.Features.Documents;
 using JetBrains.RdBackend.Common.Features.TextControls;
 using JetBrains.RdBackend.Common.Features.Util.Ranges;
 using JetBrains.ReSharper.Psi;
+using JetBrains.Rider.Backend.Features.Preview.WPF;
 using JetBrains.Rider.Model;
 
 namespace IntelligentComments.Rider.Comments.RdReferences;
 
-[SolutionComponent(Instantiation.DemandAnyThreadSafe)]
+[SolutionComponent(Instantiation.ContainerAsyncPrimaryThread)]
 public class RdReferenceConverter
 {
   [NotNull] private readonly ISolution mySolution;

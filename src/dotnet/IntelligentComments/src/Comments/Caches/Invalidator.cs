@@ -28,7 +28,7 @@ namespace IntelligentComments.Comments.Caches;
 /// to invalidate other files, where changed names were used and force rehighlight of opened files where changed name
 /// contains. Moreover when user changes "Use experimental features setting" we need to perform invalidation.
 /// </summary>
-[SolutionComponent(Instantiation.DemandAnyThreadSafe)]
+[SolutionComponent(Instantiation.ContainerAsyncPrimaryThread)]
 public class Invalidator
 {
   [NotNull] private readonly SourcesTrigramIndex myTrigramIndex;

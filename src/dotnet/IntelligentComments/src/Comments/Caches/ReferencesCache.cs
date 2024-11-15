@@ -13,7 +13,7 @@ namespace IntelligentComments.Comments.Caches;
 
 public record ReferenceInfo([NotNull] IDomainReference DomainReference);
 
-[SolutionComponent(Instantiation.DemandAnyThreadSafe)]
+[SolutionComponent(Instantiation.ContainerAsyncPrimaryThread)]
 public class ReferencesCache : AbstractOpenedDocumentBasedCache<int, ReferenceInfo>
 {
   public ReferencesCache(

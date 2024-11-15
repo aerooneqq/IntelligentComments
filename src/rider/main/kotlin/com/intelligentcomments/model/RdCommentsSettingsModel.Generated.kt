@@ -73,6 +73,8 @@ class RdCommentsSettingsModel private constructor(
         )
     }
     //contexts
+    //threading
+    override val extThreading: ExtThreadingKind get() = ExtThreadingKind.Default
 }
 val ShellModel.rdCommentsSettingsModel get() = getOrCreateExtension("rdCommentsSettingsModel", ::RdCommentsSettingsModel)
 

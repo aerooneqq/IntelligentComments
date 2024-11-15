@@ -14,7 +14,7 @@ using JetBrains.Util;
 
 namespace IntelligentComments.Rider.Comments.Highlighters;
 
-[SolutionComponent(Instantiation.DemandAnyThreadSafe)]
+[SolutionComponent(Instantiation.ContainerAsyncPrimaryThread)]
 public class DocCommentsFoldingHighlightersCreator : IRiderHighlighterModelCreator
 {
   private readonly ILogger myLogger;

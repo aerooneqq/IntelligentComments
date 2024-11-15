@@ -6,7 +6,7 @@ using JetBrains.Rider.Model;
 
 namespace IntelligentComments.Rider.Protocol;
 
-[SolutionComponent(Instantiation.DemandAnyThreadSafe)]
+[SolutionComponent(Instantiation.ContainerAsyncPrimaryThread)]
 public class ProtocolModelRegistrar
 {
   public ProtocolModelRegistrar([NotNull] ISolution solution)

@@ -24,7 +24,7 @@ using JetBrains.Util.Maths;
 
 namespace IntelligentComments.Rider.Comments.Navigation;
 
-[SolutionComponent(Instantiation.DemandAnyThreadSafe)]
+[SolutionComponent(Instantiation.ContainerAsyncPrimaryThread)]
 public class CommentsNavigationHost
 {
   private readonly Lifetime myLifetime;

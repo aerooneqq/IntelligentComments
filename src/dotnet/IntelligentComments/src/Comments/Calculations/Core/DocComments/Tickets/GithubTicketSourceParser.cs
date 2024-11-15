@@ -6,7 +6,7 @@ using JetBrains.ProjectModel;
 
 namespace IntelligentComments.Comments.Calculations.Core.DocComments.Tickets;
 
-[SolutionComponent(Instantiation.DemandAnyThreadSafe)]
+[SolutionComponent(Instantiation.ContainerAsyncPrimaryThread)]
 public class GithubTicketSourceParser : ITicketSourceParser
 {
   //e.g. https://github.com/dotnet/core/issues/7341

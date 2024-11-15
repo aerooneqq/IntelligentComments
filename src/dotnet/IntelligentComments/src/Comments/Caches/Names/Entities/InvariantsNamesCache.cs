@@ -9,7 +9,7 @@ using JetBrains.ReSharper.Psi.Caches;
 
 namespace IntelligentComments.Comments.Caches.Names.Entities;
 
-[PsiComponent(Instantiation.DemandAnyThreadSafe)]
+[PsiComponent(Instantiation.DemandAnyThreadUnsafe)]
 public class InvariantsNamesNamesCache : AbstractNamesCache
 {
   public InvariantsNamesNamesCache(

@@ -24,7 +24,7 @@ using JetBrains.Util;
 namespace IntelligentComments.Comments.TypingAssists;
 
 
-[SolutionComponent(Instantiation.DemandAnyThreadSafe)]
+[SolutionComponent(Instantiation.ContainerAsyncPrimaryThread)]
 public class DocCommentTypingAssist : CSharpTypingAssistBase, ITypingHandler
 {
   private record Context(

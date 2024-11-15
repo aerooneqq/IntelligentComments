@@ -22,7 +22,7 @@ using JetBrains.Util;
 
 namespace IntelligentComments.Rider.Comments.Caches.Host;
 
-[SolutionComponent(Instantiation.DemandAnyThreadSafe)]
+[SolutionComponent(Instantiation.ContainerAsyncPrimaryThread)]
 public class NamedEntitiesHost
 {
   private readonly Lifetime myLifetime;

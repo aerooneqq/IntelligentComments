@@ -7,7 +7,7 @@ using JetBrains.TextControl;
 
 namespace IntelligentComments.Comments.Languages.CSharp.Completion.DocComments;
 
-[SolutionComponent(Instantiation.DemandAnyThreadSafe)]
+[SolutionComponent(Instantiation.ContainerAsyncPrimaryThread)]
 public class CSharpDocCommentsAutoPopupStrategy : CSharpAutoPopupStrategyBase
 {
   public override bool AcceptsFile(IFile file, ITextControl textControl)

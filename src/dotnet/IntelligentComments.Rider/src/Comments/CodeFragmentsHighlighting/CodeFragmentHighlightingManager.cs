@@ -21,7 +21,7 @@ using JetBrains.Util;
 
 namespace IntelligentComments.Rider.Comments.CodeFragmentsHighlighting;
 
-[SolutionComponent(Instantiation.DemandAnyThreadSafe)]
+[SolutionComponent(Instantiation.ContainerAsyncPrimaryThread)]
 public class CodeFragmentHighlightingManager : ICodeFragmentHighlightingManager
 {
   [NotNull] private readonly object mySyncObject = new();
