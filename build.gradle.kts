@@ -1,9 +1,4 @@
-import org.jetbrains.intellij.platform.gradle.tasks.PrepareSandboxTask
-import org.jetbrains.changelog.exceptions.MissingVersionException
 import org.jetbrains.intellij.platform.gradle.Constants
-import org.jetbrains.intellij.platform.gradle.TestFrameworkType
-import kotlin.io.path.absolute
-import kotlin.io.path.isDirectory
 import kotlin.io.path.isRegularFile
 
 plugins {
@@ -162,7 +157,7 @@ tasks {
         pluginVersion.set(thePluginVersion)
         pluginId.set(intellijPluginId)
         pluginDescription.set(getPluginDescription())
-        sinceBuild.set("242.20224.401")
+        sinceBuild.set("243.21565.191")
     }
 
     runIde {

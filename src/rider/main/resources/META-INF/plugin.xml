@@ -12,6 +12,7 @@
                         serviceInterface="com.intelligentcomments.core.settings.RiderIntelligentCommentsSettingsProvider" />
     <applicationConfigurable instance="com.intelligentcomments.core.settings.RiderCommentsConfigurable"
                              groupId="tools"
+                             displayName="Intelligent Comments"
                              id="intelligentCommentsSettings" />
 
     <projectService serviceInterface="com.intelligentcomments.ui.colors.ColorsProvider"

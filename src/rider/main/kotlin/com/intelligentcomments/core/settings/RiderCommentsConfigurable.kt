@@ -16,7 +16,7 @@ import kotlin.reflect.KMutableProperty0
 import kotlin.reflect.KProperty
 
 
-class RiderCommentsConfigurable : BoundConfigurable("Intelligent comments", null) {
+class RiderCommentsConfigurable : BoundConfigurable("Intelligent Comments", null) {
   private val viewModel = RiderCommentsSettings.getInstance()
   private val settingsProvider = RiderIntelligentCommentsSettingsProvider.getInstance()
   private var panel: DialogPanel? = null
