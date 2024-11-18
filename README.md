@@ -1,3 +1,5 @@
+# The project is archived as Rider now has its own reader mode
+
 # IntelligentComments for Rider
 
 Turn off Rider reader mode in order for this plugin to work properly (Settings -> Editor -> Reader Mode -> Enable Reader mode)
